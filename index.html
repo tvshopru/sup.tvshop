@@ -140,166 +140,193 @@
             <!-- VIEW 3: Secret Admin Panel (Maximum Control Settings) -->
             <section id="view-admin" class="content-view">
                 <div class="admin-layout">
-                    <div class="admin-columns-container">
-                        
-                        <!-- Column 1: Core Settings, Security, Promo -->
-                        <div class="admin-column">
-                            <div class="admin-section-card">
-                                <h3>Основные настройки</h3>
-                                <div class="form-group">
-                                    <label for="input-tg-url">Ссылка на Telegram канал поддержки</label>
-                                    <input type="text" id="input-tg-url" class="admin-input spatial-focus" tabindex="0" placeholder="https://t.me/...">
-                                </div>
-                                <div class="form-group">
-                                    <label for="input-sync-url">URL онлайн синхронизации (JSON REST API)</label>
-                                    <input type="text" id="input-sync-url" class="admin-input spatial-focus" tabindex="0" placeholder="https://api.jsonbin.io/v3/b/...">
-                                    <small class="form-help">Укажите URL БД для обновления контента на всех приставках онлайн.</small>
-                                </div>
-                            </div>
+                    
+                    <!-- Admin Tab Switching Bar -->
+                    <div class="admin-tabs-bar">
+                        <button type="button" class="admin-tab-button active spatial-focus" id="tab-btn-general" data-tab="general" tabindex="0">Основные настройки</button>
+                        <button type="button" class="admin-tab-button spatial-focus" id="tab-btn-instructions" data-tab="instructions" tabindex="0">Настройка инструкций</button>
+                    </div>
 
-                            <div class="admin-section-card">
-                                <h3>Безопасность</h3>
-                                <div class="form-row">
+                    <!-- TAB 1: General Parameters, Promo and News -->
+                    <div id="tab-content-general" class="admin-tab-content active-tab">
+                        <div class="admin-columns-container">
+                            
+                            <!-- Column 1: Core Settings, Security, Promo -->
+                            <div class="admin-column">
+                                <div class="admin-section-card">
+                                    <h3>Основные настройки</h3>
                                     <div class="form-group">
-                                        <label for="input-admin-pin">ПИН-код панели (4 цифры)</label>
-                                        <input type="text" id="input-admin-pin" class="admin-input spatial-focus" tabindex="0" maxlength="4" placeholder="0000">
+                                        <label for="input-tg-url">Ссылка на Telegram канал поддержки</label>
+                                        <input type="text" id="input-tg-url" class="admin-input spatial-focus" tabindex="0" placeholder="https://t.me/...">
                                     </div>
                                     <div class="form-group">
-                                        <label for="input-auth-token">Токен записи (API Master Key)</label>
-                                        <input type="password" id="input-auth-token" class="admin-input spatial-focus" tabindex="0" placeholder="Вставьте токен доступа">
+                                        <label for="input-sync-url">URL онлайн синхронизации (JSON REST API)</label>
+                                        <input type="text" id="input-sync-url" class="admin-input spatial-focus" tabindex="0" placeholder="https://api.jsonbin.io/v3/b/...">
+                                        <small class="form-help">Укажите URL БД для обновления контента на всех приставках онлайн.</small>
                                     </div>
                                 </div>
-                                <small class="form-help">Токен авторизации сохраняется <b>только</b> в вашем браузере. Обычные пользователи не смогут перехватить его или изменить настройки без токена.</small>
-                            </div>
 
-                            <div class="admin-section-card">
-                                <h3>Настройка рекламы (Платное ТВ)</h3>
-                                <div class="form-group">
-                                    <label for="input-promo-title">Заголовок предложения</label>
-                                    <input type="text" id="input-promo-title" class="admin-input spatial-focus" tabindex="0">
-                                </div>
-                                <div class="form-group">
-                                    <label for="input-promo-text">Описание предложения</label>
-                                    <textarea id="input-promo-text" class="admin-input textarea spatial-focus" tabindex="0" rows="3"></textarea>
-                                </div>
-                                <div class="form-row">
-                                    <div class="form-group">
-                                        <label for="input-promo-price">Цена пакета</label>
-                                        <input type="text" id="input-promo-price" class="admin-input spatial-focus" tabindex="0">
+                                <div class="admin-section-card">
+                                    <h3>Безопасность</h3>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="input-admin-pin">ПИН-код панели (4 цифры)</label>
+                                            <input type="text" id="input-admin-pin" class="admin-input spatial-focus" tabindex="0" maxlength="4" placeholder="0000">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="input-auth-token">Токен записи (API Master Key)</label>
+                                            <input type="password" id="input-auth-token" class="admin-input spatial-focus" tabindex="0" placeholder="Вставьте токен доступа">
+                                        </div>
                                     </div>
-                                    <div class="form-group">
-                                        <label for="input-promo-btn-text">Текст кнопки</label>
-                                        <input type="text" id="input-promo-btn-text" class="admin-input spatial-focus" tabindex="0">
-                                    </div>
+                                    <small class="form-help">Токен авторизации сохраняется <b>только</b> в вашем браузере. Обычные пользователи не смогут перехватить его или изменить настройки без токена.</small>
                                 </div>
-                                <div class="form-group">
-                                    <label for="input-promo-img">Ссылка на фоновое изображение баннера</label>
-                                    <input type="text" id="input-promo-img" class="admin-input spatial-focus" tabindex="0" placeholder="https://...">
-                                </div>
-                            </div>
-                        </div>
 
-                        <!-- Column 2: News Management & Callback Logs -->
-                        <div class="admin-column">
-                            <div class="admin-section-card news-manager-card">
-                                <h3>Управление новостями</h3>
-                                
-                                <!-- Add news form -->
-                                <div class="add-news-box">
-                                    <h4>Добавить новую новость</h4>
+                                <div class="admin-section-card">
+                                    <h3>Настройка рекламы (Платное ТВ)</h3>
                                     <div class="form-group">
-                                        <label for="input-news-title">Заголовок новости</label>
-                                        <input type="text" id="input-news-title" class="admin-input spatial-focus" tabindex="0">
+                                        <label for="input-promo-title">Заголовок предложения</label>
+                                        <input type="text" id="input-promo-title" class="admin-input spatial-focus" tabindex="0">
                                     </div>
                                     <div class="form-group">
-                                        <label for="input-news-text">Текст новости</label>
-                                        <textarea id="input-news-text" class="admin-input textarea spatial-focus" tabindex="0" rows="2"></textarea>
+                                        <label for="input-promo-text">Описание предложения</label>
+                                        <textarea id="input-promo-text" class="admin-input textarea spatial-focus" tabindex="0" rows="3"></textarea>
                                     </div>
                                     <div class="form-row">
                                         <div class="form-group">
-                                            <label for="input-news-date">Дата (например, "Сегодня, 12:00")</label>
-                                            <input type="text" id="input-news-date" class="admin-input spatial-focus" tabindex="0" placeholder="Оставьте пустым для авто-даты">
+                                            <label for="input-promo-price">Цена пакета</label>
+                                            <input type="text" id="input-promo-price" class="admin-input spatial-focus" tabindex="0">
                                         </div>
                                         <div class="form-group">
-                                            <label for="input-news-img">URL картинки (необязательно)</label>
-                                            <input type="text" id="input-news-img" class="admin-input spatial-focus" tabindex="0" placeholder="https://...">
+                                            <label for="input-promo-btn-text">Текст кнопки</label>
+                                            <input type="text" id="input-promo-btn-text" class="admin-input spatial-focus" tabindex="0">
                                         </div>
                                     </div>
-                                    <button type="button" class="action-button spatial-focus" id="btn-add-news-item" tabindex="0">Добавить новость</button>
-                                </div>
-
-                                <h4 class="news-list-title">Текущие новости</h4>
-                                <div class="admin-news-list" id="admin-news-list-container">
-                                    <!-- News list loaded dynamically -->
-                                </div>
-                            </div>
-
-                            <div class="admin-section-card">
-                                <h3>Заявки на подключение (Callbacks)</h3>
-                                <div class="admin-news-list" id="admin-callbacks-container" style="max-height: 200px;">
-                                    <!-- Connection requests loaded dynamically -->
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Column 3: Instructions Manager (NEW!) -->
-                        <div class="admin-column">
-                            <div class="admin-section-card news-manager-card">
-                                <h3>Управление инструкциями</h3>
-                                
-                                <div class="form-group">
-                                    <label for="select-admin-guide">Выберите инструкцию для редактирования</label>
-                                    <select id="select-admin-guide" class="admin-input spatial-focus" tabindex="0">
-                                        <!-- Dynamic options -->
-                                    </select>
-                                </div>
-                                
-                                <div class="form-group">
-                                    <label for="input-guide-title">Название инструкции</label>
-                                    <input type="text" id="input-guide-title" class="admin-input spatial-focus" tabindex="0">
-                                </div>
-                                
-                                <div class="form-group">
-                                    <label for="input-guide-desc">Краткое описание</label>
-                                    <textarea id="input-guide-desc" class="admin-input textarea spatial-focus" tabindex="0" rows="2"></textarea>
-                                </div>
-                                
-                                <!-- Step Editor Box -->
-                                <div class="add-news-box">
-                                    <h4 style="color: var(--color-purple);">Конструктор шагов</h4>
                                     <div class="form-group">
-                                        <label for="input-step-title">Заголовок шага (например, "Шаг 1: Нажмите Ок")</label>
-                                        <input type="text" id="input-step-title" class="admin-input spatial-focus" tabindex="0">
+                                        <label for="input-promo-img">Ссылка на фоновое изображение баннера</label>
+                                        <input type="text" id="input-promo-img" class="admin-input spatial-focus" tabindex="0" placeholder="https://...">
                                     </div>
+                                </div>
+                            </div>
+
+                            <!-- Column 2: News Management & Callback Logs -->
+                            <div class="admin-column">
+                                <div class="admin-section-card news-manager-card">
+                                    <h3>Управление новостями</h3>
+                                    
+                                    <!-- Add news form -->
+                                    <div class="add-news-box">
+                                        <h4>Добавить новую новость</h4>
+                                        <div class="form-group">
+                                            <label for="input-news-title">Заголовок новости</label>
+                                            <input type="text" id="input-news-title" class="admin-input spatial-focus" tabindex="0">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="input-news-text">Текст новости</label>
+                                            <textarea id="input-news-text" class="admin-input textarea spatial-focus" tabindex="0" rows="2"></textarea>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="form-group">
+                                                <label for="input-news-date">Дата (например, "Сегодня, 12:00")</label>
+                                                <input type="text" id="input-news-date" class="admin-input spatial-focus" tabindex="0" placeholder="Оставьте пустым для авто-даты">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="input-news-img">URL картинки (необязательно)</label>
+                                                <input type="text" id="input-news-img" class="admin-input spatial-focus" tabindex="0" placeholder="https://...">
+                                            </div>
+                                        </div>
+                                        <button type="button" class="action-button spatial-focus" id="btn-add-news-item" tabindex="0">Добавить новость</button>
+                                    </div>
+
+                                    <h4 class="news-list-title">Текущие новости</h4>
+                                    <div class="admin-news-list" id="admin-news-list-container">
+                                        <!-- News list loaded dynamically -->
+                                    </div>
+                                </div>
+
+                                <div class="admin-section-card">
+                                    <h3>Заявки на подключение (Callbacks)</h3>
+                                    <div class="admin-news-list" id="admin-callbacks-container" style="max-height: 200px;">
+                                        <!-- Connection requests loaded dynamically -->
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+
+                    <!-- TAB 2: Dynamic Instructions Editor (Spacious Redesigned Layout) -->
+                    <div id="tab-content-instructions" class="admin-tab-content">
+                        <div class="admin-instructions-tab-layout">
+                            
+                            <!-- Left Column: Focusable Guides Selection list -->
+                            <div class="admin-instr-sidebar">
+                                <h4 class="sidebar-title">Список инструкций</h4>
+                                <div class="admin-instr-list-wrapper" id="admin-instr-list">
+                                    <!-- Loaded dynamically -->
+                                </div>
+                                <button type="button" class="action-button spatial-focus" id="btn-admin-add-new-guide" tabindex="0">+ Новая инструкция</button>
+                            </div>
+                            
+                            <!-- Right Column: Settings & Step-by-Step constructor -->
+                            <div class="admin-instr-main-panel" id="admin-instr-edit-panel">
+                                <div class="admin-section-card">
+                                    <h3>Параметры инструкции</h3>
                                     <div class="form-group">
-                                        <label for="input-step-text">Основной текст шага</label>
-                                        <textarea id="input-step-text" class="admin-input textarea spatial-focus" tabindex="0" rows="2"></textarea>
+                                        <label for="input-guide-title">Заголовок инструкции (отображается на экране деталей)</label>
+                                        <input type="text" id="input-guide-title" class="admin-input spatial-focus" tabindex="0" placeholder="Например: Как настроить беспроводной интернет">
                                     </div>
                                     <div class="form-row">
                                         <div class="form-group">
-                                            <label for="input-step-comment">Комментарий (необязательно)</label>
-                                            <input type="text" id="input-step-comment" class="admin-input spatial-focus" tabindex="0" placeholder="Совет">
+                                            <label for="input-guide-button-text">Название кнопки (в левом меню пользователя)</label>
+                                            <input type="text" id="input-guide-button-text" class="admin-input spatial-focus" tabindex="0" placeholder="Например: Настройка Wi-Fi">
                                         </div>
                                         <div class="form-group">
-                                            <label for="input-step-img">URL картинки (необязательно)</label>
-                                            <input type="text" id="input-step-img" class="admin-input spatial-focus" tabindex="0" placeholder="https://...">
+                                            <label for="input-guide-desc">Краткое описание (в меню под кнопкой)</label>
+                                            <input type="text" id="input-guide-desc" class="admin-input spatial-focus" tabindex="0" placeholder="Краткое описание руководства">
                                         </div>
                                     </div>
-                                    <button type="button" class="action-button spatial-focus" id="btn-add-guide-step" tabindex="0">Добавить шаг к руководству</button>
-                                </div>
-
-                                <h4 class="news-list-title">Шаги в инструкции</h4>
-                                <div class="admin-news-list" id="admin-steps-list-container" style="max-height: 180px;">
-                                    <!-- Dynamic list of steps for chosen guide -->
                                 </div>
                                 
-                                <div class="form-row" style="margin-top: 10px;">
-                                    <button type="button" class="action-button secondary-button danger spatial-focus" id="btn-delete-guide" tabindex="0" style="padding: 10px 5px;">Удалить гайд</button>
-                                    <button type="button" class="action-button spatial-focus" id="btn-save-guide-meta" tabindex="0" style="padding: 10px 5px;">Применить изменения</button>
+                                <div class="admin-section-card">
+                                    <h3>Шаги инструкции</h3>
+                                    
+                                    <!-- Step Builder Form -->
+                                    <div class="add-news-box">
+                                        <h4 style="color: var(--color-purple);">Конструктор шагов</h4>
+                                        <div class="form-group">
+                                            <label for="input-step-title">Заголовок шага (например, "Шаг 1: Нажмите Home")</label>
+                                            <input type="text" id="input-step-title" class="admin-input spatial-focus" tabindex="0">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="input-step-text">Основной текст шага</label>
+                                            <textarea id="input-step-text" class="admin-input textarea spatial-focus" tabindex="0" rows="2"></textarea>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="form-group">
+                                                <label for="input-step-comment">Комментарий (необязательно)</label>
+                                                <input type="text" id="input-step-comment" class="admin-input spatial-focus" tabindex="0" placeholder="Совет или подсказка">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="input-step-img">URL картинки (необязательно)</label>
+                                                <input type="text" id="input-step-img" class="admin-input spatial-focus" tabindex="0" placeholder="https://...">
+                                            </div>
+                                        </div>
+                                        <button type="button" class="action-button spatial-focus" id="btn-add-guide-step" tabindex="0">Добавить шаг к руководству</button>
+                                    </div>
+
+                                    <h4 class="news-list-title">Шаги в текущей инструкции</h4>
+                                    <div class="admin-news-list" id="admin-steps-list-container" style="max-height: 200px;">
+                                        <!-- Dynamic list of steps -->
+                                    </div>
+                                </div>
+                                
+                                <div class="form-row" style="margin-top: 10px; display: flex; justify-content: flex-end; gap: 15px;">
+                                    <button type="button" class="action-button secondary-button danger spatial-focus" id="btn-delete-guide" tabindex="0" style="width: auto; padding: 12px 25px;">Удалить гайд</button>
+                                    <button type="button" class="action-button spatial-focus" id="btn-save-guide-meta" tabindex="0" style="width: auto; padding: 12px 25px;">Применить изменения</button>
                                 </div>
                             </div>
+                            
                         </div>
-                        
                     </div>
 
                     <!-- Sticky Bottom Controls -->

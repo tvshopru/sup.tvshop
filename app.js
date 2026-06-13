@@ -504,10 +504,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     const btnBackHome = document.getElementById('btn-back-home');
-    btnBackHome.addEventListener('click', (e) => {
-        e.stopPropagation();
-        switchView('home');
-    });
+    if (btnBackHome) {
+        btnBackHome.addEventListener('click', (e) => {
+            e.stopPropagation();
+            switchView('home');
+        });
+    }
 
     // ----------------------------------------------------
     // 8. PIN-CODE AUTHORIZATION LOGIC
@@ -747,7 +749,6 @@ document.addEventListener('DOMContentLoaded', () => {
         syncStatusText.className = 'admin-footer-status';
         renderAdminNewsList();
         renderAdminCallbacksList();
-        populateAdminGuidesDropdown();
         populateAdminGuideFields();
     }
 
@@ -1109,7 +1110,7 @@ document.addEventListener('DOMContentLoaded', () => {
             btn.className = `guide-item spatial-focus${guide.id === activeGuideId ? ' active' : ''}`;
             btn.tabIndex = 0;
             btn.innerHTML = `
-                <span class="guide-item-title">${escapeHtml(guide.title)}</span>
+                <span class="guide-item-title">${escapeHtml(guide.buttonText || guide.title)}</span>
                 <span class="guide-item-desc">${escapeHtml(guide.description || '')}</span>
             `;
             
@@ -1197,10 +1198,47 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ----------------------------------------------------
-    // Admin Instructions Management
+    // Admin Tabs Switcher
     // ----------------------------------------------------
-    const selectAdminGuide = document.getElementById('select-admin-guide');
+    const tabButtons = document.querySelectorAll('.admin-tab-button');
+    const tabContents = document.querySelectorAll('.admin-tab-content');
+
+    tabButtons.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const tabId = btn.getAttribute('data-tab');
+            
+            // Update buttons active styling
+            tabButtons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
+            // Toggle tab content visibility
+            tabContents.forEach(content => {
+                content.classList.remove('active-tab');
+                if (content.id === `tab-content-${tabId}`) {
+                    content.classList.add('active-tab');
+                }
+            });
+
+            playTickSound();
+            
+            // Shift focus to the first focusable element inside the active tab content
+            const firstFocusable = document.querySelector(`#tab-content-${tabId} .spatial-focus`);
+            if (firstFocusable) {
+                setTimeout(() => firstFocusable.focus(), 50);
+            }
+        });
+    });
+
+    // ----------------------------------------------------
+    // Admin Instructions Management (Tab 2)
+    // ----------------------------------------------------
+    const adminInstrList = document.getElementById('admin-instr-list');
+    const btnAdminAddNewGuide = document.getElementById('btn-admin-add-new-guide');
+    const adminInstrEditPanel = document.getElementById('admin-instr-edit-panel');
+    
     const inputGuideTitle = document.getElementById('input-guide-title');
+    const inputGuideButtonText = document.getElementById('input-guide-button-text');
     const inputGuideDesc = document.getElementById('input-guide-desc');
     
     const inputStepTitle = document.getElementById('input-step-title');
@@ -1214,68 +1252,89 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnDeleteGuide = document.getElementById('btn-delete-guide');
     const btnSaveGuideMeta = document.getElementById('btn-save-guide-meta');
 
+    let adminActiveGuideId = null;
     let adminActiveSteps = [];
 
-    function populateAdminGuidesDropdown() {
-        const currentSelected = selectAdminGuide.value;
-        selectAdminGuide.innerHTML = '';
+    function populateAdminGuidesList() {
+        adminInstrList.innerHTML = '';
         
         if (!currentConfig.instructions) {
             currentConfig.instructions = [];
         }
 
         currentConfig.instructions.forEach(guide => {
-            const opt = document.createElement('option');
-            opt.value = guide.id;
-            opt.textContent = guide.title;
-            selectAdminGuide.appendChild(opt);
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = `admin-instr-item spatial-focus${guide.id === adminActiveGuideId ? ' active' : ''}`;
+            btn.tabIndex = 0;
+            // Display buttonText if available, otherwise title
+            btn.textContent = guide.buttonText || guide.title;
+            
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                adminActiveGuideId = guide.id;
+                // Update active highlight
+                adminInstrList.querySelectorAll('.admin-instr-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+                btn.classList.add('active');
+                populateAdminGuideFields();
+                playTickSound();
+            });
+
+            adminInstrList.appendChild(btn);
         });
 
-        const optNew = document.createElement('option');
-        optNew.value = 'new';
-        optNew.textContent = '+ Создать новое руководство...';
-        selectAdminGuide.appendChild(optNew);
-
-        // Try to keep selection or select first
-        if (currentSelected && Array.from(selectAdminGuide.options).some(o => o.value === currentSelected)) {
-            selectAdminGuide.value = currentSelected;
-        } else if (currentConfig.instructions.length > 0) {
-            selectAdminGuide.value = currentConfig.instructions[0].id;
-        } else {
-            selectAdminGuide.value = 'new';
+        // If 'new' is active, highlight nothing or show a custom visual
+        if (adminActiveGuideId === 'new') {
+            // No selection
         }
     }
 
     function populateAdminGuideFields() {
-        const val = selectAdminGuide.value;
-        
-        if (val === 'new') {
+        if (!currentConfig.instructions) {
+            currentConfig.instructions = [];
+        }
+
+        if (!adminActiveGuideId && currentConfig.instructions.length > 0) {
+            adminActiveGuideId = currentConfig.instructions[0].id;
+        } else if (!adminActiveGuideId) {
+            adminActiveGuideId = 'new';
+        }
+
+        if (adminActiveGuideId === 'new') {
             inputGuideTitle.value = '';
+            inputGuideButtonText.value = '';
             inputGuideDesc.value = '';
             adminActiveSteps = [];
             btnDeleteGuide.style.display = 'none';
         } else {
-            const guide = currentConfig.instructions.find(g => g.id === val);
+            const guide = currentConfig.instructions.find(g => g.id === adminActiveGuideId);
             if (guide) {
                 inputGuideTitle.value = guide.title || '';
+                inputGuideButtonText.value = guide.buttonText || '';
                 inputGuideDesc.value = guide.description || '';
                 adminActiveSteps = JSON.parse(JSON.stringify(guide.steps || []));
                 btnDeleteGuide.style.display = 'block';
             } else {
+                // If not found, fallback to 'new'
+                adminActiveGuideId = 'new';
                 inputGuideTitle.value = '';
+                inputGuideButtonText.value = '';
                 inputGuideDesc.value = '';
                 adminActiveSteps = [];
                 btnDeleteGuide.style.display = 'none';
             }
         }
         
-        // Clear step form fields
+        // Clear step builder inputs
         inputStepTitle.value = '';
         inputStepText.value = '';
         inputStepComment.value = '';
         inputStepImg.value = '';
 
         renderAdminStepsList();
+        populateAdminGuidesList(); // Update button list highlight & labels
     }
 
     function renderAdminStepsList() {
@@ -1346,9 +1405,14 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Dropdown change event
-    selectAdminGuide.addEventListener('change', () => {
+    // Add new guide sidebar button
+    btnAdminAddNewGuide.addEventListener('click', (e) => {
+        e.stopPropagation();
+        adminActiveGuideId = 'new';
         populateAdminGuideFields();
+        playTickSound();
+        showToast('Заполните поля для создания новой инструкции');
+        setTimeout(() => inputGuideTitle.focus(), 50);
     });
 
     // Step addition handler
@@ -1385,13 +1449,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Delete guide handler
     btnDeleteGuide.addEventListener('click', () => {
-        const val = selectAdminGuide.value;
-        if (val === 'new') return;
+        if (adminActiveGuideId === 'new') return;
 
         if (confirm('Вы уверены, что хотите полностью удалить это руководство?')) {
-            currentConfig.instructions = currentConfig.instructions.filter(g => g.id !== val);
-            selectAdminGuide.value = 'new';
-            populateAdminGuidesDropdown();
+            currentConfig.instructions = currentConfig.instructions.filter(g => g.id !== adminActiveGuideId);
+            adminActiveGuideId = currentConfig.instructions.length > 0 ? currentConfig.instructions[0].id : 'new';
             populateAdminGuideFields();
             
             syncStatusText.textContent = 'Изменения не сохранены *';
@@ -1403,6 +1465,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Save/Apply guide metadata changes
     btnSaveGuideMeta.addEventListener('click', () => {
         const title = inputGuideTitle.value.trim();
+        const buttonText = inputGuideButtonText.value.trim();
         const description = inputGuideDesc.value.trim();
 
         if (!title) {
@@ -1410,13 +1473,13 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        const val = selectAdminGuide.value;
-        if (val === 'new') {
+        if (adminActiveGuideId === 'new') {
             // Create new
             const newGuideId = 'guide-' + Date.now();
             const newGuide = {
                 id: newGuideId,
                 title,
+                buttonText,
                 description,
                 steps: adminActiveSteps
             };
@@ -1431,15 +1494,14 @@ document.addEventListener('DOMContentLoaded', () => {
             
             showToast('Руководство успешно создано!');
             
-            // Update dropdown and select newly created guide
-            populateAdminGuidesDropdown();
-            selectAdminGuide.value = newGuideId;
+            adminActiveGuideId = newGuideId;
             populateAdminGuideFields();
         } else {
             // Update existing
-            const guide = currentConfig.instructions.find(g => g.id === val);
+            const guide = currentConfig.instructions.find(g => g.id === adminActiveGuideId);
             if (guide) {
                 guide.title = title;
+                guide.buttonText = buttonText;
                 guide.description = description;
                 guide.steps = adminActiveSteps;
                 
@@ -1447,9 +1509,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 syncStatusText.classList.add('error');
                 
                 showToast('Изменения гайда применены!');
-                
-                // Refresh guide options to update title in dropdown
-                populateAdminGuidesDropdown();
+                populateAdminGuideFields();
             }
         }
     });

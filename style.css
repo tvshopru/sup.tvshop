@@ -896,8 +896,154 @@ body::before {
     flex-direction: column;
     gap: 20px;
     height: calc(100vh - 150px);
-    overflow-y: auto;
+    overflow-y: hidden; /* Prevent global layout scrolling, scroll tabs instead */
     padding-bottom: 80px; /* Spacer for bottom footer bar */
+}
+
+/* Admin Tabs Switching */
+.admin-tabs-bar {
+    display: flex;
+    gap: 15px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 15px;
+    margin-bottom: 10px;
+    flex-shrink: 0;
+}
+
+.admin-tab-button {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    color: var(--text-secondary);
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all var(--transition-speed) ease;
+}
+
+.admin-tab-button:hover, .admin-tab-button.focused {
+    background: var(--bg-card-hover);
+    color: white;
+    transform: translateY(-2px);
+}
+
+.admin-tab-button:focus, .admin-tab-button.focused {
+    background: var(--color-cyan);
+    color: #05070c;
+    border-color: var(--color-cyan);
+    box-shadow: 0 0 15px rgba(0, 210, 255, 0.4);
+}
+
+.admin-tab-button.active {
+    background: rgba(0, 210, 255, 0.12);
+    color: var(--color-cyan);
+    border-color: rgba(0, 210, 255, 0.3);
+}
+
+/* Tab content toggling */
+.admin-tab-content {
+    display: none;
+    flex-direction: column;
+    height: calc(100vh - 280px);
+    overflow-y: auto;
+    padding-right: 10px;
+    animation: fadeIn 0.3s ease forwards;
+}
+
+.admin-tab-content.active-tab {
+    display: flex;
+}
+
+/* Admin Instructions Tab Layout */
+.admin-instructions-tab-layout {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 25px;
+    align-items: stretch;
+    height: 100%;
+    overflow: hidden;
+}
+
+.admin-instr-sidebar {
+    background: rgba(12, 17, 29, 0.6);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    height: 100%;
+}
+
+.sidebar-title {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    letter-spacing: 0.5px;
+}
+
+.admin-instr-list-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    overflow-y: auto;
+    flex-grow: 1;
+    padding-right: 5px;
+}
+
+/* Scrollbar for admin instr list */
+.admin-instr-list-wrapper::-webkit-scrollbar {
+    width: 6px;
+}
+.admin-instr-list-wrapper::-webkit-scrollbar-track {
+    background: rgba(255,255,255,0.01);
+}
+.admin-instr-list-wrapper::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.08);
+    border-radius: 3px;
+}
+
+.admin-instr-item {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    border-radius: 8px;
+    padding: 12px 15px;
+    color: white;
+    font-size: 13px;
+    font-weight: 600;
+    text-align: left;
+    cursor: pointer;
+    transition: all var(--transition-speed) ease;
+    width: 100%;
+}
+
+.admin-instr-item:hover, .admin-instr-item.focused {
+    background: var(--bg-card-hover);
+    border-color: var(--color-cyan);
+}
+
+.admin-instr-item:focus, .admin-instr-item.focused {
+    background: var(--color-cyan);
+    color: #05070c;
+    border-color: var(--color-cyan);
+    box-shadow: 0 0 10px rgba(0, 210, 255, 0.3);
+}
+
+.admin-instr-item.active {
+    background: rgba(0, 210, 255, 0.1);
+    color: var(--color-cyan);
+    border-color: rgba(0, 210, 255, 0.25);
+}
+
+.admin-instr-main-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    overflow-y: auto;
+    height: 100%;
     padding-right: 10px;
 }
 
