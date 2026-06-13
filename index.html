@@ -1,435 +1,168 @@
-<!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=1280, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>TV SHOP - Техническая Поддержка</title>
-    <!-- Importing modern Outfit and Montserrat fonts from Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Lampa - Каталог фильмов и сериалов</title>
+
+    <meta name="description" content="Приложение для просмотра каталога фильмов и сериалов на телевизорах, приставках и смартфонах." />
+
+    <meta property="og:title" content="Lampa - Каталог фильмов и сериалов">
+    <meta property="og:description" content="Приложение для просмотра каталога фильмов и сериалов на телевизорах, приставках и смартфонах.">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image" content="og.png">
+
+    <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16x16.png">
+    <link rel="manifest" href="icons/site.webmanifest" crossorigin="use-credentials">
+    <link rel="mask-icon" href="icons/safari-pinned-tab.svg" color="#5bbad5">
+    <link rel="shortcut icon" href="icons/favicon.ico">
+    <meta name="msapplication-TileColor" content="#1d1f20">
+    <meta name="msapplication-config" content="icons/browserconfig.xml">
+    <meta name="theme-color" content="#1d1f20">
+
+    <meta name="referrer" content="never">
+    
+    <link rel="stylesheet" href="./vender/scrollbar/jquery.scrollbar.css">
+    <link rel="stylesheet" href="./vender/keypad/style.css">
+
+    <link rel="stylesheet" href="css/app.css?v=4.56">
 </head>
-<body>
-    <!-- Main App Container designed for 16:9 TV screens -->
-    <div class="app-container">
-        
-        <!-- Sidebar Navigation (Classic TV Layout) -->
-        <aside class="sidebar">
-            <div class="logo-container">
-                <img src="app_logo.png" alt="TV SHOP Logo" class="app-logo">
-                <span class="brand-name">TV SHOP</span>
-            </div>
-            
-            <nav class="nav-menu">
-                <button class="nav-button active spatial-focus" id="nav-home" tabindex="0">
-                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                        <polyline points="9 22 9 12 15 12 15 22"></polyline>
-                    </svg>
-                    <span>Главная</span>
-                </button>
-                <button class="nav-button spatial-focus" id="nav-instructions" tabindex="0">
-                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
-                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
-                    </svg>
-                    <span>Инструкции</span>
-                </button>
-                <!-- Admin button hidden by default, visible only via secret URL parameter -->
-                <button class="nav-button spatial-focus" id="nav-admin" tabindex="0" style="display: none;">
-                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                        <circle cx="12" cy="12" r="3"></circle>
-                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-                    </svg>
-                    <span>Настройки</span>
-                </button>
-            </nav>
-            
-            <div class="sidebar-footer">
-                <div class="status-indicator">
-                    <span class="status-dot"></span>
-                    <span>Система онлайн</span>
-                </div>
-            </div>
-        </aside>
+<body style="background: #1d1f20;">
+    <script>
+        window.youtube_lazy_load = true
+    </script>
 
-        <!-- Main Content Wrapper -->
-        <main class="content-area">
-            
-            <!-- Top bar with Page Title and Live Clock -->
-            <header class="top-bar">
-                <h1 id="page-title">Панель поддержки</h1>
-                <div class="clock-widget" id="live-clock">21:45:00</div>
-            </header>
+    <div class="welcome"></div>
 
-            <!-- VIEW 1: Dashboard (Home) -->
-            <section id="view-dashboard" class="content-view active">
-                <div class="dashboard-grid">
-                    
-                    <!-- Tech Support & QR Code Card -->
-                    <div class="card support-card spatial-focus" tabindex="0" id="card-support-container">
-                        <div class="card-header">
-                            <div class="card-badge">TG Поддержка</div>
-                            <h2>Техподдержка</h2>
-                        </div>
-                        <div class="card-body support-content">
-                            <p class="support-desc">Сканируйте QR-код для перехода в наш Telegram-канал поддержки.</p>
-                            
-                            <div class="qr-wrapper">
-                                <img src="" alt="Telegram QR Code" class="qr-image" id="support-qr-img">
-                                <div class="qr-scanner-overlay"></div>
-                            </div>
-                            
-                            <div class="support-details">
-                                <div class="detail-item">
-                                    <span class="detail-label">Адрес канала:</span>
-                                    <span class="detail-value" id="support-tg-link">@android_tv_shop</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+    <div id="app">
 
-                    <!-- News Feed Card (Dynamic content loaded via JS) -->
-                    <div class="card news-card spatial-focus" tabindex="0">
-                        <div class="card-header">
-                            <div class="card-badge purple">Новости</div>
-                            <h2>Свежие новости</h2>
-                        </div>
-                        <div class="card-body news-content">
-                            <div class="news-list" id="news-container">
-                                <!-- Loaded dynamically -->
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Advertising / Premium Promo Card (Dynamic content loaded via JS) -->
-                    <div class="card promo-card spatial-focus" tabindex="0">
-                        <div class="card-header">
-                            <div class="card-badge gold">Рекомендуем</div>
-                            <h2 id="promo-main-title">Платное ТВ</h2>
-                        </div>
-                        <div class="card-body promo-content" id="promo-container">
-                            <!-- Loaded dynamically -->
-                        </div>
-                    </div>
-
-                </div>
-            </section>
-
-            <!-- VIEW 2: Dynamic Split-Screen Instructions View -->
-            <section id="view-instructions" class="content-view">
-                <div class="instructions-layout">
-                    <!-- Left Column: Focusable Guides list -->
-                    <div class="instructions-sidebar" id="instructions-sidebar-list">
-                        <!-- Loaded dynamically -->
-                    </div>
-                    
-                    <!-- Right Column: Step-by-Step walk-through -->
-                    <div class="instruction-details-panel">
-                        <div class="instruction-header-box" id="guide-header-container">
-                            <!-- Dynamic title & desc -->
-                        </div>
-                        <div class="steps-timeline-container" id="guide-steps-container">
-                            <!-- Dynamic timeline items -->
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- VIEW 3: Secret Admin Panel (Maximum Control Settings) -->
-            <section id="view-admin" class="content-view">
-                <div class="admin-layout">
-                    
-                    <!-- Admin Tab Switching Bar -->
-                    <div class="admin-tabs-bar">
-                        <button type="button" class="admin-tab-button active spatial-focus" id="tab-btn-general" data-tab="general" tabindex="0">Основные настройки</button>
-                        <button type="button" class="admin-tab-button spatial-focus" id="tab-btn-instructions" data-tab="instructions" tabindex="0">Настройка инструкций</button>
-                    </div>
-
-                    <!-- TAB 1: General Parameters, Promo and News -->
-                    <div id="tab-content-general" class="admin-tab-content active-tab">
-                        <div class="admin-columns-container">
-                            
-                            <!-- Column 1: Core Settings, Security, Promo -->
-                            <div class="admin-column">
-                                <div class="admin-section-card">
-                                    <h3>Основные настройки</h3>
-                                    <div class="form-group">
-                                        <label for="input-tg-url">Ссылка на Telegram канал поддержки</label>
-                                        <input type="text" id="input-tg-url" class="admin-input spatial-focus" tabindex="0" placeholder="https://t.me/...">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="input-sync-url">URL онлайн синхронизации (JSON REST API)</label>
-                                        <input type="text" id="input-sync-url" class="admin-input spatial-focus" tabindex="0" placeholder="https://api.jsonbin.io/v3/b/...">
-                                        <small class="form-help">Укажите URL БД для обновления контента на всех приставках онлайн.</small>
-                                    </div>
-                                </div>
-
-                                <div class="admin-section-card">
-                                    <h3>Безопасность</h3>
-                                    <div class="form-row">
-                                        <div class="form-group">
-                                            <label for="input-admin-pin">ПИН-код панели (4 цифры)</label>
-                                            <input type="text" id="input-admin-pin" class="admin-input spatial-focus" tabindex="0" maxlength="4" placeholder="0000">
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="input-auth-token">Токен записи (API Master Key)</label>
-                                            <input type="password" id="input-auth-token" class="admin-input spatial-focus" tabindex="0" placeholder="Вставьте токен доступа">
-                                        </div>
-                                    </div>
-                                    <small class="form-help">Токен авторизации сохраняется <b>только</b> в вашем браузере. Обычные пользователи не смогут перехватить его или изменить настройки без токена.</small>
-                                </div>
-
-                                <div class="admin-section-card">
-                                    <h3>Настройка рекламы (Платное ТВ)</h3>
-                                    <div class="form-group">
-                                        <label for="input-promo-title">Заголовок предложения</label>
-                                        <input type="text" id="input-promo-title" class="admin-input spatial-focus" tabindex="0">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="input-promo-text">Описание предложения</label>
-                                        <textarea id="input-promo-text" class="admin-input textarea spatial-focus" tabindex="0" rows="3"></textarea>
-                                    </div>
-                                    <div class="form-row">
-                                        <div class="form-group">
-                                            <label for="input-promo-price">Цена пакета</label>
-                                            <input type="text" id="input-promo-price" class="admin-input spatial-focus" tabindex="0">
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="input-promo-btn-text">Текст кнопки</label>
-                                            <input type="text" id="input-promo-btn-text" class="admin-input spatial-focus" tabindex="0">
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="input-promo-img">Ссылка на фоновое изображение баннера</label>
-                                        <input type="text" id="input-promo-img" class="admin-input spatial-focus" tabindex="0" placeholder="https://...">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Column 2: News Management & Callback Logs -->
-                            <div class="admin-column">
-                                <div class="admin-section-card news-manager-card">
-                                    <h3>Управление новостями</h3>
-                                    
-                                    <!-- Add news form -->
-                                    <div class="add-news-box">
-                                        <h4 id="news-editor-header">Добавить новую новость</h4>
-                                        <div class="form-group">
-                                            <label for="input-news-title">Заголовок новости</label>
-                                            <input type="text" id="input-news-title" class="admin-input spatial-focus" tabindex="0">
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="input-news-text">Текст новости</label>
-                                            <textarea id="input-news-text" class="admin-input textarea spatial-focus" tabindex="0" rows="2"></textarea>
-                                        </div>
-                                        <div class="form-row">
-                                            <div class="form-group">
-                                                <label for="input-news-date">Дата (например, "Сегодня, 12:00")</label>
-                                                <input type="text" id="input-news-date" class="admin-input spatial-focus" tabindex="0" placeholder="Оставьте пустым для авто-даты">
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="input-news-img">URL картинки (необязательно)</label>
-                                                <input type="text" id="input-news-img" class="admin-input spatial-focus" tabindex="0" placeholder="https://...">
-                                            </div>
-                                        </div>
-                                        <div class="form-row" style="margin-top: 10px; display: flex; gap: 10px; width: 100%;">
-                                            <button type="button" class="action-button secondary-button spatial-focus" id="btn-cancel-news-edit" tabindex="0" style="display: none; width: auto; padding: 10px 20px;">Отмена</button>
-                                            <button type="button" class="action-button spatial-focus" id="btn-add-news-item" tabindex="0">Добавить новость</button>
-                                        </div>
-                                    </div>
-
-                                    <h4 class="news-list-title">Текущие новости</h4>
-                                    <div class="admin-news-list" id="admin-news-list-container">
-                                        <!-- News list loaded dynamically -->
-                                    </div>
-                                </div>
-
-                                <div class="admin-section-card">
-                                    <h3>Заявки на подключение (Callbacks)</h3>
-                                    <div class="admin-news-list" id="admin-callbacks-container" style="max-height: 200px;">
-                                        <!-- Connection requests loaded dynamically -->
-                                    </div>
-                                </div>
-                            </div>
-                            
-                        </div>
-                    </div>
-
-                    <!-- TAB 2: Dynamic Instructions Editor (Spacious Redesigned Layout) -->
-                    <div id="tab-content-instructions" class="admin-tab-content">
-                        <div class="admin-instructions-tab-layout">
-                            
-                            <!-- Left Column: Focusable Guides Selection list -->
-                            <div class="admin-instr-sidebar">
-                                <h4 class="sidebar-title">Список инструкций</h4>
-                                <div class="admin-instr-list-wrapper" id="admin-instr-list">
-                                    <!-- Loaded dynamically -->
-                                </div>
-                                <button type="button" class="action-button spatial-focus" id="btn-admin-add-new-guide" tabindex="0">+ Новая инструкция</button>
-                            </div>
-                            
-                            <!-- Right Column: Settings & Step-by-Step constructor -->
-                            <div class="admin-instr-main-panel" id="admin-instr-edit-panel">
-                                <div class="admin-section-card">
-                                    <h3>Параметры инструкции</h3>
-                                    <div class="form-group">
-                                        <label for="input-guide-title">Заголовок инструкции (отображается на экране деталей)</label>
-                                        <input type="text" id="input-guide-title" class="admin-input spatial-focus" tabindex="0" placeholder="Например: Как настроить беспроводной интернет">
-                                    </div>
-                                    <div class="form-row">
-                                        <div class="form-group">
-                                            <label for="input-guide-button-text">Название кнопки (в левом меню пользователя)</label>
-                                            <input type="text" id="input-guide-button-text" class="admin-input spatial-focus" tabindex="0" placeholder="Например: Настройка Wi-Fi">
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="input-guide-desc">Краткое описание (в меню под кнопкой)</label>
-                                            <input type="text" id="input-guide-desc" class="admin-input spatial-focus" tabindex="0" placeholder="Краткое описание руководства">
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="admin-section-card">
-                                    <h3>Шаги инструкции</h3>
-                                    
-                                    <!-- Step Builder Form -->
-                                    <div class="add-news-box">
-                                        <h4 style="color: var(--color-purple);" id="step-builder-header">Конструктор шагов</h4>
-                                        <div class="form-group">
-                                            <label for="input-step-title">Заголовок шага (например, "Шаг 1: Нажмите Home")</label>
-                                            <input type="text" id="input-step-title" class="admin-input spatial-focus" tabindex="0">
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="input-step-text">Основной текст шага</label>
-                                            <textarea id="input-step-text" class="admin-input textarea spatial-focus" tabindex="0" rows="2"></textarea>
-                                        </div>
-                                        <div class="form-row">
-                                            <div class="form-group">
-                                                <label for="input-step-comment">Комментарий (необязательно)</label>
-                                                <input type="text" id="input-step-comment" class="admin-input spatial-focus" tabindex="0" placeholder="Совет или подсказка">
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="input-step-img">URL картинки (необязательно)</label>
-                                                <input type="text" id="input-step-img" class="admin-input spatial-focus" tabindex="0" placeholder="https://...">
-                                            </div>
-                                        </div>
-                                        <div class="form-row" style="margin-top: 10px; display: flex; gap: 10px; width: 100%;">
-                                            <button type="button" class="action-button secondary-button spatial-focus" id="btn-cancel-step-edit" tabindex="0" style="display: none; width: auto; padding: 10px 20px;">Отмена</button>
-                                            <button type="button" class="action-button spatial-focus" id="btn-add-guide-step" tabindex="0">Добавить шаг к руководству</button>
-                                        </div>
-                                    </div>
-
-                                    <h4 class="news-list-title">Шаги в текущей инструкции</h4>
-                                    <div class="admin-news-list" id="admin-steps-list-container" style="max-height: 200px;">
-                                        <!-- Dynamic list of steps -->
-                                    </div>
-                                </div>
-                                
-                                <div class="form-row" style="margin-top: 10px; display: flex; justify-content: flex-end; gap: 15px;">
-                                    <button type="button" class="action-button secondary-button danger spatial-focus" id="btn-delete-guide" tabindex="0" style="width: auto; padding: 12px 25px;">Удалить гайд</button>
-                                    <button type="button" class="action-button spatial-focus" id="btn-save-guide-meta" tabindex="0" style="width: auto; padding: 12px 25px;">Применить изменения</button>
-                                </div>
-                            </div>
-                            
-                        </div>
-                    </div>
-
-                    <!-- Sticky Bottom Controls -->
-                    <footer class="admin-footer-bar">
-                        <div class="admin-footer-status" id="admin-sync-status">Изменения не сохранены</div>
-                        <div class="admin-footer-actions">
-                            <button class="action-button secondary-button spatial-focus" id="btn-admin-reset" tabindex="0">Сбросить</button>
-                            <button class="action-button secondary-button spatial-focus" id="btn-admin-download" tabindex="0">Скачать config.json</button>
-                            <button class="action-button spatial-focus" id="btn-admin-save" tabindex="0">Сохранить и Синхронизировать</button>
-                        </div>
-                    </footer>
-                </div>
-            </section>
-
-        </main>
     </div>
 
-    <!-- Fullscreen PIN-code Authorization Overlay for TV D-pad friendly usage -->
-    <div id="admin-auth-overlay" class="auth-overlay">
-        <div class="auth-card">
-            <div class="auth-lock-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                </svg>
-            </div>
-            <h2>Вход в настройки</h2>
-            <p class="auth-desc">Введите ПИН-код для доступа к админ-панели</p>
-            
-            <div class="pin-display">
-                <div class="pin-dot"></div>
-                <div class="pin-dot"></div>
-                <div class="pin-dot"></div>
-                <div class="pin-dot"></div>
-            </div>
-            
-            <div class="pin-keyboard">
-                <button class="pin-key spatial-focus" tabindex="0" data-val="1">1</button>
-                <button class="pin-key spatial-focus" tabindex="0" data-val="2">2</button>
-                <button class="pin-key spatial-focus" tabindex="0" data-val="3">3</button>
-                
-                <button class="pin-key spatial-focus" tabindex="0" data-val="4">4</button>
-                <button class="pin-key spatial-focus" tabindex="0" data-val="5">5</button>
-                <button class="pin-key spatial-focus" tabindex="0" data-val="6">6</button>
-                
-                <button class="pin-key spatial-focus" tabindex="0" data-val="7">7</button>
-                <button class="pin-key spatial-focus" tabindex="0" data-val="8">8</button>
-                <button class="pin-key spatial-focus" tabindex="0" data-val="9">9</button>
-                
-                <button class="pin-key control spatial-focus" tabindex="0" data-val="clear">C</button>
-                <button class="pin-key spatial-focus" tabindex="0" data-val="0">0</button>
-                <button class="pin-key control danger spatial-focus" tabindex="0" data-val="cancel">Esc</button>
-            </div>
-        </div>
+    <div class="no-network hide">
+        <div class="no-network__title">Ошибка</div>
+        <div class="no-network__desc">Не удалось загрузить файл: <span class="no-network__file"></span></div>
     </div>
+    
+    <script src="./webos/webOSTV.js"></script>
+    <script src="./vender/jquery/jquery.js"></script>
+    <script src="./vender/notify/notify.js"></script>
+    <script src="./vender/scrollbar/jquery.scrollbar.js"></script>
+    <script src="./vender/navigator/navigator.js"></script>
+    <script src="./vender/keypad/keypad.js"></script>
 
-    <!-- Fullscreen Connection Request Phone Input Overlay (TV D-pad friendly) -->
-    <div id="promo-phone-overlay" class="auth-overlay">
-        <div class="auth-card phone-auth-card">
-            <div class="auth-lock-icon phone-icon-box">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
-                </svg>
-            </div>
-            <h2>Заявка на подключение</h2>
-            <p class="auth-desc">Введите ваш номер телефона для связи с оператором</p>
+    <script>
+        var lampa_url     = '';
+        var cache_version = Math.floor((new Date()).getTime() / 9e5); // Новое значение каждые 15 минут
             
-            <div class="phone-display-container">
-                <span id="phone-number-display">+7 (___) ___-__-__</span>
-            </div>
-            
-            <div class="pin-keyboard">
-                <button class="pin-key spatial-focus" tabindex="0" data-phone-val="1">1</button>
-                <button class="pin-key spatial-focus" tabindex="0" data-phone-val="2">2</button>
-                <button class="pin-key spatial-focus" tabindex="0" data-phone-val="3">3</button>
-                
-                <button class="pin-key spatial-focus" tabindex="0" data-phone-val="4">4</button>
-                <button class="pin-key spatial-focus" tabindex="0" data-phone-val="5">5</button>
-                <button class="pin-key spatial-focus" tabindex="0" data-phone-val="6">6</button>
-                
-                <button class="pin-key spatial-focus" tabindex="0" data-phone-val="7">7</button>
-                <button class="pin-key spatial-focus" tabindex="0" data-phone-val="8">8</button>
-                <button class="pin-key spatial-focus" tabindex="0" data-phone-val="9">9</button>
-                
-                <button class="pin-key control spatial-focus" tabindex="0" data-phone-val="backspace">⌫</button>
-                <button class="pin-key spatial-focus" tabindex="0" data-phone-val="0">0</button>
-                <button class="pin-key control danger spatial-focus" tabindex="0" data-phone-val="cancel">Esc</button>
-            </div>
-            <button class="action-button spatial-focus" tabindex="0" id="btn-submit-phone" style="margin-top: 5px;">Отправить заявку</button>
-        </div>
-    </div>
+        function urlJoin(base, add) {
+            if (base.charAt(base.length - 1) !== '/') {
+                base += '/'
+            }
 
-    <!-- Notification system for TV interactions -->
-    <div id="toast-notification" class="toast">
-        <span id="toast-message">Сообщение</span>
-    </div>
+            return base + add
+        }
 
-    <script src="app.js"></script>
+        function putScript(scripts, onload, onerror){
+            var add = function(src){
+                console.log('Loader', 'try-load-script', src)
+
+                var trys = 0
+
+                var sreateScript = function(){
+                    var script = document.createElement('script')
+
+                    script.type = 'text/javascript'
+
+                    script.onload = script.onreadystatechange = function(e) {
+                        console.log('Loader', 'Script loaded', e)
+
+                        if (!!onload) onload()
+                    };
+
+                    script.onerror = function(){
+                        trys++
+
+                        console.log('Loader', 'error-load-script', src)
+
+                        if(trys < 3){
+                            sreateScript()
+                        } else if (!!onerror) {
+                            onerror()
+                        } else{
+                            $('.no-network').removeClass('hide')
+
+                            $('.no-network__file').text(window.location.href + '/' + src)
+                        }
+                    }
+
+                    script.src = src
+
+                    document.getElementsByTagName('body')[0].appendChild(script)
+                }
+
+                sreateScript()
+            }
+
+            add(scripts)
+        }
+
+        function loadCurrentLampa() {
+            putScript('app.min.js?v=' + cache_version, function () {})
+        }
+
+        function loadLocalLampa(){
+            if(lampa_url !== '') window.local_lampa = true
+
+            loadCurrentLampa()
+        }
+
+        if (typeof AndroidJS !== "undefined"
+            && !!AndroidJS.getLampaURL
+            && /^https?:\/\//i.test(AndroidJS.getLampaURL())
+            && !/^https?:\/\//i.test(location.href)
+        ) {
+            lampa_url = urlJoin(AndroidJS.getLampaURL(),'')
+        }
+
+        if (lampa_url !== '') {
+            putScript(
+                urlJoin(lampa_url, 'lampainit.js?v=' + cache_version),
+                false,
+                function(){}
+            )
+
+            putScript(
+                urlJoin(lampa_url, 'app.min.js?v=' + cache_version),
+                function () {
+                    var css = urlJoin(lampa_url, 'css/app.css?v=' + cache_version)
+
+                    $('head').append('<link rel="stylesheet" href="' + css + '">')
+                },
+                function () {
+                    putScript(
+                        urlJoin(lampa_url, 'lampa-main/app.min.js?v=' + cache_version),
+                        function () {
+                            var css = urlJoin(lampa_url, 'lampa-main/css/app.css?v=' + cache_version)
+
+                            $('head').append('<link rel="stylesheet" href="' + css + '">')
+
+                            putScript(
+                                urlJoin(lampa_url, 'lampainit.js?v=' + cache_version),
+                                false,
+                                function(){}
+                            )
+                        },
+                        loadLocalLampa
+                    )
+                }
+            )
+        }
+        else{
+            loadCurrentLampa()
+        }
+    </script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"3b6126c7aaa4457490ce2909c0aadf0d","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 </body>
 </html>
