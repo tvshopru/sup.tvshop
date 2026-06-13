@@ -752,7 +752,6 @@ document.addEventListener('DOMContentLoaded', () => {
         populateAdminGuideFields();
     }
 
-    function renderAdminNewsList() {
     let editingNewsId = null;
     const newsEditorHeader = document.getElementById('news-editor-header');
     const btnCancelNewsEdit = document.getElementById('btn-cancel-news-edit');
