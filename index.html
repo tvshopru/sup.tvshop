@@ -215,7 +215,7 @@
                                     
                                     <!-- Add news form -->
                                     <div class="add-news-box">
-                                        <h4>Добавить новую новость</h4>
+                                        <h4 id="news-editor-header">Добавить новую новость</h4>
                                         <div class="form-group">
                                             <label for="input-news-title">Заголовок новости</label>
                                             <input type="text" id="input-news-title" class="admin-input spatial-focus" tabindex="0">
@@ -234,7 +234,10 @@
                                                 <input type="text" id="input-news-img" class="admin-input spatial-focus" tabindex="0" placeholder="https://...">
                                             </div>
                                         </div>
-                                        <button type="button" class="action-button spatial-focus" id="btn-add-news-item" tabindex="0">Добавить новость</button>
+                                        <div class="form-row" style="margin-top: 10px; display: flex; gap: 10px; width: 100%;">
+                                            <button type="button" class="action-button secondary-button spatial-focus" id="btn-cancel-news-edit" tabindex="0" style="display: none; width: auto; padding: 10px 20px;">Отмена</button>
+                                            <button type="button" class="action-button spatial-focus" id="btn-add-news-item" tabindex="0">Добавить новость</button>
+                                        </div>
                                     </div>
 
                                     <h4 class="news-list-title">Текущие новости</h4>
@@ -292,7 +295,7 @@
                                     
                                     <!-- Step Builder Form -->
                                     <div class="add-news-box">
-                                        <h4 style="color: var(--color-purple);">Конструктор шагов</h4>
+                                        <h4 style="color: var(--color-purple);" id="step-builder-header">Конструктор шагов</h4>
                                         <div class="form-group">
                                             <label for="input-step-title">Заголовок шага (например, "Шаг 1: Нажмите Home")</label>
                                             <input type="text" id="input-step-title" class="admin-input spatial-focus" tabindex="0">
@@ -311,7 +314,10 @@
                                                 <input type="text" id="input-step-img" class="admin-input spatial-focus" tabindex="0" placeholder="https://...">
                                             </div>
                                         </div>
-                                        <button type="button" class="action-button spatial-focus" id="btn-add-guide-step" tabindex="0">Добавить шаг к руководству</button>
+                                        <div class="form-row" style="margin-top: 10px; display: flex; gap: 10px; width: 100%;">
+                                            <button type="button" class="action-button secondary-button spatial-focus" id="btn-cancel-step-edit" tabindex="0" style="display: none; width: auto; padding: 10px 20px;">Отмена</button>
+                                            <button type="button" class="action-button spatial-focus" id="btn-add-guide-step" tabindex="0">Добавить шаг к руководству</button>
+                                        </div>
                                     </div>
 
                                     <h4 class="news-list-title">Шаги в текущей инструкции</h4>

@@ -753,6 +753,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function renderAdminNewsList() {
+    let editingNewsId = null;
+    const newsEditorHeader = document.getElementById('news-editor-header');
+    const btnCancelNewsEdit = document.getElementById('btn-cancel-news-edit');
+
+    function renderAdminNewsList() {
         adminNewsContainer.innerHTML = '';
         
         if (!currentConfig.news || currentConfig.news.length === 0) {
@@ -764,28 +769,82 @@ document.addEventListener('DOMContentLoaded', () => {
             const row = document.createElement('div');
             row.className = 'admin-news-item-row';
             row.innerHTML = `
-                <span class="admin-news-item-title">${escapeHtml(item.title)}</span>
-                <button type="button" class="btn-delete-news spatial-focus" tabindex="0" data-id="${item.id}" title="Удалить">
-                    <svg class="delete-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <polyline points="3 6 5 6 21 6"></polyline>
-                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                    </svg>
-                </button>
+                <span class="admin-news-item-title" style="max-width: 150px;">${escapeHtml(item.title)}</span>
+                <div style="display: flex; gap: 6px;">
+                    <button type="button" class="btn-delete-news btn-edit-news spatial-focus" tabindex="0" data-id="${item.id}" title="Редактировать">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px; height:14px;">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                    </button>
+                    <button type="button" class="btn-delete-news spatial-focus" tabindex="0" data-id="${item.id}" title="Удалить">
+                        <svg class="delete-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        </svg>
+                    </button>
+                </div>
             `;
             adminNewsContainer.appendChild(row);
         });
 
-        adminNewsContainer.querySelectorAll('.btn-delete-news').forEach(btn => {
+        adminNewsContainer.querySelectorAll('.btn-delete-news[data-id]:not(.btn-edit-news)').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.stopPropagation();
                 const id = btn.getAttribute('data-id');
                 deleteNewsItem(id);
             });
         });
+
+        adminNewsContainer.querySelectorAll('.btn-edit-news').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const id = btn.getAttribute('data-id');
+                startEditingNews(id);
+            });
+        });
     }
 
+    function startEditingNews(id) {
+        const item = currentConfig.news.find(n => String(n.id) === String(id));
+        if (!item) return;
+
+        editingNewsId = id;
+        inputNewsTitle.value = item.title || '';
+        inputNewsText.value = item.text || '';
+        inputNewsDate.value = item.date || '';
+        inputNewsImg.value = item.imageUrl || '';
+
+        newsEditorHeader.textContent = 'Редактировать новость';
+        btnAddNewsItem.textContent = 'Сохранить изменения';
+        btnCancelNewsEdit.style.display = 'block';
+        playTickSound();
+        inputNewsTitle.focus();
+    }
+
+    function resetNewsForm() {
+        editingNewsId = null;
+        inputNewsTitle.value = '';
+        inputNewsText.value = '';
+        inputNewsDate.value = '';
+        inputNewsImg.value = '';
+
+        newsEditorHeader.textContent = 'Добавить новую новость';
+        btnAddNewsItem.textContent = 'Добавить новость';
+        btnCancelNewsEdit.style.display = 'none';
+    }
+
+    btnCancelNewsEdit.addEventListener('click', (e) => {
+        e.stopPropagation();
+        resetNewsForm();
+        playTickSound();
+    });
+
     function deleteNewsItem(id) {
-        currentConfig.news = currentConfig.news.filter(item => item.id !== id);
+        if (editingNewsId && String(editingNewsId) === String(id)) {
+            resetNewsForm();
+        }
+        currentConfig.news = currentConfig.news.filter(item => String(item.id) !== String(id));
         renderAdminNewsList();
         syncStatusText.textContent = 'Изменения не сохранены *';
         syncStatusText.classList.add('error');
@@ -809,25 +868,38 @@ document.addEventListener('DOMContentLoaded', () => {
             date = `${now.getDate()} ${months[now.getMonth()]}, ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
         }
 
-        const newItem = {
-            id: String(Date.now()),
-            title,
-            text,
-            date,
-            imageUrl
-        };
-
-        currentConfig.news.unshift(newItem);
-        
-        inputNewsTitle.value = '';
-        inputNewsText.value = '';
-        inputNewsDate.value = '';
-        inputNewsImg.value = '';
+        if (editingNewsId) {
+            // Update existing news
+            const item = currentConfig.news.find(n => String(n.id) === String(editingNewsId));
+            if (item) {
+                item.title = title;
+                item.text = text;
+                item.date = date;
+                item.imageUrl = imageUrl;
+                showToast('Новость обновлена!');
+            }
+            resetNewsForm();
+        } else {
+            // Add new news
+            const newItem = {
+                id: String(Date.now()),
+                title,
+                text,
+                date,
+                imageUrl
+            };
+            currentConfig.news.unshift(newItem);
+            showToast('Новость успешно добавлена в список!');
+            
+            inputNewsTitle.value = '';
+            inputNewsText.value = '';
+            inputNewsDate.value = '';
+            inputNewsImg.value = '';
+        }
 
         renderAdminNewsList();
         syncStatusText.textContent = 'Изменения не сохранены *';
         syncStatusText.classList.add('error');
-        showToast('Новость успешно добавлена в список!');
     });
 
     btnAdminSave.addEventListener('click', async () => {
@@ -1254,6 +1326,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let adminActiveGuideId = null;
     let adminActiveSteps = [];
+    let editingStepId = null;
+    
+    const stepBuilderHeader = document.getElementById('step-builder-header');
+    const btnCancelStepEdit = document.getElementById('btn-cancel-step-edit');
 
     function populateAdminGuidesList() {
         adminInstrList.innerHTML = '';
@@ -1327,12 +1403,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
         
-        // Clear step builder inputs
-        inputStepTitle.value = '';
-        inputStepText.value = '';
-        inputStepComment.value = '';
-        inputStepImg.value = '';
-
+        resetStepForm();
         renderAdminStepsList();
         populateAdminGuidesList(); // Update button list highlight & labels
     }
@@ -1349,15 +1420,21 @@ document.addEventListener('DOMContentLoaded', () => {
             const row = document.createElement('div');
             row.className = 'admin-news-item-row';
             row.innerHTML = `
-                <span class="admin-news-item-title" style="max-width: 170px;" title="${escapeHtml(step.title)}">${escapeHtml(step.title || ('Шаг ' + (index + 1)))}</span>
-                <div style="display: flex; gap: 6px;">
+                <span class="admin-news-item-title" style="max-width: 125px;" title="${escapeHtml(step.title)}">${escapeHtml(step.title || ('Шаг ' + (index + 1)))}</span>
+                <div style="display: flex; gap: 5px;">
+                    <button type="button" class="btn-delete-news btn-edit-step spatial-focus" tabindex="0" data-id="${step.id}" title="Редактировать">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px; height:12px;">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                    </button>
                     <button type="button" class="btn-delete-news btn-move-step spatial-focus" tabindex="0" data-index="${index}" data-dir="up" title="Вверх" ${index === 0 ? 'disabled style="opacity:0.3; pointer-events:none;"' : ''}>
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px; height:14px;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px; height:12px;">
                             <polyline points="18 15 12 9 6 15"></polyline>
                         </svg>
                     </button>
                     <button type="button" class="btn-delete-news btn-move-step spatial-focus" tabindex="0" data-index="${index}" data-dir="down" title="Вниз" ${index === adminActiveSteps.length - 1 ? 'disabled style="opacity:0.3; pointer-events:none;"' : ''}>
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px; height:14px;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px; height:12px;">
                             <polyline points="6 9 12 15 18 9"></polyline>
                         </svg>
                     </button>
@@ -1373,13 +1450,19 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         // Add event listeners for delete and reorder buttons
-        adminStepsContainer.querySelectorAll('.btn-delete-news[data-id]').forEach(btn => {
+        adminStepsContainer.querySelectorAll('.btn-delete-news[data-id]:not(.btn-edit-step)').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.stopPropagation();
                 const id = btn.getAttribute('data-id');
-                adminActiveSteps = adminActiveSteps.filter(s => s.id !== id);
-                renderAdminStepsList();
-                showToast('Шаг удален');
+                deleteStepItem(id);
+            });
+        });
+
+        adminStepsContainer.querySelectorAll('.btn-edit-step').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const id = btn.getAttribute('data-id');
+                startEditingStep(id);
             });
         });
 
@@ -1405,6 +1488,52 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    function startEditingStep(id) {
+        const step = adminActiveSteps.find(s => String(s.id) === String(id));
+        if (!step) return;
+
+        editingStepId = id;
+        inputStepTitle.value = step.title || '';
+        inputStepText.value = step.text || '';
+        inputStepComment.value = step.comment || '';
+        inputStepImg.value = step.imageUrl || '';
+
+        stepBuilderHeader.textContent = 'Редактировать шаг';
+        stepBuilderHeader.style.color = 'var(--color-cyan)';
+        btnAddGuideStep.textContent = 'Сохранить изменения шага';
+        btnCancelStepEdit.style.display = 'block';
+        playTickSound();
+        inputStepTitle.focus();
+    }
+
+    function resetStepForm() {
+        editingStepId = null;
+        inputStepTitle.value = '';
+        inputStepText.value = '';
+        inputStepComment.value = '';
+        inputStepImg.value = '';
+
+        stepBuilderHeader.textContent = 'Конструктор шагов';
+        stepBuilderHeader.style.color = 'var(--color-purple)';
+        btnAddGuideStep.textContent = 'Добавить шаг к руководству';
+        btnCancelStepEdit.style.display = 'none';
+    }
+
+    btnCancelStepEdit.addEventListener('click', (e) => {
+        e.stopPropagation();
+        resetStepForm();
+        playTickSound();
+    });
+
+    function deleteStepItem(id) {
+        if (editingStepId && String(editingStepId) === String(id)) {
+            resetStepForm();
+        }
+        adminActiveSteps = adminActiveSteps.filter(s => String(s.id) !== String(id));
+        renderAdminStepsList();
+        showToast('Шаг удален');
+    }
+
     // Add new guide sidebar button
     btnAdminAddNewGuide.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -1427,24 +1556,38 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        const newStep = {
-            id: 'step-' + Date.now(),
-            title,
-            text,
-            comment,
-            imageUrl
-        };
+        if (editingStepId) {
+            // Update existing step
+            const step = adminActiveSteps.find(s => String(s.id) === String(editingStepId));
+            if (step) {
+                step.title = title;
+                step.text = text;
+                step.comment = comment;
+                step.imageUrl = imageUrl;
+                showToast('Шаг изменен!');
+            }
+            resetStepForm();
+        } else {
+            // Add new step
+            const newStep = {
+                id: 'step-' + Date.now(),
+                title,
+                text,
+                comment,
+                imageUrl
+            };
 
-        adminActiveSteps.push(newStep);
-        
-        inputStepTitle.value = '';
-        inputStepText.value = '';
-        inputStepComment.value = '';
-        inputStepImg.value = '';
+            adminActiveSteps.push(newStep);
+            showToast('Шаг успешно добавлен к руководству!');
+            
+            inputStepTitle.value = '';
+            inputStepText.value = '';
+            inputStepComment.value = '';
+            inputStepImg.value = '';
+        }
 
         renderAdminStepsList();
         playTickSound();
-        showToast('Шаг успешно добавлен к руководству!');
     });
 
     // Delete guide handler
