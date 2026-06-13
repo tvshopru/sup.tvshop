@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TV SHOP - Техническая Поддержка</title>
+    <!-- Importing modern Outfit and Montserrat fonts from Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Main App Container designed for 16:9 TV screens -->
+    <div class="app-container">
+        
+        <!-- Sidebar Navigation (Classic TV Layout) -->
+        <aside class="sidebar">
+            <div class="logo-container">
+                <img src="app_logo.png" alt="TV SHOP Logo" class="app-logo">
+                <span class="brand-name">TV SHOP</span>
+            </div>
+            
+            <nav class="nav-menu">
+                <button class="nav-button active spatial-focus" id="nav-home" tabindex="0">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                    </svg>
+                    <span>Главная</span>
+                </button>
+                <button class="nav-button spatial-focus" id="nav-instructions" tabindex="0">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                    </svg>
+                    <span>Инструкции</span>
+                </button>
+                <!-- Admin button hidden by default, visible only via secret URL parameter -->
+                <button class="nav-button spatial-focus" id="nav-admin" tabindex="0" style="display: none;">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                    </svg>
+                    <span>Настройки</span>
+                </button>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <div class="status-indicator">
+                    <span class="status-dot"></span>
+                    <span>Система онлайн</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Wrapper -->
+        <main class="content-area">
+            
+            <!-- Top bar with Page Title and Live Clock -->
+            <header class="top-bar">
+                <h1 id="page-title">Панель поддержки</h1>
+                <div class="clock-widget" id="live-clock">21:45:00</div>
+            </header>
+
+            <!-- VIEW 1: Dashboard (Home) -->
+            <section id="view-dashboard" class="content-view active">
+                <div class="dashboard-grid">
+                    
+                    <!-- Tech Support & QR Code Card -->
+                    <div class="card support-card spatial-focus" tabindex="0" id="card-support-container">
+                        <div class="card-header">
+                            <div class="card-badge">TG Поддержка</div>
+                            <h2>Техподдержка</h2>
+                        </div>
+                        <div class="card-body support-content">
+                            <p class="support-desc">Сканируйте QR-код для перехода в наш Telegram-канал поддержки.</p>
+                            
+                            <div class="qr-wrapper">
+                                <img src="" alt="Telegram QR Code" class="qr-image" id="support-qr-img">
+                                <div class="qr-scanner-overlay"></div>
+                            </div>
+                            
+                            <div class="support-details">
+                                <div class="detail-item">
+                                    <span class="detail-label">Адрес канала:</span>
+                                    <span class="detail-value" id="support-tg-link">@android_tv_shop</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- News Feed Card (Dynamic content loaded via JS) -->
+                    <div class="card news-card spatial-focus" tabindex="0">
+                        <div class="card-header">
+                            <div class="card-badge purple">Новости</div>
+                            <h2>Свежие новости</h2>
+                        </div>
+                        <div class="card-body news-content">
+                            <div class="news-list" id="news-container">
+                                <!-- Loaded dynamically -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Advertising / Premium Promo Card (Dynamic content loaded via JS) -->
+                    <div class="card promo-card spatial-focus" tabindex="0">
+                        <div class="card-header">
+                            <div class="card-badge gold">Рекомендуем</div>
+                            <h2 id="promo-main-title">Платное ТВ</h2>
+                        </div>
+                        <div class="card-body promo-content" id="promo-container">
+                            <!-- Loaded dynamically -->
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- VIEW 2: Instructions (In Development) -->
+            <section id="view-instructions" class="content-view">
+                <div class="dev-container">
+                    <div class="dev-card spatial-focus" tabindex="0">
+                        <div class="dev-icon-wrapper">
+                            <svg class="dev-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                                <path d="M2 12h20"></path>
+                                <circle cx="12" cy="12" r="3" fill="currentColor"></circle>
+                            </svg>
+                        </div>
+                        <h2 class="dev-title">Раздел в разработке</h2>
+                        <p class="dev-subtitle">Мы усердно работаем над подготовкой подробных инструкций по настройке и использованию оборудования TV SHOP.</p>
+                        <p class="dev-notice">Инструкции появятся в следующем обновлении системы.</p>
+                        <button class="action-button secondary-button spatial-focus" tabindex="0" id="btn-back-home">
+                            Вернуться на главную
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW 3: Secret Admin Panel (Maximum Control Settings) -->
+            <section id="view-admin" class="content-view">
+                <div class="admin-layout">
+                    <div class="admin-columns-container">
+                        
+                        <!-- Column 1: Core Settings & Promo Settings -->
+                        <div class="admin-column">
+                            <div class="admin-section-card">
+                                <h3>Основные настройки</h3>
+                                <div class="form-group">
+                                    <label for="input-tg-url">Ссылка на Telegram канал поддержки</label>
+                                    <input type="text" id="input-tg-url" class="admin-input spatial-focus" tabindex="0" placeholder="https://t.me/...">
+                                </div>
+                                <div class="form-group">
+                                    <label for="input-sync-url">URL онлайн синхронизации (JSON REST API)</label>
+                                    <input type="text" id="input-sync-url" class="admin-input spatial-focus" tabindex="0" placeholder="https://api.jsonbin.io/v3/b/...">
+                                    <small class="form-help">Укажите URL БД для обновления контента на всех приставках онлайн.</small>
+                                </div>
+                            </div>
+
+                            <div class="admin-section-card">
+                                <h3>Безопасность</h3>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="input-admin-pin">ПИН-код панели (4 цифры)</label>
+                                        <input type="text" id="input-admin-pin" class="admin-input spatial-focus" tabindex="0" maxlength="4" placeholder="0000">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="input-auth-token">Токен записи (API Master Key)</label>
+                                        <input type="password" id="input-auth-token" class="admin-input spatial-focus" tabindex="0" placeholder="Вставьте токен доступа">
+                                    </div>
+                                </div>
+                                <small class="form-help">Токен авторизации сохраняется <b>только</b> в вашем браузере. Обычные пользователи не смогут перехватить его или изменить настройки без токена.</small>
+                            </div>
+
+                            <div class="admin-section-card">
+                                <h3>Настройка рекламы (Платное ТВ)</h3>
+                                <div class="form-group">
+                                    <label for="input-promo-title">Заголовок предложения</label>
+                                    <input type="text" id="input-promo-title" class="admin-input spatial-focus" tabindex="0">
+                                </div>
+                                <div class="form-group">
+                                    <label for="input-promo-text">Описание предложения</label>
+                                    <textarea id="input-promo-text" class="admin-input textarea spatial-focus" tabindex="0" rows="3"></textarea>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="input-promo-price">Цена пакета</label>
+                                        <input type="text" id="input-promo-price" class="admin-input spatial-focus" tabindex="0">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="input-promo-btn-text">Текст кнопки</label>
+                                        <input type="text" id="input-promo-btn-text" class="admin-input spatial-focus" tabindex="0">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="input-promo-img">Ссылка на фоновое изображение баннера</label>
+                                    <input type="text" id="input-promo-img" class="admin-input spatial-focus" tabindex="0" placeholder="https://...">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Column 2: News Management (Add/Delete list) -->
+                        <div class="admin-column">
+                            <div class="admin-section-card news-manager-card">
+                                <h3>Управление новостями</h3>
+                                
+                                <!-- Add news form -->
+                                <div class="add-news-box">
+                                    <h4>Добавить новую новость</h4>
+                                    <div class="form-group">
+                                        <label for="input-news-title">Заголовок новости</label>
+                                        <input type="text" id="input-news-title" class="admin-input spatial-focus" tabindex="0">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="input-news-text">Текст новости</label>
+                                        <textarea id="input-news-text" class="admin-input textarea spatial-focus" tabindex="0" rows="2"></textarea>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="input-news-date">Дата (например, "Сегодня, 12:00")</label>
+                                            <input type="text" id="input-news-date" class="admin-input spatial-focus" tabindex="0" placeholder="Оставьте пустым для авто-даты">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="input-news-img">URL картинки (необязательно)</label>
+                                            <input type="text" id="input-news-img" class="admin-input spatial-focus" tabindex="0" placeholder="https://...">
+                                        </div>
+                                    </div>
+                                    <button type="button" class="action-button spatial-focus" id="btn-add-news-item" tabindex="0">Добавить новость</button>
+                                </div>
+
+                                <h4 class="news-list-title">Текущие новости</h4>
+                                <div class="admin-news-list" id="admin-news-list-container">
+                                    <!-- News list with delete actions loaded dynamically -->
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+
+                    <!-- Sticky Bottom Controls -->
+                    <footer class="admin-footer-bar">
+                        <div class="admin-footer-status" id="admin-sync-status">Изменения не сохранены</div>
+                        <div class="admin-footer-actions">
+                            <button class="action-button secondary-button spatial-focus" id="btn-admin-reset" tabindex="0">Сбросить</button>
+                            <button class="action-button secondary-button spatial-focus" id="btn-admin-download" tabindex="0">Скачать config.json</button>
+                            <button class="action-button spatial-focus" id="btn-admin-save" tabindex="0">Сохранить и Синхронизировать</button>
+                        </div>
+                    </footer>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Fullscreen PIN-code Authorization Overlay for TV D-pad friendly usage -->
+    <div id="admin-auth-overlay" class="auth-overlay">
+        <div class="auth-card">
+            <div class="auth-lock-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+            </div>
+            <h2>Вход в настройки</h2>
+            <p class="auth-desc">Введите ПИН-код для доступа к админ-панели</p>
+            
+            <!-- Hidden real input and visible dot indicators -->
+            <div class="pin-display">
+                <div class="pin-dot"></div>
+                <div class="pin-dot"></div>
+                <div class="pin-dot"></div>
+                <div class="pin-dot"></div>
+            </div>
+            
+            <!-- Virtual TV D-pad keypad -->
+            <div class="pin-keyboard">
+                <button class="pin-key spatial-focus" tabindex="0" data-val="1">1</button>
+                <button class="pin-key spatial-focus" tabindex="0" data-val="2">2</button>
+                <button class="pin-key spatial-focus" tabindex="0" data-val="3">3</button>
+                
+                <button class="pin-key spatial-focus" tabindex="0" data-val="4">4</button>
+                <button class="pin-key spatial-focus" tabindex="0" data-val="5">5</button>
+                <button class="pin-key spatial-focus" tabindex="0" data-val="6">6</button>
+                
+                <button class="pin-key spatial-focus" tabindex="0" data-val="7">7</button>
+                <button class="pin-key spatial-focus" tabindex="0" data-val="8">8</button>
+                <button class="pin-key spatial-focus" tabindex="0" data-val="9">9</button>
+                
+                <button class="pin-key control spatial-focus" tabindex="0" data-val="clear" title="Сбросить">C</button>
+                <button class="pin-key spatial-focus" tabindex="0" data-val="0">0</button>
+                <button class="pin-key control danger spatial-focus" tabindex="0" data-val="cancel" title="Отмена">Esc</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification system for TV interactions -->
+    <div id="toast-notification" class="toast">
+        <span id="toast-message">Сообщение</span>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
