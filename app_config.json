@@ -1,0 +1,13 @@
+{
+  "telegramUrl": "https://t.me/android_tv_shop",
+  "latestVersionCode": 2,
+  "apkUrl": "https://github.com/user/repo/releases/download/v2/app.apk",
+  "instructions": [
+    {
+      "id": 1,
+      "title": "Как пользоваться",
+      "description": "Краткое описание текстом...",
+      "imageUrl": "https://твой-сайт.рф/image1.png"
+    }
+  ]
+}
