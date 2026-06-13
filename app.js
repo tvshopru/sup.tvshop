@@ -37,6 +37,43 @@ document.addEventListener('DOMContentLoaded', () => {
                 text: "15 июня с 03:00 до 05:00 МСК будут проводиться профилактические работы. Возможны прерывания вещания.",
                 imageUrl: ""
             }
+        ],
+        instructions: [
+            {
+                id: "wifi-setup-default",
+                title: "Подключение Wi-Fi на приставке",
+                description: "Пошаговое руководство по настройке беспроводного интернета для стабильного вещания TV SHOP.",
+                steps: [
+                    {
+                        id: "wifi-step-1",
+                        title: "Шаг 1: Перейдите в настройки",
+                        text: "Нажмите кнопку со значком «Дом» (Home) на пульте приставки, перейдите в правый верхний угол экрана и нажмите на иконку «Шестеренка» (Настройки).",
+                        comment: "Если пульт не реагирует на нажатия, проверьте батарейки.",
+                        imageUrl: "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&w=600&q=80"
+                    },
+                    {
+                        id: "wifi-step-2",
+                        title: "Шаг 2: Выберите раздел Сеть",
+                        text: "В открывшемся списке настроек найдите пункт «Сеть и Интернет» (Network & Internet) и нажмите кнопку ОК на пульте.",
+                        comment: "В некоторых версиях прошивок пункт может называться просто Wi-Fi.",
+                        imageUrl: "https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=600&q=80"
+                    },
+                    {
+                        id: "wifi-step-3",
+                        title: "Шаг 3: Выберите вашу Wi-Fi сеть",
+                        text: "Включите Wi-Fi переключатель, если он выключен. Найдите имя вашей домашней беспроводной сети в списке доступных и нажмите ОК.",
+                        comment: "Убедитесь, что ваш роутер находится не слишком далеко от приставки.",
+                        imageUrl: ""
+                    },
+                    {
+                        id: "wifi-step-4",
+                        title: "Шаг 4: Введите пароль",
+                        text: "С помощью виртуальной клавиатуры введите пароль от вашей сети Wi-Fi и нажмите на кнопку со стрелкой (Готово) на экране.",
+                        comment: "Соблюдайте регистр букв в пароле (заглавные и строчные буквы различаются).",
+                        imageUrl: ""
+                    }
+                ]
+            }
         ]
     };
 
@@ -179,6 +216,10 @@ document.addEventListener('DOMContentLoaded', () => {
             await fetchFromRemoteSync(currentConfig.remoteSyncUrl);
         }
 
+        if (!currentConfig.instructions) {
+            currentConfig.instructions = JSON.parse(JSON.stringify(DEFAULT_CONFIG.instructions || []));
+        }
+
         renderAllViews();
         checkAdminMode();
     }
@@ -256,6 +297,7 @@ document.addEventListener('DOMContentLoaded', () => {
         renderSupport();
         renderNews();
         renderPromo();
+        renderInstructions();
         renderAdminNewsList();
         renderAdminCallbacksList();
     }
@@ -436,8 +478,11 @@ document.addEventListener('DOMContentLoaded', () => {
             viewInstructions.classList.add('active');
             navInstructions.classList.add('active');
             pageTitle.textContent = 'Инструкции';
-            const devCard = viewInstructions.querySelector('.dev-card');
-            setTimeout(() => devCard.focus(), 50);
+            renderInstructions();
+            const firstGuide = sidebarList.querySelector('.guide-item');
+            if (firstGuide) {
+                setTimeout(() => firstGuide.focus(), 50);
+            }
         } else if (viewName === 'admin') {
             viewAdmin.classList.add('active');
             navAdmin.classList.add('active');
@@ -702,6 +747,8 @@ document.addEventListener('DOMContentLoaded', () => {
         syncStatusText.className = 'admin-footer-status';
         renderAdminNewsList();
         renderAdminCallbacksList();
+        populateAdminGuidesDropdown();
+        populateAdminGuideFields();
     }
 
     function renderAdminNewsList() {
@@ -937,7 +984,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const isPhoneActive = phoneOverlay.classList.contains('active');
         
         let focusableElements = Array.from(document.querySelectorAll('.spatial-focus')).filter(el => {
-            return el.offsetParent !== null && window.getComputedStyle(el).display !== 'none';
+            return el.offsetParent !== null && 
+                   window.getComputedStyle(el).display !== 'none' &&
+                   !el.hasAttribute('disabled');
         });
 
         if (isAuthActive) {
@@ -1027,6 +1076,383 @@ document.addEventListener('DOMContentLoaded', () => {
             .replace(/"/g, "&quot;")
             .replace(/'/g, "&#039;");
     }
+
+    // ----------------------------------------------------
+    // Instructions View Rendering (Client Side)
+    // ----------------------------------------------------
+    const sidebarList = document.getElementById('instructions-sidebar-list');
+    const stepsContainer = document.getElementById('guide-steps-container');
+    const headerContainer = document.getElementById('guide-header-container');
+    let activeGuideId = null;
+
+    function renderInstructions() {
+        if (!currentConfig.instructions) {
+            currentConfig.instructions = [];
+        }
+        
+        sidebarList.innerHTML = '';
+        
+        if (currentConfig.instructions.length === 0) {
+            sidebarList.innerHTML = '<div style="color:var(--text-muted); font-size:12px; text-align:center; padding:10px;">Нет инструкций</div>';
+            headerContainer.innerHTML = '<h2>Инструкции не добавлены</h2><p>Пожалуйста, настройте инструкции в панели управления.</p>';
+            stepsContainer.innerHTML = '';
+            return;
+        }
+
+        // Find active guide
+        if (!activeGuideId || !currentConfig.instructions.some(g => g.id === activeGuideId)) {
+            activeGuideId = currentConfig.instructions[0].id;
+        }
+
+        currentConfig.instructions.forEach(guide => {
+            const btn = document.createElement('button');
+            btn.className = `guide-item spatial-focus${guide.id === activeGuideId ? ' active' : ''}`;
+            btn.tabIndex = 0;
+            btn.innerHTML = `
+                <span class="guide-item-title">${escapeHtml(guide.title)}</span>
+                <span class="guide-item-desc">${escapeHtml(guide.description || '')}</span>
+            `;
+            
+            // Focus loads preview timeline
+            btn.addEventListener('focus', () => {
+                if (activeGuideId !== guide.id) {
+                    activeGuideId = guide.id;
+                    // Update active styling
+                    sidebarList.querySelectorAll('.guide-item').forEach(item => {
+                        item.classList.remove('active');
+                    });
+                    btn.classList.add('active');
+                    renderActiveTimeline(false); // Render timeline, but do not focus
+                }
+            });
+            
+            // Click/Enter jumps focus to the timeline
+            btn.addEventListener('click', () => {
+                activeGuideId = guide.id;
+                renderActiveTimeline(true); // Render and focus first step card
+            });
+
+            sidebarList.appendChild(btn);
+        });
+
+        renderActiveTimeline(false);
+    }
+
+    function renderActiveTimeline(focusFirst = false) {
+        stepsContainer.innerHTML = '';
+        headerContainer.innerHTML = '';
+
+        const activeGuide = (currentConfig.instructions || []).find(g => g.id === activeGuideId);
+        if (!activeGuide) {
+            headerContainer.innerHTML = '<h2>Выберите инструкцию</h2>';
+            return;
+        }
+
+        headerContainer.innerHTML = `
+            <h2>${escapeHtml(activeGuide.title)}</h2>
+            <p>${escapeHtml(activeGuide.description || '')}</p>
+        `;
+
+        if (!activeGuide.steps || activeGuide.steps.length === 0) {
+            stepsContainer.innerHTML = '<div style="color:var(--text-muted); font-size:14px; padding:20px 0;">В этой инструкции пока нет шагов.</div>';
+            return;
+        }
+
+        activeGuide.steps.forEach((step, index) => {
+            const stepDiv = document.createElement('div');
+            stepDiv.className = 'timeline-step spatial-focus';
+            stepDiv.tabIndex = 0;
+            
+            let commentHtml = '';
+            if (step.comment && step.comment.trim() !== '') {
+                commentHtml = `<div class="step-comment"><strong>Совет:</strong> ${escapeHtml(step.comment)}</div>`;
+            }
+            
+            let imgHtml = '';
+            if (step.imageUrl && step.imageUrl.trim() !== '') {
+                imgHtml = `
+                    <div class="step-image-wrapper">
+                        <img src="${escapeHtml(step.imageUrl)}" class="step-image" alt="${escapeHtml(step.title)}">
+                    </div>
+                `;
+            }
+
+            stepDiv.innerHTML = `
+                <div class="timeline-dot"></div>
+                <div class="step-badge">${escapeHtml(step.title || `Шаг ${index + 1}`)}</div>
+                <p class="step-text">${escapeHtml(step.text)}</p>
+                ${commentHtml}
+                ${imgHtml}
+            `;
+            
+            stepsContainer.appendChild(stepDiv);
+        });
+
+        if (focusFirst) {
+            const firstStep = stepsContainer.querySelector('.timeline-step');
+            if (firstStep) {
+                setTimeout(() => firstStep.focus(), 50);
+            }
+        }
+    }
+
+    // ----------------------------------------------------
+    // Admin Instructions Management
+    // ----------------------------------------------------
+    const selectAdminGuide = document.getElementById('select-admin-guide');
+    const inputGuideTitle = document.getElementById('input-guide-title');
+    const inputGuideDesc = document.getElementById('input-guide-desc');
+    
+    const inputStepTitle = document.getElementById('input-step-title');
+    const inputStepText = document.getElementById('input-step-text');
+    const inputStepComment = document.getElementById('input-step-comment');
+    const inputStepImg = document.getElementById('input-step-img');
+    
+    const btnAddGuideStep = document.getElementById('btn-add-guide-step');
+    const adminStepsContainer = document.getElementById('admin-steps-list-container');
+    
+    const btnDeleteGuide = document.getElementById('btn-delete-guide');
+    const btnSaveGuideMeta = document.getElementById('btn-save-guide-meta');
+
+    let adminActiveSteps = [];
+
+    function populateAdminGuidesDropdown() {
+        const currentSelected = selectAdminGuide.value;
+        selectAdminGuide.innerHTML = '';
+        
+        if (!currentConfig.instructions) {
+            currentConfig.instructions = [];
+        }
+
+        currentConfig.instructions.forEach(guide => {
+            const opt = document.createElement('option');
+            opt.value = guide.id;
+            opt.textContent = guide.title;
+            selectAdminGuide.appendChild(opt);
+        });
+
+        const optNew = document.createElement('option');
+        optNew.value = 'new';
+        optNew.textContent = '+ Создать новое руководство...';
+        selectAdminGuide.appendChild(optNew);
+
+        // Try to keep selection or select first
+        if (currentSelected && Array.from(selectAdminGuide.options).some(o => o.value === currentSelected)) {
+            selectAdminGuide.value = currentSelected;
+        } else if (currentConfig.instructions.length > 0) {
+            selectAdminGuide.value = currentConfig.instructions[0].id;
+        } else {
+            selectAdminGuide.value = 'new';
+        }
+    }
+
+    function populateAdminGuideFields() {
+        const val = selectAdminGuide.value;
+        
+        if (val === 'new') {
+            inputGuideTitle.value = '';
+            inputGuideDesc.value = '';
+            adminActiveSteps = [];
+            btnDeleteGuide.style.display = 'none';
+        } else {
+            const guide = currentConfig.instructions.find(g => g.id === val);
+            if (guide) {
+                inputGuideTitle.value = guide.title || '';
+                inputGuideDesc.value = guide.description || '';
+                adminActiveSteps = JSON.parse(JSON.stringify(guide.steps || []));
+                btnDeleteGuide.style.display = 'block';
+            } else {
+                inputGuideTitle.value = '';
+                inputGuideDesc.value = '';
+                adminActiveSteps = [];
+                btnDeleteGuide.style.display = 'none';
+            }
+        }
+        
+        // Clear step form fields
+        inputStepTitle.value = '';
+        inputStepText.value = '';
+        inputStepComment.value = '';
+        inputStepImg.value = '';
+
+        renderAdminStepsList();
+    }
+
+    function renderAdminStepsList() {
+        adminStepsContainer.innerHTML = '';
+        
+        if (adminActiveSteps.length === 0) {
+            adminStepsContainer.innerHTML = '<div style="color:var(--text-muted); font-size:12px; text-align:center; padding:10px;">Шагов пока нет. Добавьте первый шаг выше.</div>';
+            return;
+        }
+        
+        adminActiveSteps.forEach((step, index) => {
+            const row = document.createElement('div');
+            row.className = 'admin-news-item-row';
+            row.innerHTML = `
+                <span class="admin-news-item-title" style="max-width: 170px;" title="${escapeHtml(step.title)}">${escapeHtml(step.title || ('Шаг ' + (index + 1)))}</span>
+                <div style="display: flex; gap: 6px;">
+                    <button type="button" class="btn-delete-news btn-move-step spatial-focus" tabindex="0" data-index="${index}" data-dir="up" title="Вверх" ${index === 0 ? 'disabled style="opacity:0.3; pointer-events:none;"' : ''}>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px; height:14px;">
+                            <polyline points="18 15 12 9 6 15"></polyline>
+                        </svg>
+                    </button>
+                    <button type="button" class="btn-delete-news btn-move-step spatial-focus" tabindex="0" data-index="${index}" data-dir="down" title="Вниз" ${index === adminActiveSteps.length - 1 ? 'disabled style="opacity:0.3; pointer-events:none;"' : ''}>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px; height:14px;">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </button>
+                    <button type="button" class="btn-delete-news spatial-focus" tabindex="0" data-id="${step.id}" title="Удалить">
+                        <svg class="delete-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        </svg>
+                    </button>
+                </div>
+            `;
+            adminStepsContainer.appendChild(row);
+        });
+
+        // Add event listeners for delete and reorder buttons
+        adminStepsContainer.querySelectorAll('.btn-delete-news[data-id]').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const id = btn.getAttribute('data-id');
+                adminActiveSteps = adminActiveSteps.filter(s => s.id !== id);
+                renderAdminStepsList();
+                showToast('Шаг удален');
+            });
+        });
+
+        adminStepsContainer.querySelectorAll('.btn-move-step:not([disabled])').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const idx = parseInt(btn.getAttribute('data-index'), 10);
+                const dir = btn.getAttribute('data-dir');
+                
+                if (dir === 'up' && idx > 0) {
+                    const temp = adminActiveSteps[idx];
+                    adminActiveSteps[idx] = adminActiveSteps[idx - 1];
+                    adminActiveSteps[idx - 1] = temp;
+                } else if (dir === 'down' && idx < adminActiveSteps.length - 1) {
+                    const temp = adminActiveSteps[idx];
+                    adminActiveSteps[idx] = adminActiveSteps[idx + 1];
+                    adminActiveSteps[idx + 1] = temp;
+                }
+                
+                renderAdminStepsList();
+                playTickSound();
+            });
+        });
+    }
+
+    // Dropdown change event
+    selectAdminGuide.addEventListener('change', () => {
+        populateAdminGuideFields();
+    });
+
+    // Step addition handler
+    btnAddGuideStep.addEventListener('click', () => {
+        const title = inputStepTitle.value.trim();
+        const text = inputStepText.value.trim();
+        const comment = inputStepComment.value.trim();
+        const imageUrl = inputStepImg.value.trim();
+
+        if (!title || !text) {
+            showToast('Заполните название и описание шага!');
+            return;
+        }
+
+        const newStep = {
+            id: 'step-' + Date.now(),
+            title,
+            text,
+            comment,
+            imageUrl
+        };
+
+        adminActiveSteps.push(newStep);
+        
+        inputStepTitle.value = '';
+        inputStepText.value = '';
+        inputStepComment.value = '';
+        inputStepImg.value = '';
+
+        renderAdminStepsList();
+        playTickSound();
+        showToast('Шаг успешно добавлен к руководству!');
+    });
+
+    // Delete guide handler
+    btnDeleteGuide.addEventListener('click', () => {
+        const val = selectAdminGuide.value;
+        if (val === 'new') return;
+
+        if (confirm('Вы уверены, что хотите полностью удалить это руководство?')) {
+            currentConfig.instructions = currentConfig.instructions.filter(g => g.id !== val);
+            selectAdminGuide.value = 'new';
+            populateAdminGuidesDropdown();
+            populateAdminGuideFields();
+            
+            syncStatusText.textContent = 'Изменения не сохранены *';
+            syncStatusText.classList.add('error');
+            showToast('Руководство удалено. Не забудьте сохранить изменения!');
+        }
+    });
+
+    // Save/Apply guide metadata changes
+    btnSaveGuideMeta.addEventListener('click', () => {
+        const title = inputGuideTitle.value.trim();
+        const description = inputGuideDesc.value.trim();
+
+        if (!title) {
+            showToast('Введите название руководства!');
+            return;
+        }
+
+        const val = selectAdminGuide.value;
+        if (val === 'new') {
+            // Create new
+            const newGuideId = 'guide-' + Date.now();
+            const newGuide = {
+                id: newGuideId,
+                title,
+                description,
+                steps: adminActiveSteps
+            };
+            
+            if (!currentConfig.instructions) {
+                currentConfig.instructions = [];
+            }
+            currentConfig.instructions.push(newGuide);
+            
+            syncStatusText.textContent = 'Изменения не сохранены *';
+            syncStatusText.classList.add('error');
+            
+            showToast('Руководство успешно создано!');
+            
+            // Update dropdown and select newly created guide
+            populateAdminGuidesDropdown();
+            selectAdminGuide.value = newGuideId;
+            populateAdminGuideFields();
+        } else {
+            // Update existing
+            const guide = currentConfig.instructions.find(g => g.id === val);
+            if (guide) {
+                guide.title = title;
+                guide.description = description;
+                guide.steps = adminActiveSteps;
+                
+                syncStatusText.textContent = 'Изменения не сохранены *';
+                syncStatusText.classList.add('error');
+                
+                showToast('Изменения гайда применены!');
+                
+                // Refresh guide options to update title in dropdown
+                populateAdminGuidesDropdown();
+            }
+        }
+    });
 
     loadConfiguration();
 });

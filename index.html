@@ -29,7 +29,6 @@
                     </svg>
                     <span>Главная</span>
                 </button>
-
                 <button class="nav-button spatial-focus" id="nav-instructions" tabindex="0">
                     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                         <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
@@ -118,36 +117,32 @@
                 </div>
             </section>
 
-
-
-            <!-- VIEW 3: Instructions (In Development) -->
+            <!-- VIEW 2: Dynamic Split-Screen Instructions View -->
             <section id="view-instructions" class="content-view">
-                <div class="dev-container">
-                    <div class="dev-card spatial-focus" tabindex="0">
-                        <div class="dev-icon-wrapper">
-                            <svg class="dev-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                                <circle cx="12" cy="12" r="10"></circle>
-                                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
-                                <path d="M2 12h20"></path>
-                                <circle cx="12" cy="12" r="3" fill="currentColor"></circle>
-                            </svg>
+                <div class="instructions-layout">
+                    <!-- Left Column: Focusable Guides list -->
+                    <div class="instructions-sidebar" id="instructions-sidebar-list">
+                        <!-- Loaded dynamically -->
+                    </div>
+                    
+                    <!-- Right Column: Step-by-Step walk-through -->
+                    <div class="instruction-details-panel">
+                        <div class="instruction-header-box" id="guide-header-container">
+                            <!-- Dynamic title & desc -->
                         </div>
-                        <h2 class="dev-title">Раздел в разработке</h2>
-                        <p class="dev-subtitle">Мы усердно работаем над подготовкой подробных инструкций по настройке и использованию оборудования TV SHOP.</p>
-                        <p class="dev-notice">Инструкции появятся в следующем обновлении системы.</p>
-                        <button class="action-button secondary-button spatial-focus" tabindex="0" id="btn-back-home">
-                            Вернуться на главную
-                        </button>
+                        <div class="steps-timeline-container" id="guide-steps-container">
+                            <!-- Dynamic timeline items -->
+                        </div>
                     </div>
                 </div>
             </section>
 
-            <!-- VIEW 4: Secret Admin Panel (Maximum Control Settings) -->
+            <!-- VIEW 3: Secret Admin Panel (Maximum Control Settings) -->
             <section id="view-admin" class="content-view">
                 <div class="admin-layout">
                     <div class="admin-columns-container">
                         
-                        <!-- Column 1: Core Settings & Promo Settings -->
+                        <!-- Column 1: Core Settings, Security, Promo -->
                         <div class="admin-column">
                             <div class="admin-section-card">
                                 <h3>Основные настройки</h3>
@@ -204,7 +199,7 @@
                             </div>
                         </div>
 
-                        <!-- Column 2: News Management & Callback Requests -->
+                        <!-- Column 2: News Management & Callback Logs -->
                         <div class="admin-column">
                             <div class="admin-section-card news-manager-card">
                                 <h3>Управление новостями</h3>
@@ -235,15 +230,72 @@
 
                                 <h4 class="news-list-title">Текущие новости</h4>
                                 <div class="admin-news-list" id="admin-news-list-container">
-                                    <!-- News list with delete actions loaded dynamically -->
+                                    <!-- News list loaded dynamically -->
                                 </div>
                             </div>
 
-                            <!-- Callback requests manager -->
                             <div class="admin-section-card">
                                 <h3>Заявки на подключение (Callbacks)</h3>
-                                <div class="admin-news-list" id="admin-callbacks-container">
-                                    <!-- List of client phone connection requests -->
+                                <div class="admin-news-list" id="admin-callbacks-container" style="max-height: 200px;">
+                                    <!-- Connection requests loaded dynamically -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Column 3: Instructions Manager (NEW!) -->
+                        <div class="admin-column">
+                            <div class="admin-section-card news-manager-card">
+                                <h3>Управление инструкциями</h3>
+                                
+                                <div class="form-group">
+                                    <label for="select-admin-guide">Выберите инструкцию для редактирования</label>
+                                    <select id="select-admin-guide" class="admin-input spatial-focus" tabindex="0">
+                                        <!-- Dynamic options -->
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="input-guide-title">Название инструкции</label>
+                                    <input type="text" id="input-guide-title" class="admin-input spatial-focus" tabindex="0">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="input-guide-desc">Краткое описание</label>
+                                    <textarea id="input-guide-desc" class="admin-input textarea spatial-focus" tabindex="0" rows="2"></textarea>
+                                </div>
+                                
+                                <!-- Step Editor Box -->
+                                <div class="add-news-box">
+                                    <h4 style="color: var(--color-purple);">Конструктор шагов</h4>
+                                    <div class="form-group">
+                                        <label for="input-step-title">Заголовок шага (например, "Шаг 1: Нажмите Ок")</label>
+                                        <input type="text" id="input-step-title" class="admin-input spatial-focus" tabindex="0">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="input-step-text">Основной текст шага</label>
+                                        <textarea id="input-step-text" class="admin-input textarea spatial-focus" tabindex="0" rows="2"></textarea>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="input-step-comment">Комментарий (необязательно)</label>
+                                            <input type="text" id="input-step-comment" class="admin-input spatial-focus" tabindex="0" placeholder="Совет">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="input-step-img">URL картинки (необязательно)</label>
+                                            <input type="text" id="input-step-img" class="admin-input spatial-focus" tabindex="0" placeholder="https://...">
+                                        </div>
+                                    </div>
+                                    <button type="button" class="action-button spatial-focus" id="btn-add-guide-step" tabindex="0">Добавить шаг к руководству</button>
+                                </div>
+
+                                <h4 class="news-list-title">Шаги в инструкции</h4>
+                                <div class="admin-news-list" id="admin-steps-list-container" style="max-height: 180px;">
+                                    <!-- Dynamic list of steps for chosen guide -->
+                                </div>
+                                
+                                <div class="form-row" style="margin-top: 10px;">
+                                    <button type="button" class="action-button secondary-button danger spatial-focus" id="btn-delete-guide" tabindex="0" style="padding: 10px 5px;">Удалить гайд</button>
+                                    <button type="button" class="action-button spatial-focus" id="btn-save-guide-meta" tabindex="0" style="padding: 10px 5px;">Применить изменения</button>
                                 </div>
                             </div>
                         </div>
