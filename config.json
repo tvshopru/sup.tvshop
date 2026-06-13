@@ -2,6 +2,7 @@
   "telegramUrl": "https://t.me/android_tv_shop",
   "remoteSyncUrl": "",
   "adminPin": "0000",
+  "callbacks": [],
   "promo": {
     "title": "Подключите Премиум ТВ",
     "text": "1000+ телеканалов со всего мира в цифровом качестве HD и 4K. Фильмы, спорт, сериалы и мультфильмы без рекламы!",

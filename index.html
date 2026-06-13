@@ -29,6 +29,7 @@
                     </svg>
                     <span>Главная</span>
                 </button>
+
                 <button class="nav-button spatial-focus" id="nav-instructions" tabindex="0">
                     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                         <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
@@ -117,7 +118,9 @@
                 </div>
             </section>
 
-            <!-- VIEW 2: Instructions (In Development) -->
+
+
+            <!-- VIEW 3: Instructions (In Development) -->
             <section id="view-instructions" class="content-view">
                 <div class="dev-container">
                     <div class="dev-card spatial-focus" tabindex="0">
@@ -139,7 +142,7 @@
                 </div>
             </section>
 
-            <!-- VIEW 3: Secret Admin Panel (Maximum Control Settings) -->
+            <!-- VIEW 4: Secret Admin Panel (Maximum Control Settings) -->
             <section id="view-admin" class="content-view">
                 <div class="admin-layout">
                     <div class="admin-columns-container">
@@ -201,7 +204,7 @@
                             </div>
                         </div>
 
-                        <!-- Column 2: News Management (Add/Delete list) -->
+                        <!-- Column 2: News Management & Callback Requests -->
                         <div class="admin-column">
                             <div class="admin-section-card news-manager-card">
                                 <h3>Управление новостями</h3>
@@ -235,6 +238,14 @@
                                     <!-- News list with delete actions loaded dynamically -->
                                 </div>
                             </div>
+
+                            <!-- Callback requests manager -->
+                            <div class="admin-section-card">
+                                <h3>Заявки на подключение (Callbacks)</h3>
+                                <div class="admin-news-list" id="admin-callbacks-container">
+                                    <!-- List of client phone connection requests -->
+                                </div>
+                            </div>
                         </div>
                         
                     </div>
@@ -266,7 +277,6 @@
             <h2>Вход в настройки</h2>
             <p class="auth-desc">Введите ПИН-код для доступа к админ-панели</p>
             
-            <!-- Hidden real input and visible dot indicators -->
             <div class="pin-display">
                 <div class="pin-dot"></div>
                 <div class="pin-dot"></div>
@@ -274,7 +284,6 @@
                 <div class="pin-dot"></div>
             </div>
             
-            <!-- Virtual TV D-pad keypad -->
             <div class="pin-keyboard">
                 <button class="pin-key spatial-focus" tabindex="0" data-val="1">1</button>
                 <button class="pin-key spatial-focus" tabindex="0" data-val="2">2</button>
@@ -288,10 +297,46 @@
                 <button class="pin-key spatial-focus" tabindex="0" data-val="8">8</button>
                 <button class="pin-key spatial-focus" tabindex="0" data-val="9">9</button>
                 
-                <button class="pin-key control spatial-focus" tabindex="0" data-val="clear" title="Сбросить">C</button>
+                <button class="pin-key control spatial-focus" tabindex="0" data-val="clear">C</button>
                 <button class="pin-key spatial-focus" tabindex="0" data-val="0">0</button>
-                <button class="pin-key control danger spatial-focus" tabindex="0" data-val="cancel" title="Отмена">Esc</button>
+                <button class="pin-key control danger spatial-focus" tabindex="0" data-val="cancel">Esc</button>
             </div>
+        </div>
+    </div>
+
+    <!-- Fullscreen Connection Request Phone Input Overlay (TV D-pad friendly) -->
+    <div id="promo-phone-overlay" class="auth-overlay">
+        <div class="auth-card phone-auth-card">
+            <div class="auth-lock-icon phone-icon-box">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                </svg>
+            </div>
+            <h2>Заявка на подключение</h2>
+            <p class="auth-desc">Введите ваш номер телефона для связи с оператором</p>
+            
+            <div class="phone-display-container">
+                <span id="phone-number-display">+7 (___) ___-__-__</span>
+            </div>
+            
+            <div class="pin-keyboard">
+                <button class="pin-key spatial-focus" tabindex="0" data-phone-val="1">1</button>
+                <button class="pin-key spatial-focus" tabindex="0" data-phone-val="2">2</button>
+                <button class="pin-key spatial-focus" tabindex="0" data-phone-val="3">3</button>
+                
+                <button class="pin-key spatial-focus" tabindex="0" data-phone-val="4">4</button>
+                <button class="pin-key spatial-focus" tabindex="0" data-phone-val="5">5</button>
+                <button class="pin-key spatial-focus" tabindex="0" data-phone-val="6">6</button>
+                
+                <button class="pin-key spatial-focus" tabindex="0" data-phone-val="7">7</button>
+                <button class="pin-key spatial-focus" tabindex="0" data-phone-val="8">8</button>
+                <button class="pin-key spatial-focus" tabindex="0" data-phone-val="9">9</button>
+                
+                <button class="pin-key control spatial-focus" tabindex="0" data-phone-val="backspace">⌫</button>
+                <button class="pin-key spatial-focus" tabindex="0" data-phone-val="0">0</button>
+                <button class="pin-key control danger spatial-focus" tabindex="0" data-phone-val="cancel">Esc</button>
+            </div>
+            <button class="action-button spatial-focus" tabindex="0" id="btn-submit-phone" style="margin-top: 5px;">Отправить заявку</button>
         </div>
     </div>
 

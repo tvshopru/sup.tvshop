@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
         telegramUrl: "https://t.me/android_tv_shop",
         remoteSyncUrl: "",
         adminPin: "0000",
+        callbacks: [],
         promo: {
             title: "Подключите Премиум ТВ",
             text: "1000+ телеканалов со всего мира в цифровом качестве HD и 4K. Фильмы, спорт, сериалы и мультфильмы без рекламы!",
@@ -41,11 +42,80 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let currentConfig = JSON.parse(JSON.stringify(DEFAULT_CONFIG));
     let isAdminAuthenticated = false;
+    
+    // Auth & Phone entry buffers
     let tempPinBuffer = "";
+    let tempPhoneBuffer = ""; // Holds 10 digits after +7
     let previousFocusedElement = null;
 
     // ----------------------------------------------------
-    // 2. TIMERS & LIVE CLOCK
+    // 2. AUDIO SYNTHESIZER (TV STYLE UI AUDIO CUES)
+    // ----------------------------------------------------
+    let audioCtx = null;
+
+    function initAudio() {
+        if (!audioCtx) {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+    }
+
+    // Synthesize short remote control D-pad "tick" sound
+    function playTickSound() {
+        try {
+            initAudio();
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            
+            const osc = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            
+            osc.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            
+            osc.frequency.setValueAtTime(950, audioCtx.currentTime); // High pitch click
+            osc.type = 'sine';
+            
+            gainNode.gain.setValueAtTime(0.02, audioCtx.currentTime); // Very subtle
+            gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.015); // Decay
+            
+            osc.start(audioCtx.currentTime);
+            osc.stop(audioCtx.currentTime + 0.015);
+        } catch (e) {
+            // Audio Context blocked or unsupported
+        }
+    }
+
+    // Synthesize premium UI chime
+    function playChimeSound() {
+        try {
+            initAudio();
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            
+            const osc = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            
+            osc.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            
+            osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
+            osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.12); // E5
+            osc.type = 'sine';
+            
+            gainNode.gain.setValueAtTime(0.08, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.35);
+            
+            osc.start(audioCtx.currentTime);
+            osc.stop(audioCtx.currentTime + 0.35);
+        } catch (e) {
+            // Audio context failed
+        }
+    }
+
+    // ----------------------------------------------------
+    // 3. TIMERS & LIVE CLOCK
     // ----------------------------------------------------
     const clockElement = document.getElementById('live-clock');
     
@@ -61,7 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
     updateClock();
 
     // ----------------------------------------------------
-    // 3. TOAST SYSTEM
+    // 4. TOAST SYSTEM
     // ----------------------------------------------------
     const toast = document.getElementById('toast-notification');
     const toastMsg = document.getElementById('toast-message');
@@ -78,7 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ----------------------------------------------------
-    // 4. CONFIG LOADING & DATA SYNCING
+    // 5. CONFIG LOADING & DATA SYNCING
     // ----------------------------------------------------
     async function loadConfiguration() {
         const cached = localStorage.getItem('tv_shop_config');
@@ -124,7 +194,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 
                 if (liveData.telegramUrl || liveData.news) {
+                    // Make sure we keep the callbacks queue merging locally
+                    const mergedCallbacks = mergeCallbacks(currentConfig.callbacks, liveData.callbacks);
                     currentConfig = liveData;
+                    currentConfig.callbacks = mergedCallbacks;
+                    
                     localStorage.setItem('tv_shop_config', JSON.stringify(currentConfig));
                     console.log("Config updated in real-time from remote sync database");
                 }
@@ -134,19 +208,56 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    function mergeCallbacks(local, remote) {
+        const arr = [...(remote || [])];
+        const localArr = local || [];
+        localArr.forEach(l => {
+            if (!arr.some(r => r.id === l.id)) {
+                arr.push(l);
+            }
+        });
+        return arr;
+    }
+
+    // Helper to upload latest callbacks and configuration
+    async function syncConfigToRemote() {
+        if (!currentConfig.remoteSyncUrl) return false;
+        
+        const token = localStorage.getItem('tv_shop_write_token');
+        const headers = { 'Content-Type': 'application/json' };
+        if (token) {
+            headers['X-Master-Key'] = token;
+            headers['Authorization'] = `Bearer ${token}`;
+        }
+
+        try {
+            const response = await fetch(currentConfig.remoteSyncUrl, {
+                method: 'PUT',
+                headers: headers,
+                body: JSON.stringify(currentConfig)
+            });
+            return response.ok;
+        } catch (e) {
+            console.error("Push sync error:", e);
+            return false;
+        }
+    }
+
     // ----------------------------------------------------
-    // 5. VIEW RENDER ENGINE
+    // 6. VIEW RENDER ENGINE
     // ----------------------------------------------------
     const qrImage = document.getElementById('support-qr-img');
     const tgLinkText = document.getElementById('support-tg-link');
     const newsContainer = document.getElementById('news-container');
     const promoContainer = document.getElementById('promo-container');
+    const adminCallbacksContainer = document.getElementById('admin-callbacks-container');
 
     function renderAllViews() {
         renderSupport();
         renderNews();
         renderPromo();
         renderAdminNewsList();
+        renderAdminCallbacksList();
     }
 
     function renderSupport() {
@@ -232,12 +343,56 @@ document.addEventListener('DOMContentLoaded', () => {
         const btnPromoConnect = document.getElementById('btn-promo-connect');
         btnPromoConnect.addEventListener('click', (e) => {
             e.stopPropagation();
-            showToast('Заявка на подключение отправлена! Ожидайте звонка оператора.');
+            openPhoneOverlay();
         });
     }
 
+    function renderAdminCallbacksList() {
+        adminCallbacksContainer.innerHTML = '';
+        const callbacks = currentConfig.callbacks || [];
+
+        if (callbacks.length === 0) {
+            adminCallbacksContainer.innerHTML = '<div style="color:var(--text-muted); font-size:12px; text-align:center; padding:10px;">Нет активных заявок</div>';
+            return;
+        }
+
+        callbacks.forEach(item => {
+            const row = document.createElement('div');
+            row.className = 'admin-news-item-row';
+            row.innerHTML = `
+                <div style="display:flex; flex-direction:column; gap:2px;">
+                    <span style="font-size:13px; font-weight:700; color:var(--color-cyan);">${escapeHtml(item.phone)}</span>
+                    <span style="font-size:10px; color:var(--text-muted);">${escapeHtml(item.date)}</span>
+                </div>
+                <button type="button" class="btn-delete-news spatial-focus" tabindex="0" data-id="${item.id}" title="Удалить">
+                    <svg class="delete-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="3 6 5 6 21 6"></polyline>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                    </svg>
+                </button>
+            `;
+            adminCallbacksContainer.appendChild(row);
+        });
+
+        adminCallbacksContainer.querySelectorAll('.btn-delete-news').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const id = btn.getAttribute('data-id');
+                deleteCallbackItem(id);
+            });
+        });
+    }
+
+    function deleteCallbackItem(id) {
+        currentConfig.callbacks = (currentConfig.callbacks || []).filter(item => String(item.id) !== String(id));
+        renderAdminCallbacksList();
+        syncStatusText.textContent = 'Изменения не сохранены *';
+        syncStatusText.classList.add('error');
+        showToast('Заявка удалена из списка. Нажмите Сохранить для синхронизации.');
+    }
+
     // ----------------------------------------------------
-    // 6. ROUTING & ACCESS CONTROLS
+    // 7. ROUTING & CONTROLS
     // ----------------------------------------------------
     const navHome = document.getElementById('nav-home');
     const navInstructions = document.getElementById('nav-instructions');
@@ -310,7 +465,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ----------------------------------------------------
-    // 7. PIN-CODE AUTHORIZATION LOGIC (TV KEYBOARD)
+    // 8. PIN-CODE AUTHORIZATION LOGIC
     // ----------------------------------------------------
     const authOverlay = document.getElementById('admin-auth-overlay');
     const pinDots = document.querySelectorAll('.pin-dot');
@@ -321,7 +476,6 @@ document.addEventListener('DOMContentLoaded', () => {
         updatePinDots();
         authOverlay.classList.add('active');
         
-        // Focus number 5 key (center of keypad grid) for optimal D-pad navigation
         const middleKey = authOverlay.querySelector('.pin-key[data-val="5"]');
         setTimeout(() => middleKey.focus(), 100);
     }
@@ -332,6 +486,7 @@ document.addEventListener('DOMContentLoaded', () => {
         updatePinDots();
         
         if (success) {
+            playChimeSound();
             isAdminAuthenticated = true;
             switchView('admin');
         } else {
@@ -352,7 +507,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Keypad listeners
     authOverlay.querySelectorAll('.pin-key').forEach(key => {
         key.addEventListener('click', () => {
             const val = key.getAttribute('data-val');
@@ -367,12 +521,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
             
-            // Append numbers
             if (tempPinBuffer.length < 4) {
                 tempPinBuffer += val;
                 updatePinDots();
                 
-                // If 4 digits entered, verify PIN
                 if (tempPinBuffer.length === 4) {
                     verifyPin();
                 }
@@ -382,18 +534,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function verifyPin() {
         const configuredPin = currentConfig.adminPin || "0000";
-        
         if (tempPinBuffer === configuredPin) {
             showToast('Доступ разрешен!');
             closeAuthOverlay(true);
         } else {
-            // Flash dots in red and shake card
             pinDots.forEach(dot => {
                 dot.classList.add('error');
             });
             showToast('Неверный ПИН-код!');
-            
-            // Reset buffer after brief delay
             setTimeout(() => {
                 tempPinBuffer = "";
                 updatePinDots();
@@ -402,7 +550,115 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ----------------------------------------------------
-    // 8. ADMIN DASHBOARD ACTIONS (EDIT, SAVE, SYNC)
+    // 9. D-PAD FRIENDLY PHONE CONNECTION REQUEST MODAL
+    // ----------------------------------------------------
+    const phoneOverlay = document.getElementById('promo-phone-overlay');
+    const phoneDisplay = document.getElementById('phone-number-display');
+    const btnSubmitPhone = document.getElementById('btn-submit-phone');
+
+    function openPhoneOverlay() {
+        previousFocusedElement = document.activeElement;
+        tempPhoneBuffer = "";
+        updatePhoneDisplay();
+        phoneOverlay.classList.add('active');
+        
+        const middleKey = phoneOverlay.querySelector('.pin-key[data-phone-val="5"]');
+        setTimeout(() => middleKey.focus(), 100);
+    }
+
+    function closePhoneOverlay(success = false) {
+        phoneOverlay.classList.remove('active');
+        tempPhoneBuffer = "";
+        updatePhoneDisplay();
+        
+        if (!success) {
+            if (previousFocusedElement && typeof previousFocusedElement.focus === 'function') {
+                previousFocusedElement.focus();
+            } else {
+                navHome.focus();
+            }
+        }
+    }
+
+    function updatePhoneDisplay() {
+        let displayStr = "+7 (";
+        
+        for (let i = 0; i < 10; i++) {
+            if (i === 3) displayStr += ") ";
+            if (i === 6) displayStr += "-";
+            if (i === 8) displayStr += "-";
+            
+            if (i < tempPhoneBuffer.length) {
+                displayStr += tempPhoneBuffer[i];
+            } else {
+                displayStr += "_";
+            }
+        }
+        
+        phoneDisplay.textContent = displayStr;
+    }
+
+    phoneOverlay.querySelectorAll('.pin-key').forEach(key => {
+        key.addEventListener('click', () => {
+            const val = key.getAttribute('data-phone-val');
+            
+            if (val === 'cancel') {
+                closePhoneOverlay(false);
+                return;
+            }
+            
+            if (val === 'backspace') {
+                if (tempPhoneBuffer.length > 0) {
+                    tempPhoneBuffer = tempPhoneBuffer.slice(0, -1);
+                    updatePhoneDisplay();
+                }
+                return;
+            }
+
+            if (tempPhoneBuffer.length < 10) {
+                tempPhoneBuffer += val;
+                updatePhoneDisplay();
+            }
+        });
+    });
+
+    btnSubmitPhone.addEventListener('click', async () => {
+        if (tempPhoneBuffer.length !== 10) {
+            showToast('Пожалуйста, введите все 10 цифр вашего номера!');
+            return;
+        }
+
+        const formattedPhone = `+7 (${tempPhoneBuffer.slice(0,3)}) ${tempPhoneBuffer.slice(3,6)}-${tempPhoneBuffer.slice(6,8)}-${tempPhoneBuffer.slice(8,10)}`;
+        
+        const now = new Date();
+        const timestamp = `${String(now.getDate()).padStart(2,'0')}.${String(now.getMonth()+1).padStart(2,'0')}.${now.getFullYear()}, ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+
+        const callbackObj = {
+            id: Date.now(),
+            phone: formattedPhone,
+            date: timestamp
+        };
+
+        if (!currentConfig.callbacks) currentConfig.callbacks = [];
+        currentConfig.callbacks.unshift(callbackObj);
+
+        localStorage.setItem('tv_shop_config', JSON.stringify(currentConfig));
+        renderAdminCallbacksList();
+
+        closePhoneOverlay(true);
+        playChimeSound();
+        showToast('Заявка принята! Оператор свяжется с вами в течение 5 минут.');
+
+        if (currentConfig.remoteSyncUrl) {
+            const ok = await syncConfigToRemote();
+            if (ok) {
+                console.log("Callbacks synchronized online in background");
+            }
+        }
+    });
+
+    // ----------------------------------------------------
+    // 10. ADMIN DASHBOARD ACTIONS (EDIT, SAVE, SYNC)
     // ----------------------------------------------------
     const inputTgUrl = document.getElementById('input-tg-url');
     const inputSyncUrl = document.getElementById('input-sync-url');
@@ -433,7 +689,6 @@ document.addEventListener('DOMContentLoaded', () => {
         inputSyncUrl.value = currentConfig.remoteSyncUrl || '';
         inputAdminPin.value = currentConfig.adminPin || '0000';
         
-        // Grab token privately from local storage
         inputAuthToken.value = localStorage.getItem('tv_shop_write_token') || '';
         
         const promo = currentConfig.promo || DEFAULT_CONFIG.promo;
@@ -446,6 +701,7 @@ document.addEventListener('DOMContentLoaded', () => {
         syncStatusText.textContent = 'Изменения не сохранены';
         syncStatusText.className = 'admin-footer-status';
         renderAdminNewsList();
+        renderAdminCallbacksList();
     }
 
     function renderAdminNewsList() {
@@ -533,11 +789,9 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Save private token locally (never write to config)
         const token = inputAuthToken.value.trim();
         localStorage.setItem('tv_shop_write_token', token);
 
-        // Update core config model
         currentConfig.telegramUrl = inputTgUrl.value.trim() || DEFAULT_CONFIG.telegramUrl;
         currentConfig.remoteSyncUrl = inputSyncUrl.value.trim();
         currentConfig.adminPin = pin;
@@ -557,31 +811,13 @@ document.addEventListener('DOMContentLoaded', () => {
             syncStatusText.textContent = 'Синхронизация...';
             syncStatusText.className = 'admin-footer-status';
             
-            // Build authenticated request headers using the private token
-            const headers = {
-                'Content-Type': 'application/json'
-            };
-            if (token) {
-                headers['X-Master-Key'] = token; // jsonbin support
-                headers['Authorization'] = `Bearer ${token}`; // standard OAuth/Bearer token
-            }
-
-            try {
-                const response = await fetch(currentConfig.remoteSyncUrl, {
-                    method: 'PUT',
-                    headers: headers,
-                    body: JSON.stringify(currentConfig)
-                });
-
-                if (response.ok) {
-                    syncStatusText.textContent = 'Синхронизировано онлайн ✅';
-                    syncStatusText.className = 'admin-footer-status saved';
-                    showToast('Конфигурация успешно сохранена и синхронизирована с сервером!');
-                } else {
-                    throw new Error(`Status: ${response.status}`);
-                }
-            } catch (e) {
-                console.error("Sync error:", e);
+            const ok = await syncConfigToRemote();
+            if (ok) {
+                syncStatusText.textContent = 'Синхронизировано онлайн ✅';
+                syncStatusText.className = 'admin-footer-status saved';
+                playChimeSound();
+                showToast('Конфигурация успешно сохранена и синхронизирована с сервером!');
+            } else {
                 syncStatusText.textContent = 'Ошибка онлайн-синхронизации (сохранено локально)';
                 syncStatusText.className = 'admin-footer-status error';
                 showToast('Ошибка авторизации или сети! Изменения сохранены только локально.');
@@ -589,6 +825,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             syncStatusText.textContent = 'Сохранено локально';
             syncStatusText.className = 'admin-footer-status saved';
+            playChimeSound();
             showToast('Конфигурация сохранена в памяти устройства.');
         }
     });
@@ -620,9 +857,13 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ----------------------------------------------------
-    // 9. D-PAD / KEYBOARD NAVIGATION CONTROLLER (TV SUPPORT)
+    // 11. D-PAD / KEYBOARD NAVIGATION CONTROLLER (TV SUPPORT)
     // ----------------------------------------------------
     document.addEventListener('focusin', (e) => {
+        if (e.target.classList.contains('spatial-focus')) {
+            playTickSound();
+        }
+
         document.querySelectorAll('.spatial-focus').forEach(el => {
             el.classList.remove('focused');
         });
@@ -635,6 +876,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('keydown', (e) => {
         const activeElement = document.activeElement;
         const isAuthActive = authOverlay.classList.contains('active');
+        const isPhoneActive = phoneOverlay.classList.contains('active');
         
         if (e.key === 'Enter') {
             if (activeElement && activeElement.tagName !== 'INPUT' && activeElement.tagName !== 'TEXTAREA') {
@@ -648,14 +890,19 @@ document.addEventListener('DOMContentLoaded', () => {
             const isTyping = activeElement && (activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA');
             
             if (isAuthActive) {
-                // If on Auth screen, cancel and close
                 closeAuthOverlay(false);
                 e.preventDefault();
                 return;
             }
             
+            if (isPhoneActive) {
+                closePhoneOverlay(false);
+                e.preventDefault();
+                return;
+            }
+            
             if (isTyping && e.key === 'Backspace') {
-                return; // Normal typing delete
+                return;
             }
 
             if (viewInstructions.classList.contains('active') || viewAdmin.classList.contains('active')) {
@@ -676,7 +923,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (direction) {
             const isInsideInput = activeElement && (activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA');
             if (isInsideInput && (direction === 'left' || direction === 'right')) {
-                return; // Typing cursor navigation safety
+                return;
             }
 
             e.preventDefault();
@@ -687,17 +934,16 @@ document.addEventListener('DOMContentLoaded', () => {
     function navigateSpatially(direction) {
         const activeElement = document.activeElement;
         const isAuthActive = authOverlay.classList.contains('active');
+        const isPhoneActive = phoneOverlay.classList.contains('active');
         
-        // Find visible focusables
         let focusableElements = Array.from(document.querySelectorAll('.spatial-focus')).filter(el => {
             return el.offsetParent !== null && window.getComputedStyle(el).display !== 'none';
         });
 
-        // Focus lock inside PIN-code overlay if active
         if (isAuthActive) {
-            focusableElements = focusableElements.filter(el => {
-                return authOverlay.contains(el);
-            });
+            focusableElements = focusableElements.filter(el => authOverlay.contains(el));
+        } else if (isPhoneActive) {
+            focusableElements = focusableElements.filter(el => phoneOverlay.contains(el));
         }
 
         if (focusableElements.length === 0) return;
@@ -749,12 +995,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const primaryDist = Math.abs(direction === 'left' || direction === 'right' ? dx : dy);
             const secondaryDist = Math.abs(direction === 'left' || direction === 'right' ? dy : dx);
             
-            // Column weight layout adjustments
             let weight = 3.5;
             if (viewAdmin.classList.contains('active')) {
-                weight = 6.0; // Strictly vertical stacked form focus in admin
-            } else if (isAuthActive) {
-                weight = 2.0; // Dynamic circular D-pad friendly grids in PIN pad
+                weight = 6.0;
+            } else if (isAuthActive || isPhoneActive) {
+                weight = 2.0;
             }
 
             const score = primaryDist + (weight * secondaryDist);
@@ -771,7 +1016,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ----------------------------------------------------
-    // 10. HELPER FUNCTIONS
+    // 12. HELPER FUNCTIONS
     // ----------------------------------------------------
     function escapeHtml(str) {
         if (!str) return '';

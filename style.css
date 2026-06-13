@@ -8,12 +8,12 @@
 }
 
 :root {
-    --bg-primary: #07090e;
-    --bg-secondary: #0d121f;
-    --bg-card: rgba(18, 24, 38, 0.75);
-    --bg-card-hover: rgba(26, 34, 54, 0.85);
+    --bg-primary: #05070c;
+    --bg-secondary: #0a0d18;
+    --bg-card: rgba(14, 20, 32, 0.75);
+    --bg-card-hover: rgba(22, 30, 48, 0.85);
     
-    --border-color: rgba(255, 255, 255, 0.07);
+    --border-color: rgba(255, 255, 255, 0.06);
     --border-focus: #00e5ff;
     
     --text-primary: #ffffff;
@@ -74,14 +74,14 @@ body::before {
     max-height: 100%;
     display: grid;
     grid-template-columns: 280px 1fr;
-    background: linear-gradient(135deg, rgba(7, 9, 14, 0.9) 0%, rgba(13, 18, 31, 0.9) 100%);
+    background: linear-gradient(135deg, rgba(5, 7, 12, 0.92) 0%, rgba(10, 13, 24, 0.92) 100%);
     box-shadow: 0 0 100px rgba(0, 0, 0, 0.8);
     position: relative;
 }
 
 /* Sidebar Navigation */
 .sidebar {
-    background: rgba(10, 14, 23, 0.85);
+    background: rgba(8, 11, 18, 0.85);
     border-right: 1px solid var(--border-color);
     display: flex;
     flex-direction: column;
@@ -150,7 +150,7 @@ body::before {
 .nav-button:hover, .nav-button.focused {
     background: var(--bg-card-hover);
     color: var(--text-primary);
-    border-color: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.1);
     transform: scale(1.03) translateX(5px);
 }
 
@@ -167,7 +167,7 @@ body::before {
 }
 
 .nav-button.active {
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.04);
     color: var(--text-primary);
     border-left: 4px solid var(--color-cyan);
 }
@@ -280,10 +280,11 @@ body::before {
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
 
+/* Premium Card Focus Effect */
 .card:focus, .card.focused {
-    transform: scale(1.025) translateY(-5px);
+    transform: scale(1.02) translateY(-4px);
     border-color: var(--color-cyan);
-    box-shadow: 0 15px 35px rgba(0, 210, 255, 0.15), 0 0 25px rgba(0, 210, 255, 0.1);
+    box-shadow: 0 15px 35px rgba(0, 210, 255, 0.12), 0 0 30px rgba(0, 210, 255, 0.08);
     z-index: 5;
 }
 
@@ -301,27 +302,27 @@ body::before {
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 1px;
-    background: rgba(0, 114, 255, 0.15);
+    background: rgba(0, 114, 255, 0.12);
     color: var(--color-cyan);
-    border: 1px solid rgba(0, 210, 255, 0.2);
+    border: 1px solid rgba(0, 210, 255, 0.15);
 }
 
 .card-badge.purple {
-    background: rgba(157, 78, 221, 0.15);
+    background: rgba(157, 78, 221, 0.12);
     color: var(--color-purple);
-    border-color: rgba(157, 78, 221, 0.2);
+    border-color: rgba(157, 78, 221, 0.15);
 }
 
 .card-badge.gold {
-    background: rgba(255, 183, 3, 0.15);
+    background: rgba(255, 183, 3, 0.12);
     color: var(--color-gold);
-    border-color: rgba(255, 183, 3, 0.25);
+    border-color: rgba(255, 183, 3, 0.2);
     animation: goldPulse 2s infinite alternate;
 }
 
 @keyframes goldPulse {
-    0% { border-color: rgba(255, 183, 3, 0.2); box-shadow: 0 0 5px rgba(255, 183, 3, 0.1); }
-    100% { border-color: rgba(255, 183, 3, 0.5); box-shadow: 0 0 12px rgba(255, 183, 3, 0.2); }
+    0% { border-color: rgba(255, 183, 3, 0.15); box-shadow: 0 0 5px rgba(255, 183, 3, 0.1); }
+    100% { border-color: rgba(255, 183, 3, 0.4); box-shadow: 0 0 12px rgba(255, 183, 3, 0.15); }
 }
 
 .card h2 {
@@ -401,7 +402,7 @@ body::before {
     display: flex;
     flex-direction: column;
     gap: 8px;
-    background: rgba(255, 255, 255, 0.03);
+    background: rgba(255, 255, 255, 0.02);
     padding: 14px;
     border-radius: 10px;
     border: 1px solid rgba(255, 255, 255, 0.03);
@@ -435,15 +436,21 @@ body::before {
 }
 
 /* TV custom scrollbar */
-.news-content::-webkit-scrollbar, .admin-news-list::-webkit-scrollbar, .admin-layout::-webkit-scrollbar {
+.news-content::-webkit-scrollbar, 
+.admin-news-list::-webkit-scrollbar, 
+.admin-layout::-webkit-scrollbar {
     width: 6px;
 }
-.news-content::-webkit-scrollbar-track, .admin-news-list::-webkit-scrollbar-track, .admin-layout::-webkit-scrollbar-track {
+.news-content::-webkit-scrollbar-track, 
+.admin-news-list::-webkit-scrollbar-track, 
+.admin-layout::-webkit-scrollbar-track {
     background: rgba(255, 255, 255, 0.02);
     border-radius: 3px;
 }
-.news-content::-webkit-scrollbar-thumb, .admin-news-list::-webkit-scrollbar-thumb, .admin-layout::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.15);
+.news-content::-webkit-scrollbar-thumb, 
+.admin-news-list::-webkit-scrollbar-thumb, 
+.admin-layout::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.12);
     border-radius: 3px;
 }
 
@@ -491,7 +498,7 @@ body::before {
     height: 70px;
     border-radius: 8px;
     object-fit: cover;
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.06);
     flex-shrink: 0;
 }
 
@@ -518,7 +525,7 @@ body::before {
     justify-content: center;
     background-size: cover;
     background-position: center;
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.04);
     overflow: hidden;
 }
 
@@ -530,7 +537,7 @@ body::before {
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(135deg, rgba(8, 11, 20, 0.92) 0%, rgba(13, 18, 31, 0.8) 100%);
+    background: linear-gradient(135deg, rgba(5, 7, 12, 0.94) 0%, rgba(10, 13, 24, 0.8) 100%);
     z-index: 1;
     pointer-events: none;
 }
@@ -560,12 +567,12 @@ body::before {
     width: 50px;
     height: 50px;
     border-radius: 50%;
-    background: rgba(255, 183, 3, 0.15);
+    background: rgba(255, 183, 3, 0.12);
     display: flex;
     justify-content: center;
     align-items: center;
-    border: 1px solid rgba(255, 183, 3, 0.3);
-    box-shadow: 0 0 15px rgba(255, 183, 3, 0.2);
+    border: 1px solid rgba(255, 183, 3, 0.25);
+    box-shadow: 0 0 15px rgba(255, 183, 3, 0.15);
     color: var(--color-gold);
 }
 
@@ -619,19 +626,22 @@ body::before {
 }
 
 .secondary-button {
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     color: white;
     box-shadow: none;
 }
 
 .secondary-button:focus, .secondary-button.focused {
-    background: rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.12);
     border-color: white;
     box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
 }
 
-/* 4. Instructions / Dev Screen Section */
+
+/* ====================================================
+   5. Instructions / Dev Screen Section
+   ==================================================== */
 .dev-container {
     display: flex;
     justify-content: center;
@@ -717,7 +727,7 @@ body::before {
 }
 
 /* ====================================================
-   5. SECRET ADMIN PANEL STYLING
+   6. SECRET ADMIN PANEL STYLING
    ==================================================== */
 .admin-layout {
     display: flex;
@@ -742,7 +752,7 @@ body::before {
 }
 
 .admin-section-card {
-    background: rgba(16, 22, 37, 0.8);
+    background: rgba(12, 17, 29, 0.8);
     border: 1px solid var(--border-color);
     border-radius: 12px;
     padding: 22px;
@@ -783,7 +793,7 @@ label {
 
 .admin-input {
     background: rgba(8, 11, 20, 0.7);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 8px;
     color: white;
     padding: 10px 14px;
@@ -813,7 +823,7 @@ textarea.admin-input {
 /* News List inside Admin panel */
 .add-news-box {
     background: rgba(255, 255, 255, 0.02);
-    border: 1px solid rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.03);
     border-radius: 8px;
     padding: 15px;
     display: flex;
@@ -844,8 +854,8 @@ textarea.admin-input {
 }
 
 .admin-news-item-row {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.04);
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.03);
     border-radius: 8px;
     padding: 10px 15px;
     display: flex;
@@ -894,7 +904,7 @@ textarea.admin-input {
     bottom: 0;
     left: 280px; /* Aligned with sidebar edge */
     right: 0;
-    background: #0b0e17;
+    background: #080a10;
     border-top: 1px solid var(--border-color);
     padding: 15px 45px;
     display: flex;
@@ -930,7 +940,7 @@ textarea.admin-input {
 }
 
 /* ====================================================
-   6. SECURE PIN AUTHENTICATION OVERLAY
+   7. SECURE PIN & PHONE AUTHENTICATION OVERLAYS
    ==================================================== */
 .auth-overlay {
     position: fixed;
@@ -957,7 +967,7 @@ textarea.admin-input {
 }
 
 .auth-card {
-    background: rgba(18, 24, 38, 0.9);
+    background: rgba(14, 20, 32, 0.95);
     border: 1.5px solid var(--border-color);
     border-radius: 24px;
     padding: 40px;
@@ -970,6 +980,10 @@ textarea.admin-input {
     box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6), 0 0 30px rgba(0, 114, 255, 0.05);
     transform: scale(0.9);
     animation: scaleInCard 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.phone-auth-card {
+    width: 420px;
 }
 
 @keyframes scaleInCard {
@@ -987,6 +1001,13 @@ textarea.admin-input {
     align-items: center;
     border: 1px solid rgba(0, 210, 255, 0.2);
     box-shadow: 0 0 15px rgba(0, 210, 255, 0.15);
+}
+
+.phone-icon-box {
+    background: rgba(157, 78, 221, 0.1);
+    color: var(--color-purple);
+    border-color: rgba(157, 78, 221, 0.2);
+    box-shadow: 0 0 15px rgba(157, 78, 221, 0.15);
 }
 
 .auth-lock-icon svg {
@@ -1019,8 +1040,8 @@ textarea.admin-input {
     width: 16px;
     height: 16px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.15);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -1034,6 +1055,27 @@ textarea.admin-input {
     background: var(--color-danger) !important;
     box-shadow: 0 0 12px var(--color-danger) !important;
     animation: shake 0.3s ease;
+}
+
+/* Phone Number Display */
+.phone-display-container {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid var(--border-color);
+    padding: 12px 25px;
+    border-radius: 12px;
+    width: 100%;
+    text-align: center;
+    margin: 10px 0;
+    box-shadow: inset 0 2px 10px rgba(0,0,0,0.5);
+}
+
+#phone-number-display {
+    font-family: 'Outfit', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--color-cyan);
+    letter-spacing: 1.5px;
+    text-shadow: 0 0 10px rgba(0, 210, 255, 0.35);
 }
 
 @keyframes shake {
@@ -1068,20 +1110,20 @@ textarea.admin-input {
 }
 
 .pin-key:hover, .pin-key.focused {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.15);
     transform: scale(1.05);
 }
 
 .pin-key:focus, .pin-key.focused {
     background: var(--color-cyan);
-    color: #07090e;
+    color: #05070c;
     border-color: var(--color-cyan);
     box-shadow: 0 0 15px rgba(0, 210, 255, 0.4);
 }
 
 .pin-key.control {
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 600;
     background: rgba(255, 255, 255, 0.02);
 }
@@ -1103,7 +1145,7 @@ textarea.admin-input {
     bottom: -80px;
     left: 50%;
     transform: translateX(-50%);
-    background: rgba(13, 18, 31, 0.95);
+    background: rgba(10, 13, 24, 0.95);
     border: 1.5px solid var(--color-cyan);
     color: white;
     padding: 14px 28px;
@@ -1111,7 +1153,7 @@ textarea.admin-input {
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 210, 255, 0.15);
     font-size: 14px;
     font-weight: 600;
-    z-index: 100;
+    z-index: 1100;
     pointer-events: none;
     transition: bottom 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     display: flex;
