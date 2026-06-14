@@ -774,6 +774,39 @@
             color: #fff;
             border-style: solid;
         }
+
+        .admin-instructions-split {
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+            height: 100%;
+            gap: 1.5em;
+        }
+
+        .admin-instructions-left {
+            width: 40%;
+            display: flex;
+            flex-direction: column;
+            gap: 1em;
+            border-right: 1px solid rgba(255, 255, 255, 0.08);
+            padding-right: 1.5em;
+            height: 100%;
+            overflow-y: auto;
+        }
+
+        .admin-instructions-right {
+            width: 60%;
+            display: flex;
+            flex-direction: column;
+            gap: 1em;
+            height: 100%;
+            overflow-y: auto;
+        }
+
+        .admin-instruction-card.active {
+            border-color: #ffc107;
+            background: rgba(255, 193, 7, 0.05);
+        }
     </style>
 </head>
 <body style="background: #1d1f20;">
@@ -917,6 +950,19 @@
                 .replace(/'/g, "&#039;");
         }
 
+        function migrateInstructions(instructions) {
+            if (!instructions || !Array.isArray(instructions)) return [];
+            if (instructions.length > 0 && (instructions[0].text !== undefined || instructions[0].imageUrl !== undefined)) {
+                // Old flat structure, wrap it into a single instruction
+                return [{
+                    id: 'inst-default',
+                    title: 'Общая инструкция',
+                    steps: instructions
+                }];
+            }
+            return instructions;
+        }
+
         function mergeConfigs(loaded, defaults) {
             if (!loaded || typeof loaded !== 'object') return defaults;
             var result = $.extend(true, {}, defaults, loaded);
@@ -924,7 +970,7 @@
                 result.news = loaded.news;
             }
             if (loaded.instructions && Array.isArray(loaded.instructions)) {
-                result.instructions = loaded.instructions;
+                result.instructions = migrateInstructions(loaded.instructions);
             }
             return result;
         }
@@ -964,22 +1010,28 @@
                 ],
                 "instructions": [
                     {
-                        "id": "step-1",
-                        "title": "Шаг 1: Подключение приставки",
-                        "text": "Подключите HDMI-кабель одним концом к вашей приставке, а вторым — к свободному HDMI-порту телевизора. Подсоедините блок питания к приставке и розетке.",
-                        "imageUrl": "app_logo.png"
-                    },
-                    {
-                        "id": "step-2",
-                        "title": "Шаг 2: Подключение к интернету",
-                        "text": "Включите приставку. Перейдите в настройки Wi-Fi, выберите вашу домашнюю сеть и введите пароль. Убедитесь, что статус подключения сменился на 'Подключено'.",
-                        "imageUrl": "app_logo.png"
-                    },
-                    {
-                        "id": "step-3",
-                        "title": "Шаг 3: Запуск приложения",
-                        "text": "Найдите на главном экране приложение Lampa и запустите его. Наш портал загрузится автоматически со всеми настроенными разделами поддержки и новостей.",
-                        "imageUrl": "app_logo.png"
+                        "id": "inst-setup",
+                        "title": "Настройка приставки",
+                        "steps": [
+                            {
+                                "id": "step-1",
+                                "title": "Шаг 1: Подключение приставки",
+                                "text": "Подключите HDMI-кабель одним концом к вашей приставке, а вторым — к свободному HDMI-порту телевизора. Подсоедините блок питания к приставке и розетке.",
+                                "imageUrl": "app_logo.png"
+                            },
+                            {
+                                "id": "step-2",
+                                "title": "Шаг 2: Подключение к интернету",
+                                "text": "Включите приставку. Перейдите в настройки Wi-Fi, выберите вашу домашнюю сеть и введите пароль. Убедитесь, что статус подключения сменился на 'Подключено'.",
+                                "imageUrl": "app_logo.png"
+                            },
+                            {
+                                "id": "step-3",
+                                "title": "Шаг 3: Запуск приложения",
+                                "text": "Найдите на главном экране приложение Lampa и запустите его. Наш портал загрузится автоматически со всеми настроенными разделами поддержки и новостей.",
+                                "imageUrl": "app_logo.png"
+                            }
+                        ]
                     }
                 ]
             };
@@ -1219,6 +1271,8 @@
                 var html = $('<div class="instructions-container"></div>');
                 var current_step = 0;
                 var is_zoomed = false;
+                var selected_inst_idx = 0;
+                var is_selection = true;
 
                 this.create = function () {
                     var _this = this;
@@ -1226,17 +1280,100 @@
                     
                     window.loadPortalConfig(function() {
                         _this.activity.loader(false);
-                        _this.buildStep();
+                        _this.buildSelection();
                         _this.activity.toggle();
                     });
                 };
 
+                this.buildSelection = function () {
+                    var config = window.portal_config || getDefaultConfig();
+                    var instList = config.instructions || [];
+                    instList = migrateInstructions(instList);
+                    
+                    html.empty();
+                    is_selection = true;
+
+                    if (!instList.length) {
+                        html.html('<div style="color:rgba(255,255,255,0.4); text-align:center; width:100%; padding: 4em;">Нет доступных инструкций</div>');
+                        return;
+                    }
+
+                    var selection_html = 
+                        '<div class="instructions-selection-container" style="display:flex; flex-direction:column; width:100%; height:calc(100vh - 4.5em); padding: 2em; box-sizing:border-box; gap:1.5em; overflow:hidden;">' +
+                            '<h1 style="color:#fff; font-size:1.8em; font-weight:700; margin: 0 0 0.5em 0; border-left: 4px solid #ffc107; padding-left: 0.6em;">Выберите инструкцию</h1>' +
+                            '<div class="instructions-selection-list" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap:1.5em; overflow-y:auto; flex-grow:1; padding-bottom: 1em;"></div>' +
+                        '</div>';
+
+                    var container = $(selection_html);
+                    var list = container.find('.instructions-selection-list');
+
+                    instList.forEach(function(inst, idx) {
+                        var stepsCount = inst.steps ? inst.steps.length : 0;
+                        var card = $(
+                            '<div class="dashboard-card selector instruction-select-card" data-inst-index="' + idx + '" style="cursor:pointer; display:flex; flex-direction:column; justify-content:space-between; height: 160px;">' +
+                                '<div>' +
+                                    '<div style="font-weight:700; font-size:1.35em; color:#fff; line-height:1.3; margin-bottom: 0.4em;">' + escapeHtml(inst.title) + '</div>' +
+                                    '<div style="color:rgba(255,255,255,0.5); font-size:0.95em;">Пошаговое руководство</div>' +
+                                '</div>' +
+                                '<div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid rgba(255,255,255,0.08); padding-top:0.6em; margin-top:1em;">' +
+                                    '<span style="color:#ffc107; font-size:0.95em; font-weight:700;">Шагов: ' + stepsCount + '</span>' +
+                                    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:1.2em;height:1.2em;color:#ffc107;"><path d="M5 12h14M12 5l7 7-7 7"/></svg>' +
+                                '</div>' +
+                            '</div>'
+                        );
+                        list.append(card);
+                    });
+
+                    html.append(container);
+
+                    var _this = this;
+                    html.find('.selector').on('hover:enter click', function() {
+                        var idx = parseInt($(this).attr('data-inst-index'));
+                        _this.selectInstruction(idx);
+                    });
+                };
+
+                this.selectInstruction = function (idx) {
+                    selected_inst_idx = idx;
+                    current_step = 0;
+                    is_selection = false;
+                    this.buildStep();
+                    Lampa.Controller.toggle('content');
+                };
+
+                this.exitToSelection = function () {
+                    is_selection = true;
+                    this.buildSelection();
+                    Lampa.Controller.toggle('content');
+                };
+
                 this.buildStep = function () {
                     var config = window.portal_config || getDefaultConfig();
-                    var steps = config.instructions || [];
+                    var instList = config.instructions || [];
+                    instList = migrateInstructions(instList);
                     
+                    html.empty();
+
+                    if (selected_inst_idx < 0 || selected_inst_idx >= instList.length) {
+                        this.exitToSelection();
+                        return;
+                    }
+
+                    var inst = instList[selected_inst_idx];
+                    var steps = inst.steps || [];
+
                     if (!steps.length) {
-                        html.html('<div style="color:rgba(255,255,255,0.4); text-align:center; width:100%; padding: 4em;">Нет инструкций</div>');
+                        var empty_html = 
+                            '<div class="instructions-container" style="display:flex; flex-direction:column; align-items:center; justify-content:center; width:100%; height:calc(100vh - 4.5em);">' +
+                                '<div style="color:rgba(255,255,255,0.4); text-align:center; padding: 2em; font-size:1.2em;">В этой инструкции пока нет шагов</div>' +
+                                '<button class="dashboard-card selector btn-back-to-sel" style="cursor:pointer; padding:0.8em 1.5em; font-weight:700; color:#ffc107; background:rgba(255,193,7,0.1); border-color:#ffc107; margin-top:1em;">Назад к списку</button>' +
+                            '</div>';
+                        html.html(empty_html);
+                        
+                        var _this = this;
+                        html.find('.selector').on('hover:enter click', function() {
+                            _this.exitToSelection();
+                        });
                         return;
                     }
 
@@ -1250,12 +1387,15 @@
                     var step_inner_html = 
                         '<div class="instructions-left">' +
                             '<div class="dashboard-card instructions-card">' +
-                                '<div class="instructions-step-badge">Шаг ' + stepNum + ' из ' + totalSteps + '</div>' +
+                                '<div style="display:flex; justify-content:space-between; align-items:center;">' +
+                                    '<div class="instructions-step-badge">Шаг ' + stepNum + ' из ' + totalSteps + '</div>' +
+                                    '<div style="color:rgba(255,255,255,0.4); font-size:0.9em; font-weight:bold;">' + escapeHtml(inst.title) + '</div>' +
+                                '</div>' +
                                 '<h2 class="instructions-title">' + escapeHtml(step.title) + '</h2>' +
                                 '<div class="instructions-text">' + escapeHtml(step.text).replace(/\n/g, '<br>') + '</div>' +
                                 '<div class="instructions-footer-hint">' +
                                     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:1.2em;height:1.2em;margin-right:0.4em;"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>' +
-                                    '<span>Используйте стрелки Влево/Вправо на пульте для перелистывания. OK для увеличения фото.</span>' +
+                                    '<span>Влево/Вправо для перелистывания. OK для увеличения фото. BACK для выхода к списку.</span>' +
                                 '</div>' +
                             '</div>' +
                          '</div>' +
@@ -1296,24 +1436,29 @@
                         left: function left() {
                             if (_this.isZoomed()) {
                                 _this.toggleZoom();
+                            } else if (is_selection) {
+                                if (Navigator.canmove('left')) Navigator.move('left');
+                                else Lampa.Controller.toggle('menu');
                             } else {
-                                var config = window.portal_config || getDefaultConfig();
-                                var steps = config.instructions || [];
                                 if (current_step > 0) {
                                     current_step--;
                                     _this.buildStep();
                                     Lampa.Controller.toggle('content');
                                 } else {
-                                    Lampa.Controller.toggle('menu');
+                                    _this.exitToSelection();
                                 }
                             }
                         },
                         right: function right() {
                             if (_this.isZoomed()) {
                                 _this.toggleZoom();
+                            } else if (is_selection) {
+                                if (Navigator.canmove('right')) Navigator.move('right');
                             } else {
                                 var config = window.portal_config || getDefaultConfig();
-                                var steps = config.instructions || [];
+                                var instList = config.instructions || [];
+                                instList = migrateInstructions(instList);
+                                var steps = (instList[selected_inst_idx]) ? (instList[selected_inst_idx].steps || []) : [];
                                 if (current_step < steps.length - 1) {
                                     current_step++;
                                     _this.buildStep();
@@ -1324,6 +1469,9 @@
                         up: function up() {
                             if (_this.isZoomed()) {
                                 _this.toggleZoom();
+                            } else if (is_selection) {
+                                if (Navigator.canmove('up')) Navigator.move('up');
+                                else Lampa.Controller.toggle('head');
                             } else {
                                 Lampa.Controller.toggle('head');
                             }
@@ -1331,13 +1479,17 @@
                         down: function down() {
                             if (_this.isZoomed()) {
                                 _this.toggleZoom();
+                            } else if (is_selection) {
+                                if (Navigator.canmove('down')) Navigator.move('down');
                             }
                         },
                         back: function back() {
                             if (_this.isZoomed()) {
                                 _this.toggleZoom();
-                            } else {
+                            } else if (is_selection) {
                                 Lampa.Activity.backward();
+                            } else {
+                                _this.exitToSelection();
                             }
                         }
                     });
@@ -1436,7 +1588,6 @@
                                 '<!-- Tab: Instructions -->' +
                                 '<div class="admin-tab-panel" id="tab-instructions">' +
                                     '<div class="admin-instructions-list" id="admin-instructions-container"></div>' +
-                                    '<button class="admin-btn-add-instruction selector" id="btn-add-instruction">+ Добавить шаг</button>' +
                                 '</div>' +
                                 '<!-- Tab: Sync -->' +
                                 '<div class="admin-tab-panel" id="tab-sync">' +
@@ -1505,6 +1656,8 @@
                         });
                     }
 
+                    var active_inst_idx = 0;
+
                     function renderAdminInstructions() {
                         var container = html.find('#admin-instructions-container');
                         container.empty();
@@ -1512,68 +1665,206 @@
                         if (!config.instructions) {
                             config.instructions = [];
                         }
+                        config.instructions = migrateInstructions(config.instructions);
 
-                        config.instructions.forEach(function(item, idx) {
-                            var stepCard = $(
-                                '<div class="admin-instruction-card" data-index="' + idx + '">' +
-                                    '<div class="admin-instruction-card-header">' +
-                                        '<span class="admin-instruction-title-label">Шаг #' + (idx + 1) + '</span>' +
-                                        '<div class="admin-instruction-actions">' +
-                                            '<button class="admin-btn-move-instruction btn-move-up selector" data-index="' + idx + '">↑</button>' +
-                                            '<button class="admin-btn-move-instruction btn-move-down selector" data-index="' + idx + '">↓</button>' +
-                                            '<button class="admin-btn-delete-instruction selector" data-index="' + idx + '">Удалить</button>' +
+                        var split_html = $(
+                            '<div class="admin-instructions-split">' +
+                                '<div class="admin-instructions-left" id="admin-inst-list-pane"></div>' +
+                                '<div class="admin-instructions-right" id="admin-inst-steps-pane"></div>' +
+                            '</div>'
+                        );
+                        container.append(split_html);
+
+                        var leftPane = split_html.find('#admin-inst-list-pane');
+                        var rightPane = split_html.find('#admin-inst-steps-pane');
+
+                        // 1. Render Left Pane (List of Instructions)
+                        leftPane.append('<div style="color: #ffc107; font-weight: 700; margin-bottom: 0.5em; font-size: 1.1em;">СПИСОК ИНСТРУКЦИЙ</div>');
+                        
+                        config.instructions.forEach(function(inst, idx) {
+                            var instClass = (idx === active_inst_idx) ? 'active' : '';
+                            var instCard = $(
+                                '<div class="admin-instruction-card ' + instClass + '" data-inst-index="' + idx + '" style="cursor: pointer; padding: 0.8em; display: flex; flex-direction: column; gap: 0.5em; margin-bottom: 0.8em; border-radius: 0.6em; border: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.01);">' +
+                                    '<div style="display: flex; justify-content: space-between; align-items: center;">' +
+                                        '<span style="font-weight: bold; color: ' + (idx === active_inst_idx ? '#ffc107' : '#fff') + ';">Инструкция #' + (idx + 1) + '</span>' +
+                                        '<div style="display: flex; gap: 0.3em;">' +
+                                            '<button class="admin-btn-move-instruction btn-inst-up selector" data-inst-index="' + idx + '">↑</button>' +
+                                            '<button class="admin-btn-move-instruction btn-inst-down selector" data-inst-index="' + idx + '">↓</button>' +
+                                            '<button class="admin-btn-delete-instruction btn-inst-delete selector" data-inst-index="' + idx + '">Удалить</button>' +
                                         '</div>' +
                                     '</div>' +
-                                    '<div class="admin-form-group">' +
-                                        '<label>Заголовок шага</label>' +
-                                        '<input type="text" class="admin-input-instruction-title admin-input selector" value="' + escapeHtml(item.title) + '">' +
-                                    '</div>' +
-                                    '<div class="admin-form-group">' +
-                                        '<label>Описание шага</label>' +
-                                        '<textarea class="admin-textarea-instruction-text admin-textarea selector">' + escapeHtml(item.text) + '</textarea>' +
-                                    '</div>' +
-                                    '<div class="admin-form-group">' +
-                                        '<label>Ссылка на картинку шага (например, app_logo.png)</label>' +
-                                        '<input type="text" class="admin-input-instruction-image admin-input selector" value="' + escapeHtml(item.imageUrl) + '">' +
+                                    '<div class="admin-form-group" style="margin-top: 0.3em;">' +
+                                        '<label style="font-size: 0.8em;">Название</label>' +
+                                        '<input type="text" class="admin-input-inst-title admin-input selector" value="' + escapeHtml(inst.title) + '">' +
                                     '</div>' +
                                 '</div>'
                             );
-                            container.append(stepCard);
+                            leftPane.append(instCard);
                         });
 
-                        // Bind delete action
-                        container.find('.admin-btn-delete-instruction').on('hover:enter', function(e) {
+                        leftPane.append('<button class="admin-btn-add-instruction selector" id="btn-add-new-inst" style="margin-top: 0.5em;">+ Новая инструкция</button>');
+
+                        // Bind left pane events
+                        leftPane.find('.admin-instruction-card').on('hover:enter click', function(e) {
+                            if ($(e.target).is('input') || $(e.target).is('button')) return;
                             gatherFormValues();
-                            var idx = parseInt($(this).attr('data-index'));
-                            config.instructions.splice(idx, 1);
+                            active_inst_idx = parseInt($(this).attr('data-inst-index'));
                             renderAdminInstructions();
                             Lampa.Controller.toggle('content');
                         });
 
-                        // Bind move up action
-                        container.find('.btn-move-up').on('hover:enter', function(e) {
+                        leftPane.find('.btn-inst-delete').on('hover:enter', function(e) {
+                            e.preventDefault();
                             gatherFormValues();
-                            var idx = parseInt($(this).attr('data-index'));
+                            var idx = parseInt($(this).attr('data-inst-index'));
+                            config.instructions.splice(idx, 1);
+                            if (active_inst_idx >= config.instructions.length) {
+                                active_inst_idx = Math.max(0, config.instructions.length - 1);
+                            }
+                            renderAdminInstructions();
+                            Lampa.Controller.toggle('content');
+                        });
+
+                        leftPane.find('.btn-inst-up').on('hover:enter', function(e) {
+                            e.preventDefault();
+                            gatherFormValues();
+                            var idx = parseInt($(this).attr('data-inst-index'));
                             if (idx > 0) {
                                 var temp = config.instructions[idx];
                                 config.instructions[idx] = config.instructions[idx - 1];
                                 config.instructions[idx - 1] = temp;
+                                if (active_inst_idx === idx) active_inst_idx = idx - 1;
+                                else if (active_inst_idx === idx - 1) active_inst_idx = idx;
                                 renderAdminInstructions();
                                 Lampa.Controller.toggle('content');
                             }
                         });
 
-                        // Bind move down action
-                        container.find('.btn-move-down').on('hover:enter', function(e) {
+                        leftPane.find('.btn-inst-down').on('hover:enter', function(e) {
+                            e.preventDefault();
                             gatherFormValues();
-                            var idx = parseInt($(this).attr('data-index'));
+                            var idx = parseInt($(this).attr('data-inst-index'));
                             if (idx < config.instructions.length - 1) {
                                 var temp = config.instructions[idx];
                                 config.instructions[idx] = config.instructions[idx + 1];
                                 config.instructions[idx + 1] = temp;
+                                if (active_inst_idx === idx) active_inst_idx = idx + 1;
+                                else if (active_inst_idx === idx + 1) active_inst_idx = idx;
                                 renderAdminInstructions();
                                 Lampa.Controller.toggle('content');
                             }
+                        });
+
+                        leftPane.find('#btn-add-new-inst').on('hover:enter', function(e) {
+                            e.preventDefault();
+                            gatherFormValues();
+                            config.instructions.push({
+                                id: 'inst-' + (new Date().getTime()),
+                                title: 'Инструкция ' + (config.instructions.length + 1),
+                                steps: []
+                            });
+                            active_inst_idx = config.instructions.length - 1;
+                            renderAdminInstructions();
+                            Lampa.Controller.toggle('content');
+                        });
+
+                        // 2. Render Right Pane (Steps of selected instruction)
+                        if (config.instructions.length === 0) {
+                            rightPane.html('<div style="color:rgba(255,255,255,0.4); text-align:center; padding: 3em;">Создайте или выберите инструкцию слева</div>');
+                            return;
+                        }
+
+                        var current_inst = config.instructions[active_inst_idx];
+                        rightPane.append('<div style="color: #ffc107; font-weight: 700; margin-bottom: 0.5em; font-size: 1.1em; text-transform: uppercase;">ШАГИ: ' + escapeHtml(current_inst.title) + '</div>');
+
+                        var stepsContainer = $('<div class="admin-instructions-list"></div>');
+                        rightPane.append(stepsContainer);
+
+                        if (!current_inst.steps) {
+                            current_inst.steps = [];
+                        }
+
+                        current_inst.steps.forEach(function(step, idx) {
+                            var stepCard = $(
+                                '<div class="admin-instruction-card admin-step-card" data-step-index="' + idx + '" style="margin-bottom: 1em;">' +
+                                    '<div class="admin-instruction-card-header">' +
+                                        '<span class="admin-instruction-title-label">Шаг #' + (idx + 1) + '</span>' +
+                                        '<div class="admin-instruction-actions">' +
+                                            '<button class="admin-btn-move-instruction btn-step-up selector" data-step-index="' + idx + '">↑</button>' +
+                                            '<button class="admin-btn-move-instruction btn-step-down selector" data-step-index="' + idx + '">↓</button>' +
+                                            '<button class="admin-btn-delete-instruction btn-step-delete selector" data-step-index="' + idx + '">Удалить</button>' +
+                                        '</div>' +
+                                    '</div>' +
+                                    '<div class="admin-form-group">' +
+                                        '<label>Заголовок шага</label>' +
+                                        '<input type="text" class="admin-input-step-title admin-input selector" value="' + escapeHtml(step.title) + '">' +
+                                    '</div>' +
+                                    '<div class="admin-form-group">' +
+                                        '<label>Описание шага</label>' +
+                                        '<textarea class="admin-textarea-step-text admin-textarea selector">' + escapeHtml(step.text) + '</textarea>' +
+                                    '</div>' +
+                                    '<div class="admin-form-group">' +
+                                        '<label>Ссылка на картинку шага (например, app_logo.png)</label>' +
+                                        '<input type="text" class="admin-input-step-image admin-input selector" value="' + escapeHtml(step.imageUrl) + '">' +
+                                    '</div>' +
+                                '</div>'
+                            );
+                            stepsContainer.append(stepCard);
+                        });
+
+                        rightPane.append('<button class="admin-btn-add-instruction selector" id="btn-add-new-step">+ Добавить шаг</button>');
+
+                        // Bind step actions
+                        rightPane.find('.btn-step-delete').on('hover:enter', function(e) {
+                            e.preventDefault();
+                            gatherFormValues();
+                            var idx = parseInt($(this).attr('data-step-index'));
+                            config.instructions[active_inst_idx].steps.splice(idx, 1);
+                            renderAdminInstructions();
+                            Lampa.Controller.toggle('content');
+                        });
+
+                        rightPane.find('.btn-step-up').on('hover:enter', function(e) {
+                            e.preventDefault();
+                            gatherFormValues();
+                            var idx = parseInt($(this).attr('data-step-index'));
+                            if (idx > 0) {
+                                var steps = config.instructions[active_inst_idx].steps;
+                                var temp = steps[idx];
+                                steps[idx] = steps[idx - 1];
+                                steps[idx - 1] = temp;
+                                renderAdminInstructions();
+                                Lampa.Controller.toggle('content');
+                            }
+                        });
+
+                        rightPane.find('.btn-step-down').on('hover:enter', function(e) {
+                            e.preventDefault();
+                            gatherFormValues();
+                            var idx = parseInt($(this).attr('data-step-index'));
+                            var steps = config.instructions[active_inst_idx].steps;
+                            if (idx < steps.length - 1) {
+                                var temp = steps[idx];
+                                steps[idx] = steps[idx + 1];
+                                steps[idx + 1] = temp;
+                                renderAdminInstructions();
+                                Lampa.Controller.toggle('content');
+                            }
+                        });
+
+                        rightPane.find('#btn-add-new-step').on('hover:enter', function(e) {
+                            e.preventDefault();
+                            gatherFormValues();
+                            var steps = config.instructions[active_inst_idx].steps;
+                            var nextStepNum = steps.length + 1;
+                            steps.push({
+                                id: 'step-' + (new Date().getTime()),
+                                title: 'Шаг ' + nextStepNum + ': Новая инструкция',
+                                text: 'Описание действий для этого шага...',
+                                imageUrl: 'app_logo.png'
+                            });
+                            renderAdminInstructions();
+                            Lampa.Controller.toggle('content');
                         });
                     }
 
@@ -1600,22 +1891,6 @@
                             desc: 'Текст новой новости...'
                         });
                         renderAdminNews();
-                        Lampa.Controller.toggle('content');
-                    });
-
-                    html.find('#btn-add-instruction').on('hover:enter', function() {
-                        gatherFormValues();
-                        if (!config.instructions) {
-                            config.instructions = [];
-                        }
-                        var nextStepNum = config.instructions.length + 1;
-                        config.instructions.push({
-                            id: 'step-' + (new Date().getTime()),
-                            title: 'Шаг ' + nextStepNum + ': Новая инструкция',
-                            text: 'Описание действий для этого шага...',
-                            imageUrl: 'app_logo.png'
-                        });
-                        renderAdminInstructions();
                         Lampa.Controller.toggle('content');
                     });
 
@@ -1665,19 +1940,39 @@
                             });
                         });
 
-                        var instructionCards = html.find('.admin-instruction-card');
-                        config.instructions = [];
-                        instructionCards.each(function() {
-                            var titleVal = $(this).find('.admin-input-instruction-title').val();
-                            var textVal = $(this).find('.admin-textarea-instruction-text').val();
-                            var imageVal = $(this).find('.admin-input-instruction-image').val();
-                            config.instructions.push({
-                                id: 'step-' + $(this).attr('data-index'),
+                        // Gather list of instructions from left pane
+                        var instCards = html.find('#admin-inst-list-pane .admin-instruction-card');
+                        var updated_instructions = [];
+                        instCards.each(function() {
+                            var idx = parseInt($(this).attr('data-inst-index'));
+                            var titleVal = $(this).find('.admin-input-inst-title').val();
+                            var origInst = config.instructions[idx];
+                            updated_instructions.push({
+                                id: origInst ? origInst.id : ('inst-' + idx),
                                 title: titleVal,
-                                text: textVal,
-                                imageUrl: imageVal
+                                steps: origInst ? (origInst.steps || []) : []
                             });
                         });
+                        config.instructions = updated_instructions;
+
+                        // Gather steps for currently active instruction from right pane
+                        if (config.instructions.length > 0 && active_inst_idx < config.instructions.length) {
+                            var active_inst = config.instructions[active_inst_idx];
+                            var stepCards = html.find('#admin-inst-steps-pane .admin-step-card');
+                            active_inst.steps = [];
+                            stepCards.each(function() {
+                                var sIdx = parseInt($(this).attr('data-step-index'));
+                                var sTitle = $(this).find('.admin-input-step-title').val();
+                                var sText = $(this).find('.admin-textarea-step-text').val();
+                                var sImage = $(this).find('.admin-input-step-image').val();
+                                active_inst.steps.push({
+                                    id: 'step-' + sIdx,
+                                    title: sTitle,
+                                    text: sText,
+                                    imageUrl: sImage
+                                });
+                            });
+                        }
                     }
 
                     html.find('#btn-save-config').on('hover:enter', function() {
