@@ -1017,8 +1017,9 @@
             
             // Получаем SHA существующего файла
             $.ajax({
-                url: url + '?ref=' + branch,
+                url: url + '?ref=' + branch + '&_t=' + (new Date().getTime()),
                 type: 'GET',
+                cache: false,
                 headers: {
                     'Authorization': 'token ' + token,
                     'Accept': 'application/vnd.github.v3+json'
