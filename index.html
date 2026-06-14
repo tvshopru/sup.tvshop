@@ -27,7 +27,6 @@
     <link rel="stylesheet" href="./vender/scrollbar/jquery.scrollbar.css">
     <link rel="stylesheet" href="./vender/keypad/style.css">
 
-    <link rel="stylesheet" href="css/app.css?v=4.56">
     <style>
         /* Hide the Lampa logo icon and title from the top header */
         .head__logo-icon, .head__title {
@@ -456,356 +455,625 @@
             margin: 0;
         }
 
-        /* --- Admin Panel UI Styles --- */
-        .admin-container {
-            display: flex;
-            flex-direction: row;
-            width: 100%;
-            height: calc(100vh - 4.5em);
-            box-sizing: border-box;
-            padding: 1.5em;
-            gap: 1.5em;
-            overflow: hidden;
-            background: #141821;
+        /* --- PC Admin Panel Styles (Desktop Only) --- */
+        .admin-pc-body {
+            background: #090b0f !important;
+            color: #f3f4f6 !important;
+            font-family: system-ui, -apple-system, sans-serif !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            height: 100vh !important;
+            overflow: hidden !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
         }
 
-        .admin-sidebar {
-            width: 30%;
+        /* Login Screen */
+        .admin-pc-login-container {
+            background: rgba(17, 22, 32, 0.75);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            text-align: center;
+            animation: admin-fade-in 0.4s ease-out;
+        }
+
+        @keyframes admin-fade-in {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .admin-pc-login-logo {
+            font-size: 2em;
+            font-weight: 800;
+            color: #ffc107;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
             display: flex;
             flex-direction: column;
-            gap: 1em;
-            border-right: 1px solid rgba(255, 255, 255, 0.08);
-            padding-right: 1.5em;
-            height: 100%;
+            align-items: center;
+            gap: 10px;
         }
 
-        .admin-tab-btn {
+        .admin-pc-login-title {
+            font-size: 1.1em;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 30px;
+        }
+
+        .admin-pc-login-input {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 14px;
+            font-size: 1.3em;
+            color: #fff;
+            text-align: center;
+            letter-spacing: 4px;
+            box-sizing: border-box;
+            outline: none;
+            transition: all 0.3s;
+            margin-bottom: 20px;
+        }
+
+        .admin-pc-login-input:focus {
+            border-color: #ffc107;
             background: rgba(255, 255, 255, 0.03);
-            border: 2px solid rgba(255, 255, 255, 0.05);
-            border-radius: 0.8em;
-            padding: 1.2em;
-            color: rgba(255, 255, 255, 0.7);
+            box-shadow: 0 0 15px rgba(255, 193, 7, 0.3);
+        }
+
+        .admin-pc-login-btn {
+            width: 100%;
+            background: #ffc107;
+            color: #0b0e14;
+            border: none;
+            border-radius: 10px;
+            padding: 14px;
             font-size: 1.1em;
             font-weight: 700;
-            text-align: left;
-            transition: all 0.2s;
-            box-sizing: border-box;
-            width: 100%;
             cursor: pointer;
+            transition: all 0.2s;
         }
 
-        .admin-tab-btn.active {
-            border-color: #ffc107;
+        .admin-pc-login-btn:hover {
+            background: #ffa000;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 193, 7, 0.3);
+        }
+
+        .admin-pc-login-btn:active {
+            transform: translateY(0);
+        }
+
+        .admin-pc-login-error {
+            color: #ff3366;
+            margin-top: 15px;
+            font-size: 0.95em;
+            display: none;
+        }
+
+        @keyframes admin-shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
+        }
+
+        /* Main Dashboard Layout */
+        .admin-pc-layout {
+            display: flex;
+            width: 100vw;
+            height: 100vh;
+            background: #090b0f;
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+
+        .admin-pc-sidebar {
+            width: 280px;
+            min-width: 280px;
+            background: rgba(14, 19, 29, 0.85);
+            border-right: 1px solid rgba(255, 255, 255, 0.06);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 30px 20px;
+            box-sizing: border-box;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+
+        .admin-pc-sidebar-header {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            margin-bottom: 30px;
+        }
+
+        .admin-pc-brand {
+            font-size: 1.6em;
+            font-weight: 800;
+            color: #ffc107;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .admin-pc-brand svg {
+            width: 28px;
+            height: 28px;
+            fill: none;
+            stroke: #ffc107;
+            stroke-width: 2;
+        }
+
+        .admin-pc-brand-sub {
+            font-size: 0.8em;
+            color: rgba(255, 255, 255, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-top: 4px;
+        }
+
+        .admin-pc-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex-grow: 1;
+        }
+
+        .admin-pc-menu-item {
+            background: transparent;
+            border: 1px solid transparent;
+            color: rgba(255, 255, 255, 0.7);
+            border-radius: 8px;
+            padding: 12px 16px;
+            font-size: 0.95em;
+            font-weight: 600;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .admin-pc-menu-item svg {
+            width: 18px;
+            height: 18px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+        }
+
+        .admin-pc-menu-item:hover {
+            background: rgba(255, 255, 255, 0.03);
+            color: #fff;
+        }
+
+        .admin-pc-menu-item.active {
             background: rgba(255, 193, 7, 0.1);
+            border-color: rgba(255, 193, 7, 0.2);
             color: #ffc107;
         }
 
-        .admin-tab-btn.selector.focus {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: #ffc107;
-            transform: scale(1.02);
-        }
-
-        .admin-content {
-            width: 70%;
-            height: 100%;
+        .admin-pc-sidebar-footer {
             display: flex;
             flex-direction: column;
-            gap: 1.5em;
+            gap: 10px;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            padding-top: 20px;
+        }
+
+        .admin-pc-logout-btn {
+            background: rgba(233, 30, 99, 0.1);
+            border: 1px solid rgba(233, 30, 99, 0.2);
+            color: #e91e63;
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 0.95em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .admin-pc-logout-btn svg {
+            width: 16px;
+            height: 16px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+        }
+
+        .admin-pc-logout-btn:hover {
+            background: #e91e63;
+            color: #fff;
+        }
+
+        /* Content Area */
+        .admin-pc-content-wrapper {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            position: relative;
+            background: #090b0f;
+            box-sizing: border-box;
+        }
+
+        .admin-pc-main {
+            flex-grow: 1;
+            padding: 40px;
+            box-sizing: border-box;
+            overflow-y: auto;
+            height: calc(100vh - 80px);
+        }
+
+        .admin-pc-pane {
+            display: none;
+            flex-direction: column;
+            gap: 24px;
+            animation: admin-fade-in 0.3s ease-out;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .admin-pc-pane.active {
+            display: flex;
+        }
+
+        .admin-pc-pane-title {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: #fff;
+            margin: 0 0 10px 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .admin-pc-card {
+            background: rgba(20, 26, 38, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 24px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Form elements */
+        .admin-pc-form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .admin-pc-form-group label {
+            font-size: 0.9em;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .admin-pc-input, .admin-pc-textarea {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 12px 16px;
+            color: #fff;
+            font-size: 1em;
+            font-family: inherit;
+            box-sizing: border-box;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .admin-pc-input:focus, .admin-pc-textarea:focus {
+            border-color: #ffc107;
+            background: rgba(255, 255, 255, 0.02);
+            box-shadow: 0 0 10px rgba(255, 193, 7, 0.15);
+        }
+
+        .admin-pc-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        /* Status & Actions bar at the bottom */
+        .admin-pc-footer {
+            height: 80px;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            background: rgba(14, 19, 29, 0.85);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            box-sizing: border-box;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            width: 100%;
+        }
+
+        .admin-pc-status-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9em;
+        }
+
+        .admin-pc-status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #4caf50;
+        }
+
+        .admin-pc-status-dot.saving {
+            background: #ffc107;
+            animation: admin-pulse 1s infinite alternate;
+        }
+
+        @keyframes admin-pulse {
+            from { opacity: 0.4; }
+            to { opacity: 1; }
+        }
+
+        .admin-pc-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .admin-pc-btn {
+            border-radius: 8px;
+            padding: 12px 24px;
+            font-size: 0.95em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-sizing: border-box;
+        }
+
+        .admin-pc-btn svg {
+            width: 16px;
+            height: 16px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+        }
+
+        .admin-pc-btn-primary {
+            background: #ffc107;
+            color: #0b0e14;
+        }
+
+        .admin-pc-btn-primary:hover {
+            background: #ffa000;
+            box-shadow: 0 4px 12px rgba(255, 193, 7, 0.2);
+        }
+
+        .admin-pc-btn-secondary {
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .admin-pc-btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .admin-pc-btn-danger {
+            background: rgba(233, 30, 99, 0.15);
+            color: #e91e63;
+            border: 1px solid rgba(233, 30, 99, 0.2);
+        }
+
+        .admin-pc-btn-danger:hover {
+            background: #e91e63;
+            color: #fff;
+        }
+
+        /* News Tab List */
+        .admin-pc-news-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            width: 100%;
+        }
+
+        .admin-pc-news-item {
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 10px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
             position: relative;
         }
 
-        .admin-tab-panel {
-            display: none;
-            flex-direction: column;
-            gap: 1.2em;
-            height: calc(100% - 5.5em);
-            overflow-y: auto;
-            padding-right: 0.5em;
-        }
-
-        .admin-tab-panel.active {
-            display: flex;
-        }
-
-        .admin-tab-panel::-webkit-scrollbar {
-            width: 6px;
-        }
-        .admin-tab-panel::-webkit-scrollbar-thumb {
-            background: rgba(255,255,255,0.2);
-            border-radius: 3px;
-        }
-
-        .admin-form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5em;
-        }
-
-        .admin-form-group label {
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 0.95em;
-            font-weight: 700;
-        }
-
-        .admin-input, .admin-textarea {
-            background: rgba(0, 0, 0, 0.25);
-            border: 2px solid rgba(255, 255, 255, 0.08);
-            border-radius: 0.6em;
-            padding: 0.8em 1em;
-            color: #fff;
-            font-size: 1.05em;
-            font-family: inherit;
-            box-sizing: border-box;
-            width: 100%;
-            transition: border-color 0.2s, background 0.2s;
-        }
-
-        .admin-textarea {
-            min-height: 80px;
-            resize: none;
-        }
-
-        .admin-input.selector.focus, .admin-textarea.selector.focus {
-            border-color: #ffc107;
-            background: rgba(255, 255, 255, 0.03);
-            outline: none;
-        }
-
-        .admin-actions {
-            display: flex;
-            flex-direction: row;
-            gap: 1em;
-            margin-top: auto;
-            border-top: 1px solid rgba(255, 255, 255, 0.08);
-            padding-top: 1.2em;
-        }
-
-        .admin-btn {
-            padding: 0.8em 1.5em;
-            border-radius: 0.6em;
-            font-size: 1.05em;
-            font-weight: 700;
-            text-align: center;
-            box-sizing: border-box;
-            transition: all 0.2s;
-            cursor: pointer;
-            border: none;
-        }
-
-        .admin-btn-save {
-            background: #ffc107;
-            color: #111;
-        }
-
-        .admin-btn-download {
-            background: rgba(255, 255, 255, 0.08);
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            color: #fff;
-        }
-
-        .admin-btn-close {
-            background: #e91e63;
-            color: #fff;
-            margin-left: auto;
-        }
-
-        .admin-btn.selector.focus {
-            transform: scale(1.03);
-            box-shadow: 0 0 15px rgba(255, 193, 7, 0.3);
-        }
-        
-        .admin-btn-close.selector.focus {
-            box-shadow: 0 0 15px rgba(233, 30, 99, 0.3);
-        }
-
-        /* News Item Admin Form List */
-        .admin-news-list {
-            display: flex;
-            flex-direction: column;
-            gap: 1em;
-        }
-
-        .admin-news-card {
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            background: rgba(255, 255, 255, 0.02);
-            border-radius: 0.8em;
-            padding: 1em;
-            display: flex;
-            flex-direction: column;
-            gap: 0.8em;
-        }
-
-        .admin-news-card-header {
+        .admin-pc-news-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            padding-bottom: 0.5em;
+            padding-bottom: 12px;
         }
 
-        .admin-news-title-label {
+        .admin-pc-news-title-lbl {
             font-weight: 700;
             color: #ffc107;
         }
 
-        .admin-btn-delete-news {
-            background: rgba(233, 30, 99, 0.1);
-            border: 1px solid rgba(233, 30, 99, 0.3);
-            color: #e91e63;
-            padding: 0.3em 0.8em;
-            border-radius: 0.4em;
-            font-size: 0.85em;
-            font-weight: 700;
-            cursor: pointer;
-        }
-
-        .admin-btn-delete-news.selector.focus {
-            background: #e91e63;
-            color: #fff;
-        }
-
-        .admin-btn-add-news {
-            background: rgba(76, 175, 80, 0.1);
-            border: 2px dashed #4caf50;
-            color: #4caf50;
-            padding: 0.8em;
-            border-radius: 0.6em;
-            font-size: 1.0em;
-            font-weight: 700;
-            text-align: center;
-            cursor: pointer;
-        }
-
-        .admin-btn-add-news.selector.focus {
-            background: #4caf50;
-            color: #fff;
-            border-style: solid;
-        }
-
-        /* Instruction Item Admin Form List */
-        .admin-instructions-list {
+        /* Instructions Split Layout */
+        .admin-pc-split {
             display: flex;
-            flex-direction: column;
-            gap: 1em;
-        }
-
-        .admin-instruction-card {
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            background: rgba(255, 255, 255, 0.02);
-            border-radius: 0.8em;
-            padding: 1em;
-            display: flex;
-            flex-direction: column;
-            gap: 0.8em;
-        }
-
-        .admin-instruction-card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            padding-bottom: 0.5em;
-        }
-
-        .admin-instruction-title-label {
-            font-weight: 700;
-            color: #ffc107;
-        }
-
-        .admin-instruction-actions {
-            display: flex;
-            gap: 0.5em;
-            align-items: center;
-        }
-
-        .admin-btn-move-instruction {
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            color: #fff;
-            padding: 0.3em 0.7em;
-            border-radius: 0.4em;
-            font-size: 0.85em;
-            font-weight: 700;
-            cursor: pointer;
-        }
-
-        .admin-btn-move-instruction.selector.focus {
-            background: #ffc107;
-            color: #111;
-            border-color: #ffc107;
-        }
-
-        .admin-btn-delete-instruction {
-            background: rgba(233, 30, 99, 0.1);
-            border: 1px solid rgba(233, 30, 99, 0.3);
-            color: #e91e63;
-            padding: 0.3em 0.8em;
-            border-radius: 0.4em;
-            font-size: 0.85em;
-            font-weight: 700;
-            cursor: pointer;
-        }
-
-        .admin-btn-delete-instruction.selector.focus {
-            background: #e91e63;
-            color: #fff;
-        }
-
-        .admin-btn-add-instruction {
-            background: rgba(76, 175, 80, 0.1);
-            border: 2px dashed #4caf50;
-            color: #4caf50;
-            padding: 0.8em;
-            border-radius: 0.6em;
-            font-size: 1.0em;
-            font-weight: 700;
-            text-align: center;
-            cursor: pointer;
-            margin-top: 1em;
+            gap: 30px;
+            height: calc(100vh - 220px);
             width: 100%;
-            transition: all 0.2s;
             box-sizing: border-box;
-            border-style: dashed;
         }
 
-        .admin-btn-add-instruction.selector.focus {
-            background: #4caf50;
-            color: #fff;
-            border-style: solid;
-        }
-
-        .admin-instructions-split {
-            display: flex;
-            flex-direction: row;
-            width: 100%;
-            height: 100%;
-            gap: 1.5em;
-        }
-
-        .admin-instructions-left {
-            width: 40%;
+        .admin-pc-split-left {
+            width: 320px;
+            min-width: 320px;
             display: flex;
             flex-direction: column;
-            gap: 1em;
-            border-right: 1px solid rgba(255, 255, 255, 0.08);
-            padding-right: 1.5em;
-            height: 100%;
+            gap: 15px;
+            border-right: 1px solid rgba(255, 255, 255, 0.06);
+            padding-right: 20px;
             overflow-y: auto;
+            box-sizing: border-box;
         }
 
-        .admin-instructions-right {
-            width: 60%;
+        .admin-pc-split-right {
+            flex-grow: 1;
             display: flex;
             flex-direction: column;
-            gap: 1em;
-            height: 100%;
+            gap: 15px;
             overflow-y: auto;
+            padding-right: 5px;
+            box-sizing: border-box;
         }
 
-        .admin-instruction-card.active {
-            border-color: #ffc107;
+        .admin-pc-inst-item {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 8px;
+            padding: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            box-sizing: border-box;
+        }
+
+        .admin-pc-inst-item:hover {
+            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .admin-pc-inst-item.active {
             background: rgba(255, 193, 7, 0.05);
+            border-color: #ffc107;
+        }
+
+        .admin-pc-inst-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .admin-pc-inst-title-lbl {
+            font-weight: 600;
+            font-size: 0.9em;
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .admin-pc-inst-controls {
+            display: flex;
+            gap: 4px;
+        }
+
+        .admin-pc-btn-icon {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: rgba(255, 255, 255, 0.7);
+            border-radius: 4px;
+            width: 26px;
+            height: 26px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.85em;
+            transition: all 0.15s;
+            box-sizing: border-box;
+        }
+
+        .admin-pc-btn-icon:hover {
+            background: #ffc107;
+            color: #0b0e14;
+            border-color: #ffc107;
+        }
+
+        .admin-pc-btn-icon-danger:hover {
+            background: #e91e63;
+            color: #fff;
+            border-color: #e91e63;
+        }
+
+        /* Step Card */
+        .admin-pc-step-item {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 10px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            box-sizing: border-box;
+        }
+
+        /* Toast Notifications */
+        .admin-pc-toast-container {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 99999;
+        }
+
+        .admin-toast {
+            background: rgba(20, 24, 33, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 0.95em;
+            font-weight: 500;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(10px);
+            box-sizing: border-box;
+        }
+        .admin-toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        .admin-toast.error {
+            border-left: 4px solid #e91e63;
+        }
+        .admin-toast.success {
+            border-left: 4px solid #4caf50;
+        }
+        .admin-toast.info {
+            border-left: 4px solid #ffc107;
         }
     </style>
 </head>
@@ -1496,563 +1764,6 @@
                     Lampa.Controller.toggle('content');
                 };
 
-                this.isZoomed = function() {
-                    return is_zoomed;
-                };
-
-                this.pause = function () {};
-
-                this.destroy = function () {
-                    if (html) html.remove();
-                };
-
-                this.render = function (native) {
-                    return native ? html[0] : html;
-                };
-            }
-
-            function AdminComponent(object) {
-                var html;
-                var active_element = null;
-                var current_tab = 'tab-support';
-
-                this.create = function () {
-                    var _this = this;
-                    this.activity.loader(false);
-                    
-                    var config = JSON.parse(JSON.stringify(window.portal_config || getDefaultConfig()));
-                    
-                    var githubRepo = localStorage.getItem('admin_github_repo') || 'tvshopru/sup.tvshop';
-                    var githubToken = localStorage.getItem('admin_github_token') || '';
-                    var githubPath = localStorage.getItem('admin_github_path') || 'config.json';
-                    var githubBranch = localStorage.getItem('admin_github_branch') || 'main';
-
-                    var admin_html = 
-                        '<div class="admin-container">' +
-                            '<div class="admin-sidebar">' +
-                                '<div style="color: #ffc107; font-size: 1.3em; font-weight: 700; margin-bottom: 0.8em; text-align: center;">АДМИНИСТРАЦИЯ</div>' +
-                                '<button class="admin-tab-btn selector active" data-tab="tab-support">Поддержка</button>' +
-                                '<button class="admin-tab-btn selector" data-tab="tab-promo">Промо-карточка</button>' +
-                                '<button class="admin-tab-btn selector" data-tab="tab-news">Новости</button>' +
-                                '<button class="admin-tab-btn selector" data-tab="tab-instructions">Инструкции</button>' +
-                                '<button class="admin-tab-btn selector" data-tab="tab-sync">Синхронизация GitHub</button>' +
-                            '</div>' +
-                            '<div class="admin-content">' +
-                                '<!-- Tab: Support -->' +
-                                '<div class="admin-tab-panel active" id="tab-support">' +
-                                    '<div class="admin-form-group">' +
-                                        '<label>Текст техподдержки</label>' +
-                                        '<textarea class="admin-textarea selector" id="input-support-text">' + escapeHtml(config.supportText) + '</textarea>' +
-                                    '</div>' +
-                                    '<div class="admin-form-group">' +
-                                        '<label>Ссылка или контакт Telegram</label>' +
-                                        '<input type="text" class="admin-input selector" id="input-support-tg" value="' + escapeHtml(config.supportTg) + '">' +
-                                    '</div>' +
-                                    '<div class="admin-form-group">' +
-                                        '<label>Прямой URL для QR-кода (необязательно)</label>' +
-                                        '<input type="text" class="admin-input selector" id="input-support-qr" value="' + escapeHtml(config.supportQrUrl) + '" placeholder="Оставьте пустым для автогенерации из Telegram">' +
-                                    '</div>' +
-                                    '<div class="admin-form-group">' +
-                                        '<label>PIN-код для входа в панель</label>' +
-                                        '<input type="text" class="admin-input selector" id="input-admin-pin" value="' + escapeHtml(config.adminPin) + '" maxlength="10">' +
-                                    '</div>' +
-                                '</div>' +
-                                '<!-- Tab: Promo -->' +
-                                '<div class="admin-tab-panel" id="tab-promo">' +
-                                    '<div class="admin-form-group">' +
-                                        '<label>Текст значка (Badge)</label>' +
-                                        '<input type="text" class="admin-input selector" id="input-promo-badge" value="' + escapeHtml(config.promo.badge) + '">' +
-                                    '</div>' +
-                                    '<div class="admin-form-group">' +
-                                        '<label>Заголовок промо-акции</label>' +
-                                        '<input type="text" class="admin-input selector" id="input-promo-title" value="' + escapeHtml(config.promo.title) + '">' +
-                                    '</div>' +
-                                    '<div class="admin-form-group">' +
-                                        '<label>Текст описания</label>' +
-                                        '<textarea class="admin-textarea selector" id="input-promo-text">' + escapeHtml(config.promo.text) + '</textarea>' +
-                                    '</div>' +
-                                    '<div class="admin-form-group">' +
-                                        '<label>Текст на кнопке действия</label>' +
-                                        '<input type="text" class="admin-input selector" id="input-promo-action" value="' + escapeHtml(config.promo.actionText) + '">' +
-                                    '</div>' +
-                                    '<div class="admin-form-group">' +
-                                        '<label>Ссылка на картинку (по умолчанию app_logo.png)</label>' +
-                                        '<input type="text" class="admin-input selector" id="input-promo-image" value="' + escapeHtml(config.promo.imageUrl) + '">' +
-                                    '</div>' +
-                                '</div>' +
-                                '<!-- Tab: News -->' +
-                                '<div class="admin-tab-panel" id="tab-news">' +
-                                    '<div class="admin-news-list" id="admin-news-container"></div>' +
-                                    '<button class="admin-btn-add-news selector" id="btn-add-news">+ Добавить новость</button>' +
-                                '</div>' +
-                                '<!-- Tab: Instructions -->' +
-                                '<div class="admin-tab-panel" id="tab-instructions">' +
-                                    '<div class="admin-instructions-list" id="admin-instructions-container"></div>' +
-                                '</div>' +
-                                '<!-- Tab: Sync -->' +
-                                '<div class="admin-tab-panel" id="tab-sync">' +
-                                    '<div class="admin-form-group">' +
-                                        '<label>GitHub Репозиторий (username/repo)</label>' +
-                                        '<input type="text" class="admin-input selector" id="input-gh-repo" value="' + escapeHtml(githubRepo) + '">' +
-                                    '</div>' +
-                                    '<div class="admin-form-group">' +
-                                        '<label>Путь к файлу конфигурации в репозитории</label>' +
-                                        '<input type="text" class="admin-input selector" id="input-gh-path" value="' + escapeHtml(githubPath) + '">' +
-                                    '</div>' +
-                                    '<div class="admin-form-group">' +
-                                        '<label>Ветка (Branch)</label>' +
-                                        '<input type="text" class="admin-input selector" id="input-gh-branch" value="' + escapeHtml(githubBranch) + '">' +
-                                    '</div>' +
-                                    '<div class="admin-form-group">' +
-                                        '<label>GitHub Personal Access Token (Токен доступа)</label>' +
-                                        '<input type="password" class="admin-input selector" id="input-gh-token" value="' + escapeHtml(githubToken) + '" placeholder="ghp_xxxxxxxxxxxxxxxxxxxxxx">' +
-                                        '<p style="color: rgba(255,255,255,0.4); font-size: 0.85em; margin: 0.2em 0 0 0;">Токен сохраняется локально в памяти вашего браузера и никогда не передается третьим лицам.</p>' +
-                                    '</div>' +
-                                '</div>' +
-                                '<!-- Actions -->' +
-                                '<div class="admin-actions">' +
-                                    '<button class="admin-btn admin-btn-save selector" id="btn-save-config">Сохранить</button>' +
-                                    '<button class="admin-btn admin-btn-download selector" id="btn-download-config">Скачать config.json</button>' +
-                                    '<button class="admin-btn admin-btn-close selector" id="btn-close-admin">Выход</button>' +
-                                '</div>' +
-                            '</div>' +
-                        '</div>';
-
-                    html = $(admin_html);
-
-                    function renderAdminNews() {
-                        var container = html.find('#admin-news-container');
-                        container.empty();
-                        
-                        config.news.forEach(function(item, idx) {
-                            var newsCard = $(
-                                '<div class="admin-news-card" data-index="' + idx + '">' +
-                                    '<div class="admin-news-card-header">' +
-                                        '<span class="admin-news-title-label">Новость #' + (idx + 1) + '</span>' +
-                                        '<button class="admin-btn-delete-news selector" data-index="' + idx + '">Удалить</button>' +
-                                    '</div>' +
-                                    '<div class="admin-form-group">' +
-                                        '<label>Дата публикации</label>' +
-                                        '<input type="text" class="admin-input-news-date admin-input selector" value="' + escapeHtml(item.date) + '">' +
-                                    '</div>' +
-                                    '<div class="admin-form-group">' +
-                                        '<label>Заголовок новости</label>' +
-                                        '<input type="text" class="admin-input-news-title admin-input selector" value="' + escapeHtml(item.title) + '">' +
-                                    '</div>' +
-                                    '<div class="admin-form-group">' +
-                                        '<label>Текст новости</label>' +
-                                        '<textarea class="admin-textarea-news-desc admin-textarea selector">' + escapeHtml(item.desc) + '</textarea>' +
-                                    '</div>' +
-                                '</div>'
-                            );
-                            container.append(newsCard);
-                        });
-
-                        container.find('.admin-btn-delete-news').on('hover:enter', function() {
-                            var idx = parseInt($(this).attr('data-index'));
-                            config.news.splice(idx, 1);
-                            renderAdminNews();
-                            Lampa.Controller.toggle('content');
-                        });
-                    }
-
-                    var active_inst_idx = 0;
-
-                    function renderAdminInstructions() {
-                        var container = html.find('#admin-instructions-container');
-                        container.empty();
-                        
-                        if (!config.instructions) {
-                            config.instructions = [];
-                        }
-                        config.instructions = migrateInstructions(config.instructions);
-
-                        var split_html = $(
-                            '<div class="admin-instructions-split">' +
-                                '<div class="admin-instructions-left" id="admin-inst-list-pane"></div>' +
-                                '<div class="admin-instructions-right" id="admin-inst-steps-pane"></div>' +
-                            '</div>'
-                        );
-                        container.append(split_html);
-
-                        var leftPane = split_html.find('#admin-inst-list-pane');
-                        var rightPane = split_html.find('#admin-inst-steps-pane');
-
-                        // 1. Render Left Pane (List of Instructions)
-                        leftPane.append('<div style="color: #ffc107; font-weight: 700; margin-bottom: 0.5em; font-size: 1.1em;">СПИСОК ИНСТРУКЦИЙ</div>');
-                        
-                        config.instructions.forEach(function(inst, idx) {
-                            var instClass = (idx === active_inst_idx) ? 'active' : '';
-                            var instCard = $(
-                                '<div class="admin-instruction-card ' + instClass + '" data-inst-index="' + idx + '" style="cursor: pointer; padding: 0.8em; display: flex; flex-direction: column; gap: 0.5em; margin-bottom: 0.8em; border-radius: 0.6em; border: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.01);">' +
-                                    '<div style="display: flex; justify-content: space-between; align-items: center;">' +
-                                        '<span style="font-weight: bold; color: ' + (idx === active_inst_idx ? '#ffc107' : '#fff') + ';">Инструкция #' + (idx + 1) + '</span>' +
-                                        '<div style="display: flex; gap: 0.3em;">' +
-                                            '<button class="admin-btn-move-instruction btn-inst-up selector" data-inst-index="' + idx + '">↑</button>' +
-                                            '<button class="admin-btn-move-instruction btn-inst-down selector" data-inst-index="' + idx + '">↓</button>' +
-                                            '<button class="admin-btn-delete-instruction btn-inst-delete selector" data-inst-index="' + idx + '">Удалить</button>' +
-                                        '</div>' +
-                                    '</div>' +
-                                    '<div class="admin-form-group" style="margin-top: 0.3em;">' +
-                                        '<label style="font-size: 0.8em;">Название</label>' +
-                                        '<input type="text" class="admin-input-inst-title admin-input selector" value="' + escapeHtml(inst.title) + '">' +
-                                    '</div>' +
-                                '</div>'
-                            );
-                            leftPane.append(instCard);
-                        });
-
-                        leftPane.append('<button class="admin-btn-add-instruction selector" id="btn-add-new-inst" style="margin-top: 0.5em;">+ Новая инструкция</button>');
-
-                        // Bind left pane events
-                        leftPane.find('.admin-instruction-card').on('hover:enter click', function(e) {
-                            if ($(e.target).is('input') || $(e.target).is('button')) return;
-                            gatherFormValues();
-                            active_inst_idx = parseInt($(this).attr('data-inst-index'));
-                            renderAdminInstructions();
-                            Lampa.Controller.toggle('content');
-                        });
-
-                        leftPane.find('.btn-inst-delete').on('hover:enter', function(e) {
-                            e.preventDefault();
-                            gatherFormValues();
-                            var idx = parseInt($(this).attr('data-inst-index'));
-                            config.instructions.splice(idx, 1);
-                            if (active_inst_idx >= config.instructions.length) {
-                                active_inst_idx = Math.max(0, config.instructions.length - 1);
-                            }
-                            renderAdminInstructions();
-                            Lampa.Controller.toggle('content');
-                        });
-
-                        leftPane.find('.btn-inst-up').on('hover:enter', function(e) {
-                            e.preventDefault();
-                            gatherFormValues();
-                            var idx = parseInt($(this).attr('data-inst-index'));
-                            if (idx > 0) {
-                                var temp = config.instructions[idx];
-                                config.instructions[idx] = config.instructions[idx - 1];
-                                config.instructions[idx - 1] = temp;
-                                if (active_inst_idx === idx) active_inst_idx = idx - 1;
-                                else if (active_inst_idx === idx - 1) active_inst_idx = idx;
-                                renderAdminInstructions();
-                                Lampa.Controller.toggle('content');
-                            }
-                        });
-
-                        leftPane.find('.btn-inst-down').on('hover:enter', function(e) {
-                            e.preventDefault();
-                            gatherFormValues();
-                            var idx = parseInt($(this).attr('data-inst-index'));
-                            if (idx < config.instructions.length - 1) {
-                                var temp = config.instructions[idx];
-                                config.instructions[idx] = config.instructions[idx + 1];
-                                config.instructions[idx + 1] = temp;
-                                if (active_inst_idx === idx) active_inst_idx = idx + 1;
-                                else if (active_inst_idx === idx + 1) active_inst_idx = idx;
-                                renderAdminInstructions();
-                                Lampa.Controller.toggle('content');
-                            }
-                        });
-
-                        leftPane.find('#btn-add-new-inst').on('hover:enter', function(e) {
-                            e.preventDefault();
-                            gatherFormValues();
-                            config.instructions.push({
-                                id: 'inst-' + (new Date().getTime()),
-                                title: 'Инструкция ' + (config.instructions.length + 1),
-                                steps: []
-                            });
-                            active_inst_idx = config.instructions.length - 1;
-                            renderAdminInstructions();
-                            Lampa.Controller.toggle('content');
-                        });
-
-                        // 2. Render Right Pane (Steps of selected instruction)
-                        if (config.instructions.length === 0) {
-                            rightPane.html('<div style="color:rgba(255,255,255,0.4); text-align:center; padding: 3em;">Создайте или выберите инструкцию слева</div>');
-                            return;
-                        }
-
-                        var current_inst = config.instructions[active_inst_idx];
-                        rightPane.append('<div style="color: #ffc107; font-weight: 700; margin-bottom: 0.5em; font-size: 1.1em; text-transform: uppercase;">ШАГИ: ' + escapeHtml(current_inst.title) + '</div>');
-
-                        var stepsContainer = $('<div class="admin-instructions-list"></div>');
-                        rightPane.append(stepsContainer);
-
-                        if (!current_inst.steps) {
-                            current_inst.steps = [];
-                        }
-
-                        current_inst.steps.forEach(function(step, idx) {
-                            var stepCard = $(
-                                '<div class="admin-instruction-card admin-step-card" data-step-index="' + idx + '" style="margin-bottom: 1em;">' +
-                                    '<div class="admin-instruction-card-header">' +
-                                        '<span class="admin-instruction-title-label">Шаг #' + (idx + 1) + '</span>' +
-                                        '<div class="admin-instruction-actions">' +
-                                            '<button class="admin-btn-move-instruction btn-step-up selector" data-step-index="' + idx + '">↑</button>' +
-                                            '<button class="admin-btn-move-instruction btn-step-down selector" data-step-index="' + idx + '">↓</button>' +
-                                            '<button class="admin-btn-delete-instruction btn-step-delete selector" data-step-index="' + idx + '">Удалить</button>' +
-                                        '</div>' +
-                                    '</div>' +
-                                    '<div class="admin-form-group">' +
-                                        '<label>Заголовок шага</label>' +
-                                        '<input type="text" class="admin-input-step-title admin-input selector" value="' + escapeHtml(step.title) + '">' +
-                                    '</div>' +
-                                    '<div class="admin-form-group">' +
-                                        '<label>Описание шага</label>' +
-                                        '<textarea class="admin-textarea-step-text admin-textarea selector">' + escapeHtml(step.text) + '</textarea>' +
-                                    '</div>' +
-                                    '<div class="admin-form-group">' +
-                                        '<label>Ссылка на картинку шага (например, app_logo.png)</label>' +
-                                        '<input type="text" class="admin-input-step-image admin-input selector" value="' + escapeHtml(step.imageUrl) + '">' +
-                                    '</div>' +
-                                '</div>'
-                            );
-                            stepsContainer.append(stepCard);
-                        });
-
-                        rightPane.append('<button class="admin-btn-add-instruction selector" id="btn-add-new-step">+ Добавить шаг</button>');
-
-                        // Bind step actions
-                        rightPane.find('.btn-step-delete').on('hover:enter', function(e) {
-                            e.preventDefault();
-                            gatherFormValues();
-                            var idx = parseInt($(this).attr('data-step-index'));
-                            config.instructions[active_inst_idx].steps.splice(idx, 1);
-                            renderAdminInstructions();
-                            Lampa.Controller.toggle('content');
-                        });
-
-                        rightPane.find('.btn-step-up').on('hover:enter', function(e) {
-                            e.preventDefault();
-                            gatherFormValues();
-                            var idx = parseInt($(this).attr('data-step-index'));
-                            if (idx > 0) {
-                                var steps = config.instructions[active_inst_idx].steps;
-                                var temp = steps[idx];
-                                steps[idx] = steps[idx - 1];
-                                steps[idx - 1] = temp;
-                                renderAdminInstructions();
-                                Lampa.Controller.toggle('content');
-                            }
-                        });
-
-                        rightPane.find('.btn-step-down').on('hover:enter', function(e) {
-                            e.preventDefault();
-                            gatherFormValues();
-                            var idx = parseInt($(this).attr('data-step-index'));
-                            var steps = config.instructions[active_inst_idx].steps;
-                            if (idx < steps.length - 1) {
-                                var temp = steps[idx];
-                                steps[idx] = steps[idx + 1];
-                                steps[idx + 1] = temp;
-                                renderAdminInstructions();
-                                Lampa.Controller.toggle('content');
-                            }
-                        });
-
-                        rightPane.find('#btn-add-new-step').on('hover:enter', function(e) {
-                            e.preventDefault();
-                            gatherFormValues();
-                            var steps = config.instructions[active_inst_idx].steps;
-                            var nextStepNum = steps.length + 1;
-                            steps.push({
-                                id: 'step-' + (new Date().getTime()),
-                                title: 'Шаг ' + nextStepNum + ': Новая инструкция',
-                                text: 'Описание действий для этого шага...',
-                                imageUrl: 'app_logo.png'
-                            });
-                            renderAdminInstructions();
-                            Lampa.Controller.toggle('content');
-                        });
-                    }
-
-                    renderAdminNews();
-                    renderAdminInstructions();
-
-                    html.find('.admin-tab-btn').on('hover:enter', function() {
-                        var tabId = $(this).attr('data-tab');
-                        html.find('.admin-tab-btn').removeClass('active');
-                        $(this).addClass('active');
-                        
-                        html.find('.admin-tab-panel').removeClass('active');
-                        html.find('#' + tabId).addClass('active');
-                        
-                        current_tab = tabId;
-                    });
-
-                    html.find('#btn-add-news').on('hover:enter', function() {
-                        gatherFormValues();
-                        config.news.push({
-                            id: 'news-' + (new Date().getTime()),
-                            date: new Date().toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' }),
-                            title: 'Новая новость',
-                            desc: 'Текст новой новости...'
-                        });
-                        renderAdminNews();
-                        Lampa.Controller.toggle('content');
-                    });
-
-                    html.find('#btn-download-config').on('hover:enter', function() {
-                        gatherFormValues();
-                        try {
-                            var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(config, null, 2));
-                            var downloadAnchor = document.createElement('a');
-                            downloadAnchor.setAttribute("href", dataStr);
-                            downloadAnchor.setAttribute("download", "config.json");
-                            document.body.appendChild(downloadAnchor);
-                            downloadAnchor.click();
-                            downloadAnchor.remove();
-                            Lampa.Noty.show('Файл config.json успешно скачан!');
-                        } catch(e) {
-                            Lampa.Noty.show('Ошибка скачивания файла!');
-                        }
-                    });
-
-                    html.find('#btn-close-admin').on('hover:enter', function() {
-                        Lampa.Activity.backward();
-                    });
-
-                    function gatherFormValues() {
-                        config.supportText = html.find('#input-support-text').val();
-                        config.supportTg = html.find('#input-support-tg').val();
-                        config.supportQrUrl = html.find('#input-support-qr').val();
-                        config.adminPin = html.find('#input-admin-pin').val();
-
-                        config.promo.badge = html.find('#input-promo-badge').val();
-                        config.promo.title = html.find('#input-promo-title').val();
-                        config.promo.text = html.find('#input-promo-text').val();
-                        config.promo.actionText = html.find('#input-promo-action').val();
-                        config.promo.imageUrl = html.find('#input-promo-image').val();
-
-                        var newsCards = html.find('.admin-news-card');
-                        config.news = [];
-                        newsCards.each(function() {
-                            var dateVal = $(this).find('.admin-input-news-date').val();
-                            var titleVal = $(this).find('.admin-input-news-title').val();
-                            var descVal = $(this).find('.admin-textarea-news-desc').val();
-                            config.news.push({
-                                id: 'news-' + $(this).attr('data-index'),
-                                date: dateVal,
-                                title: titleVal,
-                                desc: descVal
-                            });
-                        });
-
-                        // Gather list of instructions from left pane
-                        var instCards = html.find('#admin-inst-list-pane .admin-instruction-card');
-                        var updated_instructions = [];
-                        instCards.each(function() {
-                            var idx = parseInt($(this).attr('data-inst-index'));
-                            var titleVal = $(this).find('.admin-input-inst-title').val();
-                            var origInst = config.instructions[idx];
-                            updated_instructions.push({
-                                id: origInst ? origInst.id : ('inst-' + idx),
-                                title: titleVal,
-                                steps: origInst ? (origInst.steps || []) : []
-                            });
-                        });
-                        config.instructions = updated_instructions;
-
-                        // Gather steps for currently active instruction from right pane
-                        if (config.instructions.length > 0 && active_inst_idx < config.instructions.length) {
-                            var active_inst = config.instructions[active_inst_idx];
-                            var stepCards = html.find('#admin-inst-steps-pane .admin-step-card');
-                            active_inst.steps = [];
-                            stepCards.each(function() {
-                                var sIdx = parseInt($(this).attr('data-step-index'));
-                                var sTitle = $(this).find('.admin-input-step-title').val();
-                                var sText = $(this).find('.admin-textarea-step-text').val();
-                                var sImage = $(this).find('.admin-input-step-image').val();
-                                active_inst.steps.push({
-                                    id: 'step-' + sIdx,
-                                    title: sTitle,
-                                    text: sText,
-                                    imageUrl: sImage
-                                });
-                            });
-                        }
-                    }
-
-                    html.find('#btn-save-config').on('hover:enter', function() {
-                        gatherFormValues();
-                        
-                        window.portal_config = config;
-                        localStorage.setItem('portal_config', JSON.stringify(config));
-
-                        var repo = html.find('#input-gh-repo').val().trim();
-                        var path = html.find('#input-gh-path').val().trim();
-                        var branch = html.find('#input-gh-branch').val().trim();
-                        var token = html.find('#input-gh-token').val().trim();
-
-                        localStorage.setItem('admin_github_repo', repo);
-                        localStorage.setItem('admin_github_path', path);
-                        localStorage.setItem('admin_github_branch', branch);
-                        localStorage.setItem('admin_github_token', token);
-
-                        if (repo && token) {
-                            Lampa.Noty.show('Синхронизация с GitHub...');
-                            pushConfigToGithub(repo, token, path, branch, config);
-                        } else {
-                            Lampa.Noty.show('Конфигурация сохранена локально!');
-                        }
-                    });
-
-                    html.find('.selector').on('hover:focus', function() {
-                        active_element = $(this);
-                    });
-
-                    html.on('hover:enter click', 'input, textarea', function(e) {
-                        $(this).focus();
-                    });
-
-                    html.on('keydown keyup keypress', 'input, textarea', function(e) {
-                        // Stop propagation so Lampa does not intercept backspace/escape/arrows
-                        e.stopPropagation();
-                        if (e.type === 'keydown') {
-                            var isTextarea = $(this).is('textarea');
-                            if (e.keyCode === 27 || (e.keyCode === 13 && !isTextarea)) {
-                                $(this).blur();
-                                Lampa.Controller.toggle('content');
-                            }
-                        }
-                    });
-
-                    html.on('input change', 'input, textarea', function() {
-                        gatherFormValues();
-                    });
-
-                    this.activity.toggle();
-                };
-
-                this.start = function () {
-                    Lampa.Controller.add('content', {
-                        toggle: function toggle() {
-                            Lampa.Controller.collectionSet(html);
-                            Lampa.Controller.collectionFocus(active_element || html.find('.selector').first()[0], html);
-                        },
-                        left: function left() {
-                            if (Navigator.canmove('left')) Navigator.move('left');
-                            else Lampa.Controller.toggle('menu');
-                        },
-                        right: function right() {
-                            if (Navigator.canmove('right')) Navigator.move('right');
-                        },
-                        up: function up() {
-                            if (Navigator.canmove('up')) Navigator.move('up');
-                            else Lampa.Controller.toggle('head');
-                        },
-                        down: function down() {
-                            if (Navigator.canmove('down')) Navigator.move('down');
-                        },
-                        back: function back() {
-                            Lampa.Activity.backward();
-                        }
-                    });
-                    Lampa.Controller.toggle('content');
-                };
-
                 this.pause = function () {};
 
                 this.destroy = function () {
@@ -2066,7 +1777,6 @@
 
             Lampa.Component.add('main', CustomMain);
             Lampa.Component.add('instructions', InstructionsComponent);
-            Lampa.Component.add('admin', AdminComponent);
 
             Lampa.Listener.follow('app', function (e) {
                 if (e.type === 'ready') {
@@ -2085,35 +1795,6 @@
                     );
                     if (instBtn && instBtn.addClass) instBtn.addClass('menu-item-instructions');
 
-                    var btn = Lampa.Menu.addButton(
-                        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:100%;height:100%"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>',
-                        'Админ-панель',
-                        function () {
-                            Lampa.Menu.close();
-                            var config = window.portal_config || getDefaultConfig();
-                            Lampa.Input.edit({
-                                title: 'Введите PIN-код администратора',
-                                value: '',
-                                limit: 4,
-                                nosave: true,
-                                password: true,
-                                layout: 'num'
-                            }, function (value) {
-                                if (value === config.adminPin) {
-                                    Lampa.Noty.show('Авторизация успешна!');
-                                    Lampa.Activity.push({
-                                        title: 'Админ-панель',
-                                        component: 'admin'
-                                    });
-                                } else {
-                                    Lampa.Noty.show('Неверный PIN-код!');
-                                    Lampa.Controller.toggle('menu');
-                                }
-                            });
-                        }
-                    );
-                    if (btn && btn.addClass) btn.addClass('menu-item-admin');
-
                     // Rename "Каталог" to "Главная"
                     setTimeout(function() {
                         $('.menu__item').each(function() {
@@ -2127,7 +1808,15 @@
             });
         };
 
+        var isAdminMode = window.location.search.indexOf('admin=') !== -1 || window.location.search.indexOf('manage') !== -1 || window.location.search.indexOf('control') !== -1;
+
         function loadCurrentLampa() {
+            var css = 'css/app.css';
+            if (location.protocol !== 'file:') {
+                css += '?v=' + cache_version;
+            }
+            $('head').append('<link rel="stylesheet" href="' + css + '">');
+
             var src = 'app.min.js';
             if (location.protocol !== 'file:') {
                 src += '?v=' + cache_version;
@@ -2143,52 +1832,781 @@
             loadCurrentLampa()
         }
 
-        if (typeof AndroidJS !== "undefined"
-            && !!AndroidJS.getLampaURL
-            && /^https?:\/\//i.test(AndroidJS.getLampaURL())
-            && !/^https?:\/\//i.test(location.href)
-        ) {
-            lampa_url = urlJoin(AndroidJS.getLampaURL(),'')
+        // PC Admin Panel code starts here
+        function showAdminNotification(message, type) {
+            var container = $('.admin-pc-toast-container');
+            if (!container.length) {
+                container = $('<div class="admin-pc-toast-container"></div>');
+                $('body').append(container);
+            }
+            
+            var toast = $('<div class="admin-toast ' + (type || 'info') + '">' + escapeHtml(message) + '</div>');
+            container.append(toast);
+            
+            setTimeout(function() {
+                toast.addClass('show');
+            }, 10);
+            
+            setTimeout(function() {
+                toast.removeClass('show');
+                setTimeout(function() {
+                    toast.remove();
+                }, 300);
+            }, 4000);
         }
 
-        if (lampa_url !== '') {
-            var suffix = (location.protocol !== 'file:') ? '?v=' + cache_version : '';
-            putScript(
-                urlJoin(lampa_url, 'lampainit.js' + suffix),
-                false,
-                function(){}
-            )
-
-            putScript(
-                urlJoin(lampa_url, 'app.min.js' + suffix),
-                function () {
-                    var css = urlJoin(lampa_url, 'css/app.css' + suffix)
-
-                    $('head').append('<link rel="stylesheet" href="' + css + '">')
-                    if (window.registerCustomMainComponent) window.registerCustomMainComponent();
+        function pushPCConfigToGithub(repo, token, path, branch, config, callback) {
+            var url = 'https://api.github.com/repos/' + repo + '/contents/' + path;
+            showAdminNotification('Запрос SHA файла на GitHub...', 'info');
+            
+            $.ajax({
+                url: url + '?ref=' + branch + '&_t=' + (new Date().getTime()),
+                type: 'GET',
+                cache: false,
+                headers: {
+                    'Authorization': 'token ' + token,
+                    'Accept': 'application/vnd.github.v3+json'
                 },
-                function () {
-                    putScript(
-                        urlJoin(lampa_url, 'lampa-main/app.min.js' + suffix),
-                        function () {
-                            var css = urlJoin(lampa_url, 'lampa-main/css/app.css' + suffix)
-
-                            $('head').append('<link rel="stylesheet" href="' + css + '">')
-
-                            putScript(
-                                urlJoin(lampa_url, 'lampainit.js' + suffix),
-                                false,
-                                function(){}
-                            )
-                            if (window.registerCustomMainComponent) window.registerCustomMainComponent();
-                        },
-                        loadLocalLampa
-                    )
+                success: function(data) {
+                    var sha = data.sha;
+                    commitPCConfig(url, token, branch, config, sha, callback);
+                },
+                error: function(xhr) {
+                    if (xhr.status === 404) {
+                        commitPCConfig(url, token, branch, config, null, callback);
+                    } else {
+                        showAdminNotification('Ошибка GitHub GET: ' + xhr.status + ' ' + xhr.statusText, 'error');
+                        if (callback) callback(false);
+                    }
                 }
-            )
+            });
         }
-        else{
-            loadCurrentLampa()
+
+        function commitPCConfig(url, token, branch, config, sha, callback) {
+            var content = btoa(unescape(encodeURIComponent(JSON.stringify(config, null, 2))));
+            var payload = {
+                message: 'Обновление конфигурации портала через админ-панель (PC)',
+                content: content,
+                branch: branch
+            };
+            if (sha) payload.sha = sha;
+
+            showAdminNotification('Отправка коммита на GitHub...', 'info');
+
+            $.ajax({
+                url: url,
+                type: 'PUT',
+                headers: {
+                    'Authorization': 'token ' + token,
+                    'Accept': 'application/vnd.github.v3+json'
+                },
+                data: JSON.stringify(payload),
+                success: function() {
+                    showAdminNotification('Конфигурация успешно сохранена на GitHub!', 'success');
+                    if (callback) callback(true);
+                },
+                error: function(xhr) {
+                    showAdminNotification('Ошибка сохранения на GitHub: ' + xhr.status + ' ' + xhr.statusText, 'error');
+                    if (callback) callback(false);
+                }
+            });
+        }
+
+        function initPCAdminPanel() {
+            $('body').attr('class', 'admin-pc-body');
+            window.loadPortalConfig(function() {
+                showLoginScreen();
+            });
+        }
+
+        function showLoginScreen() {
+            var loginHtml = `
+                <div class="admin-pc-login-container">
+                    <div class="admin-pc-login-logo">
+                        <svg viewBox="0 0 24 24" style="width:48px;height:48px;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.75z" fill="#ffc107"/></svg>
+                        TVShop Admin
+                    </div>
+                    <div class="admin-pc-login-title">Вход в панель администратора</div>
+                    <input type="password" class="admin-pc-login-input" placeholder="PIN-КОД" maxlength="10">
+                    <button class="admin-pc-login-btn">Войти</button>
+                    <div class="admin-pc-login-error">Неверный PIN-код администратора!</div>
+                </div>
+            `;
+            $('body').html(loginHtml);
+            $('.admin-pc-login-input').focus();
+
+            function attemptLogin() {
+                var pin = $('.admin-pc-login-input').val().trim();
+                var config = window.portal_config || getDefaultConfig();
+                if (pin === config.adminPin) {
+                    showDashboard();
+                } else {
+                    $('.admin-pc-login-error').show();
+                    $('.admin-pc-login-input').val('').focus();
+                    $('.admin-pc-login-container').css('animation', 'none');
+                    setTimeout(function() {
+                        $('.admin-pc-login-container').css('animation', 'admin-shake 0.3s ease-in-out');
+                    }, 10);
+                }
+            }
+
+            $('.admin-pc-login-btn').on('click', attemptLogin);
+            $('.admin-pc-login-input').on('keydown', function(e) {
+                if (e.keyCode === 13) {
+                    attemptLogin();
+                }
+            });
+        }
+
+        var active_inst_idx = 0;
+
+        function showDashboard() {
+            var dashboardHtml = `
+                <div class="admin-pc-layout">
+                    <div class="admin-pc-sidebar">
+                        <div class="admin-pc-sidebar-top">
+                            <div class="admin-pc-sidebar-header">
+                                <div class="admin-pc-brand">
+                                    <svg viewBox="0 0 24 24"><path d="M12 2c5.52 0 10 4.48 10 10s-4.48 10-10 10S2 17.52 2 12 6.48 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.75z" fill="#ffc107"/></svg>
+                                    TVShop Admin
+                                </div>
+                                <div class="admin-pc-brand-sub">Панель управления</div>
+                            </div>
+                            <div class="admin-pc-menu">
+                                <button class="admin-pc-menu-item active" data-pane="pane-support">
+                                    <svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+                                    Поддержка
+                                </button>
+                                <button class="admin-pc-menu-item" data-pane="pane-promo">
+                                    <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                                    Промо-карточка
+                                </button>
+                                <button class="admin-pc-menu-item" data-pane="pane-news">
+                                    <svg viewBox="0 0 24 24"><path d="M19 20H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h10l4 4v10a2 2 0 0 1-2 2z"/><polyline points="14 4 14 8 18 8"/><line x1="7" y1="8" x2="11" y2="8"/><line x1="7" y1="12" x2="15" y2="12"/><line x1="7" y1="16" x2="15" y2="16"/></svg>
+                                    Новости
+                                </button>
+                                <button class="admin-pc-menu-item" data-pane="pane-instructions">
+                                    <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                                    Инструкции
+                                </button>
+                                <button class="admin-pc-menu-item" data-pane="pane-sync">
+                                    <svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                                    GitHub Синхронизация
+                                </button>
+                            </div>
+                        </div>
+                        <div class="admin-pc-sidebar-footer">
+                            <button class="admin-pc-logout-btn" id="btn-pc-logout">
+                                <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                                Выйти на портал
+                            </button>
+                        </div>
+                    </div>
+                    <div class="admin-pc-content-wrapper">
+                        <div class="admin-pc-main">
+                            <!-- Pane: Support -->
+                            <div class="admin-pc-pane active" id="pane-support">
+                                <h2 class="admin-pc-pane-title">📞 Поддержка</h2>
+                                <div class="admin-pc-card">
+                                    <div class="admin-pc-form-group">
+                                        <label for="pc-input-support-text">Текст техподдержки</label>
+                                        <textarea class="admin-pc-textarea" id="pc-input-support-text"></textarea>
+                                    </div>
+                                    <div class="admin-pc-form-group">
+                                        <label for="pc-input-support-tg">Ссылка или контакт Telegram</label>
+                                        <input type="text" class="admin-pc-input" id="pc-input-support-tg">
+                                    </div>
+                                    <div class="admin-pc-form-group">
+                                        <label for="pc-input-support-qr">Прямой URL для QR-кода (необязательно)</label>
+                                        <input type="text" class="admin-pc-input" id="pc-input-support-qr" placeholder="Оставьте пустым для автогенерации">
+                                    </div>
+                                    <div class="admin-pc-form-group">
+                                        <label for="pc-input-admin-pin">PIN-код администратора (для входа в панель)</label>
+                                        <input type="text" class="admin-pc-input" id="pc-input-admin-pin" maxlength="10">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Pane: Promo -->
+                            <div class="admin-pc-pane" id="pane-promo">
+                                <h2 class="admin-pc-pane-title">📢 Промо-карточка</h2>
+                                <div class="admin-pc-card">
+                                    <div class="admin-pc-form-group">
+                                        <label for="pc-input-promo-badge">Текст значка (Badge)</label>
+                                        <input type="text" class="admin-pc-input" id="pc-input-promo-badge">
+                                    </div>
+                                    <div class="admin-pc-form-group">
+                                        <label for="pc-input-promo-title">Заголовок промо-акции</label>
+                                        <input type="text" class="admin-pc-input" id="pc-input-promo-title">
+                                    </div>
+                                    <div class="admin-pc-form-group">
+                                        <label for="pc-input-promo-text">Текст описания</label>
+                                        <textarea class="admin-pc-textarea" id="pc-input-promo-text"></textarea>
+                                    </div>
+                                    <div class="admin-pc-form-group">
+                                        <label for="pc-input-promo-action">Текст на кнопке действия</label>
+                                        <input type="text" class="admin-pc-input" id="pc-input-promo-action">
+                                    </div>
+                                    <div class="admin-pc-form-group">
+                                        <label for="pc-input-promo-image">Ссылка на картинку (по умолчанию app_logo.png)</label>
+                                        <input type="text" class="admin-pc-input" id="pc-input-promo-image">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Pane: News -->
+                            <div class="admin-pc-pane" id="pane-news">
+                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                                    <h2 class="admin-pc-pane-title" style="margin:0;">📰 Новости</h2>
+                                    <button class="admin-pc-btn admin-pc-btn-primary" id="btn-pc-add-news">+ Добавить новость</button>
+                                </div>
+                                <div class="admin-pc-news-list" id="pc-news-list-container"></div>
+                            </div>
+
+                            <!-- Pane: Instructions -->
+                            <div class="admin-pc-pane" id="pane-instructions" style="max-width: 100%;">
+                                <h2 class="admin-pc-pane-title">📖 Инструкции</h2>
+                                <div class="admin-pc-split">
+                                    <div class="admin-pc-split-left" id="pc-inst-list-container">
+                                        <!-- Instructions list will be rendered here -->
+                                    </div>
+                                    <div class="admin-pc-split-right" id="pc-inst-steps-container">
+                                        <!-- Active instruction steps will be rendered here -->
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Pane: Sync -->
+                            <div class="admin-pc-pane" id="pane-sync">
+                                <h2 class="admin-pc-pane-title">🔄 GitHub Синхронизация</h2>
+                                <div class="admin-pc-card">
+                                    <div class="admin-pc-form-group">
+                                        <label for="pc-input-gh-repo">GitHub Репозиторий (например: tvshopru/sup.tvshop)</label>
+                                        <input type="text" class="admin-pc-input" id="pc-input-gh-repo">
+                                    </div>
+                                    <div class="admin-pc-form-group">
+                                        <label for="pc-input-gh-path">Путь к файлу в репозитории</label>
+                                        <input type="text" class="admin-pc-input" id="pc-input-gh-path">
+                                    </div>
+                                    <div class="admin-pc-form-group">
+                                        <label for="pc-input-gh-branch">Ветка (Branch)</label>
+                                        <input type="text" class="admin-pc-input" id="pc-input-gh-branch">
+                                    </div>
+                                    <div class="admin-pc-form-group">
+                                        <label for="pc-input-gh-token">GitHub Personal Access Token (Токен доступа)</label>
+                                        <input type="password" class="admin-pc-input" id="pc-input-gh-token" placeholder="ghp_xxxxxxxxxxxxxxxxxxxxxx">
+                                        <p style="color: rgba(255,255,255,0.4); font-size: 0.85em; margin: 5px 0 0 0;">Токен сохраняется исключительно в LocalStorage вашего браузера.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="admin-pc-footer">
+                            <div class="admin-pc-status-info">
+                                <div class="admin-pc-status-dot" id="pc-status-indicator"></div>
+                                <span id="pc-status-text">Все изменения сохранены локально</span>
+                            </div>
+                            <div class="admin-pc-actions">
+                                <button class="admin-pc-btn admin-pc-btn-primary" id="btn-pc-save">
+                                    <svg viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                                    Сохранить на GitHub
+                                </button>
+                                <button class="admin-pc-btn admin-pc-btn-secondary" id="btn-pc-download">
+                                    <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                                    Скачать config.json
+                                </button>
+                                <button class="admin-pc-btn admin-pc-btn-danger" id="btn-pc-restore">
+                                    Сбросить к исходным
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="admin-pc-toast-container"></div>
+            `;
+            $('body').html(dashboardHtml);
+            
+            // Load settings
+            var githubRepo = localStorage.getItem('admin_github_repo') || 'tvshopru/sup.tvshop';
+            var githubToken = localStorage.getItem('admin_github_token') || '';
+            var githubPath = localStorage.getItem('admin_github_path') || 'config.json';
+            var githubBranch = localStorage.getItem('admin_github_branch') || 'main';
+            
+            $('#pc-input-gh-repo').val(githubRepo);
+            $('#pc-input-gh-path').val(githubPath);
+            $('#pc-input-gh-branch').val(githubBranch);
+            $('#pc-input-gh-token').val(githubToken);
+            
+            var config = window.portal_config;
+            
+            $('#pc-input-support-text').val(config.supportText || '');
+            $('#pc-input-support-tg').val(config.supportTg || '');
+            $('#pc-input-support-qr').val(config.supportQrUrl || '');
+            $('#pc-input-admin-pin').val(config.adminPin || '0000');
+            
+            $('#pc-input-promo-badge').val(config.promo.badge || '');
+            $('#pc-input-promo-title').val(config.promo.title || '');
+            $('#pc-input-promo-text').val(config.promo.text || '');
+            $('#pc-input-promo-action').val(config.promo.actionText || '');
+            $('#pc-input-promo-image').val(config.promo.imageUrl || '');
+            
+            renderPCNews();
+            renderPCInstructions();
+            
+            $('.admin-pc-menu-item').on('click', function() {
+                gatherPCAdminValues();
+                $('.admin-pc-menu-item').removeClass('active');
+                $(this).addClass('active');
+                
+                var paneId = $(this).attr('data-pane');
+                $('.admin-pc-pane').removeClass('active');
+                $('#' + paneId).addClass('active');
+            });
+            
+            $('#btn-pc-logout').on('click', function() {
+                var url = window.location.origin + window.location.pathname;
+                window.location.href = url;
+            });
+            
+            $('#btn-pc-add-news').on('click', function() {
+                gatherPCAdminValues();
+                var dateStr = new Date().toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' });
+                config.news.push({
+                    id: 'news-' + (new Date().getTime()),
+                    date: dateStr,
+                    title: 'Новая новость',
+                    desc: 'Текст новой новости...'
+                });
+                renderPCNews();
+            });
+            
+            $('#btn-pc-save').on('click', function() {
+                gatherPCAdminValues();
+                
+                window.portal_config = config;
+                localStorage.setItem('portal_config', JSON.stringify(config));
+                
+                var repo = $('#pc-input-gh-repo').val().trim();
+                var path = $('#pc-input-gh-path').val().trim();
+                var branch = $('#pc-input-gh-branch').val().trim();
+                var token = $('#pc-input-gh-token').val().trim();
+                
+                localStorage.setItem('admin_github_repo', repo);
+                localStorage.setItem('admin_github_path', path);
+                localStorage.setItem('admin_github_branch', branch);
+                localStorage.setItem('admin_github_token', token);
+                
+                if (repo && token) {
+                    $('#pc-status-indicator').addClass('saving');
+                    $('#pc-status-text').text('Сохранение на GitHub...');
+                    
+                    pushPCConfigToGithub(repo, token, path, branch, config, function(success) {
+                        $('#pc-status-indicator').removeClass('saving');
+                        if (success) {
+                            $('#pc-status-text').text('Синхронизировано с GitHub в ' + new Date().toLocaleTimeString());
+                        } else {
+                            $('#pc-status-text').text('Ошибка синхронизации с GitHub');
+                        }
+                    });
+                } else {
+                    showAdminNotification('Изменения сохранены локально в браузере!', 'success');
+                    $('#pc-status-text').text('Сохранено локально в ' + new Date().toLocaleTimeString());
+                }
+            });
+            
+            $('#btn-pc-download').on('click', function() {
+                gatherPCAdminValues();
+                try {
+                    var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(config, null, 2));
+                    var downloadAnchor = document.createElement('a');
+                    downloadAnchor.setAttribute("href", dataStr);
+                    downloadAnchor.setAttribute("download", "config.json");
+                    document.body.appendChild(downloadAnchor);
+                    downloadAnchor.click();
+                    downloadAnchor.remove();
+                    showAdminNotification('Конфигурация config.json скачана!', 'success');
+                } catch(e) {
+                    showAdminNotification('Ошибка при скачивании файла!', 'error');
+                }
+            });
+            
+            $('#btn-pc-restore').on('click', function() {
+                if (confirm('Вы уверены, что хотите сбросить настройки к значениям по умолчанию?')) {
+                    window.portal_config = getDefaultConfig();
+                    config = window.portal_config;
+                    
+                    $('#pc-input-support-text').val(config.supportText || '');
+                    $('#pc-input-support-tg').val(config.supportTg || '');
+                    $('#pc-input-support-qr').val(config.supportQrUrl || '');
+                    $('#pc-input-admin-pin').val(config.adminPin || '0000');
+                    
+                    $('#pc-input-promo-badge').val(config.promo.badge || '');
+                    $('#pc-input-promo-title').val(config.promo.title || '');
+                    $('#pc-input-promo-text').val(config.promo.text || '');
+                    $('#pc-input-promo-action').val(config.promo.actionText || '');
+                    $('#pc-input-promo-image').val(config.promo.imageUrl || '');
+                    
+                    active_inst_idx = 0;
+                    renderPCNews();
+                    renderPCInstructions();
+                    showAdminNotification('Настройки сброшены к значениям по умолчанию!', 'info');
+                }
+            });
+        }
+
+        function renderPCNews() {
+            var config = window.portal_config;
+            var container = $('#pc-news-list-container');
+            container.empty();
+            
+            if (!config.news || !config.news.length) {
+                container.html('<div style="text-align:center; padding: 40px; color: rgba(255,255,255,0.4);">Список новостей пуст. Нажмите "+ Добавить новость" сверху.</div>');
+                return;
+            }
+            
+            config.news.forEach(function(item, idx) {
+                var card = $(`
+                    <div class="admin-pc-news-item" data-index="${idx}">
+                        <div class="admin-pc-news-header">
+                            <span class="admin-pc-news-title-lbl">Новость #${idx + 1}</span>
+                            <button class="admin-pc-btn admin-pc-btn-danger btn-pc-delete-news" data-index="${idx}" style="padding: 6px 12px; font-size: 0.85em;">Удалить</button>
+                        </div>
+                        <div class="admin-pc-form-group">
+                            <label>Дата публикации</label>
+                            <input type="text" class="admin-pc-input pc-news-date-input" value="${escapeHtml(item.date)}">
+                        </div>
+                        <div class="admin-pc-form-group">
+                            <label>Заголовок новости</label>
+                            <input type="text" class="admin-pc-input pc-news-title-input" value="${escapeHtml(item.title)}">
+                        </div>
+                        <div class="admin-pc-form-group">
+                            <label>Текст новости</label>
+                            <textarea class="admin-pc-textarea pc-news-desc-textarea">${escapeHtml(item.desc)}</textarea>
+                        </div>
+                    </div>
+                `);
+                container.append(card);
+            });
+            
+            $('.btn-pc-delete-news').on('click', function() {
+                var idx = parseInt($(this).attr('data-index'));
+                gatherPCAdminValues();
+                config.news.splice(idx, 1);
+                renderPCNews();
+            });
+        }
+
+        function renderPCInstructions() {
+            var config = window.portal_config;
+            var leftContainer = $('#pc-inst-list-container');
+            var rightContainer = $('#pc-inst-steps-container');
+            
+            leftContainer.empty();
+            rightContainer.empty();
+            
+            if (!config.instructions) {
+                config.instructions = [];
+            }
+            config.instructions = migrateInstructions(config.instructions);
+            
+            leftContainer.append('<div style="font-weight: 700; font-size: 1.1em; margin-bottom: 10px; color: #ffc107;">СПИСОК ТЕМ</div>');
+            
+            config.instructions.forEach(function(inst, idx) {
+                var activeClass = (idx === active_inst_idx) ? 'active' : '';
+                var instItem = $(`
+                    <div class="admin-pc-inst-item ${activeClass}" data-inst-index="${idx}">
+                        <div class="admin-pc-inst-header">
+                            <span class="admin-pc-inst-title-lbl">Тема #${idx + 1}</span>
+                            <div class="admin-pc-inst-controls">
+                                <button class="admin-pc-btn-icon btn-pc-inst-up" data-inst-index="${idx}" title="Переместить вверх">↑</button>
+                                <button class="admin-pc-btn-icon btn-pc-inst-down" data-inst-index="${idx}" title="Переместить вниз">↓</button>
+                                <button class="admin-pc-btn-icon admin-pc-btn-icon-danger btn-pc-inst-delete" data-inst-index="${idx}" title="Удалить тему">×</button>
+                            </div>
+                        </div>
+                        <div class="admin-pc-form-group" style="margin-top: 5px;">
+                            <input type="text" class="admin-pc-input pc-inst-title-input" value="${escapeHtml(inst.title)}" style="padding: 8px 12px; font-size: 0.95em;">
+                        </div>
+                    </div>
+                `);
+                leftContainer.append(instItem);
+            });
+            
+            leftContainer.append('<button class="admin-pc-btn admin-pc-btn-secondary" id="btn-pc-add-new-inst" style="width: 100%; justify-content: center; margin-top: 10px;">+ Новая тема</button>');
+            
+            $('.admin-pc-inst-item').on('click', function(e) {
+                if ($(e.target).is('input') || $(e.target).is('button') || $(e.target).hasClass('admin-pc-btn-icon')) return;
+                gatherPCAdminValues();
+                active_inst_idx = parseInt($(this).attr('data-inst-index'));
+                renderPCInstructions();
+            });
+            
+            $('.btn-pc-inst-up').on('click', function(e) {
+                e.stopPropagation();
+                gatherPCAdminValues();
+                var idx = parseInt($(this).attr('data-inst-index'));
+                if (idx > 0) {
+                    var temp = config.instructions[idx];
+                    config.instructions[idx] = config.instructions[idx - 1];
+                    config.instructions[idx - 1] = temp;
+                    if (active_inst_idx === idx) active_inst_idx = idx - 1;
+                    else if (active_inst_idx === idx - 1) active_inst_idx = idx;
+                    renderPCInstructions();
+                }
+            });
+            
+            $('.btn-pc-inst-down').on('click', function(e) {
+                e.stopPropagation();
+                gatherPCAdminValues();
+                var idx = parseInt($(this).attr('data-inst-index'));
+                if (idx < config.instructions.length - 1) {
+                    var temp = config.instructions[idx];
+                    config.instructions[idx] = config.instructions[idx + 1];
+                    config.instructions[idx + 1] = temp;
+                    if (active_inst_idx === idx) active_inst_idx = idx + 1;
+                    else if (active_inst_idx === idx + 1) active_inst_idx = idx;
+                    renderPCInstructions();
+                }
+            });
+            
+            $('.btn-pc-inst-delete').on('click', function(e) {
+                e.stopPropagation();
+                if (confirm('Вы уверены, что хотите удалить эту тему и все её шаги?')) {
+                    gatherPCAdminValues();
+                    var idx = parseInt($(this).attr('data-inst-index'));
+                    config.instructions.splice(idx, 1);
+                    if (active_inst_idx >= config.instructions.length) {
+                        active_inst_idx = Math.max(0, config.instructions.length - 1);
+                    }
+                    renderPCInstructions();
+                }
+            });
+            
+            $('#btn-pc-add-new-inst').on('click', function() {
+                gatherPCAdminValues();
+                var newId = 'inst-' + (new Date().getTime());
+                config.instructions.push({
+                    id: newId,
+                    title: 'Инструкция ' + (config.instructions.length + 1),
+                    steps: []
+                });
+                active_inst_idx = config.instructions.length - 1;
+                renderPCInstructions();
+            });
+            
+            if (config.instructions.length === 0) {
+                rightContainer.html('<div style="text-align:center; padding: 40px; color: rgba(255,255,255,0.4);">Создайте новую тему слева, чтобы наполнить её шагами.</div>');
+                return;
+            }
+            
+            var current_inst = config.instructions[active_inst_idx];
+            if (!current_inst) {
+                active_inst_idx = 0;
+                current_inst = config.instructions[0];
+            }
+            
+            rightContainer.append(`<div style="font-weight: 700; font-size: 1.1em; margin-bottom: 10px; color: #ffc107; text-transform: uppercase;">ШАГИ: ${escapeHtml(current_inst.title)}</div>`);
+            
+            var stepsList = $('<div style="display:flex; flex-direction:column; gap:15px;"></div>');
+            rightContainer.append(stepsList);
+            
+            if (!current_inst.steps) {
+                current_inst.steps = [];
+            }
+            
+            if (current_inst.steps.length === 0) {
+                stepsList.html('<div style="text-align:center; padding: 30px; color: rgba(255,255,255,0.3);">В этой теме ещё нет ни одного шага. Добавьте шаг кнопкой ниже.</div>');
+            } else {
+                current_inst.steps.forEach(function(step, idx) {
+                    var stepCard = $(`
+                        <div class="admin-pc-step-item" data-step-index="${idx}">
+                            <div class="admin-pc-news-header">
+                                <span class="admin-pc-news-title-lbl">Шаг #${idx + 1}</span>
+                                <div class="admin-pc-inst-controls">
+                                    <button class="admin-pc-btn-icon btn-pc-step-up" data-step-index="${idx}">↑</button>
+                                    <button class="admin-pc-btn-icon btn-pc-step-down" data-step-index="${idx}">↓</button>
+                                    <button class="admin-pc-btn-icon admin-pc-btn-icon-danger btn-pc-step-delete" data-step-index="${idx}">×</button>
+                                </div>
+                            </div>
+                            <div class="admin-pc-form-group">
+                                <label>Заголовок шага</label>
+                                <input type="text" class="admin-pc-input pc-step-title-input" value="${escapeHtml(step.title)}">
+                            </div>
+                            <div class="admin-pc-form-group">
+                                <label>Описание действия</label>
+                                <textarea class="admin-pc-textarea pc-step-text-textarea">${escapeHtml(step.text)}</textarea>
+                            </div>
+                            <div class="admin-pc-form-group">
+                                <label>Иллюстрация (например, app_logo.png)</label>
+                                <input type="text" class="admin-pc-input pc-step-image-input" value="${escapeHtml(step.imageUrl)}">
+                            </div>
+                        </div>
+                    `);
+                    stepsList.append(stepCard);
+                });
+            }
+            
+            rightContainer.append('<button class="admin-pc-btn admin-pc-btn-primary" id="btn-pc-add-new-step" style="align-self: flex-start; margin-top: 10px;">+ Добавить шаг</button>');
+            
+            $('.btn-pc-step-up').on('click', function() {
+                gatherPCAdminValues();
+                var idx = parseInt($(this).attr('data-step-index'));
+                if (idx > 0) {
+                    var steps = config.instructions[active_inst_idx].steps;
+                    var temp = steps[idx];
+                    steps[idx] = steps[idx - 1];
+                    steps[idx - 1] = temp;
+                    renderPCInstructions();
+                }
+            });
+            
+            $('.btn-pc-step-down').on('click', function() {
+                gatherPCAdminValues();
+                var idx = parseInt($(this).attr('data-step-index'));
+                var steps = config.instructions[active_inst_idx].steps;
+                if (idx < steps.length - 1) {
+                    var temp = steps[idx];
+                    steps[idx] = steps[idx + 1];
+                    steps[idx + 1] = temp;
+                    renderPCInstructions();
+                }
+            });
+            
+            $('.btn-pc-step-delete').on('click', function() {
+                if (confirm('Вы уверены, что хотите удалить этот шаг?')) {
+                    gatherPCAdminValues();
+                    var idx = parseInt($(this).attr('data-step-index'));
+                    config.instructions[active_inst_idx].steps.splice(idx, 1);
+                    renderPCInstructions();
+                }
+            });
+            
+            $('#btn-pc-add-new-step').on('click', function() {
+                gatherPCAdminValues();
+                var steps = config.instructions[active_inst_idx].steps;
+                steps.push({
+                    id: 'step-' + (new Date().getTime()),
+                    title: 'Шаг ' + (steps.length + 1) + ': Новый шаг',
+                    text: 'Введите описание шага здесь...',
+                    imageUrl: 'app_logo.png'
+                });
+                renderPCInstructions();
+            });
+        }
+
+        function gatherPCAdminValues() {
+            var config = window.portal_config;
+            if (!config) return;
+            
+            if ($('#pc-input-support-text').length) {
+                config.supportText = $('#pc-input-support-text').val();
+                config.supportTg = $('#pc-input-support-tg').val();
+                config.supportQrUrl = $('#pc-input-support-qr').val();
+                config.adminPin = $('#pc-input-admin-pin').val();
+            }
+            
+            if ($('#pc-input-promo-badge').length) {
+                config.promo.badge = $('#pc-input-promo-badge').val();
+                config.promo.title = $('#pc-input-promo-title').val();
+                config.promo.text = $('#pc-input-promo-text').val();
+                config.promo.actionText = $('#pc-input-promo-action').val();
+                config.promo.imageUrl = $('#pc-input-promo-image').val();
+            }
+            
+            var newsItems = $('.admin-pc-news-item');
+            if (newsItems.length) {
+                config.news = [];
+                newsItems.each(function() {
+                    var idx = parseInt($(this).attr('data-index'));
+                    var date = $(this).find('.pc-news-date-input').val();
+                    var title = $(this).find('.pc-news-title-input').val();
+                    var desc = $(this).find('.pc-news-desc-textarea').val();
+                    config.news.push({
+                        id: 'news-' + idx,
+                        date: date,
+                        title: title,
+                        desc: desc
+                    });
+                });
+            }
+            
+            var instItems = $('.admin-pc-inst-item');
+            if (instItems.length) {
+                var updated_instructions = [];
+                instItems.each(function() {
+                    var idx = parseInt($(this).attr('data-inst-index'));
+                    var title = $(this).find('.pc-inst-title-input').val();
+                    var origInst = config.instructions[idx];
+                    updated_instructions.push({
+                        id: origInst ? origInst.id : ('inst-' + idx),
+                        title: title,
+                        steps: origInst ? (origInst.steps || []) : []
+                    });
+                });
+                config.instructions = updated_instructions;
+            }
+            
+            var stepItems = $('.admin-pc-step-item');
+            if (stepItems.length && config.instructions.length > 0 && active_inst_idx < config.instructions.length) {
+                var current_inst = config.instructions[active_inst_idx];
+                current_inst.steps = [];
+                stepItems.each(function() {
+                    var idx = parseInt($(this).attr('data-step-index'));
+                    var title = $(this).find('.pc-step-title-input').val();
+                    var text = $(this).find('.pc-step-text-textarea').val();
+                    var image = $(this).find('.pc-step-image-input').val();
+                    current_inst.steps.push({
+                        id: 'step-' + idx,
+                        title: title,
+                        text: text,
+                        imageUrl: image
+                    });
+                });
+            }
+        }
+
+        if (isAdminMode) {
+            $(function() {
+                initPCAdminPanel();
+            });
+        } else {
+            if (lampa_url !== '') {
+                var suffix = (location.protocol !== 'file:') ? '?v=' + cache_version : '';
+                putScript(
+                    urlJoin(lampa_url, 'lampainit.js' + suffix),
+                    false,
+                    function(){}
+                )
+
+                putScript(
+                    urlJoin(lampa_url, 'app.min.js' + suffix),
+                    function () {
+                        var css = urlJoin(lampa_url, 'css/app.css' + suffix)
+
+                        $('head').append('<link rel="stylesheet" href="' + css + '">')
+                        if (window.registerCustomMainComponent) window.registerCustomMainComponent();
+                    },
+                    function () {
+                        putScript(
+                            urlJoin(lampa_url, 'lampa-main/app.min.js' + suffix),
+                            function () {
+                                var css = urlJoin(lampa_url, 'lampa-main/css/app.css' + suffix)
+
+                                $('head').append('<link rel="stylesheet" href="' + css + '">')
+
+                                putScript(
+                                    urlJoin(lampa_url, 'lampainit.js' + suffix),
+                                    false,
+                                    function(){}
+                                )
+                                if (window.registerCustomMainComponent) window.registerCustomMainComponent();
+                            },
+                            loadLocalLampa
+                        )
+                    }
+                )
+            }
+            else{
+                loadLocalLampa()
+            }
         }
 
         // Check if running via file:// and show warning if loading fails (CORS restriction)
