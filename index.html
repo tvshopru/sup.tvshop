@@ -67,6 +67,143 @@
             transform: translate3d(10em, 0, 0) !important;
         }
 
+        /* Hide all default Lampa menu items and split dividers to simplify the side panel */
+        .menu__list .menu__item, .menu__split {
+            display: none !important;
+        }
+
+        /* Keep only 'data-action="main"' (Главная) and our custom 'Админ-панель' and 'Инструкции' visible */
+        .menu__list .menu__item[data-action="main"],
+        .menu__list .menu__item.menu-item-admin,
+        .menu__list .menu__item.menu-item-instructions {
+            display: flex !important;
+        }
+
+        /* --- Custom TV Instructions Styles --- */
+        .instructions-container {
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+            height: calc(100vh - 4.5em);
+            box-sizing: border-box;
+            padding: 1.5em;
+            gap: 1.5em;
+            overflow: hidden;
+        }
+
+        .instructions-left {
+            display: flex;
+            flex-direction: column;
+            width: 50%;
+            height: 100%;
+            gap: 1.5em;
+        }
+
+        .instructions-right {
+            width: 50%;
+            height: 100%;
+        }
+
+        .instructions-card {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .instructions-step-badge {
+            align-self: flex-start;
+            background: #ffc107;
+            color: #111;
+            font-size: 0.9em;
+            font-weight: 700;
+            padding: 0.4em 1.0em;
+            border-radius: 0.5em;
+            text-transform: uppercase;
+        }
+
+        .instructions-title {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: #fff;
+            margin: 0.6em 0 0.8em 0;
+            border-left: 4px solid #ffc107;
+            padding-left: 0.6em;
+            line-height: 1.3;
+        }
+
+        .instructions-text {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.25em;
+            line-height: 1.6;
+            margin: 0 0 1.5em 0;
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+
+        .instructions-text::-webkit-scrollbar {
+            width: 6px;
+        }
+        .instructions-text::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.2);
+            border-radius: 3px;
+        }
+
+        .instructions-footer-hint {
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 0.95em;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            padding-top: 0.8em;
+            margin-top: auto;
+            display: flex;
+            align-items: center;
+            gap: 0.5em;
+        }
+
+        .instructions-image-card {
+            height: 100%;
+            padding: 0 !important;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.25) !important;
+        }
+
+        .instructions-image-wrapper {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+            box-sizing: border-box;
+            padding: 1em;
+        }
+
+        .instructions-image {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            border-radius: 0.6em;
+            transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .instructions-image.zoomed {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            max-width: 100vw !important;
+            max-height: 100vh !important;
+            background: rgba(9, 11, 14, 0.98) !important;
+            z-index: 9999999 !important;
+            object-fit: contain !important;
+            padding: 1.5em !important;
+            box-sizing: border-box !important;
+            border-radius: 0 !important;
+        }
+
         /* --- Custom TV Dashboard Styles --- */
         .dashboard-container {
             display: flex;
@@ -201,13 +338,32 @@
             padding: 0.3em 0.8em;
             border-radius: 1em;
             text-transform: uppercase;
+            z-index: 2;
+        }
+
+        .promo-content {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.5em;
+            flex-grow: 1;
+            height: 100%;
+        }
+
+        .promo-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            justify-content: space-between;
         }
 
         .promo-text {
             color: rgba(255, 255, 255, 0.75);
             font-size: 1.05em;
             line-height: 1.5;
-            margin: 0 0 1.2em 0;
+            margin: 0 0 1.0em 0;
             flex-grow: 1;
         }
 
@@ -224,6 +380,29 @@
 
         .promo-card.focus .promo-action {
             background: #fff;
+        }
+
+        .promo-image-wrapper {
+            width: 140px;
+            height: 140px;
+            min-width: 140px;
+            min-height: 140px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0.8em;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+
+        .promo-image {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            padding: 0.5em;
+            box-sizing: border-box;
         }
 
         /* News Card Content */
@@ -276,10 +455,367 @@
             line-height: 1.4;
             margin: 0;
         }
+
+        /* --- Admin Panel UI Styles --- */
+        .admin-container {
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+            height: calc(100vh - 4.5em);
+            box-sizing: border-box;
+            padding: 1.5em;
+            gap: 1.5em;
+            overflow: hidden;
+            background: #141821;
+        }
+
+        .admin-sidebar {
+            width: 30%;
+            display: flex;
+            flex-direction: column;
+            gap: 1em;
+            border-right: 1px solid rgba(255, 255, 255, 0.08);
+            padding-right: 1.5em;
+            height: 100%;
+        }
+
+        .admin-tab-btn {
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px solid rgba(255, 255, 255, 0.05);
+            border-radius: 0.8em;
+            padding: 1.2em;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1.1em;
+            font-weight: 700;
+            text-align: left;
+            transition: all 0.2s;
+            box-sizing: border-box;
+            width: 100%;
+            cursor: pointer;
+        }
+
+        .admin-tab-btn.active {
+            border-color: #ffc107;
+            background: rgba(255, 193, 7, 0.1);
+            color: #ffc107;
+        }
+
+        .admin-tab-btn.selector.focus {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: #ffc107;
+            transform: scale(1.02);
+        }
+
+        .admin-content {
+            width: 70%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5em;
+            position: relative;
+        }
+
+        .admin-tab-panel {
+            display: none;
+            flex-direction: column;
+            gap: 1.2em;
+            height: calc(100% - 5.5em);
+            overflow-y: auto;
+            padding-right: 0.5em;
+        }
+
+        .admin-tab-panel.active {
+            display: flex;
+        }
+
+        .admin-tab-panel::-webkit-scrollbar {
+            width: 6px;
+        }
+        .admin-tab-panel::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.2);
+            border-radius: 3px;
+        }
+
+        .admin-form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5em;
+        }
+
+        .admin-form-group label {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.95em;
+            font-weight: 700;
+        }
+
+        .admin-input, .admin-textarea {
+            background: rgba(0, 0, 0, 0.25);
+            border: 2px solid rgba(255, 255, 255, 0.08);
+            border-radius: 0.6em;
+            padding: 0.8em 1em;
+            color: #fff;
+            font-size: 1.05em;
+            font-family: inherit;
+            box-sizing: border-box;
+            width: 100%;
+            transition: border-color 0.2s, background 0.2s;
+        }
+
+        .admin-textarea {
+            min-height: 80px;
+            resize: none;
+        }
+
+        .admin-input.selector.focus, .admin-textarea.selector.focus {
+            border-color: #ffc107;
+            background: rgba(255, 255, 255, 0.03);
+            outline: none;
+        }
+
+        .admin-actions {
+            display: flex;
+            flex-direction: row;
+            gap: 1em;
+            margin-top: auto;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            padding-top: 1.2em;
+        }
+
+        .admin-btn {
+            padding: 0.8em 1.5em;
+            border-radius: 0.6em;
+            font-size: 1.05em;
+            font-weight: 700;
+            text-align: center;
+            box-sizing: border-box;
+            transition: all 0.2s;
+            cursor: pointer;
+            border: none;
+        }
+
+        .admin-btn-save {
+            background: #ffc107;
+            color: #111;
+        }
+
+        .admin-btn-download {
+            background: rgba(255, 255, 255, 0.08);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+
+        .admin-btn-close {
+            background: #e91e63;
+            color: #fff;
+            margin-left: auto;
+        }
+
+        .admin-btn.selector.focus {
+            transform: scale(1.03);
+            box-shadow: 0 0 15px rgba(255, 193, 7, 0.3);
+        }
+        
+        .admin-btn-close.selector.focus {
+            box-shadow: 0 0 15px rgba(233, 30, 99, 0.3);
+        }
+
+        /* News Item Admin Form List */
+        .admin-news-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1em;
+        }
+
+        .admin-news-card {
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 0.8em;
+            padding: 1em;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8em;
+        }
+
+        .admin-news-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 0.5em;
+        }
+
+        .admin-news-title-label {
+            font-weight: 700;
+            color: #ffc107;
+        }
+
+        .admin-btn-delete-news {
+            background: rgba(233, 30, 99, 0.1);
+            border: 1px solid rgba(233, 30, 99, 0.3);
+            color: #e91e63;
+            padding: 0.3em 0.8em;
+            border-radius: 0.4em;
+            font-size: 0.85em;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .admin-btn-delete-news.selector.focus {
+            background: #e91e63;
+            color: #fff;
+        }
+
+        .admin-btn-add-news {
+            background: rgba(76, 175, 80, 0.1);
+            border: 2px dashed #4caf50;
+            color: #4caf50;
+            padding: 0.8em;
+            border-radius: 0.6em;
+            font-size: 1.0em;
+            font-weight: 700;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .admin-btn-add-news.selector.focus {
+            background: #4caf50;
+            color: #fff;
+            border-style: solid;
+        }
+
+        /* Instruction Item Admin Form List */
+        .admin-instructions-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1em;
+        }
+
+        .admin-instruction-card {
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 0.8em;
+            padding: 1em;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8em;
+        }
+
+        .admin-instruction-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 0.5em;
+        }
+
+        .admin-instruction-title-label {
+            font-weight: 700;
+            color: #ffc107;
+        }
+
+        .admin-instruction-actions {
+            display: flex;
+            gap: 0.5em;
+            align-items: center;
+        }
+
+        .admin-btn-move-instruction {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #fff;
+            padding: 0.3em 0.7em;
+            border-radius: 0.4em;
+            font-size: 0.85em;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .admin-btn-move-instruction.selector.focus {
+            background: #ffc107;
+            color: #111;
+            border-color: #ffc107;
+        }
+
+        .admin-btn-delete-instruction {
+            background: rgba(233, 30, 99, 0.1);
+            border: 1px solid rgba(233, 30, 99, 0.3);
+            color: #e91e63;
+            padding: 0.3em 0.8em;
+            border-radius: 0.4em;
+            font-size: 0.85em;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .admin-btn-delete-instruction.selector.focus {
+            background: #e91e63;
+            color: #fff;
+        }
+
+        .admin-btn-add-instruction {
+            background: rgba(76, 175, 80, 0.1);
+            border: 2px dashed #4caf50;
+            color: #4caf50;
+            padding: 0.8em;
+            border-radius: 0.6em;
+            font-size: 1.0em;
+            font-weight: 700;
+            text-align: center;
+            cursor: pointer;
+            margin-top: 1em;
+            width: 100%;
+            transition: all 0.2s;
+            box-sizing: border-box;
+            border-style: dashed;
+        }
+
+        .admin-btn-add-instruction.selector.focus {
+            background: #4caf50;
+            color: #fff;
+            border-style: solid;
+        }
     </style>
 </head>
 <body style="background: #1d1f20;">
     <script>
+        window.onerror = function(message, source, lineno, colno, error) {
+            var errDiv = document.getElementById('debug-error-overlay');
+            if (!errDiv) {
+                errDiv = document.createElement('div');
+                errDiv.id = 'debug-error-overlay';
+                errDiv.style.position = 'fixed';
+                errDiv.style.top = '10px';
+                errDiv.style.left = '10px';
+                errDiv.style.width = 'calc(100% - 20px)';
+                errDiv.style.maxHeight = 'calc(100% - 20px)';
+                errDiv.style.background = 'rgba(233, 30, 99, 0.95)';
+                errDiv.style.color = '#fff';
+                errDiv.style.padding = '20px';
+                errDiv.style.borderRadius = '8px';
+                errDiv.style.zIndex = '9999999';
+                errDiv.style.fontFamily = 'monospace';
+                errDiv.style.fontSize = '14px';
+                errDiv.style.overflowY = 'auto';
+                errDiv.style.boxShadow = '0 0 20px rgba(0,0,0,0.5)';
+                document.body.appendChild(errDiv);
+            }
+            
+            var errorInfo = document.createElement('div');
+            errorInfo.style.marginBottom = '15px';
+            errorInfo.style.borderBottom = '1px dashed rgba(255,255,255,0.3)';
+            errorInfo.style.paddingBottom = '15px';
+            
+            var details = document.createElement('pre');
+            details.style.margin = '0';
+            details.style.whiteSpace = 'pre-wrap';
+            details.style.wordBreak = 'break-all';
+            details.innerText = 'Error: ' + message + '\nSource: ' + source + '\nLine: ' + lineno + ', Col: ' + colno + '\nStack: ' + (error && error.stack ? error.stack : 'N/A');
+            
+            errorInfo.appendChild(details);
+            errDiv.appendChild(errorInfo);
+            return false;
+        };
+
         window.youtube_lazy_load = true;
 
         // Preset Lampa settings to bypass mirrors and first-run prompts
@@ -371,20 +907,203 @@
             add(scripts)
         }
 
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        function mergeConfigs(loaded, defaults) {
+            if (!loaded || typeof loaded !== 'object') return defaults;
+            var result = $.extend(true, {}, defaults, loaded);
+            if (loaded.news && Array.isArray(loaded.news)) {
+                result.news = loaded.news;
+            }
+            if (loaded.instructions && Array.isArray(loaded.instructions)) {
+                result.instructions = loaded.instructions;
+            }
+            return result;
+        }
+
+        function getDefaultConfig() {
+            return {
+                "adminPin": "0000",
+                "supportText": "Для связи с нашей техподдержкой отсканируйте этот QR-код с телефона или перейдите по контакту Telegram:",
+                "supportTg": "@android_tv_shop",
+                "supportQrUrl": "",
+                "promo": {
+                    "badge": "Премиум ТВ",
+                    "title": "Платный проект ТВ",
+                    "text": "Более 1000 ТВ-каналов в HD и 4K качестве с архивом за 7 дней и полной медиатекой фильмов! Стабильное вещание без зависаний по всему миру.",
+                    "actionText": "Подключить за 1$",
+                    "imageUrl": "app_logo.png"
+                },
+                "news": [
+                    {
+                        "id": "news-1",
+                        "date": "14 июня 2026",
+                        "title": "Запуск обновленной версии портала",
+                        "desc": "Мы обновили дизайн и структуру главной страницы. Теперь вся информация о поддержке и новостях доступна в один клик без прокрутки."
+                    },
+                    {
+                        "id": "news-2",
+                        "date": "10 июня 2026",
+                        "title": "Добавлены новые 4K каналы",
+                        "desc": "В премиальный пакет добавлены 15 новых каналов высокой четкости (UHD/4K) в спортивном и познавательном жанрах."
+                    },
+                    {
+                        "id": "news-3",
+                        "date": "01 июня 2026",
+                        "title": "Технические работы завершены",
+                        "desc": "Плановые работы на серверах трансляции успешно завершены. Скорость загрузки потоков выросла на 30%."
+                    }
+                ],
+                "instructions": [
+                    {
+                        "id": "step-1",
+                        "title": "Шаг 1: Подключение приставки",
+                        "text": "Подключите HDMI-кабель одним концом к вашей приставке, а вторым — к свободному HDMI-порту телевизора. Подсоедините блок питания к приставке и розетке.",
+                        "imageUrl": "app_logo.png"
+                    },
+                    {
+                        "id": "step-2",
+                        "title": "Шаг 2: Подключение к интернету",
+                        "text": "Включите приставку. Перейдите в настройки Wi-Fi, выберите вашу домашнюю сеть и введите пароль. Убедитесь, что статус подключения сменился на 'Подключено'.",
+                        "imageUrl": "app_logo.png"
+                    },
+                    {
+                        "id": "step-3",
+                        "title": "Шаг 3: Запуск приложения",
+                        "text": "Найдите на главном экране приложение Lampa и запустите его. Наш портал загрузится автоматически со всеми настроенными разделами поддержки и новостей.",
+                        "imageUrl": "app_logo.png"
+                    }
+                ]
+            };
+        }
+
+        window.loadPortalConfig = function(callback) {
+            console.log('PortalConfig', 'Loading configuration...');
+            var url = 'config.json';
+            if (location.protocol !== 'file:') {
+                url += '?v=' + (new Date().getTime());
+            }
+            $.getJSON(url, function(data) {
+                window.portal_config = mergeConfigs(data, getDefaultConfig());
+                console.log('PortalConfig', 'Loaded from config.json', window.portal_config);
+                if (callback) callback();
+            }).fail(function() {
+                var local = localStorage.getItem('portal_config');
+                if (local) {
+                    try {
+                        var parsed = JSON.parse(local);
+                        window.portal_config = mergeConfigs(parsed, getDefaultConfig());
+                        console.log('PortalConfig', 'Loaded from localStorage', window.portal_config);
+                    } catch(e) {
+                        window.portal_config = getDefaultConfig();
+                    }
+                } else {
+                    window.portal_config = getDefaultConfig();
+                }
+                if (callback) callback();
+            });
+        };
+
+        function pushConfigToGithub(repo, token, path, branch, config) {
+            var url = 'https://api.github.com/repos/' + repo + '/contents/' + path;
+            
+            // Получаем SHA существующего файла
+            $.ajax({
+                url: url + '?ref=' + branch,
+                type: 'GET',
+                headers: {
+                    'Authorization': 'token ' + token,
+                    'Accept': 'application/vnd.github.v3+json'
+                },
+                success: function(data) {
+                    var sha = data.sha;
+                    commitConfig(url, token, branch, config, sha);
+                },
+                error: function(xhr) {
+                    if (xhr.status === 404) {
+                        commitConfig(url, token, branch, config, null);
+                    } else {
+                        Lampa.Noty.show('Ошибка GitHub GET: ' + xhr.status);
+                    }
+                }
+            });
+        }
+
+        function commitConfig(url, token, branch, config, sha) {
+            var content = btoa(unescape(encodeURIComponent(JSON.stringify(config, null, 2))));
+            var payload = {
+                message: 'Обновление конфигурации портала через админ-панель',
+                content: content,
+                branch: branch
+            };
+            if (sha) payload.sha = sha;
+
+            $.ajax({
+                url: url,
+                type: 'PUT',
+                headers: {
+                    'Authorization': 'token ' + token,
+                    'Accept': 'application/vnd.github.v3+json'
+                },
+                data: JSON.stringify(payload),
+                success: function() {
+                    Lampa.Noty.show('Успешно сохранено и синхронизировано с GitHub!');
+                },
+                error: function(xhr) {
+                    Lampa.Noty.show('Ошибка сохранения на GitHub: ' + xhr.status);
+                }
+            });
+        }
+
         window.registerCustomMainComponent = function() {
             if (window.customMainRegistered) return;
             window.customMainRegistered = true;
             
-            console.log('CustomMain', 'Registering Main Component');
+            console.log('CustomMain', 'Registering Main and Admin Components');
 
             function CustomMain(object) {
-                var html;
+                var html = $('<div class="dashboard-wrapper" style="width: 100%; height: 100%;"></div>');
                 var active_element = null;
 
                 this.create = function () {
                     var _this = this;
-                    this.activity.loader(false);
+                    this.activity.loader(true);
                     
+                    window.loadPortalConfig(function() {
+                        _this.activity.loader(false);
+                        _this.buildDashboard();
+                        _this.activity.toggle();
+                    });
+                };
+
+                this.buildDashboard = function () {
+                    var config = window.portal_config || getDefaultConfig();
+                    var tgContact = config.supportTg || '';
+                    var tgLink = tgContact.startsWith('@') ? 'https://t.me/' + tgContact.substring(1) : tgContact;
+                    var qrUrl = config.supportQrUrl || ('https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' + encodeURIComponent(tgLink));
+                    
+                    var newsHtml = '';
+                    if (config.news && config.news.length) {
+                        config.news.forEach(function(item) {
+                            newsHtml += 
+                                '<div class="news-item selector" data-card="' + item.id + '">' +
+                                    '<div class="news-date">' + escapeHtml(item.date) + '</div>' +
+                                    '<h3 class="news-item-title">' + escapeHtml(item.title) + '</h3>' +
+                                    '<p class="news-item-desc">' + escapeHtml(item.desc) + '</p>' +
+                                '</div>';
+                        });
+                    } else {
+                        newsHtml = '<div style="color: rgba(255,255,255,0.4); text-align: center; padding: 2em;">Нет новостей</div>';
+                    }
+
                     var dashboard_html = 
                         '<div class="dashboard-container">' +
                             '<div class="dashboard-left">' +
@@ -393,20 +1112,27 @@
                                     '<h2 class="card-title">Техническая поддержка</h2>' +
                                     '<div class="support-content">' +
                                         '<div class="support-text">' +
-                                            '<p>Для связи с нашей техподдержкой отсканируйте этот QR-код с телефона или перейдите по контакту Telegram:</p>' +
-                                            '<div class="support-tg">@android_tv_shop</div>' +
+                                            '<p>' + escapeHtml(config.supportText) + '</p>' +
+                                            '<div class="support-tg">' + escapeHtml(config.supportTg) + '</div>' +
                                         '</div>' +
                                         '<div class="support-qr-wrapper">' +
-                                            '<img class="support-qr" src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://t.me/android_tv_shop" alt="QR-код поддержки">' +
+                                            '<img class="support-qr" src="' + qrUrl + '" alt="QR-код поддержки">' +
                                         '</div>' +
                                     '</div>' +
                                 '</div>' +
                                 '<!-- Promo Card -->' +
                                 '<div class="dashboard-card promo-card selector" data-card="promo">' +
-                                    '<div class="promo-badge">Премиум ТВ</div>' +
-                                    '<h2 class="card-title">Платный проект ТВ</h2>' +
-                                    '<p class="promo-text">Более 1000 ТВ-каналов в HD и 4K качестве с архивом за 7 дней и полной медиатекой фильмов! Стабильное вещание без зависаний по всему миру.</p>' +
-                                    '<div class="promo-action">Подключить за 1$</div>' +
+                                    '<div class="promo-badge">' + escapeHtml(config.promo.badge) + '</div>' +
+                                    '<div class="promo-content">' +
+                                        '<div class="promo-info">' +
+                                            '<h2 class="card-title">' + escapeHtml(config.promo.title) + '</h2>' +
+                                            '<p class="promo-text">' + escapeHtml(config.promo.text) + '</p>' +
+                                            '<div class="promo-action">' + escapeHtml(config.promo.actionText) + '</div>' +
+                                        '</div>' +
+                                        '<div class="promo-image-wrapper">' +
+                                            '<img class="promo-image" src="' + escapeHtml(config.promo.imageUrl || 'app_logo.png') + '" alt="Promo Image">' +
+                                        '</div>' +
+                                    '</div>' +
                                 '</div>' +
                             '</div>' +
                             '<div class="dashboard-right">' +
@@ -414,27 +1140,13 @@
                                 '<div class="dashboard-card news-card">' +
                                     '<h2 class="card-title">Новости и обновления</h2>' +
                                     '<div class="news-list">' +
-                                        '<div class="news-item selector" data-card="news-1">' +
-                                            '<div class="news-date">14 июня 2026</div>' +
-                                            '<h3 class="news-item-title">Запуск обновленной версии портала</h3>' +
-                                            '<p class="news-item-desc">Мы обновили дизайн и структуру главной страницы. Теперь вся информация о поддержке и новостях доступна в один клик без прокрутки.</p>' +
-                                        '</div>' +
-                                        '<div class="news-item selector" data-card="news-2">' +
-                                            '<div class="news-date">10 июня 2026</div>' +
-                                            '<h3 class="news-item-title">Добавлены новые 4K каналы</h3>' +
-                                            '<p class="news-item-desc">В премиальный пакет добавлены 15 новых каналов высокой четкости (UHD/4K) в спортивном и познавательном жанрах.</p>' +
-                                        '</div>' +
-                                        '<div class="news-item selector" data-card="news-3">' +
-                                            '<div class="news-date">01 июня 2026</div>' +
-                                            '<h3 class="news-item-title">Технические работы завершены</h3>' +
-                                            '<p class="news-item-desc">Плановые работы на серверах трансляции успешно завершены. Скорость загрузки потоков выросла на 30%.</p>' +
-                                        '</div>' +
+                                        newsHtml +
                                     '</div>' +
                                 '</div>' +
                             '</div>' +
                         '</div>';
 
-                    html = $(dashboard_html);
+                    html.html(dashboard_html);
 
                     html.find('.selector').on('hover:focus', function () {
                         active_element = $(this);
@@ -454,13 +1166,565 @@
                     html.find('.selector').on('hover:enter', function () {
                         var card = $(this).attr('data-card');
                         if (card === 'support') {
-                            Lampa.Noty.show('Свяжитесь с нами в Telegram: @android_tv_shop');
+                            Lampa.Noty.show('Свяжитесь с нами в Telegram: ' + config.supportTg);
                         } else if (card === 'promo') {
-                            Lampa.Noty.show('Для подключения Premium обратитесь к @android_tv_shop');
+                            Lampa.Noty.show('Для подключения Premium обратитесь к ' + config.supportTg);
                         } else if (card.indexOf('news-') === 0) {
                             var title = $(this).find('.news-item-title').text();
                             Lampa.Noty.show(title);
                         }
+                    });
+                };
+
+                this.start = function () {
+                    Lampa.Controller.add('content', {
+                        toggle: function toggle() {
+                            Lampa.Controller.collectionSet(html);
+                            Lampa.Controller.collectionFocus(active_element || html.find('.selector').first()[0], html);
+                        },
+                        left: function left() {
+                            if (Navigator.canmove('left')) Navigator.move('left');
+                            else Lampa.Controller.toggle('menu');
+                        },
+                        right: function right() {
+                            if (Navigator.canmove('right')) Navigator.move('right');
+                        },
+                        up: function up() {
+                            if (Navigator.canmove('up')) Navigator.move('up');
+                            else Lampa.Controller.toggle('head');
+                        },
+                        down: function down() {
+                            if (Navigator.canmove('down')) Navigator.move('down');
+                        },
+                        back: function back() {
+                            Lampa.Activity.backward();
+                        }
+                    });
+                    Lampa.Controller.toggle('content');
+                };
+
+                this.pause = function () {};
+
+                this.destroy = function () {
+                    if (html) html.remove();
+                };
+
+                this.render = function (native) {
+                    return native ? html[0] : html;
+                };
+            }
+
+            function InstructionsComponent(object) {
+                var html = $('<div class="instructions-container"></div>');
+                var current_step = 0;
+                var is_zoomed = false;
+
+                this.create = function () {
+                    var _this = this;
+                    this.activity.loader(true);
+                    
+                    window.loadPortalConfig(function() {
+                        _this.activity.loader(false);
+                        _this.buildStep();
+                        _this.activity.toggle();
+                    });
+                };
+
+                this.buildStep = function () {
+                    var config = window.portal_config || getDefaultConfig();
+                    var steps = config.instructions || [];
+                    
+                    if (!steps.length) {
+                        html.html('<div style="color:rgba(255,255,255,0.4); text-align:center; width:100%; padding: 4em;">Нет инструкций</div>');
+                        return;
+                    }
+
+                    if (current_step < 0) current_step = 0;
+                    if (current_step >= steps.length) current_step = steps.length - 1;
+
+                    var step = steps[current_step];
+                    var stepNum = current_step + 1;
+                    var totalSteps = steps.length;
+
+                    var step_inner_html = 
+                        '<div class="instructions-left">' +
+                            '<div class="dashboard-card instructions-card">' +
+                                '<div class="instructions-step-badge">Шаг ' + stepNum + ' из ' + totalSteps + '</div>' +
+                                '<h2 class="instructions-title">' + escapeHtml(step.title) + '</h2>' +
+                                '<div class="instructions-text">' + escapeHtml(step.text).replace(/\n/g, '<br>') + '</div>' +
+                                '<div class="instructions-footer-hint">' +
+                                    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:1.2em;height:1.2em;margin-right:0.4em;"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>' +
+                                    '<span>Используйте стрелки Влево/Вправо на пульте для перелистывания. OK для увеличения фото.</span>' +
+                                '</div>' +
+                            '</div>' +
+                         '</div>' +
+                         '<div class="instructions-right">' +
+                             '<div class="dashboard-card instructions-image-card">' +
+                                 '<div class="instructions-image-wrapper selector" data-action="zoom">' +
+                                     '<img class="instructions-image' + (is_zoomed ? ' zoomed' : '') + '" src="' + escapeHtml(step.imageUrl || 'app_logo.png') + '" alt="Иллюстрация шага">' +
+                                 '</div>' +
+                             '</div>' +
+                         '</div>';
+
+                    html.html(step_inner_html);
+
+                    var _this = this;
+                    html.find('.selector').on('hover:enter click', function() {
+                        _this.toggleZoom();
+                    });
+                };
+
+                this.toggleZoom = function() {
+                    is_zoomed = !is_zoomed;
+                    var img = html.find('.instructions-image');
+                    if (is_zoomed) {
+                        img.addClass('zoomed');
+                        Lampa.Noty.show('Нажмите ОК или НАЗАД для возврата');
+                    } else {
+                        img.removeClass('zoomed');
+                    }
+                };
+
+                this.start = function () {
+                    var _this = this;
+                    Lampa.Controller.add('content', {
+                        toggle: function toggle() {
+                            Lampa.Controller.collectionSet(html);
+                            Lampa.Controller.collectionFocus(html.find('.selector').first()[0], html);
+                        },
+                        left: function left() {
+                            if (_this.isZoomed()) {
+                                _this.toggleZoom();
+                            } else {
+                                var config = window.portal_config || getDefaultConfig();
+                                var steps = config.instructions || [];
+                                if (current_step > 0) {
+                                    current_step--;
+                                    _this.buildStep();
+                                    Lampa.Controller.toggle('content');
+                                } else {
+                                    Lampa.Controller.toggle('menu');
+                                }
+                            }
+                        },
+                        right: function right() {
+                            if (_this.isZoomed()) {
+                                _this.toggleZoom();
+                            } else {
+                                var config = window.portal_config || getDefaultConfig();
+                                var steps = config.instructions || [];
+                                if (current_step < steps.length - 1) {
+                                    current_step++;
+                                    _this.buildStep();
+                                    Lampa.Controller.toggle('content');
+                                }
+                            }
+                        },
+                        up: function up() {
+                            if (_this.isZoomed()) {
+                                _this.toggleZoom();
+                            } else {
+                                Lampa.Controller.toggle('head');
+                            }
+                        },
+                        down: function down() {
+                            if (_this.isZoomed()) {
+                                _this.toggleZoom();
+                            }
+                        },
+                        back: function back() {
+                            if (_this.isZoomed()) {
+                                _this.toggleZoom();
+                            } else {
+                                Lampa.Activity.backward();
+                            }
+                        }
+                    });
+                    Lampa.Controller.toggle('content');
+                };
+
+                this.isZoomed = function() {
+                    return is_zoomed;
+                };
+
+                this.pause = function () {};
+
+                this.destroy = function () {
+                    if (html) html.remove();
+                };
+
+                this.render = function (native) {
+                    return native ? html[0] : html;
+                };
+            }
+
+            function AdminComponent(object) {
+                var html;
+                var active_element = null;
+                var current_tab = 'tab-support';
+
+                this.create = function () {
+                    var _this = this;
+                    this.activity.loader(false);
+                    
+                    var config = JSON.parse(JSON.stringify(window.portal_config || getDefaultConfig()));
+                    
+                    var githubRepo = localStorage.getItem('admin_github_repo') || 'tvshopru/sup.tvshop';
+                    var githubToken = localStorage.getItem('admin_github_token') || '';
+                    var githubPath = localStorage.getItem('admin_github_path') || 'config.json';
+                    var githubBranch = localStorage.getItem('admin_github_branch') || 'main';
+
+                    var admin_html = 
+                        '<div class="admin-container">' +
+                            '<div class="admin-sidebar">' +
+                                '<div style="color: #ffc107; font-size: 1.3em; font-weight: 700; margin-bottom: 0.8em; text-align: center;">АДМИНИСТРАЦИЯ</div>' +
+                                '<button class="admin-tab-btn selector active" data-tab="tab-support">Поддержка</button>' +
+                                '<button class="admin-tab-btn selector" data-tab="tab-promo">Промо-карточка</button>' +
+                                '<button class="admin-tab-btn selector" data-tab="tab-news">Новости</button>' +
+                                '<button class="admin-tab-btn selector" data-tab="tab-instructions">Инструкции</button>' +
+                                '<button class="admin-tab-btn selector" data-tab="tab-sync">Синхронизация GitHub</button>' +
+                            '</div>' +
+                            '<div class="admin-content">' +
+                                '<!-- Tab: Support -->' +
+                                '<div class="admin-tab-panel active" id="tab-support">' +
+                                    '<div class="admin-form-group">' +
+                                        '<label>Текст техподдержки</label>' +
+                                        '<textarea class="admin-textarea selector" id="input-support-text">' + escapeHtml(config.supportText) + '</textarea>' +
+                                    '</div>' +
+                                    '<div class="admin-form-group">' +
+                                        '<label>Ссылка или контакт Telegram</label>' +
+                                        '<input type="text" class="admin-input selector" id="input-support-tg" value="' + escapeHtml(config.supportTg) + '">' +
+                                    '</div>' +
+                                    '<div class="admin-form-group">' +
+                                        '<label>Прямой URL для QR-кода (необязательно)</label>' +
+                                        '<input type="text" class="admin-input selector" id="input-support-qr" value="' + escapeHtml(config.supportQrUrl) + '" placeholder="Оставьте пустым для автогенерации из Telegram">' +
+                                    '</div>' +
+                                    '<div class="admin-form-group">' +
+                                        '<label>PIN-код для входа в панель</label>' +
+                                        '<input type="text" class="admin-input selector" id="input-admin-pin" value="' + escapeHtml(config.adminPin) + '" maxlength="10">' +
+                                    '</div>' +
+                                '</div>' +
+                                '<!-- Tab: Promo -->' +
+                                '<div class="admin-tab-panel" id="tab-promo">' +
+                                    '<div class="admin-form-group">' +
+                                        '<label>Текст значка (Badge)</label>' +
+                                        '<input type="text" class="admin-input selector" id="input-promo-badge" value="' + escapeHtml(config.promo.badge) + '">' +
+                                    '</div>' +
+                                    '<div class="admin-form-group">' +
+                                        '<label>Заголовок промо-акции</label>' +
+                                        '<input type="text" class="admin-input selector" id="input-promo-title" value="' + escapeHtml(config.promo.title) + '">' +
+                                    '</div>' +
+                                    '<div class="admin-form-group">' +
+                                        '<label>Текст описания</label>' +
+                                        '<textarea class="admin-textarea selector" id="input-promo-text">' + escapeHtml(config.promo.text) + '</textarea>' +
+                                    '</div>' +
+                                    '<div class="admin-form-group">' +
+                                        '<label>Текст на кнопке действия</label>' +
+                                        '<input type="text" class="admin-input selector" id="input-promo-action" value="' + escapeHtml(config.promo.actionText) + '">' +
+                                    '</div>' +
+                                    '<div class="admin-form-group">' +
+                                        '<label>Ссылка на картинку (по умолчанию app_logo.png)</label>' +
+                                        '<input type="text" class="admin-input selector" id="input-promo-image" value="' + escapeHtml(config.promo.imageUrl) + '">' +
+                                    '</div>' +
+                                '</div>' +
+                                '<!-- Tab: News -->' +
+                                '<div class="admin-tab-panel" id="tab-news">' +
+                                    '<div class="admin-news-list" id="admin-news-container"></div>' +
+                                    '<button class="admin-btn-add-news selector" id="btn-add-news">+ Добавить новость</button>' +
+                                '</div>' +
+                                '<!-- Tab: Instructions -->' +
+                                '<div class="admin-tab-panel" id="tab-instructions">' +
+                                    '<div class="admin-instructions-list" id="admin-instructions-container"></div>' +
+                                    '<button class="admin-btn-add-instruction selector" id="btn-add-instruction">+ Добавить шаг</button>' +
+                                '</div>' +
+                                '<!-- Tab: Sync -->' +
+                                '<div class="admin-tab-panel" id="tab-sync">' +
+                                    '<div class="admin-form-group">' +
+                                        '<label>GitHub Репозиторий (username/repo)</label>' +
+                                        '<input type="text" class="admin-input selector" id="input-gh-repo" value="' + escapeHtml(githubRepo) + '">' +
+                                    '</div>' +
+                                    '<div class="admin-form-group">' +
+                                        '<label>Путь к файлу конфигурации в репозитории</label>' +
+                                        '<input type="text" class="admin-input selector" id="input-gh-path" value="' + escapeHtml(githubPath) + '">' +
+                                    '</div>' +
+                                    '<div class="admin-form-group">' +
+                                        '<label>Ветка (Branch)</label>' +
+                                        '<input type="text" class="admin-input selector" id="input-gh-branch" value="' + escapeHtml(githubBranch) + '">' +
+                                    '</div>' +
+                                    '<div class="admin-form-group">' +
+                                        '<label>GitHub Personal Access Token (Токен доступа)</label>' +
+                                        '<input type="password" class="admin-input selector" id="input-gh-token" value="' + escapeHtml(githubToken) + '" placeholder="ghp_xxxxxxxxxxxxxxxxxxxxxx">' +
+                                        '<p style="color: rgba(255,255,255,0.4); font-size: 0.85em; margin: 0.2em 0 0 0;">Токен сохраняется локально в памяти вашего браузера и никогда не передается третьим лицам.</p>' +
+                                    '</div>' +
+                                '</div>' +
+                                '<!-- Actions -->' +
+                                '<div class="admin-actions">' +
+                                    '<button class="admin-btn admin-btn-save selector" id="btn-save-config">Сохранить</button>' +
+                                    '<button class="admin-btn admin-btn-download selector" id="btn-download-config">Скачать config.json</button>' +
+                                    '<button class="admin-btn admin-btn-close selector" id="btn-close-admin">Выход</button>' +
+                                '</div>' +
+                            '</div>' +
+                        '</div>';
+
+                    html = $(admin_html);
+
+                    function renderAdminNews() {
+                        var container = html.find('#admin-news-container');
+                        container.empty();
+                        
+                        config.news.forEach(function(item, idx) {
+                            var newsCard = $(
+                                '<div class="admin-news-card" data-index="' + idx + '">' +
+                                    '<div class="admin-news-card-header">' +
+                                        '<span class="admin-news-title-label">Новость #' + (idx + 1) + '</span>' +
+                                        '<button class="admin-btn-delete-news selector" data-index="' + idx + '">Удалить</button>' +
+                                    '</div>' +
+                                    '<div class="admin-form-group">' +
+                                        '<label>Дата публикации</label>' +
+                                        '<input type="text" class="admin-input-news-date admin-input selector" value="' + escapeHtml(item.date) + '">' +
+                                    '</div>' +
+                                    '<div class="admin-form-group">' +
+                                        '<label>Заголовок новости</label>' +
+                                        '<input type="text" class="admin-input-news-title admin-input selector" value="' + escapeHtml(item.title) + '">' +
+                                    '</div>' +
+                                    '<div class="admin-form-group">' +
+                                        '<label>Текст новости</label>' +
+                                        '<textarea class="admin-textarea-news-desc admin-textarea selector">' + escapeHtml(item.desc) + '</textarea>' +
+                                    '</div>' +
+                                '</div>'
+                            );
+                            container.append(newsCard);
+                        });
+
+                        container.find('.admin-btn-delete-news').on('hover:enter', function() {
+                            var idx = parseInt($(this).attr('data-index'));
+                            config.news.splice(idx, 1);
+                            renderAdminNews();
+                            Lampa.Controller.toggle('content');
+                        });
+                    }
+
+                    function renderAdminInstructions() {
+                        var container = html.find('#admin-instructions-container');
+                        container.empty();
+                        
+                        if (!config.instructions) {
+                            config.instructions = [];
+                        }
+
+                        config.instructions.forEach(function(item, idx) {
+                            var stepCard = $(
+                                '<div class="admin-instruction-card" data-index="' + idx + '">' +
+                                    '<div class="admin-instruction-card-header">' +
+                                        '<span class="admin-instruction-title-label">Шаг #' + (idx + 1) + '</span>' +
+                                        '<div class="admin-instruction-actions">' +
+                                            '<button class="admin-btn-move-instruction btn-move-up selector" data-index="' + idx + '">↑</button>' +
+                                            '<button class="admin-btn-move-instruction btn-move-down selector" data-index="' + idx + '">↓</button>' +
+                                            '<button class="admin-btn-delete-instruction selector" data-index="' + idx + '">Удалить</button>' +
+                                        '</div>' +
+                                    '</div>' +
+                                    '<div class="admin-form-group">' +
+                                        '<label>Заголовок шага</label>' +
+                                        '<input type="text" class="admin-input-instruction-title admin-input selector" value="' + escapeHtml(item.title) + '">' +
+                                    '</div>' +
+                                    '<div class="admin-form-group">' +
+                                        '<label>Описание шага</label>' +
+                                        '<textarea class="admin-textarea-instruction-text admin-textarea selector">' + escapeHtml(item.text) + '</textarea>' +
+                                    '</div>' +
+                                    '<div class="admin-form-group">' +
+                                        '<label>Ссылка на картинку шага (например, app_logo.png)</label>' +
+                                        '<input type="text" class="admin-input-instruction-image admin-input selector" value="' + escapeHtml(item.imageUrl) + '">' +
+                                    '</div>' +
+                                '</div>'
+                            );
+                            container.append(stepCard);
+                        });
+
+                        // Bind delete action
+                        container.find('.admin-btn-delete-instruction').on('hover:enter', function(e) {
+                            gatherFormValues();
+                            var idx = parseInt($(this).attr('data-index'));
+                            config.instructions.splice(idx, 1);
+                            renderAdminInstructions();
+                            Lampa.Controller.toggle('content');
+                        });
+
+                        // Bind move up action
+                        container.find('.btn-move-up').on('hover:enter', function(e) {
+                            gatherFormValues();
+                            var idx = parseInt($(this).attr('data-index'));
+                            if (idx > 0) {
+                                var temp = config.instructions[idx];
+                                config.instructions[idx] = config.instructions[idx - 1];
+                                config.instructions[idx - 1] = temp;
+                                renderAdminInstructions();
+                                Lampa.Controller.toggle('content');
+                            }
+                        });
+
+                        // Bind move down action
+                        container.find('.btn-move-down').on('hover:enter', function(e) {
+                            gatherFormValues();
+                            var idx = parseInt($(this).attr('data-index'));
+                            if (idx < config.instructions.length - 1) {
+                                var temp = config.instructions[idx];
+                                config.instructions[idx] = config.instructions[idx + 1];
+                                config.instructions[idx + 1] = temp;
+                                renderAdminInstructions();
+                                Lampa.Controller.toggle('content');
+                            }
+                        });
+                    }
+
+                    renderAdminNews();
+                    renderAdminInstructions();
+
+                    html.find('.admin-tab-btn').on('hover:enter', function() {
+                        var tabId = $(this).attr('data-tab');
+                        html.find('.admin-tab-btn').removeClass('active');
+                        $(this).addClass('active');
+                        
+                        html.find('.admin-tab-panel').removeClass('active');
+                        html.find('#' + tabId).addClass('active');
+                        
+                        current_tab = tabId;
+                    });
+
+                    html.find('#btn-add-news').on('hover:enter', function() {
+                        gatherFormValues();
+                        config.news.push({
+                            id: 'news-' + (new Date().getTime()),
+                            date: new Date().toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' }),
+                            title: 'Новая новость',
+                            desc: 'Текст новой новости...'
+                        });
+                        renderAdminNews();
+                        Lampa.Controller.toggle('content');
+                    });
+
+                    html.find('#btn-add-instruction').on('hover:enter', function() {
+                        gatherFormValues();
+                        if (!config.instructions) {
+                            config.instructions = [];
+                        }
+                        var nextStepNum = config.instructions.length + 1;
+                        config.instructions.push({
+                            id: 'step-' + (new Date().getTime()),
+                            title: 'Шаг ' + nextStepNum + ': Новая инструкция',
+                            text: 'Описание действий для этого шага...',
+                            imageUrl: 'app_logo.png'
+                        });
+                        renderAdminInstructions();
+                        Lampa.Controller.toggle('content');
+                    });
+
+                    html.find('#btn-download-config').on('hover:enter', function() {
+                        gatherFormValues();
+                        try {
+                            var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(config, null, 2));
+                            var downloadAnchor = document.createElement('a');
+                            downloadAnchor.setAttribute("href", dataStr);
+                            downloadAnchor.setAttribute("download", "config.json");
+                            document.body.appendChild(downloadAnchor);
+                            downloadAnchor.click();
+                            downloadAnchor.remove();
+                            Lampa.Noty.show('Файл config.json успешно скачан!');
+                        } catch(e) {
+                            Lampa.Noty.show('Ошибка скачивания файла!');
+                        }
+                    });
+
+                    html.find('#btn-close-admin').on('hover:enter', function() {
+                        Lampa.Activity.backward();
+                    });
+
+                    function gatherFormValues() {
+                        config.supportText = html.find('#input-support-text').val();
+                        config.supportTg = html.find('#input-support-tg').val();
+                        config.supportQrUrl = html.find('#input-support-qr').val();
+                        config.adminPin = html.find('#input-admin-pin').val();
+
+                        config.promo.badge = html.find('#input-promo-badge').val();
+                        config.promo.title = html.find('#input-promo-title').val();
+                        config.promo.text = html.find('#input-promo-text').val();
+                        config.promo.actionText = html.find('#input-promo-action').val();
+                        config.promo.imageUrl = html.find('#input-promo-image').val();
+
+                        var newsCards = html.find('.admin-news-card');
+                        config.news = [];
+                        newsCards.each(function() {
+                            var dateVal = $(this).find('.admin-input-news-date').val();
+                            var titleVal = $(this).find('.admin-input-news-title').val();
+                            var descVal = $(this).find('.admin-textarea-news-desc').val();
+                            config.news.push({
+                                id: 'news-' + $(this).attr('data-index'),
+                                date: dateVal,
+                                title: titleVal,
+                                desc: descVal
+                            });
+                        });
+
+                        var instructionCards = html.find('.admin-instruction-card');
+                        config.instructions = [];
+                        instructionCards.each(function() {
+                            var titleVal = $(this).find('.admin-input-instruction-title').val();
+                            var textVal = $(this).find('.admin-textarea-instruction-text').val();
+                            var imageVal = $(this).find('.admin-input-instruction-image').val();
+                            config.instructions.push({
+                                id: 'step-' + $(this).attr('data-index'),
+                                title: titleVal,
+                                text: textVal,
+                                imageUrl: imageVal
+                            });
+                        });
+                    }
+
+                    html.find('#btn-save-config').on('hover:enter', function() {
+                        gatherFormValues();
+                        
+                        window.portal_config = config;
+                        localStorage.setItem('portal_config', JSON.stringify(config));
+
+                        var repo = html.find('#input-gh-repo').val().trim();
+                        var path = html.find('#input-gh-path').val().trim();
+                        var branch = html.find('#input-gh-branch').val().trim();
+                        var token = html.find('#input-gh-token').val().trim();
+
+                        localStorage.setItem('admin_github_repo', repo);
+                        localStorage.setItem('admin_github_path', path);
+                        localStorage.setItem('admin_github_branch', branch);
+                        localStorage.setItem('admin_github_token', token);
+
+                        if (repo && token) {
+                            Lampa.Noty.show('Синхронизация с GitHub...');
+                            pushConfigToGithub(repo, token, path, branch, config);
+                        } else {
+                            Lampa.Noty.show('Конфигурация сохранена локально!');
+                        }
+                    });
+
+                    html.find('.selector').on('hover:focus', function() {
+                        active_element = $(this);
+                    });
+
+                    html.on('hover:enter click', 'input, textarea', function(e) {
+                        $(this).focus();
+                    });
+
+                    html.on('keydown keyup keypress', 'input, textarea', function(e) {
+                        // Stop propagation so Lampa does not intercept backspace/escape/arrows
+                        e.stopPropagation();
+                        if (e.type === 'keydown') {
+                            var isTextarea = $(this).is('textarea');
+                            if (e.keyCode === 27 || (e.keyCode === 13 && !isTextarea)) {
+                                $(this).blur();
+                                Lampa.Controller.toggle('content');
+                            }
+                        }
+                    });
+
+                    html.on('input change', 'input, textarea', function() {
+                        gatherFormValues();
                     });
 
                     this.activity.toggle();
@@ -496,19 +1760,83 @@
                 this.pause = function () {};
 
                 this.destroy = function () {
-                    html.remove();
+                    if (html) html.remove();
                 };
 
-                this.render = function () {
-                    return html;
+                this.render = function (native) {
+                    return native ? html[0] : html;
                 };
             }
 
             Lampa.Component.add('main', CustomMain);
+            Lampa.Component.add('instructions', InstructionsComponent);
+            Lampa.Component.add('admin', AdminComponent);
+
+            Lampa.Listener.follow('app', function (e) {
+                if (e.type === 'ready') {
+                    console.log('CustomMain', 'App is ready, adding menu items');
+                    
+                    var instBtn = Lampa.Menu.addButton(
+                        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:100%;height:100%"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>',
+                        'Инструкции',
+                        function () {
+                            Lampa.Menu.close();
+                            Lampa.Activity.push({
+                                title: 'Инструкции',
+                                component: 'instructions'
+                            });
+                        }
+                    );
+                    if (instBtn && instBtn.addClass) instBtn.addClass('menu-item-instructions');
+
+                    var btn = Lampa.Menu.addButton(
+                        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:100%;height:100%"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>',
+                        'Админ-панель',
+                        function () {
+                            Lampa.Menu.close();
+                            var config = window.portal_config || getDefaultConfig();
+                            Lampa.Input.edit({
+                                title: 'Введите PIN-код администратора',
+                                value: '',
+                                limit: 4,
+                                nosave: true,
+                                password: true,
+                                layout: 'num'
+                            }, function (value) {
+                                if (value === config.adminPin) {
+                                    Lampa.Noty.show('Авторизация успешна!');
+                                    Lampa.Activity.push({
+                                        title: 'Админ-панель',
+                                        component: 'admin'
+                                    });
+                                } else {
+                                    Lampa.Noty.show('Неверный PIN-код!');
+                                    Lampa.Controller.toggle('menu');
+                                }
+                            });
+                        }
+                    );
+                    if (btn && btn.addClass) btn.addClass('menu-item-admin');
+
+                    // Rename "Каталог" to "Главная"
+                    setTimeout(function() {
+                        $('.menu__item').each(function() {
+                            var txt = $(this).find('.menu__text').text().trim();
+                            if (txt === 'Каталог' || $(this).attr('data-action') === 'main') {
+                                $(this).find('.menu__text').text('Главная');
+                            }
+                        });
+                    }, 100);
+                }
+            });
         };
 
         function loadCurrentLampa() {
-            putScript('app.min.js?v=' + cache_version, function () {
+            var src = 'app.min.js';
+            if (location.protocol !== 'file:') {
+                src += '?v=' + cache_version;
+            }
+            putScript(src, function () {
                 if (window.registerCustomMainComponent) window.registerCustomMainComponent();
             })
         }
@@ -528,30 +1856,31 @@
         }
 
         if (lampa_url !== '') {
+            var suffix = (location.protocol !== 'file:') ? '?v=' + cache_version : '';
             putScript(
-                urlJoin(lampa_url, 'lampainit.js?v=' + cache_version),
+                urlJoin(lampa_url, 'lampainit.js' + suffix),
                 false,
                 function(){}
             )
 
             putScript(
-                urlJoin(lampa_url, 'app.min.js?v=' + cache_version),
+                urlJoin(lampa_url, 'app.min.js' + suffix),
                 function () {
-                    var css = urlJoin(lampa_url, 'css/app.css?v=' + cache_version)
+                    var css = urlJoin(lampa_url, 'css/app.css' + suffix)
 
                     $('head').append('<link rel="stylesheet" href="' + css + '">')
                     if (window.registerCustomMainComponent) window.registerCustomMainComponent();
                 },
                 function () {
                     putScript(
-                        urlJoin(lampa_url, 'lampa-main/app.min.js?v=' + cache_version),
+                        urlJoin(lampa_url, 'lampa-main/app.min.js' + suffix),
                         function () {
-                            var css = urlJoin(lampa_url, 'lampa-main/css/app.css?v=' + cache_version)
+                            var css = urlJoin(lampa_url, 'lampa-main/css/app.css' + suffix)
 
                             $('head').append('<link rel="stylesheet" href="' + css + '">')
 
                             putScript(
-                                urlJoin(lampa_url, 'lampainit.js?v=' + cache_version),
+                                urlJoin(lampa_url, 'lampainit.js' + suffix),
                                 false,
                                 function(){}
                             )
@@ -564,6 +1893,28 @@
         }
         else{
             loadCurrentLampa()
+        }
+
+        // Check if running via file:// and show warning if loading fails (CORS restriction)
+        if (location.protocol === 'file:') {
+            setTimeout(function() {
+                if (typeof Lampa === 'undefined') {
+                    var warning = $('<div style="position:fixed;top:0;left:0;width:100%;height:100%;background:#1d1f20;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:999999;font-family:sans-serif;padding:20px;text-align:center;box-sizing:border-box;">' +
+                        '<h1 style="color:#ffc107;margin-bottom:15px;font-size:2em;">Браузер блокирует локальный запуск (CORS)</h1>' +
+                        '<p style="font-size:1.15em;max-width:700px;line-height:1.6;color:rgba(255,255,255,0.8);margin-bottom:20px;">Вы открыли файл <b>index.html</b> напрямую (протокол <code>file://</code>). Браузеры из соображений безопасности блокируют локальные AJAX/fetch запросы, что препятствует загрузке Lampa и конфигурации.</p>' +
+                        '<div style="text-align:left;background:rgba(0,0,0,0.4);padding:20px;border-radius:10px;font-family:monospace;font-size:1.1em;max-width:600px;border:1px solid rgba(255,255,255,0.1);margin-bottom:20px;">' +
+                        '<b style="color:#ffc107;display:block;margin-bottom:10px;">Как запустить локально правильно:</b>' +
+                        '1. Запустите локальный веб-сервер в папке проекта.<br>' +
+                        '   Например, в PowerShell / терминале выполните:<br>' +
+                        '   <span style="color:#4caf50;font-weight:bold;">python -m http.server 8000</span><br><br>' +
+                        '2. Откройте в браузере адрес:<br>' +
+                        '   <a href="http://localhost:8000" style="color:#ffc107;text-decoration:underline;font-weight:bold;">http://localhost:8000</a>' +
+                        '</div>' +
+                        '<p style="color:rgba(255,255,255,0.5);font-size:0.95em;">(Если вы используете VS Code, вы также можете нажать "Go Live" в нижнем статус-баре через расширение Live Server)</p>' +
+                        '</div>');
+                    $('body').append(warning);
+                }
+            }, 3000);
         }
     </script>
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"3b6126c7aaa4457490ce2909c0aadf0d","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
