@@ -95,10 +95,11 @@
             display: none !important;
         }
 
-        /* Keep only 'data-action="main"' (Главная) and our custom 'Админ-панель' and 'Инструкции' visible */
+        /* Keep only 'data-action="main"' (Главная) and our custom 'Админ-панель', 'Инструкции' and 'Магазин' visible */
         .menu__list .menu__item[data-action="main"],
         .menu__list .menu__item.menu-item-admin,
-        .menu__list .menu__item.menu-item-instructions {
+        .menu__list .menu__item.menu-item-instructions,
+        .menu__list .menu__item.menu-item-shop {
             display: flex !important;
         }
 
@@ -1964,8 +1965,256 @@
                 };
             }
 
+            function ShopComponent(object) {
+                var html = $('<div class="shop-container" style="display: flex; flex-direction: row; width: 100%; height: calc(100vh - 4.5em); padding: 1.5em; box-sizing: border-box; gap: 1.5em; overflow: hidden;"></div>');
+                var active_element = null;
+                var products = [];
+
+                this.create = function () {
+                    var _this = this;
+                    this.activity.loader(true);
+                    
+                    window.loadPortalConfig(function() {
+                        _this.activity.loader(false);
+                        _this.buildShop();
+                        _this.activity.toggle();
+                    });
+                };
+
+                this.buildShop = function () {
+                    var config = window.portal_config || getDefaultConfig();
+                    products = config.products || [];
+                    
+                    html.empty();
+
+                    if (!products.length) {
+                        html.html('<div style="color:rgba(255,255,255,0.4); text-align:center; width:100%; padding: 4em;">Нет доступных товаров</div>');
+                        return;
+                    }
+
+                    // Left Column: Catalog list (45% width)
+                    var leftCol = $('<div class="shop-left" style="display: flex; flex-direction: column; width: 45%; height: 100%; gap: 1em; overflow: hidden;">' +
+                        '<h1 style="color:#fff; font-size:1.6em; font-weight:700; margin: 0; border-left: 4px solid #ffc107; padding-left: 0.6em;">Каталог оборудования</h1>' +
+                        '<div class="shop-list" style="display: flex; flex-direction: column; gap: 1em; overflow-y: auto; flex-grow: 1; padding: 10px; margin: -10px; position: relative;"></div>' +
+                    '</div>');
+
+                    // Right Column: Details view (55% width)
+                    var rightCol = $('<div class="shop-right" style="width: 55%; height: 100%; display: flex; flex-direction: column; gap: 1.5em;">' +
+                        '<div class="dashboard-card shop-detail-card" style="height: 100%; padding: 1.8em; display: flex; flex-direction: column; justify-content: space-between; overflow: hidden;">' +
+                            '<div class="shop-detail-content" style="display: flex; flex-direction: column; gap: 1.2em; overflow-y: auto; flex-grow: 1; padding-right: 0.5em;">' +
+                                '<div class="shop-detail-image-wrapper" style="width: 100%; height: 35vh; background: rgba(0,0,0,0.3); border-radius: 0.8em; border: 1px solid rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center; overflow: hidden;">' +
+                                    '<img class="shop-detail-image" src="" alt="" style="max-height: 100%; max-width: 100%; object-fit: contain; padding: 1em; box-sizing: border-box;">' +
+                                '</div>' +
+                                '<h2 class="shop-detail-title" style="font-size: 1.6em; font-weight: 700; color: #fff; margin: 0;"></h2>' +
+                                '<div style="display: flex; align-items: center; gap: 1.5em;">' +
+                                    '<div class="shop-detail-price" style="font-size: 1.4em; font-weight: 700; color: #ffc107;"></div>' +
+                                    '<div class="shop-detail-status" style="font-size: 1.05em; font-weight: 600; padding: 0.3em 0.8em; border-radius: 0.4em;"></div>' +
+                                '</div>' +
+                                '<p class="shop-detail-desc" style="color: rgba(255, 255, 255, 0.75); font-size: 1.15em; line-height: 1.6; margin: 0; white-space: pre-line;"></p>' +
+                            '</div>' +
+                            '<button class="shop-order-btn selector admin-pc-btn admin-pc-btn-primary" style="width: 100%; padding: 1em; font-size: 1.2em; font-weight: 700; border-radius: 0.6em; margin-top: 1em; text-align: center; border: none; cursor: pointer;">Заказать оборудование</button>' +
+                        '</div>' +
+                    '</div>');
+
+                    var listContainer = leftCol.find('.shop-list');
+
+                    products.forEach(function(item, idx) {
+                        var statusColor = 'rgba(255, 255, 255, 0.1)';
+                        var statusTextColor = 'rgba(255, 255, 255, 0.6)';
+                        var cleanStatus = (item.available || '').trim().toLowerCase();
+                        if (cleanStatus === 'в наличии') {
+                            statusColor = 'rgba(76, 175, 80, 0.15)';
+                            statusTextColor = '#4caf50';
+                        } else if (cleanStatus === 'под заказ') {
+                            statusColor = 'rgba(255, 193, 7, 0.15)';
+                            statusTextColor = '#ffc107';
+                        } else if (cleanStatus === 'нет в наличии') {
+                            statusColor = 'rgba(233, 30, 99, 0.15)';
+                            statusTextColor = '#e91e63';
+                        }
+
+                        var card = $(
+                            '<div class="shop-item-card selector" data-prod-index="' + idx + '" style="cursor:pointer; display:flex; flex-direction:row; align-items:center; background: rgba(255, 255, 255, 0.03); border: 2px solid rgba(255, 255, 255, 0.05); border-radius: 0.8em; padding: 1em; box-sizing: border-box; gap: 1em; transition: all 0.2s;">' +
+                                '<img src="' + escapeHtml(item.imageUrl || 'app_logo.png') + '" style="width: 70px; height: 70px; min-width: 70px; object-fit: contain; border-radius: 0.5em; background: rgba(255,255,255,0.03);">' +
+                                '<div style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 0.3em;">' +
+                                    '<div style="font-weight:700; font-size:1.15em; color:#fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">' + escapeHtml(item.title) + '</div>' +
+                                    '<div style="display: flex; align-items: center; justify-content: space-between; margin-top: 0.2em;">' +
+                                        '<span style="color:#ffc107; font-size:1.05em; font-weight:700;">' + escapeHtml(item.price) + '</span>' +
+                                        '<span style="font-size:0.85em; font-weight:600; padding: 0.2em 0.5em; border-radius: 0.3em; background: ' + statusColor + '; color: ' + statusTextColor + ';">' + escapeHtml(item.available) + '</span>' +
+                                    '</div>' +
+                                '</div>' +
+                            '</div>'
+                        );
+                        listContainer.append(card);
+                    });
+
+                    html.append(leftCol);
+                    html.append(rightCol);
+
+                    var _this = this;
+                    
+                    // Detail update function
+                    function updateDetails(idx) {
+                        var item = products[idx];
+                        if (!item) return;
+
+                        rightCol.find('.shop-detail-image').attr('src', item.imageUrl || 'app_logo.png');
+                        rightCol.find('.shop-detail-title').text(item.title);
+                        rightCol.find('.shop-detail-price').text(item.price);
+                        rightCol.find('.shop-detail-desc').text(item.desc);
+
+                        var statusEl = rightCol.find('.shop-detail-status');
+                        statusEl.text(item.available);
+                        
+                        var cleanStatus = (item.available || '').trim().toLowerCase();
+                        statusEl.css({
+                            'background': 'rgba(255, 255, 255, 0.1)',
+                            'color': 'rgba(255, 255, 255, 0.8)'
+                        });
+                        if (cleanStatus === 'в наличии') {
+                            statusEl.css({
+                                'background': 'rgba(76, 175, 80, 0.15)',
+                                'color': '#4caf50'
+                            });
+                        } else if (cleanStatus === 'под заказ') {
+                            statusEl.css({
+                                'background': 'rgba(255, 193, 7, 0.15)',
+                                'color': '#ffc107'
+                            });
+                        } else if (cleanStatus === 'нет в наличии') {
+                            statusEl.css({
+                                'background': 'rgba(233, 30, 99, 0.15)',
+                                'color': '#e91e63'
+                            });
+                        }
+                    }
+
+                    // Hover/Focus handler for left catalog items
+                    html.find('.shop-item-card.selector').on('hover:focus', function () {
+                        active_element = $(this);
+                        var idx = parseInt(active_element.attr('data-prod-index'));
+                        updateDetails(idx);
+
+                        // Horizontal list auto scroll (if list is long)
+                        var container = leftCol.find('.shop-list');
+                        var itemTop = active_element.position().top;
+                        var containerHeight = container.height();
+                        var itemHeight = active_element.outerHeight();
+                        
+                        container.stop().animate({
+                            scrollTop: container.scrollTop() + itemTop - (containerHeight / 2) + (itemHeight / 2)
+                        }, 200);
+                    });
+
+                    // Order action handler (both for list items click and order button click)
+                    html.find('.selector').on('hover:enter click', function() {
+                        var focused = $(this);
+                        var idx = 0;
+                        if (focused.hasClass('shop-item-card')) {
+                            idx = parseInt(focused.attr('data-prod-index'));
+                        } else {
+                            // Click on Order button
+                            var activeItem = html.find('.shop-item-card.focus');
+                            if (activeItem.length) {
+                                idx = parseInt(activeItem.attr('data-prod-index'));
+                            }
+                        }
+                        var item = products[idx];
+                        if (item) {
+                            _this.showOrderModal(item);
+                        }
+                    });
+
+                    // Initialize details with the first product
+                    updateDetails(0);
+                };
+
+                this.showOrderModal = function(item) {
+                    var config = window.portal_config || getDefaultConfig();
+                    var tgContact = config.supportTg || '';
+                    var tgLink = tgContact.startsWith('@') ? 'https://t.me/' + tgContact.substring(1) : tgContact;
+                    var qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=' + encodeURIComponent(tgLink);
+
+                    var modalHtml = $(
+                        '<div class="shop-order-modal" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(9, 11, 14, 0.95); z-index: 999999; display: flex; align-items: center; justify-content: center; animation: admin-fade-in 0.3s ease-out;">' +
+                            '<div class="dashboard-card" style="width: 500px; padding: 2.5em; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5em; box-shadow: 0 10px 40px rgba(0,0,0,0.6);">' +
+                                '<h2 style="font-size: 1.8em; font-weight: 700; color: #fff; margin: 0; border-bottom: 2px solid rgba(255,255,255,0.08); padding-bottom: 0.5em; width: 100%;">Заказ оборудования</h2>' +
+                                '<div style="font-size: 1.25em; color: #fff; font-weight: 600;">' + escapeHtml(item.title) + '</div>' +
+                                '<div style="font-size: 1.4em; color: #ffc107; font-weight: 700;">' + escapeHtml(item.price) + '</div>' +
+                                '<p style="color: rgba(255,255,255,0.7); font-size: 1.1em; line-height: 1.5; margin: 0;">Для заказа напишите в нашу поддержку в Telegram:</p>' +
+                                '<div style="font-size: 1.4em; font-weight: 700; color: #ffc107; background: rgba(255,193,7,0.1); padding: 0.4em 1em; border-radius: 0.4em;">' + escapeHtml(tgContact) + '</div>' +
+                                '<div style="background: #fff; padding: 0.8em; border-radius: 0.8em; width: 180px; height: 180px; display: flex; align-items: center; justify-content: center; margin: 0.5em 0;">' +
+                                    '<img src="' + qrUrl + '" style="width: 100%; height: 100%; object-fit: contain;">' +
+                                '</div>' +
+                                '<button class="modal-close-btn selector admin-pc-btn admin-pc-btn-primary" style="width: 100%; padding: 0.8em; font-size: 1.1em; font-weight: 700; border-radius: 0.5em;">Назад к каталогу</button>' +
+                            '</div>' +
+                        '</div>'
+                    );
+
+                    $('body').append(modalHtml);
+
+                    // Add modal to Lampa Controller focus
+                    var last_active_context = Lampa.Controller.enabled().name;
+                    Lampa.Controller.add('shop_modal', {
+                        toggle: function toggle() {
+                            Lampa.Controller.collectionSet(modalHtml);
+                            Lampa.Controller.collectionFocus(modalHtml.find('.selector')[0], modalHtml);
+                        },
+                        back: function back() {
+                            modalHtml.remove();
+                            Lampa.Controller.toggle(last_active_context);
+                        }
+                    });
+
+                    Lampa.Controller.toggle('shop_modal');
+
+                    modalHtml.find('.modal-close-btn').on('hover:enter click', function() {
+                        modalHtml.remove();
+                        Lampa.Controller.toggle(last_active_context);
+                    });
+                };
+
+                this.start = function () {
+                    Lampa.Controller.add('content', {
+                        toggle: function toggle() {
+                            Lampa.Controller.collectionSet(html);
+                            Lampa.Controller.collectionFocus(active_element || html.find('.shop-item-card.selector').first()[0], html);
+                        },
+                        left: function left() {
+                            if (Navigator.canmove('left')) Navigator.move('left');
+                            else Lampa.Controller.toggle('menu');
+                        },
+                        right: function right() {
+                            if (Navigator.canmove('right')) Navigator.move('right');
+                        },
+                        up: function up() {
+                            if (Navigator.canmove('up')) Navigator.move('up');
+                            else Lampa.Controller.toggle('head');
+                        },
+                        down: function down() {
+                            if (Navigator.canmove('down')) Navigator.move('down');
+                        },
+                        back: function back() {
+                            Lampa.Activity.backward();
+                        }
+                    });
+                    Lampa.Controller.toggle('content');
+                };
+
+                this.pause = function () {};
+
+                this.destroy = function () {
+                    if (html) html.remove();
+                };
+
+                this.render = function (native) {
+                    return native ? html[0] : html;
+                };
+            }
+
             Lampa.Component.add('main', CustomMain);
             Lampa.Component.add('instructions', InstructionsComponent);
+            Lampa.Component.add('shop', ShopComponent);
 
             Lampa.Listener.follow('app', function (e) {
                 if (e.type === 'ready') {
@@ -1983,6 +2232,19 @@
                         }
                     );
                     if (instBtn && instBtn.addClass) instBtn.addClass('menu-item-instructions');
+
+                    var shopBtn = Lampa.Menu.addButton(
+                        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:100%;height:100%"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>',
+                        'Магазин',
+                        function () {
+                            Lampa.Menu.close();
+                            Lampa.Activity.push({
+                                title: 'Магазин',
+                                component: 'shop'
+                            });
+                        }
+                    );
+                    if (shopBtn && shopBtn.addClass) shopBtn.addClass('menu-item-shop');
 
                     // Rename "Каталог" to "Главная"
                     setTimeout(function() {
@@ -2178,6 +2440,10 @@
                                     <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
                                     Инструкции
                                 </button>
+                                <button class="admin-pc-menu-item" data-pane="pane-shop">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+                                    Магазин
+                                </button>
                                 <button class="admin-pc-menu-item" data-pane="pane-sync">
                                     <svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
                                     GitHub Синхронизация
@@ -2265,6 +2531,19 @@
                                 </div>
                             </div>
 
+                            <!-- Pane: Shop -->
+                            <div class="admin-pc-pane" id="pane-shop">
+                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                                    <h2 class="admin-pc-pane-title" style="margin:0;">🛒 Управление товарами</h2>
+                                    <button class="admin-pc-btn admin-pc-btn-primary" id="btn-pc-add-product" style="padding: 10px 16px;">
+                                        ➕ Добавить товар
+                                    </button>
+                                </div>
+                                <div class="admin-pc-products-list" id="pc-products-list-container" style="display:flex; flex-direction:column; gap:1.5em; overflow-y:auto; max-height:calc(100vh - 180px); padding-right:10px;">
+                                    <!-- Products list will be rendered here dynamically -->
+                                </div>
+                            </div>
+
                             <!-- Pane: Sync -->
                             <div class="admin-pc-pane" id="pane-sync">
                                 <h2 class="admin-pc-pane-title">🔄 GitHub Синхронизация</h2>
@@ -2340,6 +2619,7 @@
             
             renderPCNews();
             renderPCInstructions();
+            renderPCProducts();
             
             $('.admin-pc-menu-item').on('click', function() {
                 gatherPCAdminValues();
@@ -2366,6 +2646,20 @@
                     desc: 'Текст новой новости...'
                 });
                 renderPCNews();
+            });
+            
+            $('#btn-pc-add-product').on('click', function() {
+                gatherPCAdminValues();
+                if (!config.products) config.products = [];
+                config.products.push({
+                    id: 'prod-' + (new Date().getTime()),
+                    title: 'Новый товар',
+                    price: '0 руб.',
+                    available: 'В наличии',
+                    desc: 'Описание товара...',
+                    imageUrl: 'app_logo.png'
+                });
+                renderPCProducts();
             });
             
             $('#btn-pc-save').on('click', function() {
@@ -2475,12 +2769,68 @@
                 `);
                 container.append(card);
             });
-            
+
             $('.btn-pc-delete-news').on('click', function() {
                 var idx = parseInt($(this).attr('data-index'));
                 gatherPCAdminValues();
                 config.news.splice(idx, 1);
                 renderPCNews();
+            });
+        }
+
+        function renderPCProducts() {
+            var config = window.portal_config;
+            var container = $('#pc-products-list-container');
+            container.empty();
+            
+            if (!config.products) config.products = [];
+
+            if (!config.products.length) {
+                container.html('<div style="text-align:center; padding: 40px; color: rgba(255,255,255,0.4);">Список товаров пуст. Нажмите "+ Добавить товар" сверху.</div>');
+                return;
+            }
+            
+            config.products.forEach(function(item, idx) {
+                var card = $(`
+                    <div class="admin-pc-product-item" data-index="${idx}" data-id="${item.id}" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 15px;">
+                        <div class="admin-pc-product-header" style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid rgba(255,255,255,0.04); padding-bottom: 10px; margin-bottom: 5px;">
+                            <span class="admin-pc-product-title-lbl" style="font-weight: 700; font-size: 1.1em; color: #ffc107;">Товар #${idx + 1}</span>
+                            <button class="admin-pc-btn admin-pc-btn-danger btn-pc-delete-product" data-index="${idx}" style="padding: 6px 12px; font-size: 0.85em;">Удалить</button>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                            <div class="admin-pc-form-group">
+                                <label>Название товара</label>
+                                <input type="text" class="admin-pc-input pc-product-title-input" value="${escapeHtml(item.title)}">
+                            </div>
+                            <div class="admin-pc-form-group">
+                                <label>Цена</label>
+                                <input type="text" class="admin-pc-input pc-product-price-input" value="${escapeHtml(item.price)}">
+                            </div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                            <div class="admin-pc-form-group">
+                                <label>Статус наличия (например: "В наличии", "Под заказ")</label>
+                                <input type="text" class="admin-pc-input pc-product-available-input" value="${escapeHtml(item.available)}">
+                            </div>
+                            <div class="admin-pc-form-group">
+                                <label>Ссылка на картинку товара</label>
+                                <input type="text" class="admin-pc-input pc-product-image-input" value="${escapeHtml(item.imageUrl || '')}">
+                            </div>
+                        </div>
+                        <div class="admin-pc-form-group">
+                            <label>Описание товара</label>
+                            <textarea class="admin-pc-textarea pc-product-desc-textarea" style="height: 100px; resize: vertical;">${escapeHtml(item.desc)}</textarea>
+                        </div>
+                    </div>
+                `);
+                container.append(card);
+            });
+            
+            $('.btn-pc-delete-product').off('click').on('click', function() {
+                var idx = parseInt($(this).attr('data-index'));
+                gatherPCAdminValues();
+                config.products.splice(idx, 1);
+                renderPCProducts();
             });
         }
 
@@ -2747,6 +3097,27 @@
                         title: title,
                         text: text,
                         imageUrl: image
+                    });
+                });
+            }
+
+            var productItems = $('.admin-pc-product-item');
+            if (productItems.length) {
+                config.products = [];
+                productItems.each(function() {
+                    var idx = parseInt($(this).attr('data-index'));
+                    var title = $(this).find('.pc-product-title-input').val();
+                    var price = $(this).find('.pc-product-price-input').val();
+                    var available = $(this).find('.pc-product-available-input').val();
+                    var desc = $(this).find('.pc-product-desc-textarea').val();
+                    var imageUrl = $(this).find('.pc-product-image-input').val();
+                    config.products.push({
+                        id: $(this).attr('data-id') || ('prod-' + (new Date().getTime()) + '-' + idx),
+                        title: title,
+                        price: price,
+                        available: available,
+                        desc: desc,
+                        imageUrl: imageUrl
                     });
                 });
             }
