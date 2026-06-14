@@ -1100,6 +1100,66 @@
         .admin-toast.info {
             border-left: 4px solid #ffc107;
         }
+
+        /* --- TV Hardware Performance & Smooth Transition Optimizations --- */
+        
+        /* 1. Snappier and faster scrolling transitions (reduced from 0.3s to 0.12s with hardware acceleration) */
+        .scroll__body {
+            -webkit-transition: -webkit-transform 0.12s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+            transition: transform 0.12s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+            will-change: transform !important;
+            -webkit-backface-visibility: hidden !important;
+            backface-visibility: hidden !important;
+            -webkit-transform: translate3d(0,0,0) !important;
+            transform: translate3d(0,0,0) !important;
+        }
+
+        /* 2. Faster side menu and wrap content transitions (reduced from 0.2s to 0.12s) */
+        .wrap__left, .wrap__content {
+            -webkit-transition: -webkit-transform 0.12s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+            transition: transform 0.12s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+            will-change: transform !important;
+            -webkit-backface-visibility: hidden !important;
+            backface-visibility: hidden !important;
+        }
+
+        /* 3. Force GPU layers on cards, menu items, settings parameters, and selectors to prevent repaints during scroll */
+        .card, 
+        .menu__item, 
+        .settings-param, 
+        .settings-folder, 
+        .selector,
+        .dashboard-card,
+        .news-item {
+            will-change: transform, background-color, border-color !important;
+            -webkit-backface-visibility: hidden !important;
+            backface-visibility: hidden !important;
+            -webkit-transform: translateZ(0) !important;
+            transform: translateZ(0) !important;
+        }
+
+        /* 4. Disable heavy text shadows and gradients where unnecessary on TV to save GPU fill rate */
+        .card__title, .menu__text, .settings-param__name, .card-title {
+            text-shadow: none !important;
+        }
+
+        /* 5. Smooth, fast transitions for backgrounds and hover selections (reduced to 0.1s for snappiness) */
+        .menu__item, 
+        .settings-param, 
+        .settings-folder, 
+        .simple-button,
+        .dashboard-card,
+        .news-item {
+            -webkit-transition: background-color 0.1s ease-out, border-color 0.1s ease-out, -webkit-transform 0.1s ease-out !important;
+            transition: background-color 0.1s ease-out, border-color 0.1s ease-out, transform 0.1s ease-out !important;
+        }
+
+        /* 6. Disable heavy backdrop-filters on TV for dashboard cards (use high opacity background instead) */
+        .dashboard-card {
+            background: rgba(14, 18, 26, 0.92) !important;
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
+        }
     </style>
 </head>
 <body style="background: #1d1f20;">
