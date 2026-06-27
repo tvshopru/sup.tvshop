@@ -39,22 +39,6 @@
             background-size: cover !important;
         }
 
-        .welcome-logo-container {
-            position: absolute;
-            left: 50%;
-            top: 40%;
-            transform: translate(-50%, -50%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .welcome-logo {
-            max-width: 320px;
-            height: auto;
-            filter: drop-shadow(0 4px 20px rgba(0,0,0,0.6));
-        }
-
         /* Force white background for all logo images, regardless of cache or path */
         img[src*="app_logo.png"] {
             background-color: #ffffff !important;
@@ -1256,9 +1240,6 @@
     </script>
 
     <div class="welcome">
-        <div class="welcome-logo-container">
-            <img src="./app_logo.png?v=2" class="welcome-logo" alt="Logo">
-        </div>
     </div>
 
     <div id="app">
