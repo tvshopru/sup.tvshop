@@ -56,6 +56,12 @@
             filter: drop-shadow(0 4px 20px rgba(0,0,0,0.6));
         }
 
+        /* Force white background for all logo images, regardless of cache or path */
+        img[src*="app_logo.png"] {
+            background-color: #ffffff !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
         @keyframes pulse-logo {
             0% { transform: translate(-50%, -50%) scale(1); opacity: 0.95; filter: drop-shadow(0 4px 15px rgba(0,0,0,0.5)) brightness(1); }
             50% { transform: translate(-50%, -50%) scale(1.02); opacity: 1; filter: drop-shadow(0 6px 25px rgba(216, 195, 154, 0.25)) brightness(1.05); }
