@@ -28,6 +28,14 @@
     <link rel="stylesheet" href="./vender/keypad/style.css">
 
     <style>
+        /* Force a premium cybernetic gradient background based on the loading screen */
+        body, html, #app {
+            background: linear-gradient(135deg, #071c26 0%, #02070a 100%) !important;
+        }
+        .wrap, .wrap__left, .wrap__right, .wrap__content, .scroll, .scroll__content, .page, .page__content {
+            background: transparent !important;
+        }
+
         /* Hide the Lampa logo icon and title from the top header */
         .head__logo-icon, .head__title {
             display: none !important;
@@ -120,7 +128,7 @@
 
         .instructions-step-badge {
             align-self: flex-start;
-            background: #ffc107;
+            background: #00e5ff;
             color: #111;
             font-size: 0.9em;
             font-weight: 700;
@@ -134,7 +142,7 @@
             font-weight: 700;
             color: #fff;
             margin: 0.6em 0 0.8em 0;
-            border-left: 4px solid #ffc107;
+            border-left: 4px solid #00e5ff;
             padding-left: 0.6em;
             line-height: 1.3;
         }
@@ -269,7 +277,7 @@
             font-weight: 700;
             color: #fff;
             margin: 0 0 0.8em 0;
-            border-left: 4px solid #ffc107; /* Lampa's native gold color */
+            border-left: 4px solid #00e5ff; /* Lampa's native gold color */
             padding-left: 0.6em;
             line-height: 1.2;
         }
@@ -278,27 +286,27 @@
         .dashboard-card.selector.focus, 
         .news-item.selector.focus {
             background: rgba(255, 255, 255, 0.12) !important;
-            border-color: #ffc107 !important;
+            border-color: #00e5ff !important;
             transform: scale(1.02) !important;
-            box-shadow: 0 0 20px rgba(255, 193, 7, 0.35) !important;
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.35) !important;
             outline: none !important;
         }
 
         .shop-item-card.selector.focus {
             background: rgba(255, 255, 255, 0.08) !important;
-            border-color: #ffc107 !important;
+            border-color: #00e5ff !important;
             transform: scale(1.03) !important;
-            box-shadow: 0 0 22px rgba(255, 193, 7, 0.4) !important;
+            box-shadow: 0 0 22px rgba(0, 229, 255, 0.4) !important;
             outline: none !important;
         }
 
         .admin-pc-btn-primary.selector.focus,
         .modal-order-btn.selector.focus {
-            background: #ffdb58 !important; /* brighter gold/yellow */
+            background: #ffffff !important; /* brighter gold/yellow */
             color: #0b0e14 !important;
-            border-color: #ffdb58 !important;
+            border-color: #ffffff !important;
             transform: scale(1.05) !important;
-            box-shadow: 0 0 25px rgba(255, 193, 7, 0.6) !important;
+            box-shadow: 0 0 25px rgba(0, 229, 255, 0.6) !important;
             outline: none !important;
         }
 
@@ -342,8 +350,8 @@
         .support-tg {
             font-size: 1.3em;
             font-weight: 700;
-            color: #ffc107;
-            background: rgba(255, 193, 7, 0.12);
+            color: #00e5ff;
+            background: rgba(0, 229, 255, 0.12);
             padding: 0.4em 0.8em;
             border-radius: 0.4em;
             display: inline-block;
@@ -412,7 +420,7 @@
 
         .promo-action {
             align-self: flex-start;
-            background: #ffc107;
+            background: #00e5ff;
             color: #111;
             font-size: 1.1em;
             font-weight: 700;
@@ -537,7 +545,7 @@
         .admin-pc-login-logo {
             font-size: 2em;
             font-weight: 800;
-            color: #ffc107;
+            color: #00e5ff;
             margin-bottom: 8px;
             letter-spacing: 1px;
             display: flex;
@@ -569,14 +577,14 @@
         }
 
         .admin-pc-login-input:focus {
-            border-color: #ffc107;
+            border-color: #00e5ff;
             background: rgba(255, 255, 255, 0.03);
-            box-shadow: 0 0 15px rgba(255, 193, 7, 0.3);
+            box-shadow: 0 0 15px rgba(0, 229, 255, 0.3);
         }
 
         .admin-pc-login-btn {
             width: 100%;
-            background: #ffc107;
+            background: #00e5ff;
             color: #0b0e14;
             border: none;
             border-radius: 10px;
@@ -590,7 +598,7 @@
         .admin-pc-login-btn:hover {
             background: #ffa000;
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 193, 7, 0.3);
+            box-shadow: 0 5px 15px rgba(0, 229, 255, 0.3);
         }
 
         .admin-pc-login-btn:active {
@@ -644,7 +652,7 @@
         .admin-pc-brand {
             font-size: 1.6em;
             font-weight: 800;
-            color: #ffc107;
+            color: #00e5ff;
             display: flex;
             align-items: center;
             gap: 10px;
@@ -654,7 +662,7 @@
             width: 28px;
             height: 28px;
             fill: none;
-            stroke: #ffc107;
+            stroke: #00e5ff;
             stroke-width: 2;
         }
 
@@ -705,9 +713,9 @@
         }
 
         .admin-pc-menu-item.active {
-            background: rgba(255, 193, 7, 0.1);
-            border-color: rgba(255, 193, 7, 0.2);
-            color: #ffc107;
+            background: rgba(0, 229, 255, 0.1);
+            border-color: rgba(0, 229, 255, 0.2);
+            color: #00e5ff;
         }
 
         .admin-pc-sidebar-footer {
@@ -829,9 +837,9 @@
         }
 
         .admin-pc-input:focus, .admin-pc-textarea:focus {
-            border-color: #ffc107;
+            border-color: #00e5ff;
             background: rgba(255, 255, 255, 0.02);
-            box-shadow: 0 0 10px rgba(255, 193, 7, 0.15);
+            box-shadow: 0 0 10px rgba(0, 229, 255, 0.15);
         }
 
         .admin-pc-textarea {
@@ -870,7 +878,7 @@
         }
 
         .admin-pc-status-dot.saving {
-            background: #ffc107;
+            background: #00e5ff;
             animation: admin-pulse 1s infinite alternate;
         }
 
@@ -907,13 +915,13 @@
         }
 
         .admin-pc-btn-primary {
-            background: #ffc107;
+            background: #00e5ff;
             color: #0b0e14;
         }
 
         .admin-pc-btn-primary:hover {
             background: #ffa000;
-            box-shadow: 0 4px 12px rgba(255, 193, 7, 0.2);
+            box-shadow: 0 4px 12px rgba(0, 229, 255, 0.2);
         }
 
         .admin-pc-btn-secondary {
@@ -966,7 +974,7 @@
 
         .admin-pc-news-title-lbl {
             font-weight: 700;
-            color: #ffc107;
+            color: #00e5ff;
         }
 
         /* Instructions Split Layout */
@@ -1019,8 +1027,8 @@
         }
 
         .admin-pc-inst-item.active {
-            background: rgba(255, 193, 7, 0.05);
-            border-color: #ffc107;
+            background: rgba(0, 229, 255, 0.05);
+            border-color: #00e5ff;
         }
 
         .admin-pc-inst-header {
@@ -1058,9 +1066,9 @@
         }
 
         .admin-pc-btn-icon:hover {
-            background: #ffc107;
+            background: #00e5ff;
             color: #0b0e14;
-            border-color: #ffc107;
+            border-color: #00e5ff;
         }
 
         .admin-pc-btn-icon-danger:hover {
@@ -1118,7 +1126,7 @@
             border-left: 4px solid #4caf50;
         }
         .admin-toast.info {
-            border-left: 4px solid #ffc107;
+            border-left: 4px solid #00e5ff;
         }
 
         /* --- TV Hardware Performance & Smooth Transition Optimizations --- */
@@ -1790,7 +1798,7 @@
 
                     var selection_html = 
                         '<div class="instructions-selection-container" style="display:flex; flex-direction:column; width:100%; height:calc(100vh - 4.5em); padding: 2em; box-sizing:border-box; gap:1.5em; overflow:hidden;">' +
-                            '<h1 style="color:#fff; font-size:1.8em; font-weight:700; margin: 0 0 0.5em 0; border-left: 4px solid #ffc107; padding-left: 0.6em;">Выберите инструкцию</h1>' +
+                            '<h1 style="color:#fff; font-size:1.8em; font-weight:700; margin: 0 0 0.5em 0; border-left: 4px solid #00e5ff; padding-left: 0.6em;">Выберите инструкцию</h1>' +
                             '<div class="instructions-selection-list" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap:1.5em; overflow-y:auto; flex-grow:1; padding: 10px; margin: -10px;"></div>' +
                         '</div>';
 
@@ -1806,8 +1814,8 @@
                                     '<div style="color:rgba(255,255,255,0.5); font-size:0.95em;">Пошаговое руководство</div>' +
                                 '</div>' +
                                 '<div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid rgba(255,255,255,0.08); padding-top:0.6em; margin-top:1em;">' +
-                                    '<span style="color:#ffc107; font-size:0.95em; font-weight:700;">Шагов: ' + stepsCount + '</span>' +
-                                    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:1.2em;height:1.2em;color:#ffc107;"><path d="M5 12h14M12 5l7 7-7 7"/></svg>' +
+                                    '<span style="color:#00e5ff; font-size:0.95em; font-weight:700;">Шагов: ' + stepsCount + '</span>' +
+                                    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:1.2em;height:1.2em;color:#00e5ff;"><path d="M5 12h14M12 5l7 7-7 7"/></svg>' +
                                 '</div>' +
                             '</div>'
                         );
@@ -1856,7 +1864,7 @@
                         var empty_html = 
                             '<div class="instructions-container" style="display:flex; flex-direction:column; align-items:center; justify-content:center; width:100%; height:calc(100vh - 4.5em);">' +
                                 '<div style="color:rgba(255,255,255,0.4); text-align:center; padding: 2em; font-size:1.2em;">В этой инструкции пока нет шагов</div>' +
-                                '<button class="dashboard-card selector btn-back-to-sel" style="cursor:pointer; padding:0.8em 1.5em; font-weight:700; color:#ffc107; background:rgba(255,193,7,0.1); border-color:#ffc107; margin-top:1em;">Назад к списку</button>' +
+                                '<button class="dashboard-card selector btn-back-to-sel" style="cursor:pointer; padding:0.8em 1.5em; font-weight:700; color:#00e5ff; background:rgba(0, 229, 255,0.1); border-color:#00e5ff; margin-top:1em;">Назад к списку</button>' +
                             '</div>';
                         html.html(empty_html);
                         
@@ -2030,7 +2038,7 @@
 
                     // Left Column: Catalog list (45% width)
                     var leftCol = $('<div class="shop-left" style="display: flex; flex-direction: column; width: 45%; height: 100%; gap: 1em; overflow: hidden;">' +
-                        '<h1 style="color:#fff; font-size:1.6em; font-weight:700; margin: 0; border-left: 4px solid #ffc107; padding-left: 0.6em;">Каталог оборудования</h1>' +
+                        '<h1 style="color:#fff; font-size:1.6em; font-weight:700; margin: 0; border-left: 4px solid #00e5ff; padding-left: 0.6em;">Каталог оборудования</h1>' +
                         '<div class="shop-list" style="display: flex; flex-direction: column; gap: 1em; overflow-y: auto; flex-grow: 1; padding: 10px; margin: -10px; position: relative;"></div>' +
                     '</div>');
 
@@ -2043,7 +2051,7 @@
                                 '</div>' +
                                 '<h2 class="shop-detail-title" style="font-size: 1.6em; font-weight: 700; color: #fff; margin: 0;"></h2>' +
                                 '<div style="display: flex; align-items: center; gap: 1.2em;">' +
-                                    '<div class="shop-detail-price" style="font-size: 1.4em; font-weight: 700; color: #ffc107;"></div>' +
+                                    '<div class="shop-detail-price" style="font-size: 1.4em; font-weight: 700; color: #00e5ff;"></div>' +
                                     '<div class="shop-detail-status" style="font-size: 0.95em; font-weight: 600; padding: 0.3em 0.8em; border-radius: 0.4em;"></div>' +
                                     '<div class="shop-detail-condition" style="font-size: 0.95em; font-weight: 600; padding: 0.3em 0.8em; border-radius: 0.4em;"></div>' +
                                 '</div>' +
@@ -2065,8 +2073,8 @@
                             statusColor = 'rgba(76, 175, 80, 0.15)';
                             statusTextColor = '#4caf50';
                         } else if (cleanStatus === 'под заказ') {
-                            statusColor = 'rgba(255, 193, 7, 0.15)';
-                            statusTextColor = '#ffc107';
+                            statusColor = 'rgba(0, 229, 255, 0.15)';
+                            statusTextColor = '#00e5ff';
                         } else if (cleanStatus === 'нет в наличии') {
                             statusColor = 'rgba(233, 30, 99, 0.15)';
                             statusTextColor = '#e91e63';
@@ -2086,7 +2094,7 @@
                                 '<div style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 0.3em;">' +
                                     '<div style="font-weight:700; font-size:1.15em; color:#fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">' + escapeHtml(item.title) + '</div>' +
                                     '<div style="display: flex; align-items: center; justify-content: space-between; margin-top: 0.2em;">' +
-                                        '<span style="color:#ffc107; font-size:1.05em; font-weight:700;">' + escapeHtml(item.price) + '</span>' +
+                                        '<span style="color:#00e5ff; font-size:1.05em; font-weight:700;">' + escapeHtml(item.price) + '</span>' +
                                         '<div style="display: flex; gap: 0.4em; align-items: center;">' +
                                             '<span style="font-size:0.8em; font-weight:600; padding: 0.2em 0.5em; border-radius: 0.3em; background: ' + statusColor + '; color: ' + statusTextColor + ';">' + escapeHtml(item.available) + '</span>' +
                                             '<span style="font-size:0.8em; font-weight:600; padding: 0.2em 0.5em; border-radius: 0.3em; background: ' + condBg + '; color: ' + condColor + ';">' + escapeHtml(item.condition || 'Новое') + '</span>' +
@@ -2128,8 +2136,8 @@
                             });
                         } else if (cleanStatus === 'под заказ') {
                             statusEl.css({
-                                'background': 'rgba(255, 193, 7, 0.15)',
-                                'color': '#ffc107'
+                                'background': 'rgba(0, 229, 255, 0.15)',
+                                'color': '#00e5ff'
                             });
                         } else if (cleanStatus === 'нет в наличии') {
                             statusEl.css({
@@ -2210,9 +2218,9 @@
                             '<div class="dashboard-card" style="width: 500px; padding: 2.5em; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.5em; box-shadow: 0 10px 40px rgba(0,0,0,0.6);">' +
                                 '<h2 style="font-size: 1.8em; font-weight: 700; color: #fff; margin: 0; border-bottom: 2px solid rgba(255,255,255,0.08); padding-bottom: 0.5em; width: 100%;">Заказ оборудования</h2>' +
                                 '<div style="font-size: 1.25em; color: #fff; font-weight: 600;">' + escapeHtml(item.title) + '</div>' +
-                                '<div style="font-size: 1.4em; color: #ffc107; font-weight: 700;">' + escapeHtml(item.price) + '</div>' +
+                                '<div style="font-size: 1.4em; color: #00e5ff; font-weight: 700;">' + escapeHtml(item.price) + '</div>' +
                                 '<p style="color: rgba(255,255,255,0.7); font-size: 1.1em; line-height: 1.5; margin: 0;">Для заказа напишите в нашу поддержку в Telegram:</p>' +
-                                '<div style="font-size: 1.4em; font-weight: 700; color: #ffc107; background: rgba(255,193,7,0.1); padding: 0.4em 1em; border-radius: 0.4em;">' + escapeHtml(tgContact) + '</div>' +
+                                '<div style="font-size: 1.4em; font-weight: 700; color: #00e5ff; background: rgba(0, 229, 255,0.1); padding: 0.4em 1em; border-radius: 0.4em;">' + escapeHtml(tgContact) + '</div>' +
                                 '<div style="background: #fff; padding: 0.8em; border-radius: 0.8em; width: 180px; height: 180px; display: flex; align-items: center; justify-content: center; margin: 0.5em 0;">' +
                                     '<img src="' + qrUrl + '" style="width: 100%; height: 100%; object-fit: contain;">' +
                                 '</div>' +
@@ -2444,7 +2452,7 @@
             var loginHtml = `
                 <div class="admin-pc-login-container">
                     <div class="admin-pc-login-logo">
-                        <svg viewBox="0 0 24 24" style="width:48px;height:48px;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.75z" fill="#ffc107"/></svg>
+                        <svg viewBox="0 0 24 24" style="width:48px;height:48px;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.75z" fill="#00e5ff"/></svg>
                         TVShop Admin
                     </div>
                     <div class="admin-pc-login-title">Вход в панель администратора</div>
@@ -2488,7 +2496,7 @@
                         <div class="admin-pc-sidebar-top">
                             <div class="admin-pc-sidebar-header">
                                 <div class="admin-pc-brand">
-                                    <svg viewBox="0 0 24 24"><path d="M12 2c5.52 0 10 4.48 10 10s-4.48 10-10 10S2 17.52 2 12 6.48 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.75z" fill="#ffc107"/></svg>
+                                    <svg viewBox="0 0 24 24"><path d="M12 2c5.52 0 10 4.48 10 10s-4.48 10-10 10S2 17.52 2 12 6.48 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.75z" fill="#00e5ff"/></svg>
                                     TVShop Admin
                                 </div>
                                 <div class="admin-pc-brand-sub">Панель управления</div>
@@ -2865,7 +2873,7 @@
                 var card = $(`
                     <div class="admin-pc-product-item" data-index="${idx}" data-id="${item.id}" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 15px;">
                         <div class="admin-pc-product-header" style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid rgba(255,255,255,0.04); padding-bottom: 10px; margin-bottom: 5px;">
-                            <span class="admin-pc-product-title-lbl" style="font-weight: 700; font-size: 1.1em; color: #ffc107;">Товар #${idx + 1}</span>
+                            <span class="admin-pc-product-title-lbl" style="font-weight: 700; font-size: 1.1em; color: #00e5ff;">Товар #${idx + 1}</span>
                             <button class="admin-pc-btn admin-pc-btn-danger btn-pc-delete-product" data-index="${idx}" style="padding: 6px 12px; font-size: 0.85em;">Удалить</button>
                         </div>
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
@@ -2925,7 +2933,7 @@
             }
             config.instructions = migrateInstructions(config.instructions);
             
-            leftContainer.append('<div style="font-weight: 700; font-size: 1.1em; margin-bottom: 10px; color: #ffc107;">СПИСОК ТЕМ</div>');
+            leftContainer.append('<div style="font-weight: 700; font-size: 1.1em; margin-bottom: 10px; color: #00e5ff;">СПИСОК ТЕМ</div>');
             
             config.instructions.forEach(function(inst, idx) {
                 var activeClass = (idx === active_inst_idx) ? 'active' : '';
@@ -3020,7 +3028,7 @@
                 current_inst = config.instructions[0];
             }
             
-            rightContainer.append(`<div style="font-weight: 700; font-size: 1.1em; margin-bottom: 10px; color: #ffc107; text-transform: uppercase;">ШАГИ: ${escapeHtml(current_inst.title)}</div>`);
+            rightContainer.append(`<div style="font-weight: 700; font-size: 1.1em; margin-bottom: 10px; color: #00e5ff; text-transform: uppercase;">ШАГИ: ${escapeHtml(current_inst.title)}</div>`);
             
             var stepsList = $('<div style="display:flex; flex-direction:column; gap:15px;"></div>');
             rightContainer.append(stepsList);
@@ -3254,15 +3262,15 @@
             setTimeout(function() {
                 if (typeof Lampa === 'undefined') {
                     var warning = $('<div style="position:fixed;top:0;left:0;width:100%;height:100%;background:#1d1f20;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:999999;font-family:sans-serif;padding:20px;text-align:center;box-sizing:border-box;">' +
-                        '<h1 style="color:#ffc107;margin-bottom:15px;font-size:2em;">Браузер блокирует локальный запуск (CORS)</h1>' +
+                        '<h1 style="color:#00e5ff;margin-bottom:15px;font-size:2em;">Браузер блокирует локальный запуск (CORS)</h1>' +
                         '<p style="font-size:1.15em;max-width:700px;line-height:1.6;color:rgba(255,255,255,0.8);margin-bottom:20px;">Вы открыли файл <b>index.html</b> напрямую (протокол <code>file://</code>). Браузеры из соображений безопасности блокируют локальные AJAX/fetch запросы, что препятствует загрузке Lampa и конфигурации.</p>' +
                         '<div style="text-align:left;background:rgba(0,0,0,0.4);padding:20px;border-radius:10px;font-family:monospace;font-size:1.1em;max-width:600px;border:1px solid rgba(255,255,255,0.1);margin-bottom:20px;">' +
-                        '<b style="color:#ffc107;display:block;margin-bottom:10px;">Как запустить локально правильно:</b>' +
+                        '<b style="color:#00e5ff;display:block;margin-bottom:10px;">Как запустить локально правильно:</b>' +
                         '1. Запустите локальный веб-сервер в папке проекта.<br>' +
                         '   Например, в PowerShell / терминале выполните:<br>' +
                         '   <span style="color:#4caf50;font-weight:bold;">python -m http.server 8000</span><br><br>' +
                         '2. Откройте в браузере адрес:<br>' +
-                        '   <a href="http://localhost:8000" style="color:#ffc107;text-decoration:underline;font-weight:bold;">http://localhost:8000</a>' +
+                        '   <a href="http://localhost:8000" style="color:#00e5ff;text-decoration:underline;font-weight:bold;">http://localhost:8000</a>' +
                         '</div>' +
                         '<p style="color:rgba(255,255,255,0.5);font-size:0.95em;">(Если вы используете VS Code, вы также можете нажать "Go Live" в нижнем статус-баре через расширение Live Server)</p>' +
                         '</div>');
