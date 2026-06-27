@@ -53,6 +53,79 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
+        /* --- Android 9 WebView Flex Gap Compatibility Overrides --- */
+
+        /* 1. Dashboard Main Layout Columns Spacing */
+        .dashboard-container {
+            gap: 0 !important;
+        }
+        .dashboard-left {
+            margin-right: 1.5em !important;
+            gap: 0 !important;
+        }
+
+        /* 2. Dashboard Left Cards Spacing */
+        .support-card {
+            height: calc(50% - 0.75em) !important;
+            margin-bottom: 1.5em !important;
+        }
+        .promo-card {
+            height: calc(50% - 0.75em) !important;
+            margin-bottom: 0 !important;
+        }
+
+        /* 3. News List Items Spacing */
+        .news-list {
+            gap: 0 !important;
+        }
+        .news-item {
+            margin-bottom: 1em !important;
+            flex-shrink: 0 !important;
+        }
+        .news-item:last-child {
+            margin-bottom: 0 !important;
+        }
+
+        /* 4. Shop List Items Spacing */
+        .shop-list {
+            gap: 0 !important;
+        }
+        .shop-item-card {
+            margin-bottom: 1em !important;
+            flex-shrink: 0 !important;
+        }
+        .shop-item-card:last-child {
+            margin-bottom: 0 !important;
+        }
+
+        /* 5. Shop Detail Content Spacing */
+        .shop-detail-content {
+            gap: 0 !important;
+        }
+        .shop-detail-content > * {
+            margin-bottom: 1.2em !important;
+        }
+        .shop-detail-content > *:last-child {
+            margin-bottom: 0 !important;
+        }
+
+        /* 6. Shop Columns Spacing */
+        .shop-container {
+            gap: 0 !important;
+        }
+        .shop-left {
+            margin-right: 1.5em !important;
+        }
+
+        /* 7. Instructions Columns Spacing */
+        .instructions-container {
+            gap: 0 !important;
+        }
+        .instructions-left {
+            margin-right: 1.5em !important;
+            gap: 0 !important;
+        }
+
         /* Pin the side menu so it is always visible (collapsed to 5em by default) */
         body:not(.light--version) .wrap__left {
             width: 5em !important;
