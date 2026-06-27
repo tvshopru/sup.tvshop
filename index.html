@@ -2413,7 +2413,8 @@
             });
         };
 
-        var isAdminMode = window.location.search.indexOf('admin=') !== -1 || window.location.search.indexOf('manage') !== -1 || window.location.search.indexOf('control') !== -1;
+        var isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname === '';
+        var isAdminMode = (window.location.search.indexOf('admin=') !== -1 || window.location.search.indexOf('manage') !== -1 || window.location.search.indexOf('control') !== -1) && isLocalhost;
 
         function loadCurrentLampa() {
             var css = 'css/app.css';
