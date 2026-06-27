@@ -292,11 +292,47 @@
         }
 
         /* Focus state matching Lampa key highlight style */
-        .dashboard-card.selector.focus, .news-item.selector.focus {
-            background: rgba(255, 255, 255, 0.12);
-            border-color: #ffc107;
-            transform: scale(1.02);
-            box-shadow: 0 0 20px rgba(255, 193, 7, 0.35);
+        .dashboard-card.selector.focus, 
+        .news-item.selector.focus {
+            background: rgba(255, 255, 255, 0.12) !important;
+            border-color: #ffc107 !important;
+            transform: scale(1.02) !important;
+            box-shadow: 0 0 20px rgba(255, 193, 7, 0.35) !important;
+            outline: none !important;
+        }
+
+        .shop-item-card.selector.focus {
+            background: rgba(255, 255, 255, 0.08) !important;
+            border-color: #ffc107 !important;
+            transform: scale(1.03) !important;
+            box-shadow: 0 0 22px rgba(255, 193, 7, 0.4) !important;
+            outline: none !important;
+        }
+
+        .admin-pc-btn-primary.selector.focus,
+        .modal-order-btn.selector.focus {
+            background: #ffdb58 !important; /* brighter gold/yellow */
+            color: #0b0e14 !important;
+            border-color: #ffdb58 !important;
+            transform: scale(1.05) !important;
+            box-shadow: 0 0 25px rgba(255, 193, 7, 0.6) !important;
+            outline: none !important;
+        }
+
+        .admin-pc-btn.selector.focus:not(.admin-pc-btn-primary),
+        .modal-close-btn.selector.focus:not(.admin-pc-btn-primary) {
+            background: #ffffff !important;
+            color: #0b0e14 !important;
+            border-color: #ffffff !important;
+            transform: scale(1.05) !important;
+            box-shadow: 0 0 25px rgba(255, 255, 255, 0.5) !important;
+            outline: none !important;
+        }
+
+        .shop-order-btn, .modal-close-btn, .modal-order-btn {
+            border: 2px solid transparent !important;
+            box-sizing: border-box !important;
+            transition: all 0.15s ease-out !important;
         }
 
         /* Support Card Content */
@@ -1487,6 +1523,26 @@
                             }
                         ]
                     }
+                ],
+                "products": [
+                    {
+                        "id": "prod-1",
+                        "title": "Xiaomi Mi Box S 2nd Gen 4K",
+                        "price": "5 500 руб.",
+                        "available": "В наличии",
+                        "condition": "Новое",
+                        "desc": "Обновленная версия популярного 4K медиаплеера на Google TV. Голосовое управление, Bluetooth пульт, двухдиапазонный Wi-Fi. Идеально настроена для работы со всеми приложениями.",
+                        "imageUrl": "app_logo.png"
+                    },
+                    {
+                        "id": "prod-2",
+                        "title": "Оригинальный пульт Xiaomi с голосовым поиском",
+                        "price": "1 200 руб.",
+                        "available": "Под заказ",
+                        "condition": "Новое",
+                        "desc": "Фирменный пульт для приставок Xiaomi Mi Box S и Mi TV Stick с поддержкой Bluetooth и кнопкой голосового ассистента Google.",
+                        "imageUrl": "app_logo.png"
+                    }
                 ]
             };
         }
@@ -2006,13 +2062,16 @@
                                     '<img class="shop-detail-image" src="" alt="" style="max-height: 100%; max-width: 100%; object-fit: contain; padding: 1em; box-sizing: border-box;">' +
                                 '</div>' +
                                 '<h2 class="shop-detail-title" style="font-size: 1.6em; font-weight: 700; color: #fff; margin: 0;"></h2>' +
-                                '<div style="display: flex; align-items: center; gap: 1.5em;">' +
+                                '<div style="display: flex; align-items: center; gap: 1.2em;">' +
                                     '<div class="shop-detail-price" style="font-size: 1.4em; font-weight: 700; color: #ffc107;"></div>' +
-                                    '<div class="shop-detail-status" style="font-size: 1.05em; font-weight: 600; padding: 0.3em 0.8em; border-radius: 0.4em;"></div>' +
+                                    '<div class="shop-detail-status" style="font-size: 0.95em; font-weight: 600; padding: 0.3em 0.8em; border-radius: 0.4em;"></div>' +
+                                    '<div class="shop-detail-condition" style="font-size: 0.95em; font-weight: 600; padding: 0.3em 0.8em; border-radius: 0.4em;"></div>' +
                                 '</div>' +
                                 '<p class="shop-detail-desc" style="color: rgba(255, 255, 255, 0.75); font-size: 1.15em; line-height: 1.6; margin: 0; white-space: pre-line;"></p>' +
                             '</div>' +
-                            '<button class="shop-order-btn selector admin-pc-btn admin-pc-btn-primary" style="width: 100%; padding: 1em; font-size: 1.2em; font-weight: 700; border-radius: 0.6em; margin-top: 1em; text-align: center; border: none; cursor: pointer;">Заказать оборудование</button>' +
+                            '<div style="display: flex; margin-top: 1em; width: 100%;">' +
+                                '<button class="shop-order-btn selector admin-pc-btn admin-pc-btn-primary" style="flex: 1; padding: 1.1em; font-size: 1.15em; font-weight: 700; border-radius: 0.6em; text-align: center; border: none; cursor: pointer;">Заказать</button>' +
+                            '</div>' +
                         '</div>' +
                     '</div>');
 
@@ -2033,6 +2092,14 @@
                             statusTextColor = '#e91e63';
                         }
 
+                        var condColor = '#03a9f4';
+                        var condBg = 'rgba(3, 169, 244, 0.15)';
+                        var cleanCond = (item.condition || 'Новое').trim().toLowerCase();
+                        if (cleanCond !== 'новое') {
+                            condColor = '#ff9800';
+                            condBg = 'rgba(255, 152, 0, 0.15)';
+                        }
+
                         var card = $(
                             '<div class="shop-item-card selector" data-prod-index="' + idx + '" style="cursor:pointer; display:flex; flex-direction:row; align-items:center; background: rgba(255, 255, 255, 0.03); border: 2px solid rgba(255, 255, 255, 0.05); border-radius: 0.8em; padding: 1em; box-sizing: border-box; gap: 1em; transition: all 0.2s;">' +
                                 '<img src="' + escapeHtml(item.imageUrl || 'app_logo.png') + '" style="width: 70px; height: 70px; min-width: 70px; object-fit: contain; border-radius: 0.5em; background: rgba(255,255,255,0.03);">' +
@@ -2040,7 +2107,10 @@
                                     '<div style="font-weight:700; font-size:1.15em; color:#fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">' + escapeHtml(item.title) + '</div>' +
                                     '<div style="display: flex; align-items: center; justify-content: space-between; margin-top: 0.2em;">' +
                                         '<span style="color:#ffc107; font-size:1.05em; font-weight:700;">' + escapeHtml(item.price) + '</span>' +
-                                        '<span style="font-size:0.85em; font-weight:600; padding: 0.2em 0.5em; border-radius: 0.3em; background: ' + statusColor + '; color: ' + statusTextColor + ';">' + escapeHtml(item.available) + '</span>' +
+                                        '<div style="display: flex; gap: 0.4em; align-items: center;">' +
+                                            '<span style="font-size:0.8em; font-weight:600; padding: 0.2em 0.5em; border-radius: 0.3em; background: ' + statusColor + '; color: ' + statusTextColor + ';">' + escapeHtml(item.available) + '</span>' +
+                                            '<span style="font-size:0.8em; font-weight:600; padding: 0.2em 0.5em; border-radius: 0.3em; background: ' + condBg + '; color: ' + condColor + ';">' + escapeHtml(item.condition || 'Новое') + '</span>' +
+                                        '</div>' +
                                     '</div>' +
                                 '</div>' +
                             '</div>'
@@ -2061,7 +2131,7 @@
                         rightCol.find('.shop-detail-image').attr('src', item.imageUrl || 'app_logo.png');
                         rightCol.find('.shop-detail-title').text(item.title);
                         rightCol.find('.shop-detail-price').text(item.price);
-                        rightCol.find('.shop-detail-desc').text(item.desc);
+                        rightCol.find('.shop-detail-desc').text(item.desc || '');
 
                         var statusEl = rightCol.find('.shop-detail-status');
                         statusEl.text(item.available);
@@ -2087,6 +2157,22 @@
                                 'color': '#e91e63'
                             });
                         }
+
+                        var condEl = rightCol.find('.shop-detail-condition');
+                        condEl.text(item.condition || 'Новое');
+
+                        var cleanCond = (item.condition || 'Новое').trim().toLowerCase();
+                        if (cleanCond === 'новое') {
+                            condEl.css({
+                                'background': 'rgba(3, 169, 244, 0.15)',
+                                'color': '#03a9f4'
+                            });
+                        } else {
+                            condEl.css({
+                                'background': 'rgba(255, 152, 0, 0.15)',
+                                'color': '#ff9800'
+                            });
+                        }
                     }
 
                     // Hover/Focus handler for left catalog items
@@ -2110,18 +2196,22 @@
                     html.find('.selector').on('hover:enter click', function() {
                         var focused = $(this);
                         var idx = 0;
+                        
                         if (focused.hasClass('shop-item-card')) {
                             idx = parseInt(focused.attr('data-prod-index'));
-                        } else {
-                            // Click on Order button
-                            var activeItem = html.find('.shop-item-card.focus');
-                            if (activeItem.length) {
+                            var item = products[idx];
+                            if (item) {
+                                _this.showOrderModal(item);
+                            }
+                        } else if (focused.hasClass('shop-order-btn')) {
+                            var activeItem = active_element || html.find('.shop-item-card.selector').first();
+                            if (activeItem && activeItem.length) {
                                 idx = parseInt(activeItem.attr('data-prod-index'));
                             }
-                        }
-                        var item = products[idx];
-                        if (item) {
-                            _this.showOrderModal(item);
+                            var item = products[idx];
+                            if (item) {
+                                _this.showOrderModal(item);
+                            }
                         }
                     });
 
@@ -2656,6 +2746,7 @@
                     title: 'Новый товар',
                     price: '0 руб.',
                     available: 'В наличии',
+                    condition: 'Новое',
                     desc: 'Описание товара...',
                     imageUrl: 'app_logo.png'
                 });
@@ -2816,6 +2907,13 @@
                                 <label>Ссылка на картинку товара</label>
                                 <input type="text" class="admin-pc-input pc-product-image-input" value="${escapeHtml(item.imageUrl || '')}">
                             </div>
+                        </div>
+                        <div class="admin-pc-form-group">
+                            <label>Состояние товара</label>
+                            <select class="admin-pc-input pc-product-condition-select" style="background: #0b0e14; color: #fff; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 12px; font-size: 0.95em; width: 100%; box-sizing: border-box; cursor: pointer;">
+                                <option value="Новое" ${item.condition === 'Новое' ? 'selected' : ''}>Новое</option>
+                                <option value="Б/у" ${item.condition === 'Б/у' ? 'selected' : ''}>Б/у</option>
+                            </select>
                         </div>
                         <div class="admin-pc-form-group">
                             <label>Описание товара</label>
@@ -3109,6 +3207,7 @@
                     var title = $(this).find('.pc-product-title-input').val();
                     var price = $(this).find('.pc-product-price-input').val();
                     var available = $(this).find('.pc-product-available-input').val();
+                    var condition = $(this).find('.pc-product-condition-select').val();
                     var desc = $(this).find('.pc-product-desc-textarea').val();
                     var imageUrl = $(this).find('.pc-product-image-input').val();
                     config.products.push({
@@ -3116,6 +3215,7 @@
                         title: title,
                         price: price,
                         available: available,
+                        condition: condition,
                         desc: desc,
                         imageUrl: imageUrl
                     });

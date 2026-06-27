@@ -158,6 +158,7 @@
       "title": "Xiaomi Mi Box S 2nd Gen 4K",
       "price": "5 500 руб.",
       "available": "В наличии",
+      "condition": "Новое",
       "desc": "Обновленная версия популярного 4K медиаплеера на Google TV. Голосовое управление, Bluetooth пульт, двухдиапазонный Wi-Fi. Идеально настроена для работы со всеми приложениями.",
       "imageUrl": "app_logo.png"
     },
@@ -166,6 +167,7 @@
       "title": "Оригинальный пульт Xiaomi с голосовым поиском",
       "price": "1 200 руб.",
       "available": "Под заказ",
+      "condition": "Новое",
       "desc": "Фирменный пульт для приставок Xiaomi Mi Box S и Mi TV Stick с поддержкой Bluetooth и кнопкой голосового ассистента Google.",
       "imageUrl": "app_logo.png"
     }
