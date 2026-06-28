@@ -2024,6 +2024,15 @@
                     var stepNum = current_step + 1;
                     var totalSteps = steps.length;
 
+                    var isSingle = inst.type === 'single';
+                    var stepBadgeHtml = isSingle ? '' : '<div class="instructions-step-badge">Шаг ' + stepNum + ' из ' + totalSteps + '</div>';
+                    var hintSvg = isSingle ?
+                        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:1.2em;height:1.2em;margin-right:0.4em;transform:rotate(90deg);"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>' :
+                        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:1.2em;height:1.2em;margin-right:0.4em;"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>';
+                    var hintText = isSingle ?
+                        'Вверх/Вниз для прокрутки текста. OK для увеличения фото. BACK для выхода к списку.' :
+                        'Влево/Вправо для перелистывания. OK для увеличения фото. BACK для выхода к списку.';
+
                     var video_btn_html = '';
                     if (inst.videoUrl) {
                         video_btn_html = 
@@ -2039,15 +2048,15 @@
                         '<div class="instructions-left">' +
                             '<div class="dashboard-card instructions-card">' +
                                 '<div style="display:flex; justify-content:space-between; align-items:center;">' +
-                                    '<div class="instructions-step-badge">Шаг ' + stepNum + ' из ' + totalSteps + '</div>' +
+                                    stepBadgeHtml +
                                     '<div style="color:rgba(255,255,255,0.4); font-size:0.9em; font-weight:bold;">' + escapeHtml(inst.title) + '</div>' +
-                                '</div>' +
+                                </div>' +
                                 '<h2 class="instructions-title">' + escapeHtml(step.title) + '</h2>' +
                                 '<div class="instructions-text">' + escapeHtml(step.text).replace(/\n/g, '<br>') + '</div>' +
                                 video_btn_html +
                                 '<div class="instructions-footer-hint">' +
-                                    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:1.2em;height:1.2em;margin-right:0.4em;"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>' +
-                                    '<span>Влево/Вправо для перелистывания. OK для увеличения фото. BACK для выхода к списку.</span>' +
+                                    hintSvg +
+                                    '<span>' + hintText + '</span>' +
                                 '</div>' +
                             '</div>' +
                          '</div>' +
@@ -2101,12 +2110,22 @@
                                 if (Navigator.canmove('left')) Navigator.move('left');
                                 else Lampa.Controller.toggle('menu');
                             } else {
-                                if (current_step > 0) {
-                                    current_step--;
-                                    _this.buildStep();
-                                    Lampa.Controller.toggle('content');
-                                } else {
+                                var config = window.portal_config || getDefaultConfig();
+                                var instList = config.instructions || [];
+                                instList = migrateInstructions(instList);
+                                var inst = instList[selected_inst_idx];
+                                var isSingle = inst && inst.type === 'single';
+
+                                if (isSingle) {
                                     _this.exitToSelection();
+                                } else {
+                                    if (current_step > 0) {
+                                        current_step--;
+                                        _this.buildStep();
+                                        Lampa.Controller.toggle('content');
+                                    } else {
+                                        _this.exitToSelection();
+                                    }
                                 }
                             }
                         },
@@ -2120,11 +2139,16 @@
                                 var config = window.portal_config || getDefaultConfig();
                                 var instList = config.instructions || [];
                                 instList = migrateInstructions(instList);
-                                var steps = (instList[selected_inst_idx]) ? (instList[selected_inst_idx].steps || []) : [];
-                                if (current_step < steps.length - 1) {
-                                    current_step++;
-                                    _this.buildStep();
-                                    Lampa.Controller.toggle('content');
+                                var inst = instList[selected_inst_idx];
+                                var isSingle = inst && inst.type === 'single';
+
+                                if (!isSingle) {
+                                    var steps = inst ? (inst.steps || []) : [];
+                                    if (current_step < steps.length - 1) {
+                                        current_step++;
+                                        _this.buildStep();
+                                        Lampa.Controller.toggle('content');
+                                    }
                                 }
                             }
                         },
@@ -2136,7 +2160,13 @@
                                 if (Navigator.canmove('up')) Navigator.move('up');
                                 else Lampa.Controller.toggle('head');
                             } else {
-                                Lampa.Controller.toggle('head');
+                                // Scroll text up if possible
+                                var textEl = html.find('.instructions-text')[0];
+                                if (textEl && textEl.scrollHeight > textEl.clientHeight && textEl.scrollTop > 0) {
+                                    textEl.scrollTop -= 50;
+                                } else {
+                                    Lampa.Controller.toggle('head');
+                                }
                             }
                         },
                         down: function down() {
@@ -2145,6 +2175,14 @@
                                 _this.toggleZoom();
                             } else if (is_selection) {
                                 if (Navigator.canmove('down')) Navigator.move('down');
+                            } else {
+                                // Scroll text down if possible
+                                var textEl = html.find('.instructions-text')[0];
+                                if (textEl && textEl.scrollHeight > textEl.clientHeight && (textEl.scrollTop + textEl.clientHeight < textEl.scrollHeight - 5)) {
+                                    textEl.scrollTop += 50;
+                                } else {
+                                    if (Navigator.canmove('down')) Navigator.move('down');
+                                }
                             }
                         },
                         back: function back() {
@@ -2553,6 +2591,25 @@
             }, 4000);
         }
 
+        function autoExpandTextarea(element) {
+            if (!element) return;
+            element.style.height = 'auto';
+            element.style.height = (element.scrollHeight + 4) + 'px';
+        }
+
+        // Global listeners for dynamic textarea resize
+        $(document).on('input focus change', '.admin-pc-textarea', function() {
+            autoExpandTextarea(this);
+        });
+
+        function triggerAllTextareasExpand() {
+            setTimeout(function() {
+                $('.admin-pc-textarea').each(function() {
+                    autoExpandTextarea(this);
+                });
+            }, 80);
+        }
+
                 function getGitSettings() {
             var provider = localStorage.getItem('admin_git_provider') || 'github';
             var repo = (localStorage.getItem('admin_github_repo') || 'tvshopru/sup.tvshop').trim();
@@ -2933,6 +2990,7 @@
             renderPCNews();
             renderPCInstructions();
             renderPCProducts();
+            triggerAllTextareasExpand();
             
             $('.admin-pc-menu-item').on('click', function() {
                 gatherPCAdminValues();
@@ -2942,6 +3000,7 @@
                 var paneId = $(this).attr('data-pane');
                 $('.admin-pc-pane').removeClass('active');
                 $('#' + paneId).addClass('active');
+                triggerAllTextareasExpand();
             });
             
             $('#btn-pc-logout').on('click', function() {
@@ -3128,6 +3187,7 @@
                 config.news.splice(idx, 1);
                 renderPCNews();
             });
+            triggerAllTextareasExpand();
         }
 
         function renderPCProducts() {
@@ -3191,6 +3251,7 @@
                 config.products.splice(idx, 1);
                 renderPCProducts();
             });
+            triggerAllTextareasExpand();
         }
 
         function renderPCInstructions() {
@@ -3301,15 +3362,42 @@
                 current_inst = config.instructions[0];
             }
             
-            rightContainer.append(`<div style="font-weight: 700; font-size: 1.1em; margin-bottom: 10px; color: #00e5ff; text-transform: uppercase;">ШАГИ: ${escapeHtml(current_inst.title)}</div>`);
+            rightContainer.append(`<div style="font-weight: 700; font-size: 1.1em; margin-bottom: 15px; color: #00e5ff; text-transform: uppercase;">НАСТРОЙКА ТЕМЫ: ${escapeHtml(current_inst.title)}</div>`);
             
+            // Grid for Instruction Type & Video URL
             rightContainer.append(`
-                <div class="admin-pc-form-group" style="background: rgba(0, 229, 255, 0.04); border: 1px solid rgba(0, 229, 255, 0.15); border-radius: 8px; padding: 15px; margin-bottom: 20px;">
-                    <label style="color: #00e5ff; font-weight: 700; display: block; margin-bottom: 6px;">Ссылка на видеоинструкцию (Rutube)</label>
-                    <input type="text" id="pc-inst-video-url" class="admin-pc-input" value="${escapeHtml(current_inst.videoUrl || '')}" placeholder="Например: https://rutube.ru/video/6aab6eb0d84f6436c3f5169b3eebbd09/" style="border-color: rgba(0, 229, 255, 0.3); font-size: 0.95em; padding: 8px 12px;">
-                    <small style="color: rgba(255, 255, 255, 0.4); display: block; margin-top: 6px;">Если указано, в инструкции на ТВ появится кнопка «Смотреть видео»</small>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+                    <div class="admin-pc-form-group" style="background: rgba(0, 229, 255, 0.04); border: 1px solid rgba(0, 229, 255, 0.15); border-radius: 8px; padding: 15px; margin-bottom: 0; box-sizing: border-box;">
+                        <label style="color: #00e5ff; font-weight: 700; display: block; margin-bottom: 6px;">Тип отображения</label>
+                        <select id="pc-inst-type-select" class="admin-pc-input" style="border-color: rgba(0, 229, 255, 0.3); font-size: 0.95em; padding: 8px 12px; background: #111; color: #fff; cursor: pointer; width: 100%;">
+                            <option value="steps" ${(current_inst.type || 'steps') === 'steps' ? 'selected' : ''}>Пошаговая (слайды с перелистыванием)</option>
+                            <option value="single" ${current_inst.type === 'single' ? 'selected' : ''}>Одностраничная (весь текст списком с прокруткой)</option>
+                        </select>
+                        <small style="color: rgba(255, 255, 255, 0.4); display: block; margin-top: 6px;">Используйте пошаговую для длинных руководств, одностраничную — для простых памяток.</small>
+                    </div>
+                    <div class="admin-pc-form-group" style="background: rgba(0, 229, 255, 0.04); border: 1px solid rgba(0, 229, 255, 0.15); border-radius: 8px; padding: 15px; margin-bottom: 0; box-sizing: border-box;">
+                        <label style="color: #00e5ff; font-weight: 700; display: block; margin-bottom: 6px;">Ссылка на видеоинструкцию (Rutube)</label>
+                        <input type="text" id="pc-inst-video-url" class="admin-pc-input" value="${escapeHtml(current_inst.videoUrl || '')}" placeholder="Например: https://rutube.ru/video/..." style="border-color: rgba(0, 229, 255, 0.3); font-size: 0.95em; padding: 8px 12px;">
+                        <small style="color: rgba(255, 255, 255, 0.4); display: block; margin-top: 6px;">Если указано, в инструкции на ТВ появится кнопка «Смотреть видео»</small>
+                    </div>
                 </div>
             `);
+
+            $('#pc-inst-type-select').on('change', function() {
+                gatherPCAdminValues();
+                renderPCInstructions();
+            });
+
+            var isSingleType = (current_inst.type === 'single');
+            
+            if (isSingleType && (!current_inst.steps || current_inst.steps.length === 0)) {
+                current_inst.steps = [{
+                    id: 'step-0',
+                    title: current_inst.title,
+                    text: 'Введите описание инструкции здесь...',
+                    imageUrl: 'app_logo.png?v=2'
+                }];
+            }
             
             var stepsList = $('<div style="display:flex; flex-direction:column; gap:15px;"></div>');
             rightContainer.append(stepsList);
@@ -3318,39 +3406,63 @@
                 current_inst.steps = [];
             }
             
-            if (current_inst.steps.length === 0) {
-                stepsList.html('<div style="text-align:center; padding: 30px; color: rgba(255,255,255,0.3);">В этой теме ещё нет ни одного шага. Добавьте шаг кнопкой ниже.</div>');
+            if (isSingleType) {
+                var step = current_inst.steps[0];
+                var stepCard = $(`
+                    <div class="admin-pc-step-item" data-step-index="0">
+                        <div class="admin-pc-news-header" style="border-bottom: 1px solid rgba(0, 229, 255, 0.1); padding-bottom: 10px; margin-bottom: 15px;">
+                            <span class="admin-pc-news-title-lbl" style="color: #00e5ff; font-weight: 700;">СОДЕРЖИМОЕ ИНСТРУКЦИИ</span>
+                        </div>
+                        <div class="admin-pc-form-group">
+                            <label>Внутренний заголовок экрана</label>
+                            <input type="text" class="admin-pc-input pc-step-title-input" value="${escapeHtml(step.title)}">
+                        </div>
+                        <div class="admin-pc-form-group">
+                            <label>Текст инструкции (можно вводить длинный текст с переносами строк)</label>
+                            <textarea class="admin-pc-textarea pc-step-text-textarea" placeholder="Введите полный текст инструкции..." style="min-height: 150px;">${escapeHtml(step.text)}</textarea>
+                        </div>
+                        <div class="admin-pc-form-group">
+                            <label>Иллюстрация справа (например, app_logo.png)</label>
+                            <input type="text" class="admin-pc-input pc-step-image-input" value="${escapeHtml(step.imageUrl)}">
+                        </div>
+                    </div>
+                `);
+                stepsList.append(stepCard);
             } else {
-                current_inst.steps.forEach(function(step, idx) {
-                    var stepCard = $(`
-                        <div class="admin-pc-step-item" data-step-index="${idx}">
-                            <div class="admin-pc-news-header">
-                                <span class="admin-pc-news-title-lbl">Шаг #${idx + 1}</span>
-                                <div class="admin-pc-inst-controls">
-                                    <button class="admin-pc-btn-icon btn-pc-step-up" data-step-index="${idx}">↑</button>
-                                    <button class="admin-pc-btn-icon btn-pc-step-down" data-step-index="${idx}">↓</button>
-                                    <button class="admin-pc-btn-icon admin-pc-btn-icon-danger btn-pc-step-delete" data-step-index="${idx}">×</button>
+                if (current_inst.steps.length === 0) {
+                    stepsList.html('<div style="text-align:center; padding: 30px; color: rgba(255,255,255,0.3);">В этой теме ещё нет ни одного шага. Добавьте шаг кнопкой ниже.</div>');
+                } else {
+                    current_inst.steps.forEach(function(step, idx) {
+                        var stepCard = $(`
+                            <div class="admin-pc-step-item" data-step-index="${idx}">
+                                <div class="admin-pc-news-header">
+                                    <span class="admin-pc-news-title-lbl">Шаг #${idx + 1}</span>
+                                    <div class="admin-pc-inst-controls">
+                                        <button class="admin-pc-btn-icon btn-pc-step-up" data-step-index="${idx}">↑</button>
+                                        <button class="admin-pc-btn-icon btn-pc-step-down" data-step-index="${idx}">↓</button>
+                                        <button class="admin-pc-btn-icon admin-pc-btn-icon-danger btn-pc-step-delete" data-step-index="${idx}">×</button>
+                                    </div>
+                                </div>
+                                <div class="admin-pc-form-group">
+                                    <label>Заголовок шага</label>
+                                    <input type="text" class="admin-pc-input pc-step-title-input" value="${escapeHtml(step.title)}">
+                                </div>
+                                <div class="admin-pc-form-group">
+                                    <label>Описание действия</label>
+                                    <textarea class="admin-pc-textarea pc-step-text-textarea">${escapeHtml(step.text)}</textarea>
+                                </div>
+                                <div class="admin-pc-form-group">
+                                    <label>Иллюстрация (например, app_logo.png)</label>
+                                    <input type="text" class="admin-pc-input pc-step-image-input" value="${escapeHtml(step.imageUrl)}">
                                 </div>
                             </div>
-                            <div class="admin-pc-form-group">
-                                <label>Заголовок шага</label>
-                                <input type="text" class="admin-pc-input pc-step-title-input" value="${escapeHtml(step.title)}">
-                            </div>
-                            <div class="admin-pc-form-group">
-                                <label>Описание действия</label>
-                                <textarea class="admin-pc-textarea pc-step-text-textarea">${escapeHtml(step.text)}</textarea>
-                            </div>
-                            <div class="admin-pc-form-group">
-                                <label>Иллюстрация (например, app_logo.png)</label>
-                                <input type="text" class="admin-pc-input pc-step-image-input" value="${escapeHtml(step.imageUrl)}">
-                            </div>
-                        </div>
-                    `);
-                    stepsList.append(stepCard);
-                });
+                        `);
+                        stepsList.append(stepCard);
+                    });
+                }
+                
+                rightContainer.append('<button class="admin-pc-btn admin-pc-btn-primary" id="btn-pc-add-new-step" style="align-self: flex-start; margin-top: 10px;">+ Добавить шаг</button>');
             }
-            
-            rightContainer.append('<button class="admin-pc-btn admin-pc-btn-primary" id="btn-pc-add-new-step" style="align-self: flex-start; margin-top: 10px;">+ Добавить шаг</button>');
             
             $('.btn-pc-step-up').on('click', function() {
                 gatherPCAdminValues();
@@ -3396,6 +3508,7 @@
                 });
                 renderPCInstructions();
             });
+            triggerAllTextareasExpand();
         }
 
         function gatherPCAdminValues() {
@@ -3444,6 +3557,7 @@
                     updated_instructions.push({
                         id: origInst ? origInst.id : ('inst-' + idx),
                         title: title,
+                        type: origInst ? (origInst.type || 'steps') : 'steps',
                         videoUrl: origInst ? origInst.videoUrl : '',
                         steps: origInst ? (origInst.steps || []) : []
                     });
@@ -3451,26 +3565,46 @@
                 config.instructions = updated_instructions;
             }
 
-            if ($('#pc-inst-video-url').length && config.instructions.length > 0 && active_inst_idx < config.instructions.length) {
-                config.instructions[active_inst_idx].videoUrl = $('#pc-inst-video-url').val().trim();
+            if (config.instructions.length > 0 && active_inst_idx < config.instructions.length) {
+                var activeInst = config.instructions[active_inst_idx];
+                if ($('#pc-inst-type-select').length) {
+                    activeInst.type = $('#pc-inst-type-select').val();
+                }
+                if ($('#pc-inst-video-url').length) {
+                    activeInst.videoUrl = $('#pc-inst-video-url').val().trim();
+                }
             }
             
             var stepItems = $('.admin-pc-step-item');
             if (stepItems.length && config.instructions.length > 0 && active_inst_idx < config.instructions.length) {
                 var current_inst = config.instructions[active_inst_idx];
-                current_inst.steps = [];
-                stepItems.each(function() {
-                    var idx = parseInt($(this).attr('data-step-index'));
-                    var title = $(this).find('.pc-step-title-input').val();
-                    var text = $(this).find('.pc-step-text-textarea').val();
-                    var image = $(this).find('.pc-step-image-input').val();
-                    current_inst.steps.push({
-                        id: 'step-' + idx,
+                
+                // If it is single-page, we only preserve and overwrite the first step
+                if (current_inst.type === 'single') {
+                    var title = stepItems.first().find('.pc-step-title-input').val();
+                    var text = stepItems.first().find('.pc-step-text-textarea').val();
+                    var image = stepItems.first().find('.pc-step-image-input').val();
+                    current_inst.steps = [{
+                        id: 'step-0',
                         title: title,
                         text: text,
                         imageUrl: image
+                    }];
+                } else {
+                    current_inst.steps = [];
+                    stepItems.each(function() {
+                        var idx = parseInt($(this).attr('data-step-index'));
+                        var title = $(this).find('.pc-step-title-input').val();
+                        var text = $(this).find('.pc-step-text-textarea').val();
+                        var image = $(this).find('.pc-step-image-input').val();
+                        current_inst.steps.push({
+                            id: 'step-' + idx,
+                            title: title,
+                            text: text,
+                            imageUrl: image
+                        });
                     });
-                });
+                }
             }
 
             var productItems = $('.admin-pc-product-item');
