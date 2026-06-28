@@ -2553,58 +2553,99 @@
             }, 4000);
         }
 
-        function pushPCConfigToGithub(repo, token, path, branch, config, callback) {
-            var url = 'https://api.github.com/repos/' + repo + '/contents/' + path;
-            showAdminNotification('Запрос SHA файла на GitHub...', 'info');
+                function getGitSettings() {
+            var provider = localStorage.getItem('admin_git_provider') || 'github';
+            var repo = (localStorage.getItem('admin_github_repo') || 'tvshopru/sup.tvshop').trim();
+            var path = (localStorage.getItem('admin_github_path') || 'config.json').trim();
+            var token = (localStorage.getItem('admin_github_token') || '').trim();
+            var branch = (localStorage.getItem('admin_github_branch') || 'main').trim();
+            
+            var apiUrl = '';
+            var acceptHeader = '';
+            var authHeader = '';
+            
+            if (provider === 'gitverse') {
+                apiUrl = 'https://api.gitverse.ru/repos/' + repo + '/contents/' + path;
+                acceptHeader = 'application/vnd.gitverse.object+json;version=1';
+                authHeader = 'Bearer ' + token;
+            } else {
+                apiUrl = 'https://api.github.com/repos/' + repo + '/contents/' + path;
+                acceptHeader = 'application/vnd.github.v3+json';
+                authHeader = 'token ' + token;
+            }
+            
+            return {
+                provider: provider,
+                repo: repo,
+                path: path,
+                token: token,
+                branch: branch,
+                apiUrl: apiUrl,
+                acceptHeader: acceptHeader,
+                authHeader: authHeader
+            };
+        }
+
+        function pushPCConfigToGithub(config, callback) {
+            var git = getGitSettings();
+            if (!git.repo || !git.token) {
+                showAdminNotification('Не указаны репозиторий или токен доступа!', 'error');
+                if (callback) callback(false);
+                return;
+            }
+            
+            var providerName = git.provider === 'gitverse' ? 'GitVerse' : 'GitHub';
+            showAdminNotification('Запрос SHA файла на ' + providerName + '...', 'info');
             
             $.ajax({
-                url: url + '?ref=' + branch + '&_t=' + (new Date().getTime()),
+                url: git.apiUrl + '?ref=' + git.branch + '&_t=' + (new Date().getTime()),
                 type: 'GET',
                 cache: false,
                 headers: {
-                    'Authorization': 'token ' + token,
-                    'Accept': 'application/vnd.github.v3+json'
+                    'Authorization': git.authHeader,
+                    'Accept': git.acceptHeader
                 },
                 success: function(data) {
                     var sha = data.sha;
-                    commitPCConfig(url, token, branch, config, sha, callback);
+                    commitPCConfig(git, config, sha, callback);
                 },
                 error: function(xhr) {
                     if (xhr.status === 404) {
-                        commitPCConfig(url, token, branch, config, null, callback);
+                        commitPCConfig(git, config, null, callback);
                     } else {
-                        showAdminNotification('Ошибка GitHub GET: ' + xhr.status + ' ' + xhr.statusText, 'error');
+                        showAdminNotification('Ошибка ' + providerName + ' GET: ' + xhr.status + ' ' + xhr.statusText, 'error');
                         if (callback) callback(false);
                     }
                 }
             });
         }
 
-        function commitPCConfig(url, token, branch, config, sha, callback) {
+        function commitPCConfig(git, config, sha, callback) {
             var content = btoa(unescape(encodeURIComponent(JSON.stringify(config, null, 2))));
             var payload = {
                 message: 'Обновление конфигурации портала через админ-панель (PC)',
                 content: content,
-                branch: branch
+                branch: git.branch
             };
             if (sha) payload.sha = sha;
 
-            showAdminNotification('Отправка коммита на GitHub...', 'info');
+            var providerName = git.provider === 'gitverse' ? 'GitVerse' : 'GitHub';
+            showAdminNotification('Отправка коммита на ' + providerName + '...', 'info');
 
             $.ajax({
-                url: url,
+                url: git.apiUrl,
                 type: 'PUT',
                 headers: {
-                    'Authorization': 'token ' + token,
-                    'Accept': 'application/vnd.github.v3+json'
+                    'Authorization': git.authHeader,
+                    'Accept': git.acceptHeader
                 },
                 data: JSON.stringify(payload),
                 success: function() {
-                    showAdminNotification('Конфигурация успешно сохранена на GitHub!', 'success');
+                    showAdminNotification('Конфигурация успешно сохранена на ' + providerName + '!', 'success');
                     if (callback) callback(true);
                 },
                 error: function(xhr) {
-                    showAdminNotification('Ошибка сохранения на GitHub: ' + xhr.status + ' ' + xhr.statusText, 'error');
+                    showAdminNotification('Ошибка сохранения на ' + providerName + ': ' + xhr.status + ' ' + xhr.statusText, 'error');
                     if (callback) callback(false);
                 }
             });
@@ -2793,10 +2834,17 @@
 
                             <!-- Pane: Sync -->
                             <div class="admin-pc-pane" id="pane-sync">
-                                <h2 class="admin-pc-pane-title">🔄 GitHub Синхронизация</h2>
+                                <h2 class="admin-pc-pane-title">🔄 Git Синхронизация (GitHub / GitVerse)</h2>
                                 <div class="admin-pc-card">
                                     <div class="admin-pc-form-group">
-                                        <label for="pc-input-gh-repo">GitHub Репозиторий (например: tvshopru/sup.tvshop)</label>
+                                        <label for="pc-input-git-provider">Провайдер хостинга</label>
+                                        <select class="admin-pc-input" id="pc-input-git-provider" style="background: #1e1e1e; color: #fff; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; padding: 10px; cursor: pointer; width: 100%; font-size: 1em;">
+                                            <option value="github">GitHub (github.com)</option>
+                                            <option value="gitverse">GitVerse (gitverse.ru)</option>
+                                        </select>
+                                    </div>
+                                    <div class="admin-pc-form-group">
+                                        <label for="pc-input-gh-repo" id="lbl-pc-git-repo">Репозиторий (например: tvshopru/sup.tvshop)</label>
                                         <input type="text" class="admin-pc-input" id="pc-input-gh-repo">
                                     </div>
                                     <div class="admin-pc-form-group">
@@ -2808,8 +2856,8 @@
                                         <input type="text" class="admin-pc-input" id="pc-input-gh-branch">
                                     </div>
                                     <div class="admin-pc-form-group">
-                                        <label for="pc-input-gh-token">GitHub Personal Access Token (Токен доступа)</label>
-                                        <input type="password" class="admin-pc-input" id="pc-input-gh-token" placeholder="ghp_xxxxxxxxxxxxxxxxxxxxxx">
+                                        <label for="pc-input-gh-token" id="lbl-pc-git-token">Персональный токен доступа (Token)</label>
+                                        <input type="password" class="admin-pc-input" id="pc-input-gh-token" placeholder="Токен доступа">
                                         <p style="color: rgba(255,255,255,0.4); font-size: 0.85em; margin: 5px 0 0 0;">Токен сохраняется исключительно в LocalStorage вашего браузера.</p>
                                     </div>
                                 </div>
@@ -2841,15 +2889,33 @@
             $('body').html(dashboardHtml);
             
             // Load settings
+            var gitProvider = localStorage.getItem('admin_git_provider') || 'github';
             var githubRepo = localStorage.getItem('admin_github_repo') || 'tvshopru/sup.tvshop';
             var githubToken = localStorage.getItem('admin_github_token') || '';
             var githubPath = localStorage.getItem('admin_github_path') || 'config.json';
             var githubBranch = localStorage.getItem('admin_github_branch') || 'main';
             
+            $('#pc-input-git-provider').val(gitProvider);
             $('#pc-input-gh-repo').val(githubRepo);
             $('#pc-input-gh-path').val(githubPath);
             $('#pc-input-gh-branch').val(githubBranch);
             $('#pc-input-gh-token').val(githubToken);
+
+            // Dynamically change labels depending on provider
+            function updateGitLabels() {
+                var prov = $('#pc-input-git-provider').val();
+                if (prov === 'gitverse') {
+                    $('#lbl-pc-git-repo').text('GitVerse Репозиторий (например: user/my-project)');
+                    $('#lbl-pc-git-token').text('GitVerse Токен доступа (Bearer Token)');
+                    $('#pc-input-gh-token').attr('placeholder', 'Введите токен GitVerse');
+                } else {
+                    $('#lbl-pc-git-repo').text('GitHub Репозиторий (например: tvshopru/sup.tvshop)');
+                    $('#lbl-pc-git-token').text('GitHub Personal Access Token (Токен доступа)');
+                    $('#pc-input-gh-token').attr('placeholder', 'ghp_xxxxxxxxxxxxxxxxxxxxxx');
+                }
+            }
+            $('#pc-input-git-provider').on('change', updateGitLabels);
+            updateGitLabels();
             
             var config = window.portal_config;
             
@@ -2916,26 +2982,29 @@
                 window.portal_config = config;
                 localStorage.setItem('portal_config', JSON.stringify(config));
                 
+                var provider = $('#pc-input-git-provider').val();
                 var repo = $('#pc-input-gh-repo').val().trim();
                 var path = $('#pc-input-gh-path').val().trim();
                 var branch = $('#pc-input-gh-branch').val().trim();
                 var token = $('#pc-input-gh-token').val().trim();
                 
+                localStorage.setItem('admin_git_provider', provider);
                 localStorage.setItem('admin_github_repo', repo);
                 localStorage.setItem('admin_github_path', path);
                 localStorage.setItem('admin_github_branch', branch);
                 localStorage.setItem('admin_github_token', token);
                 
                 if (repo && token) {
+                    var providerName = provider === 'gitverse' ? 'GitVerse' : 'GitHub';
                     $('#pc-status-indicator').addClass('saving');
-                    $('#pc-status-text').text('Сохранение на GitHub...');
+                    $('#pc-status-text').text('Сохранение на ' + providerName + '...');
                     
-                    pushPCConfigToGithub(repo, token, path, branch, config, function(success) {
+                    pushPCConfigToGithub(config, function(success) {
                         $('#pc-status-indicator').removeClass('saving');
                         if (success) {
-                            $('#pc-status-text').text('Синхронизировано с GitHub в ' + new Date().toLocaleTimeString());
+                            $('#pc-status-text').text('Синхронизировано с ' + providerName + ' в ' + new Date().toLocaleTimeString());
                         } else {
-                            $('#pc-status-text').text('Ошибка синхронизации с GitHub');
+                            $('#pc-status-text').text('Ошибка синхронизации с ' + providerName);
                         }
                     });
                 } else {
