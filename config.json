@@ -34,6 +34,7 @@
     {
       "id": "inst-byebyedpi",
       "title": "Настройка Ютуб ByeByeDPI",
+      "type": "steps",
       "videoUrl": "",
       "steps": [
         {
@@ -113,6 +114,7 @@
     {
       "id": "inst-clear-cache",
       "title": "Как удалить приложение с приставки или очистить кэш и данные",
+      "type": "single",
       "videoUrl": "",
       "steps": [
         {
