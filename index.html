@@ -1864,28 +1864,29 @@
                 };
 
                 this.openVideo = function(videoUrl) {
-                    var embedUrl = getRutubeEmbedUrl(videoUrl);
-                    if (!embedUrl) return;
+                    if (!videoUrl) return;
                     
-                    var separator = embedUrl.indexOf('?') !== -1 ? '&' : '?';
-                    embedUrl += separator + 'skinColor=00e5ff';
+                    // Try opening via Android Intent (com.lampa.startapp plugin in Cordova app wrapper)
+                    if (typeof startApp !== 'undefined') {
+                        var sApp = startApp.set({
+                            "action": "ACTION_VIEW",
+                            "uri": videoUrl
+                        });
+                        sApp.start(function() {
+                            console.log("Opened video via native Android Intent");
+                        }, function(err) {
+                            // Fallback to opening in system browser
+                            window.open(videoUrl, '_system');
+                        });
+                        return;
+                    }
                     
-                    is_video_open = true;
-                    var videoContainer = $(
-                        '<div class="instructions-video-overlay" style="position:fixed; top:0; left:0; width:100vw; height:100vh; background:#000; z-index:9999; display:flex; align-items:center; justify-content:center;">' +
-                            '<iframe src="' + escapeHtml(embedUrl) + '" style="width:100%; height:100%; border:none;" allow="autoplay; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true"></iframe>' +
-                            '<div style="position:absolute; bottom:20px; left:50%; transform:translateX(-50%); background:rgba(0,0,0,0.8); color:#00e5ff; padding:10px 20px; border-radius:20px; font-size:14px; font-weight:700; border:1px solid rgba(0, 229, 255, 0.3); pointer-events:none;">' +
-                                'Нажмите НАЗАД на пульте для выхода' +
-                            '</div>' +
-                        '</div>'
-                    );
-                    $('body').append(videoContainer);
+                    // Fallback for PC browser
+                    window.open(videoUrl, '_blank');
                 };
 
                 this.closeVideo = function() {
                     is_video_open = false;
-                    $('.instructions-video-overlay').remove();
-                    Lampa.Controller.toggle('content');
                 };
 
                 this.create = function () {
