@@ -1866,6 +1866,21 @@
                 this.openVideo = function(videoUrl) {
                     if (!videoUrl) return;
                     
+                    var isAndroid = /android/i.test(navigator.userAgent);
+                    if (isAndroid) {
+                        var videoId = '';
+                        var match = videoUrl.match(/\/video\/([a-f0-9]{32})/i);
+                        if (match && match[1]) {
+                            videoId = match[1];
+                        }
+                        
+                        if (videoId) {
+                            var intentUrl = 'intent://rutube.ru/video/' + videoId + '/#Intent;scheme=https;package=ru.rutube.app;S.browser_fallback_url=' + encodeURIComponent(videoUrl) + ';end';
+                            window.location.href = intentUrl;
+                            return;
+                        }
+                    }
+                    
                     // Try opening via Android Intent (com.lampa.startapp plugin in Cordova app wrapper)
                     if (typeof startApp !== 'undefined') {
                         // Try launching explicitly inside ru.rutube.app first
