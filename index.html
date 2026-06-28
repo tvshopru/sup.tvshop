@@ -2994,22 +2994,57 @@
                 localStorage.setItem('admin_github_branch', branch);
                 localStorage.setItem('admin_github_token', token);
                 
-                if (repo && token) {
-                    var providerName = provider === 'gitverse' ? 'GitVerse' : 'GitHub';
+                var isLocalHost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+                
+                function runGitSync() {
+                    if (repo && token) {
+                        var providerName = provider === 'gitverse' ? 'GitVerse' : 'GitHub';
+                        $('#pc-status-indicator').addClass('saving');
+                        $('#pc-status-text').text('Сохранение на ' + providerName + '...');
+                        
+                        pushPCConfigToGithub(config, function(success) {
+                            $('#pc-status-indicator').removeClass('saving');
+                            if (success) {
+                                $('#pc-status-text').text('Синхронизировано с ' + providerName + ' в ' + new Date().toLocaleTimeString());
+                            } else {
+                                $('#pc-status-text').text('Ошибка синхронизации с ' + providerName);
+                            }
+                        });
+                    } else if (!isLocalHost) {
+                        showAdminNotification('Изменения сохранены локально в браузере!', 'success');
+                        $('#pc-status-text').text('Сохранено в LocalStorage в ' + new Date().toLocaleTimeString());
+                    }
+                }
+
+                if (isLocalHost) {
+                    // Try to save directly to local config.json on the hard drive via our Python server API
                     $('#pc-status-indicator').addClass('saving');
-                    $('#pc-status-text').text('Сохранение на ' + providerName + '...');
+                    $('#pc-status-text').text('Запись в файл config.json...');
                     
-                    pushPCConfigToGithub(config, function(success) {
-                        $('#pc-status-indicator').removeClass('saving');
-                        if (success) {
-                            $('#pc-status-text').text('Синхронизировано с ' + providerName + ' в ' + new Date().toLocaleTimeString());
-                        } else {
-                            $('#pc-status-text').text('Ошибка синхронизации с ' + providerName);
+                    $.ajax({
+                        url: '/api/save',
+                        type: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify(config),
+                        success: function() {
+                            $('#pc-status-indicator').removeClass('saving');
+                            showAdminNotification('Конфигурация успешно записана в локальный config.json!', 'success');
+                            $('#pc-status-text').text('Записано в файл в ' + new Date().toLocaleTimeString());
+                            
+                            // Continue with Git synchronization if configured
+                            runGitSync();
+                        },
+                        error: function() {
+                            // Fallback if the local python server doesn't support the /api/save route (e.g. running basic python -m http.server)
+                            $('#pc-status-indicator').removeClass('saving');
+                            showAdminNotification('Не удалось записать в файл напрямую. Убедитесь, что запущен server.py.', 'warning');
+                            
+                            // Try Git sync anyway
+                            runGitSync();
                         }
                     });
                 } else {
-                    showAdminNotification('Изменения сохранены локально в браузере!', 'success');
-                    $('#pc-status-text').text('Сохранено локально в ' + new Date().toLocaleTimeString());
+                    runGitSync();
                 }
             });
             
