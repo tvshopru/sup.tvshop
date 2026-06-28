@@ -1868,15 +1868,25 @@
                     
                     // Try opening via Android Intent (com.lampa.startapp plugin in Cordova app wrapper)
                     if (typeof startApp !== 'undefined') {
+                        // Try launching explicitly inside ru.rutube.app first
                         var sApp = startApp.set({
                             "action": "ACTION_VIEW",
-                            "uri": videoUrl
+                            "uri": videoUrl,
+                            "package": "ru.rutube.app"
                         });
                         sApp.start(function() {
-                            console.log("Opened video via native Android Intent");
+                            console.log("Successfully launched video inside ru.rutube.app");
                         }, function(err) {
-                            // Fallback to opening in system browser
-                            window.open(videoUrl, '_system');
+                            // Fallback to default system handler if ru.rutube.app is not installed
+                            var fallbackApp = startApp.set({
+                                "action": "ACTION_VIEW",
+                                "uri": videoUrl
+                            });
+                            fallbackApp.start(function() {
+                                console.log("Opened video in default system handler");
+                            }, function(err2) {
+                                window.open(videoUrl, '_system');
+                            });
                         });
                         return;
                     }
