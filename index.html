@@ -1421,6 +1421,16 @@
             return instructions;
         }
 
+        function getRutubeEmbedUrl(url) {
+            if (!url) return '';
+            if (url.indexOf('play/embed') !== -1) return url;
+            var match = url.match(/\/video\/([a-f0-9]{32})/i);
+            if (match && match[1]) {
+                return 'https://rutube.ru/play/embed/' + match[1];
+            }
+            return url;
+        }
+
         function mergeConfigs(loaded, defaults) {
             if (!loaded || typeof loaded !== 'object') return defaults;
             var result = $.extend(true, {}, defaults, loaded);
@@ -1847,6 +1857,36 @@
                 var is_zoomed = false;
                 var selected_inst_idx = 0;
                 var is_selection = true;
+                var is_video_open = false;
+
+                this.isVideoOpen = function() {
+                    return is_video_open;
+                };
+
+                this.openVideo = function(videoUrl) {
+                    var embedUrl = getRutubeEmbedUrl(videoUrl);
+                    if (!embedUrl) return;
+                    
+                    var separator = embedUrl.indexOf('?') !== -1 ? '&' : '?';
+                    embedUrl += separator + 'skinColor=00e5ff';
+                    
+                    is_video_open = true;
+                    var videoContainer = $(
+                        '<div class="instructions-video-overlay" style="position:fixed; top:0; left:0; width:100vw; height:100vh; background:#000; z-index:9999; display:flex; align-items:center; justify-content:center;">' +
+                            '<iframe src="' + escapeHtml(embedUrl) + '" style="width:100%; height:100%; border:none;" allowfullscreen allow="autoplay; encrypted-media"></iframe>' +
+                            '<div style="position:absolute; bottom:20px; left:50%; transform:translateX(-50%); background:rgba(0,0,0,0.8); color:#00e5ff; padding:10px 20px; border-radius:20px; font-size:14px; font-weight:700; border:1px solid rgba(0, 229, 255, 0.3); pointer-events:none;">' +
+                                'Нажмите НАЗАД на пульте для выхода' +
+                            '</div>' +
+                        '</div>'
+                    );
+                    $('body').append(videoContainer);
+                };
+
+                this.closeVideo = function() {
+                    is_video_open = false;
+                    $('.instructions-video-overlay').remove();
+                    Lampa.Controller.toggle('content');
+                };
 
                 this.create = function () {
                     var _this = this;
@@ -1958,6 +1998,17 @@
                     var stepNum = current_step + 1;
                     var totalSteps = steps.length;
 
+                    var video_btn_html = '';
+                    if (inst.videoUrl) {
+                        video_btn_html = 
+                            '<div class="instructions-video-button-wrapper" style="margin-top: 1.5em; margin-bottom: 1.5em;">' +
+                                '<button class="dashboard-card selector btn-watch-video" style="cursor:pointer; display:flex; align-items:center; justify-content:center; gap:0.6em; width:100%; padding:0.8em; font-weight:700; color:#00e5ff; background:rgba(0, 229, 255, 0.1); border-color:#00e5ff;">' +
+                                    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:1.2em;height:1.2em;color:#00e5ff;"><polygon points="5 3 19 12 5 21 5 3" fill="#00e5ff"/></svg>' +
+                                    '<span>Открыть видеоинструкцию</span>' +
+                                '</button>' +
+                            '</div>';
+                    }
+
                     var step_inner_html = 
                         '<div class="instructions-left">' +
                             '<div class="dashboard-card instructions-card">' +
@@ -1967,6 +2018,7 @@
                                 '</div>' +
                                 '<h2 class="instructions-title">' + escapeHtml(step.title) + '</h2>' +
                                 '<div class="instructions-text">' + escapeHtml(step.text).replace(/\n/g, '<br>') + '</div>' +
+                                video_btn_html +
                                 '<div class="instructions-footer-hint">' +
                                     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:1.2em;height:1.2em;margin-right:0.4em;"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>' +
                                     '<span>Влево/Вправо для перелистывания. OK для увеличения фото. BACK для выхода к списку.</span>' +
@@ -1984,8 +2036,16 @@
                     html.html(step_inner_html);
 
                     var _this = this;
-                    html.find('.selector').on('hover:enter click', function() {
+                    
+                    // Bind click/enter to the zoom card specifically
+                    html.find('.instructions-image-card.selector').on('hover:enter click', function() {
                         _this.toggleZoom();
+                    });
+                    
+                    // Bind click/enter to the watch video button specifically
+                    html.find('.btn-watch-video.selector').on('hover:enter click', function(e) {
+                        e.stopPropagation();
+                        _this.openVideo(inst.videoUrl);
                     });
                 };
 
@@ -2008,6 +2068,7 @@
                             Lampa.Controller.collectionFocus(html.find('.selector').first()[0], html);
                         },
                         left: function left() {
+                            if (is_video_open) return;
                             if (_this.isZoomed()) {
                                 _this.toggleZoom();
                             } else if (is_selection) {
@@ -2024,6 +2085,7 @@
                             }
                         },
                         right: function right() {
+                            if (is_video_open) return;
                             if (_this.isZoomed()) {
                                 _this.toggleZoom();
                             } else if (is_selection) {
@@ -2041,6 +2103,7 @@
                             }
                         },
                         up: function up() {
+                            if (is_video_open) return;
                             if (_this.isZoomed()) {
                                 _this.toggleZoom();
                             } else if (is_selection) {
@@ -2051,6 +2114,7 @@
                             }
                         },
                         down: function down() {
+                            if (is_video_open) return;
                             if (_this.isZoomed()) {
                                 _this.toggleZoom();
                             } else if (is_selection) {
@@ -2058,7 +2122,9 @@
                             }
                         },
                         back: function back() {
-                            if (_this.isZoomed()) {
+                            if (is_video_open) {
+                                _this.closeVideo();
+                            } else if (_this.isZoomed()) {
                                 _this.toggleZoom();
                             } else if (is_selection) {
                                 Lampa.Activity.backward();
@@ -3107,6 +3173,14 @@
             
             rightContainer.append(`<div style="font-weight: 700; font-size: 1.1em; margin-bottom: 10px; color: #00e5ff; text-transform: uppercase;">ШАГИ: ${escapeHtml(current_inst.title)}</div>`);
             
+            rightContainer.append(`
+                <div class="admin-pc-form-group" style="background: rgba(0, 229, 255, 0.04); border: 1px solid rgba(0, 229, 255, 0.15); border-radius: 8px; padding: 15px; margin-bottom: 20px;">
+                    <label style="color: #00e5ff; font-weight: 700; display: block; margin-bottom: 6px;">Ссылка на видеоинструкцию (Rutube)</label>
+                    <input type="text" id="pc-inst-video-url" class="admin-pc-input" value="${escapeHtml(current_inst.videoUrl || '')}" placeholder="Например: https://rutube.ru/video/6aab6eb0d84f6436c3f5169b3eebbd09/" style="border-color: rgba(0, 229, 255, 0.3); font-size: 0.95em; padding: 8px 12px;">
+                    <small style="color: rgba(255, 255, 255, 0.4); display: block; margin-top: 6px;">Если указано, в инструкции на ТВ появится кнопка «Смотреть видео»</small>
+                </div>
+            `);
+            
             var stepsList = $('<div style="display:flex; flex-direction:column; gap:15px;"></div>');
             rightContainer.append(stepsList);
             
@@ -3240,10 +3314,15 @@
                     updated_instructions.push({
                         id: origInst ? origInst.id : ('inst-' + idx),
                         title: title,
+                        videoUrl: origInst ? origInst.videoUrl : '',
                         steps: origInst ? (origInst.steps || []) : []
                     });
                 });
                 config.instructions = updated_instructions;
+            }
+
+            if ($('#pc-inst-video-url').length && config.instructions.length > 0 && active_inst_idx < config.instructions.length) {
+                config.instructions[active_inst_idx].videoUrl = $('#pc-inst-video-url').val().trim();
             }
             
             var stepItems = $('.admin-pc-step-item');
