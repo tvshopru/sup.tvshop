@@ -1861,6 +1861,7 @@
                 "supportText": "Для связи с нашей техподдержкой отсканируйте этот QR-код с телефона или перейдите по контакту Telegram:",
                 "supportTg": "@android_tv_shop",
                 "supportQrUrl": "",
+                "oneSignalAppId": "",
                 "promo": {
                     "badge": "Премиум ТВ",
                     "title": "Платный проект ТВ",
@@ -3286,6 +3287,10 @@
                                         <input type="text" class="admin-pc-input" id="pc-input-support-qr" placeholder="Оставьте пустым для автогенерации">
                                     </div>
                                     <div class="admin-pc-form-group">
+                                        <label for="pc-input-onesignal-appid">OneSignal App ID (для Push-уведомлений)</label>
+                                        <input type="text" class="admin-pc-input" id="pc-input-onesignal-appid" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx">
+                                    </div>
+                                    <div class="admin-pc-form-group">
                                         <label for="pc-input-admin-pin">PIN-код администратора (для входа в панель)</label>
                                         <input type="text" class="admin-pc-input" id="pc-input-admin-pin" maxlength="10">
                                     </div>
@@ -3444,6 +3449,7 @@
             $('#pc-input-support-text').val(config.supportText || '');
             $('#pc-input-support-tg').val(config.supportTg || '');
             $('#pc-input-support-qr').val(config.supportQrUrl || '');
+            $('#pc-input-onesignal-appid').val(config.oneSignalAppId || '');
             $('#pc-input-admin-pin').val(config.adminPin || '0000');
             
             $('#pc-input-promo-badge').val(config.promo.badge || '');
@@ -3596,6 +3602,7 @@
                     $('#pc-input-support-text').val(config.supportText || '');
                     $('#pc-input-support-tg').val(config.supportTg || '');
                     $('#pc-input-support-qr').val(config.supportQrUrl || '');
+                    $('#pc-input-onesignal-appid').val(config.oneSignalAppId || '');
                     $('#pc-input-admin-pin').val(config.adminPin || '0000');
                     
                     $('#pc-input-promo-badge').val(config.promo.badge || '');
@@ -3984,6 +3991,7 @@
                 config.supportText = $('#pc-input-support-text').val();
                 config.supportTg = $('#pc-input-support-tg').val();
                 config.supportQrUrl = $('#pc-input-support-qr').val();
+                config.oneSignalAppId = $('#pc-input-onesignal-appid').val();
                 config.adminPin = $('#pc-input-admin-pin').val();
             }
             
@@ -4151,6 +4159,38 @@
                 }
                 
                 renderMobileContent();
+                
+                // Register PWA Service Worker
+                if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+                    navigator.serviceWorker.register('sw.js', { scope: '/sup.tvshop/' })
+                        .then(function(reg) {
+                            console.log('PWA Service Worker registered with scope:', reg.scope);
+                        })
+                        .catch(function(err) {
+                            console.warn('PWA Service Worker registration failed:', err);
+                        });
+                }
+                
+                // Initialize OneSignal Push Notifications if App ID is configured
+                if (config.oneSignalAppId) {
+                    if (!window.OneSignal) {
+                        window.OneSignalDeferred = window.OneSignalDeferred || [];
+                        window.OneSignal = window.OneSignal || function() {
+                            window.OneSignalDeferred.push(arguments);
+                        };
+                        
+                        $.getScript('https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js', function() {
+                            window.OneSignalDeferred.push(function(OneSignal) {
+                                OneSignal.init({
+                                    appId: config.oneSignalAppId,
+                                    allowLocalhostAsSecureOrigin: true,
+                                    serviceWorkerParam: { scope: '/sup.tvshop/' },
+                                    serviceWorkerPath: 'sw.js'
+                                });
+                            });
+                        });
+                    }
+                }
             });
         }
 
