@@ -2425,12 +2425,74 @@
                         list.append(card);
                     });
 
+                    // Add virtual card for Telegram subscription
+                    var tgCard = $(
+                        '<div class="dashboard-card selector instruction-select-card" data-inst-index="-1" style="cursor:pointer; display:flex; flex-direction:column; justify-content:space-between; height: 160px; background: rgba(0, 136, 204, 0.08) !important; border: 1px solid rgba(0, 136, 204, 0.2) !important;">' +
+                            '<div>' +
+                                '<div style="font-weight:700; font-size:1.35em; color:#fff; line-height:1.3; margin-bottom: 0.4em;">Наш Telegram-канал</div>' +
+                                '<div style="color:rgba(255,255,255,0.6); font-size:0.95em;">Все новости и поддержка</div>' +
+                            '</div>' +
+                            '<div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid rgba(0, 136, 204, 0.15); padding-top:0.6em; margin-top:1em;">' +
+                                '<span style="color:#00e5ff; font-size:0.95em; font-weight:700;">Подписаться</span>' +
+                                '<svg viewBox="0 0 24 24" fill="currentColor" style="width:1.2em;height:1.2em;color:#00e5ff;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.2-.08-.06-.19-.04-.27-.02-.12.02-1.96 1.24-5.52 3.64-.52.36-.99.53-1.41.52-.46-.01-1.35-.26-2.01-.48-.81-.27-1.46-.42-1.4-.88.03-.24.36-.49.99-.75 3.87-1.68 6.45-2.79 7.74-3.33 3.68-1.54 4.44-1.81 4.94-1.82.11 0 .36.03.52.16.14.11.18.26.19.38 0 .1.01.22 0 .33z"/></svg>' +
+                            '</div>' +
+                        '</div>'
+                    );
+                    list.append(tgCard);
+
                     html.append(container);
 
                     var _this = this;
                     html.find('.selector').on('hover:enter click', function() {
                         var idx = parseInt($(this).attr('data-inst-index'));
-                        _this.selectInstruction(idx);
+                        if (idx === -1) {
+                            _this.showTelegramCtaModal();
+                        } else {
+                            _this.selectInstruction(idx);
+                        }
+                    });
+                };
+
+                this.showTelegramCtaModal = function() {
+                    var tgContact = config.supportTg || '@android_tv_shop';
+                    var tgLink = tgContact.startsWith('@') ? 'https://t.me/' + tgContact.substring(1) : tgContact;
+                    var qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=' + encodeURIComponent(tgLink);
+
+                    var modalHtml = $(
+                        '<div class="promo-tv-modal" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(9, 11, 14, 0.96); z-index: 999999; display: flex; align-items: center; justify-content: center; animation: admin-fade-in 0.3s ease-out;">' +
+                            '<div class="dashboard-card" style="width: 580px; padding: 2.2em; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.2em; box-shadow: 0 10px 40px rgba(0,0,0,0.6); border-radius: 12px; background: #0e121a; border: 1px solid rgba(255,255,255,0.08);">' +
+                                '<h2 style="font-size: 1.8em; font-weight: 700; color: #fff; margin: 0; border-bottom: 2px solid rgba(255,255,255,0.08); padding-bottom: 0.5em; width: 100%;">Наш Telegram-канал</h2>' +
+                                '<p style="color: rgba(255,255,255,0.85); font-size: 1.1em; line-height: 1.55; margin: 0; text-align: left;">' +
+                                    'Подписывайтесь на наш Telegram-канал, чтобы первыми получать свежие новости, новые полезные плейлисты и обновления инструкций.<br><br>' +
+                                    'Вы можете написать нам напрямую в Telegram и получить оперативную помощь техподдержки по любым вопросам.' +
+                                '</p>' +
+                                '<div style="background: #fff; padding: 0.8em; border-radius: 0.8em; width: 180px; height: 180px; display: flex; align-items: center; justify-content: center; margin: 0.3em 0;">' +
+                                    '<img src="' + qrUrl + '" style="width: 100%; height: 100%; object-fit: contain;">' +
+                                '</div>' +
+                                '<button class="modal-close-btn selector admin-pc-btn admin-pc-btn-primary" style="width: 100%; padding: 0.8em; font-size: 1.1em; font-weight: 700; border-radius: 0.5em;">Назад к списку</button>' +
+                            '</div>' +
+                        '</div>'
+                    );
+
+                    $('body').append(modalHtml);
+
+                    var last_active_context = Lampa.Controller.enabled().name;
+                    Lampa.Controller.add('instructions_tg_modal', {
+                        toggle: function toggle() {
+                            Lampa.Controller.collectionSet(modalHtml);
+                            Lampa.Controller.collectionFocus(modalHtml.find('.selector')[0], modalHtml);
+                        },
+                        back: function back() {
+                            modalHtml.remove();
+                            Lampa.Controller.toggle(last_active_context);
+                        }
+                    });
+
+                    Lampa.Controller.toggle('instructions_tg_modal');
+
+                    modalHtml.find('.modal-close-btn').on('hover:enter click', function() {
+                        modalHtml.remove();
+                        Lampa.Controller.toggle(last_active_context);
                     });
                 };
 
