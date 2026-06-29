@@ -1266,13 +1266,42 @@
         }
 
         /* --- Mobile Responsive Layout Styles --- */
+        :root {
+            /* Default Dark Theme variables */
+            --mobile-bg: linear-gradient(135deg, #0b0e14 0%, #05070a 100%);
+            --mobile-text: #ffffff;
+            --mobile-text-secondary: rgba(255, 255, 255, 0.85);
+            --mobile-text-muted: rgba(255, 255, 255, 0.45);
+            --mobile-card-bg: rgba(255, 255, 255, 0.03);
+            --mobile-card-border: rgba(255, 255, 255, 0.06);
+            --mobile-header-bg: #0e121a;
+            --mobile-accent: #00e5ff;
+            --mobile-accent-bg: rgba(0, 229, 255, 0.08);
+            --mobile-shadow: rgba(0, 0, 0, 0.35);
+            --mobile-border-radius: 14px;
+        }
+
+        .light-theme {
+            /* Light Theme variables */
+            --mobile-bg: linear-gradient(135deg, #f4f6f9 0%, #eef1f5 100%);
+            --mobile-text: #1a1e26;
+            --mobile-text-secondary: #4a5464;
+            --mobile-text-muted: #8a96a8;
+            --mobile-card-bg: #ffffff;
+            --mobile-card-border: rgba(0, 0, 0, 0.06);
+            --mobile-header-bg: #ffffff;
+            --mobile-accent: #00bcd4;
+            --mobile-accent-bg: rgba(0, 188, 212, 0.08);
+            --mobile-shadow: rgba(0, 0, 0, 0.06);
+        }
+
         .mobile-body, .mobile-body * {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
             box-sizing: border-box !important;
         }
         .mobile-body {
-            background: linear-gradient(135deg, #0b0e14 0%, #05070a 100%) !important;
-            color: #ffffff !important;
+            background: var(--mobile-bg) !important;
+            color: var(--mobile-text) !important;
             margin: 0 !important;
             padding: 0 !important;
             min-height: 100vh !important;
@@ -1281,13 +1310,13 @@
             overflow-x: hidden !important;
         }
         .mobile-body h1, .mobile-body h2, .mobile-body h3, .mobile-body h4 {
-            color: #ffffff !important;
+            color: var(--mobile-text) !important;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
             margin: 0 !important;
         }
         .mobile-container {
             padding: 16px !important;
-            padding-bottom: 110px !important; /* Space for fixed support bar */
+            padding-bottom: 170px !important; /* Space for support bar (bottom: 64px) + nav bar (64px) */
             width: 100% !important;
             box-sizing: border-box !important;
         }
@@ -1296,8 +1325,8 @@
             align-items: center !important;
             justify-content: space-between !important;
             padding: 10px 16px !important;
-            background: #0e121a !important;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+            background: var(--mobile-header-bg) !important;
+            border-bottom: 1px solid var(--mobile-card-border) !important;
             position: sticky !important;
             top: 0 !important;
             z-index: 99999 !important;
@@ -1306,11 +1335,12 @@
             box-sizing: border-box !important;
             height: 60px !important;
             width: 100% !important;
+            box-shadow: 0 2px 10px var(--mobile-shadow) !important;
         }
         .mobile-header-title {
             font-weight: 800 !important;
             font-size: 1.15em !important;
-            color: #fff !important;
+            color: var(--mobile-text) !important;
             margin: 0 !important;
             text-align: center !important;
             flex-grow: 1 !important;
@@ -1322,7 +1352,7 @@
         .mobile-btn-back {
             background: transparent !important;
             border: none !important;
-            color: #00e5ff !important;
+            color: var(--mobile-accent) !important;
             font-size: 1em !important;
             font-weight: 700 !important;
             cursor: pointer !important;
@@ -1333,12 +1363,12 @@
             border-radius: 8px !important;
         }
         .mobile-btn-back:active {
-            background: rgba(0, 229, 255, 0.1) !important;
+            background: var(--mobile-accent-bg) !important;
         }
         .mobile-btn-share {
-            background: rgba(0, 229, 255, 0.1) !important;
-            border: 1px solid rgba(0, 229, 255, 0.2) !important;
-            color: #00e5ff !important;
+            background: var(--mobile-accent-bg) !important;
+            border: 1px solid var(--mobile-card-border) !important;
+            color: var(--mobile-accent) !important;
             font-size: 0.95em !important;
             cursor: pointer !important;
             display: inline-flex !important;
@@ -1352,31 +1382,48 @@
         .mobile-btn-share:active {
             background: rgba(0, 229, 255, 0.2) !important;
         }
+        .mobile-btn-theme {
+            background: transparent !important;
+            border: none !important;
+            color: var(--mobile-text) !important;
+            font-size: 0.95em !important;
+            cursor: pointer !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            width: 38px !important;
+            height: 38px !important;
+            border-radius: 50% !important;
+            padding: 0 !important;
+        }
+        .mobile-btn-theme:active {
+            background: var(--mobile-card-border) !important;
+        }
         .mobile-card {
-            background: rgba(255, 255, 255, 0.03) !important;
-            border: 1px solid rgba(255, 255, 255, 0.06) !important;
+            background: var(--mobile-card-bg) !important;
+            border: 1px solid var(--mobile-card-border) !important;
             border-radius: 14px !important;
             padding: 20px !important;
             margin-bottom: 18px !important;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3) !important;
+            box-shadow: 0 8px 24px var(--mobile-shadow) !important;
             box-sizing: border-box !important;
             width: 100% !important;
         }
         .mobile-step-card {
-            background: rgba(255, 255, 255, 0.03) !important;
-            border: 1px solid rgba(255, 255, 255, 0.06) !important;
-            border-left: 4px solid #00e5ff !important;
+            background: var(--mobile-card-bg) !important;
+            border: 1px solid var(--mobile-card-border) !important;
+            border-left: 4px solid var(--mobile-accent) !important;
             border-radius: 14px !important;
             padding: 20px !important;
             margin-bottom: 18px !important;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3) !important;
+            box-shadow: 0 8px 24px var(--mobile-shadow) !important;
             box-sizing: border-box !important;
             width: 100% !important;
         }
         .mobile-step-number {
             font-size: 0.8em !important;
             font-weight: 800 !important;
-            color: #00e5ff !important;
+            color: var(--mobile-accent) !important;
             text-transform: uppercase !important;
             letter-spacing: 1.5px !important;
             margin-bottom: 8px !important;
@@ -1385,23 +1432,23 @@
         .mobile-step-title {
             font-size: 1.3em !important;
             font-weight: 800 !important;
-            color: #ffffff !important;
+            color: var(--mobile-text) !important;
             margin: 0 0 12px 0 !important;
             line-height: 1.3 !important;
         }
         .mobile-step-text {
             font-size: 1.05em !important;
-            color: rgba(255, 255, 255, 0.9) !important;
+            color: var(--mobile-text-secondary) !important;
             line-height: 1.65 !important;
             margin: 0 0 12px 0 !important;
             word-wrap: break-word !important;
             white-space: pre-wrap !important;
         }
         .mobile-image-card {
-            border: 1px solid rgba(255, 255, 255, 0.06) !important;
+            border: 1px solid var(--mobile-card-border) !important;
             border-radius: 10px !important;
             overflow: hidden !important;
-            background: rgba(0, 0, 0, 0.35) !important;
+            background: rgba(0, 0, 0, 0.25) !important;
             margin-top: 14px !important;
             display: flex !important;
             justify-content: center !important;
@@ -1428,9 +1475,9 @@
             padding: 14px !important;
             font-weight: 700 !important;
             font-size: 1em !important;
-            color: #00e5ff !important;
-            background: rgba(0, 229, 255, 0.08) !important;
-            border: 1px solid rgba(0, 229, 255, 0.3) !important;
+            color: var(--mobile-accent) !important;
+            background: var(--mobile-accent-bg) !important;
+            border: 1px solid var(--mobile-accent) !important;
             border-radius: 8px !important;
             text-decoration: none !important;
             box-sizing: border-box !important;
@@ -1444,18 +1491,18 @@
         }
         .mobile-support-bar {
             position: fixed !important;
-            bottom: 0 !important;
+            bottom: 64px !important; /* Stacked right above bottom navigation */
             left: 0 !important;
             width: 100% !important;
             padding: 14px 16px !important;
-            background: #0e121a !important;
-            border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+            background: var(--mobile-header-bg) !important;
+            border-top: 1px solid var(--mobile-card-border) !important;
             box-sizing: border-box !important;
             display: flex !important;
             align-items: center !important;
             justify-content: space-between !important;
-            z-index: 999999 !important;
-            box-shadow: 0 -8px 24px rgba(0,0,0,0.5) !important;
+            z-index: 999998 !important;
+            box-shadow: 0 -4px 16px var(--mobile-shadow) !important;
         }
         .mobile-support-text-wrap {
             display: flex !important;
@@ -1464,14 +1511,14 @@
         }
         .mobile-support-lbl {
             font-size: 0.8em !important;
-            color: rgba(255,255,255,0.4) !important;
+            color: var(--mobile-text-muted) !important;
             font-weight: 600 !important;
             text-transform: uppercase !important;
             letter-spacing: 0.5px !important;
         }
         .mobile-support-val {
             font-size: 0.95em !important;
-            color: #fff !important;
+            color: var(--mobile-text) !important;
             font-weight: 700 !important;
         }
         .mobile-tg-btn {
@@ -1509,7 +1556,7 @@
             max-height: 85% !important;
             object-fit: contain !important;
             border-radius: 6px !important;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.6) !important;
+            box-shadow: 0 8px 32px var(--mobile-shadow) !important;
         }
         .mobile-lightbox-close {
             position: absolute !important;
@@ -1531,9 +1578,9 @@
             font-size: 1.4em !important;
             font-weight: 800 !important;
             margin: 20px 0 16px 0 !important;
-            border-left: 4px solid #00e5ff !important;
+            border-left: 4px solid var(--mobile-accent) !important;
             padding-left: 10px !important;
-            color: #fff !important;
+            color: var(--mobile-text) !important;
             text-transform: uppercase !important;
             letter-spacing: 0.5px !important;
         }
@@ -1541,8 +1588,8 @@
             display: flex !important;
             justify-content: space-between !important;
             align-items: center !important;
-            background: rgba(255, 255, 255, 0.02) !important;
-            border: 1px solid rgba(255, 255, 255, 0.05) !important;
+            background: var(--mobile-card-bg) !important;
+            border: 1px solid var(--mobile-card-border) !important;
             border-radius: 14px !important;
             padding: 16px 20px !important;
             margin-bottom: 12px !important;
@@ -1557,13 +1604,56 @@
         .mobile-list-card-title {
             font-weight: 700 !important;
             font-size: 1.1em !important;
-            color: #fff !important;
-            line-height: 1.3C !important;
+            color: var(--mobile-text) !important;
+            line-height: 1.3 !important;
             margin-bottom: 6px !important;
         }
         .mobile-list-card-subtitle {
             font-size: 0.85em !important;
-            color: rgba(255,255,255,0.45) !important;
+            color: var(--mobile-text-muted) !important;
+        }
+
+        /* Bottom Navigation Tab Bar Styling */
+        .mobile-nav-bar {
+            position: fixed !important;
+            bottom: 0 !important;
+            left: 0 !important;
+            width: 100% !important;
+            height: 64px !important;
+            background: var(--mobile-header-bg) !important;
+            border-top: 1px solid var(--mobile-card-border) !important;
+            display: flex !important;
+            justify-content: space-around !important;
+            align-items: center !important;
+            z-index: 999999 !important;
+            box-shadow: 0 -4px 16px var(--mobile-shadow) !important;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+        .mobile-nav-item {
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            justify-content: center !important;
+            color: var(--mobile-text-muted) !important;
+            font-size: 0.78em !important;
+            font-weight: 700 !important;
+            cursor: pointer !important;
+            gap: 4px !important;
+            text-decoration: none !important;
+            flex-grow: 1 !important;
+            height: 100% !important;
+            transition: color 0.2s !important;
+        }
+        .mobile-nav-item svg {
+            width: 22px !important;
+            height: 22px !important;
+            stroke: currentColor !important;
+            fill: none !important;
+            stroke-width: 2.2 !important;
+        }
+        .mobile-nav-item.active {
+            color: var(--mobile-accent) !important;
         }
     </style>
 </head>
@@ -4006,299 +4096,16 @@
             }
         }
 
+        var mobileCurrentTab = 'main';
+        var mobileActiveInstId = null;
+
         function initMobileInstructionView() {
-            // Inject mobile styles dynamically to bypass browser/webview caching
-            if (!$('#mobile-dynamic-styles').length) {
-                var styleTag = $('<style id="mobile-dynamic-styles">')
-                    .text(`
-                        .mobile-body, .mobile-body * {
-                            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
-                            box-sizing: border-box !important;
-                        }
-                        .mobile-body {
-                            background: linear-gradient(135deg, #0b0e14 0%, #05070a 100%) !important;
-                            color: #ffffff !important;
-                            margin: 0 !important;
-                            padding: 0 !important;
-                            min-height: 100vh !important;
-                            font-size: 16px !important;
-                            line-height: 1.5 !important;
-                            overflow-x: hidden !important;
-                        }
-                        .mobile-body h1, .mobile-body h2, .mobile-body h3, .mobile-body h4 {
-                            color: #ffffff !important;
-                            margin: 0 !important;
-                        }
-                        .mobile-container {
-                            padding: 16px !important;
-                            padding-bottom: 110px !important;
-                            width: 100% !important;
-                        }
-                        .mobile-header {
-                            display: flex !important;
-                            align-items: center !important;
-                            justify-content: space-between !important;
-                            padding: 10px 16px !important;
-                            background: #0e121a !important;
-                            border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
-                            position: sticky !important;
-                            top: 0 !important;
-                            z-index: 99999 !important;
-                            box-sizing: border-box !important;
-                            height: 60px !important;
-                            width: 100% !important;
-                        }
-                        .mobile-header-title {
-                            font-weight: 800 !important;
-                            font-size: 1.15em !important;
-                            color: #fff !important;
-                            margin: 0 !important;
-                            text-align: center !important;
-                            flex-grow: 1 !important;
-                            overflow: hidden !important;
-                            text-overflow: ellipsis !important;
-                            white-space: nowrap !important;
-                            padding: 0 10px !important;
-                        }
-                        .mobile-btn-back {
-                            background: transparent !important;
-                            border: none !important;
-                            color: #00e5ff !important;
-                            font-size: 1em !important;
-                            font-weight: 700 !important;
-                            cursor: pointer !important;
-                            display: inline-flex !important;
-                            align-items: center !important;
-                            gap: 4px !important;
-                            padding: 8px 12px !important;
-                            border-radius: 8px !important;
-                        }
-                        .mobile-btn-back:active {
-                            background: rgba(0, 229, 255, 0.1) !important;
-                        }
-                        .mobile-btn-share {
-                            background: rgba(0, 229, 255, 0.1) !important;
-                            border: 1px solid rgba(0, 229, 255, 0.2) !important;
-                            color: #00e5ff !important;
-                            font-size: 0.95em !important;
-                            cursor: pointer !important;
-                            display: inline-flex !important;
-                            align-items: center !important;
-                            justify-content: center !important;
-                            width: 38px !important;
-                            height: 38px !important;
-                            border-radius: 50% !important;
-                            padding: 0 !important;
-                        }
-                        .mobile-btn-share:active {
-                            background: rgba(0, 229, 255, 0.2) !important;
-                        }
-                        .mobile-card {
-                            background: rgba(255, 255, 255, 0.03) !important;
-                            border: 1px solid rgba(255, 255, 255, 0.06) !important;
-                            border-radius: 14px !important;
-                            padding: 20px !important;
-                            margin-bottom: 18px !important;
-                            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3) !important;
-                            width: 100% !important;
-                        }
-                        .mobile-step-card {
-                            background: rgba(255, 255, 255, 0.03) !important;
-                            border: 1px solid rgba(255, 255, 255, 0.06) !important;
-                            border-left: 4px solid #00e5ff !important;
-                            border-radius: 14px !important;
-                            padding: 20px !important;
-                            margin-bottom: 18px !important;
-                            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3) !important;
-                            width: 100% !important;
-                        }
-                        .mobile-step-number {
-                            font-size: 0.8em !important;
-                            font-weight: 800 !important;
-                            color: #00e5ff !important;
-                            text-transform: uppercase !important;
-                            letter-spacing: 1.5px !important;
-                            margin-bottom: 8px !important;
-                            display: block !important;
-                        }
-                        .mobile-step-title {
-                            font-size: 1.3em !important;
-                            font-weight: 800 !important;
-                            color: #ffffff !important;
-                            margin: 0 0 12px 0 !important;
-                            line-height: 1.3 !important;
-                        }
-                        .mobile-step-text {
-                            font-size: 1.05em !important;
-                            color: rgba(255, 255, 255, 0.9) !important;
-                            line-height: 1.65 !important;
-                            margin: 0 0 12px 0 !important;
-                            word-wrap: break-word !important;
-                            white-space: pre-wrap !important;
-                        }
-                        .mobile-image-card {
-                            border: 1px solid rgba(255, 255, 255, 0.06) !important;
-                            border-radius: 10px !important;
-                            overflow: hidden !important;
-                            background: rgba(0, 0, 0, 0.35) !important;
-                            margin-top: 14px !important;
-                            display: flex !important;
-                            justify-content: center !important;
-                            align-items: center !important;
-                            width: 100% !important;
-                            cursor: zoom-in !important;
-                        }
-                        .mobile-image {
-                            max-width: 100% !important;
-                            height: auto !important;
-                            display: block !important;
-                            object-fit: contain !important;
-                            max-height: 280px !important;
-                            padding: 10px !important;
-                        }
-                        .mobile-video-btn {
-                            display: inline-flex !important;
-                            align-items: center !important;
-                            justify-content: center !important;
-                            gap: 8px !important;
-                            width: 100% !important;
-                            padding: 14px !important;
-                            font-weight: 700 !important;
-                            font-size: 1em !important;
-                            color: #00e5ff !important;
-                            background: rgba(0, 229, 255, 0.08) !important;
-                            border: 1px solid rgba(0, 229, 255, 0.3) !important;
-                            border-radius: 8px !important;
-                            text-decoration: none !important;
-                            margin: 10px 0 18px 0 !important;
-                            transition: background 0.2s, transform 0.1s !important;
-                        }
-                        .mobile-video-btn:active {
-                            background: rgba(0, 229, 255, 0.15) !important;
-                            transform: scale(0.98) !important;
-                        }
-                        .mobile-support-bar {
-                            position: fixed !important;
-                            bottom: 0 !important;
-                            left: 0 !important;
-                            width: 100% !important;
-                            padding: 14px 16px !important;
-                            background: #0e121a !important;
-                            border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
-                            display: flex !important;
-                            align-items: center !important;
-                            justify-content: space-between !important;
-                            z-index: 999999 !important;
-                            box-shadow: 0 -8px 24px rgba(0,0,0,0.5) !important;
-                        }
-                        .mobile-support-text-wrap {
-                            display: flex !important;
-                            flex-direction: column !important;
-                            gap: 2px !important;
-                        }
-                        .mobile-support-lbl {
-                            font-size: 0.8em !important;
-                            color: rgba(255,255,255,0.4) !important;
-                            font-weight: 600 !important;
-                            text-transform: uppercase !important;
-                            letter-spacing: 0.5px !important;
-                        }
-                        .mobile-support-val {
-                            font-size: 0.95em !important;
-                            color: #fff !important;
-                            font-weight: 700 !important;
-                        }
-                        .mobile-tg-btn {
-                            background: #0088cc !important;
-                            color: #ffffff !important;
-                            border: none !important;
-                            padding: 10px 18px !important;
-                            border-radius: 8px !important;
-                            font-weight: 700 !important;
-                            font-size: 0.95em !important;
-                            text-decoration: none !important;
-                            display: inline-flex !important;
-                            align-items: center !important;
-                            gap: 6px !important;
-                        }
-                        .mobile-tg-btn:active {
-                            opacity: 0.85 !important;
-                        }
-                        .mobile-lightbox {
-                            position: fixed !important;
-                            top: 0 !important;
-                            left: 0 !important;
-                            width: 100% !important;
-                            height: 100% !important;
-                            background: rgba(3, 5, 8, 0.99) !important;
-                            z-index: 9999999 !important;
-                            display: none !important;
-                            align-items: center !important;
-                            justify-content: center !important;
-                            padding: 10px !important;
-                        }
-                        .mobile-lightbox-img {
-                            max-width: 100% !important;
-                            max-height: 85% !important;
-                            object-fit: contain !important;
-                            border-radius: 6px !important;
-                            box-shadow: 0 8px 32px rgba(0,0,0,0.6) !important;
-                        }
-                        .mobile-lightbox-close {
-                            position: absolute !important;
-                            top: 20px !important;
-                            right: 20px !important;
-                            color: #fff !important;
-                            font-size: 28px !important;
-                            font-weight: bold !important;
-                            cursor: pointer !important;
-                            width: 44px !important;
-                            height: 44px !important;
-                            display: flex !important;
-                            align-items: center !important;
-                            justify-content: center !important;
-                            background: rgba(255,255,255,0.1) !important;
-                            border-radius: 50% !important;
-                        }
-                        .mobile-list-title {
-                            font-size: 1.4em !important;
-                            font-weight: 800 !important;
-                            margin: 20px 0 16px 0 !important;
-                            border-left: 4px solid #00e5ff !important;
-                            padding-left: 10px !important;
-                            color: #fff !important;
-                            text-transform: uppercase !important;
-                            letter-spacing: 0.5px !important;
-                        }
-                        .mobile-list-card {
-                            display: flex !important;
-                            justify-content: space-between !important;
-                            align-items: center !important;
-                            background: rgba(255, 255, 255, 0.02) !important;
-                            border: 1px solid rgba(255, 255, 255, 0.05) !important;
-                            border-radius: 14px !important;
-                            padding: 16px 20px !important;
-                            margin-bottom: 12px !important;
-                            cursor: pointer !important;
-                            text-decoration: none !important;
-                            width: 100% !important;
-                        }
-                        .mobile-list-card:active {
-                            background: rgba(255, 255, 255, 0.06) !important;
-                        }
-                        .mobile-list-card-title {
-                            font-weight: 700 !important;
-                            font-size: 1.1em !important;
-                            color: #fff !important;
-                            line-height: 1.3 !important;
-                            margin-bottom: 6px !important;
-                        }
-                        .mobile-list-card-subtitle {
-                            font-size: 0.85em !important;
-                            color: rgba(255,255,255,0.45) !important;
-                        }
-                    `);
-                $('head').append(styleTag);
+            // Apply saved theme preference on boot
+            var savedTheme = localStorage.getItem('mobile-theme') || 'dark';
+            if (savedTheme === 'light') {
+                $('body').addClass('light-theme');
+            } else {
+                $('body').removeClass('light-theme');
             }
 
             // Clear TV elements
@@ -4323,7 +4130,6 @@
             
             window.loadPortalConfig(function() {
                 var config = window.portal_config || {};
-                var instList = config.instructions || [];
                 
                 var getQueryParam = function(name) {
                     var match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
@@ -4331,62 +4137,307 @@
                 };
                 
                 var activeInstId = getQueryParam('inst');
-                var activeInst = null;
+                var activeTab = getQueryParam('tab');
+                
                 if (activeInstId) {
-                    activeInst = instList.find(function(i) { return i.id === activeInstId; });
+                    mobileCurrentTab = 'instructions';
+                    mobileActiveInstId = activeInstId;
+                } else if (activeTab) {
+                    mobileCurrentTab = activeTab;
+                    mobileActiveInstId = null;
+                } else {
+                    mobileCurrentTab = 'main';
+                    mobileActiveInstId = null;
                 }
                 
-                if (activeInst) {
-                    renderMobileSingleInstruction(activeInst, config);
-                } else {
-                    renderMobileInstructionsList(instList, config);
-                }
+                renderMobileContent();
             });
+        }
+
+        function renderMobileNavBar() {
+            $('.mobile-nav-bar').remove();
+            var nav = $(
+                '<div class="mobile-nav-bar">' +
+                    '<a class="mobile-nav-item' + (mobileCurrentTab === 'main' ? ' active' : '') + '" data-tab="main">' +
+                        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>' +
+                        'Главная' +
+                    '</a>' +
+                    '<a class="mobile-nav-item' + (mobileCurrentTab === 'shop' ? ' active' : '') + '" data-tab="shop">' +
+                        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>' +
+                        'Магазин' +
+                    '</a>' +
+                    '<a class="mobile-nav-item' + (mobileCurrentTab === 'instructions' ? ' active' : '') + '" data-tab="instructions">' +
+                        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20M4 19.5A2.5 2.5 0 0 0 6.5 22H20M4 19.5V3.5A2.5 2.5 0 0 1 6.5 1h13.5v16H6.5a2.5 2.5 0 0 0-2.5 2.5z"/></svg>' +
+                        'Инструкции' +
+                    '</a>' +
+                '</div>'
+            );
+            $('body').append(nav);
+            
+            nav.find('.mobile-nav-item').on('click', function(e) {
+                e.preventDefault();
+                var tab = $(this).attr('data-tab');
+                mobileCurrentTab = tab;
+                mobileActiveInstId = null;
+                
+                var newUrl = window.location.origin + window.location.pathname + '?mobile=1&tab=' + tab;
+                window.history.pushState({}, '', newUrl);
+                
+                renderMobileContent();
+            });
+        }
+
+        function renderMobileHeader(titleText, showBack, onBackClick, showShare, shareUrl) {
+            $('.mobile-header').remove();
+            
+            var backBtnHtml = '';
+            if (showBack) {
+                backBtnHtml = 
+                    '<button class="mobile-btn-back" id="mobile-header-back-btn">' +
+                        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" style="width:1.1em;height:1.1em;"><path d="M15 18l-6-6 6-6"/></svg>' +
+                        'Назад' +
+                    '</button>';
+            } else {
+                backBtnHtml = '<div style="width:40px;height:40px;display:flex;align-items:center;justify-content:center;"><img src="app_logo.png?v=2" style="width:28px;height:28px;border-radius:6px;background:#fff;padding:2px;border:1px solid rgba(0,0,0,0.05);"></div>';
+            }
+            
+            var shareBtnHtml = '';
+            if (showShare) {
+                shareBtnHtml = 
+                    '<button class="mobile-btn-share" id="mobile-header-share-btn" title="Поделиться">' +
+                        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:1.2em;height:1.2em;"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13"/></svg>' +
+                    '</button>';
+            } else {
+                shareBtnHtml = '<div style="width:38px;"></div>';
+            }
+            
+            var header = $(
+                '<div class="mobile-header">' +
+                    backBtnHtml +
+                    '<h1 class="mobile-header-title">' + escapeHtml(titleText) + '</h1>' +
+                    '<div style="display:flex; align-items:center; gap:8px;">' +
+                        '<button class="mobile-btn-theme" id="mobile-header-theme-btn" title="Сменить тему">' +
+                            getThemeIconSvg() +
+                        '</button>' +
+                        shareBtnHtml +
+                    '</div>' +
+                '</div>'
+            );
+            $('body').prepend(header);
+            
+            if (showBack) {
+                $('#mobile-header-back-btn').on('click', function() {
+                    if (onBackClick) onBackClick();
+                });
+            }
+            
+            if (showShare) {
+                $('#mobile-header-share-btn').on('click', function() {
+                    var url = shareUrl || window.location.href;
+                    if (navigator.share) {
+                        navigator.share({
+                            title: titleText,
+                            url: url
+                        }).catch(function(err) {});
+                    } else {
+                        var tempInput = $('<input>');
+                        $('body').append(tempInput);
+                        tempInput.val(url).select();
+                        document.execCommand('copy');
+                        tempInput.remove();
+                        alert('Ссылка скопирована в буфер обмена!');
+                    }
+                });
+            }
+            
+            $('#mobile-header-theme-btn').on('click', function() {
+                var currentTheme = $('body').hasClass('light-theme') ? 'light' : 'dark';
+                if (currentTheme === 'light') {
+                    $('body').removeClass('light-theme');
+                    localStorage.setItem('mobile-theme', 'dark');
+                } else {
+                    $('body').addClass('light-theme');
+                    localStorage.setItem('mobile-theme', 'light');
+                }
+                $(this).html(getThemeIconSvg());
+            });
+        }
+        
+        function getThemeIconSvg() {
+            var isLight = $('body').hasClass('light-theme');
+            if (isLight) {
+                return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:1.25em;height:1.25em;"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+            } else {
+                return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:1.25em;height:1.25em;"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>';
+            }
+        }
+
+        function renderMobileContent() {
+            var container = $('.mobile-container');
+            container.empty();
+            $('.mobile-support-bar').remove();
+            
+            renderMobileNavBar();
+            
+            var config = window.portal_config || {};
+            
+            if (mobileCurrentTab === 'main') {
+                renderMobileMainTab(container, config);
+            } else if (mobileCurrentTab === 'shop') {
+                renderMobileShopTab(container, config);
+            } else if (mobileCurrentTab === 'instructions') {
+                if (mobileActiveInstId) {
+                    var instList = config.instructions || [];
+                    var activeInst = instList.find(function(i) { return i.id === mobileActiveInstId; });
+                    if (activeInst) {
+                        renderMobileSingleInstruction(activeInst, config);
+                        return;
+                    }
+                }
+                renderMobileInstructionsList(container, config);
+            }
+        }
+
+        function renderMobileMainTab(container, config) {
+            renderMobileHeader('TV SHOP', false, null, false);
+            
+            var promo = config.promo || { title: 'Добро пожаловать!', desc: 'Качественная настройка и поддержка вашего Android Smart TV и приставок.', badge: 'Акция' };
+            var promoHtml = 
+                '<div class="mobile-card" style="background:linear-gradient(135deg, rgba(0,229,255,0.12) 0%, var(--mobile-card-bg) 100%) !important; border: 1px solid rgba(0,229,255,0.2) !important;">' +
+                    '<div class="mobile-step-number" style="color:var(--mobile-accent) !important; margin-bottom:4px;">' + escapeHtml(promo.badge || 'Промо') + '</div>' +
+                    '<h2 style="font-size:1.35em; font-weight:800; color:var(--mobile-text); margin-bottom:8px;">' + escapeHtml(promo.title) + '</h2>' +
+                    '<p style="font-size:0.98em; line-height:1.5; color:var(--mobile-text-secondary); margin:0;">' + escapeHtml(promo.desc) + '</p>' +
+                '</div>';
+            container.append(promoHtml);
+            
+            var supportText = config.supportText || 'Если у вас возникли сложности с настройкой оборудования или вы хотите приобрести подписку, напишите нашему менеджеру.';
+            var tgContact = config.supportTg || '@android_tv_shop';
+            var tgUrl = 'https://t.me/' + tgContact.replace('@', '');
+            var supportHtml = 
+                '<div class="mobile-card" style="display:flex; flex-direction:column; gap:12px;">' +
+                    '<h2 style="font-size:1.25em; font-weight:800; color:var(--mobile-text); display:flex; align-items:center; gap:8px;">📞 Техподдержка</h2>' +
+                    '<p style="font-size:0.95em; line-height:1.5; color:var(--mobile-text-secondary); margin:0;">' + escapeHtml(supportText) + '</p>' +
+                    '<a href="' + tgUrl + '" target="_blank" class="mobile-tg-btn" style="align-self:stretch; justify-content:center; margin-top:4px;">' +
+                        '<svg viewBox="0 0 24 24" fill="currentColor" style="width:1.2em;height:1.2em;margin-right:4px;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.2-.08-.06-.19-.04-.27-.02-.12.02-1.96 1.24-5.52 3.64-.52.36-.99.53-1.41.52-.46-.01-1.35-.26-2.01-.48-.81-.27-1.46-.42-1.4-.88.03-.24.36-.49.99-.75 3.87-1.68 6.45-2.79 7.74-3.33 3.68-1.54 4.44-1.81 4.94-1.82.11 0 .36.03.52.16.14.11.18.26.19.38 0 .1.01.22 0 .33z"/></svg>' +
+                        'Написать в Telegram' +
+                    '</a>' +
+                '</div>';
+            container.append(supportHtml);
+            
+            container.append('<h2 class="mobile-list-title">Новости и обновления</h2>');
+            var newsList = config.news || [];
+            if (newsList.length === 0) {
+                container.append('<div style="text-align:center; padding:20px; color:var(--mobile-text-muted);">Новостей пока нет</div>');
+            } else {
+                newsList.forEach(function(item) {
+                    var newsCard = $(
+                        '<div class="mobile-card" style="padding:16px; margin-bottom:12px; cursor:pointer;">' +
+                            '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">' +
+                                '<span style="font-size:0.8em; font-weight:700; color:var(--mobile-text-muted);">' + escapeHtml(item.date) + '</span>' +
+                                '<span class="mobile-step-number" style="margin:0 !important; font-size:0.8em !important;">Подробнее</span>' +
+                            '</div>' +
+                            '<h3 style="font-size:1.15em; font-weight:700; color:var(--mobile-text); margin:0 0 6px 0; line-height:1.3;">' + escapeHtml(item.title) + '</h3>' +
+                            '<p class="news-body-collapsed" style="font-size:0.96em; color:var(--mobile-text-secondary); line-height:1.5; margin:0; overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical;">' +
+                                escapeHtml(item.desc) +
+                            '</p>' +
+                        '</div>'
+                    );
+                    container.append(newsCard);
+                    
+                    newsCard.on('click', function() {
+                        var p = $(this).find('p');
+                        var btn = $(this).find('.mobile-step-number');
+                        if (p.css('-webkit-line-clamp') === '3') {
+                            p.css({
+                                '-webkit-line-clamp': 'initial',
+                                'display': 'block'
+                            });
+                            btn.text('Свернуть');
+                        } else {
+                            p.css({
+                                '-webkit-line-clamp': '3',
+                                'display': '-webkit-box'
+                            });
+                            btn.text('Подробнее');
+                        }
+                    });
+                });
+            }
+        }
+
+        function renderMobileShopTab(container, config) {
+            renderMobileHeader('Магазин', false, null, false);
+            
+            var supportTg = config.supportTg || '@android_tv_shop';
+            var tgUrl = 'https://t.me/' + supportTg.replace('@', '');
+            
+            var shopHtml = 
+                '<div class="mobile-card" style="text-align:center; padding:36px 20px; display:flex; flex-direction:column; align-items:center; gap:20px;">' +
+                    '<div style="width:72px; height:72px; background:var(--mobile-accent-bg); border-radius:50%; display:flex; align-items:center; justify-content:center; color:var(--mobile-accent);">' +
+                        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="width:32px;height:32px;"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>' +
+                    '</div>' +
+                    '<div>' +
+                        '<h2 style="font-size:1.35em; font-weight:800; color:var(--mobile-text); margin-bottom:8px;">Магазин в Telegram</h2>' +
+                        '<p style="font-size:0.98em; line-height:1.6; color:var(--mobile-text-secondary); margin:0;">' +
+                            'Каталог оборудования, ТВ-приставок и подписок временно перенесен в наш официальный Telegram. Перейдите по кнопке ниже, чтобы посмотреть ассортимент и оформить заказ напрямую у менеджера.' +
+                        '</p>' +
+                    '</div>' +
+                    '<a href="' + tgUrl + '" target="_blank" class="mobile-tg-btn" style="align-self:stretch; justify-content:center; padding:12px; margin-top:6px;">' +
+                        '<svg viewBox="0 0 24 24" fill="currentColor" style="width:1.2em;height:1.2em;margin-right:4px;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.2-.08-.06-.19-.04-.27-.02-.12.02-1.96 1.24-5.52 3.64-.52.36-.99.53-1.41.52-.46-.01-1.35-.26-2.01-.48-.81-.27-1.46-.42-1.4-.88.03-.24.36-.49.99-.75 3.87-1.68 6.45-2.79 7.74-3.33 3.68-1.54 4.44-1.81 4.94-1.82.11 0 .36.03.52.16.14.11.18.26.19.38 0 .1.01.22 0 .33z"/></svg>' +
+                        'Перейти в Telegram-магазин' +
+                    '</a>' +
+                '</div>';
+            container.append(shopHtml);
+        }
+
+        function renderMobileInstructionsList(container, config) {
+            renderMobileHeader('База инструкций', false, null, false);
+            
+            container.append('<h2 class="mobile-list-title">Выберите тему</h2>');
+            
+            var instList = config.instructions || [];
+            if (instList.length === 0) {
+                container.append('<div style="text-align:center; padding:40px; color:var(--mobile-text-muted);">Список тем пуст</div>');
+            } else {
+                instList.forEach(function(inst) {
+                    var isSingle = inst.type === 'single';
+                    var countText = isSingle ? 'Одностраничная памятка' : ('Инструкция • шагов: ' + (inst.steps ? inst.steps.length : 0));
+                    
+                    var card = $(
+                        '<div class="mobile-list-card" data-id="' + escapeHtml(inst.id) + '">' +
+                            '<div>' +
+                                '<div class="mobile-list-card-title">' + escapeHtml(inst.title) + '</div>' +
+                                '<div class="mobile-list-card-subtitle">' + countText + '</div>' +
+                            '</div>' +
+                            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" style="width:1.2em;height:1.2em;color:var(--mobile-accent);"><path d="M9 18l6-6-6-6"/></svg>' +
+                        '</div>'
+                    );
+                    container.append(card);
+                });
+                
+                container.find('.mobile-list-card').on('click', function() {
+                    var instId = $(this).attr('data-id');
+                    mobileActiveInstId = instId;
+                    
+                    var newUrl = window.location.origin + window.location.pathname + '?mobile=1&tab=instructions&inst=' + instId;
+                    window.history.pushState({}, '', newUrl);
+                    
+                    renderMobileContent();
+                });
+            }
         }
 
         function renderMobileSingleInstruction(inst, config) {
             var container = $('.mobile-container');
             container.empty();
             
-            var header = $(
-                '<div class="mobile-header">' +
-                    '<button class="mobile-btn-back" id="mobile-btn-go-list">' +
-                        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" style="width:1.1em;height:1.1em;"><path d="M15 18l-6-6 6-6"/></svg>' +
-                        'Назад' +
-                    '</button>' +
-                    '<h1 class="mobile-header-title">' + escapeHtml(inst.title) + '</h1>' +
-                    '<button class="mobile-btn-share" id="mobile-btn-share" title="Поделиться">' +
-                        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:1.2em;height:1.2em;"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13"/></svg>' +
-                    '</button>' +
-                '</div>'
-            );
-            $('.mobile-header').remove();
-            $('body').prepend(header);
-            
-            $('#mobile-btn-go-list').on('click', function() {
-                var newUrl = window.location.origin + window.location.pathname + '?mobile=1';
+            var shareUrl = window.location.origin + window.location.pathname + '?inst=' + inst.id;
+            renderMobileHeader(inst.title, true, function() {
+                mobileActiveInstId = null;
+                var newUrl = window.location.origin + window.location.pathname + '?mobile=1&tab=instructions';
                 window.history.pushState({}, '', newUrl);
-                var instList = (window.portal_config || {}).instructions || [];
-                renderMobileInstructionsList(instList, window.portal_config || {});
-            });
-            
-            $('#mobile-btn-share').on('click', function() {
-                var shareUrl = window.location.href;
-                if (navigator.share) {
-                    navigator.share({
-                        title: inst.title,
-                        text: 'Инструкция: ' + inst.title,
-                        url: shareUrl
-                    }).catch(function(err) {});
-                } else {
-                    var tempInput = $('<input>');
-                    $('body').append(tempInput);
-                    tempInput.val(shareUrl).select();
-                    document.execCommand('copy');
-                    tempInput.remove();
-                    alert('Ссылка скопирована в буфер обмена!');
-                }
-            });
+                renderMobileContent();
+            }, true, shareUrl);
             
             var isSingle = inst.type === 'single';
             
@@ -4415,8 +4466,8 @@
                 
                 var card = $(
                     '<div class="mobile-card">' +
-                        '<h2 style="font-size:1.25em; font-weight:800; color:#00e5ff; margin:0 0 12px 0;">' + escapeHtml(step.title) + '</h2>' +
-                        '<div class="mobile-step-text" style="font-size:1.02em; color:rgba(255,255,255,0.9);">' + textFormatted + '</div>' +
+                        '<h2 style="font-size:1.25em; font-weight:800; color:var(--mobile-accent); margin:0 0 12px 0;">' + escapeHtml(step.title) + '</h2>' +
+                        '<div class="mobile-step-text">' + textFormatted + '</div>' +
                         videoBtnHtml +
                         imageHtml +
                     '</div>'
@@ -4449,13 +4500,27 @@
                     
                     var stepCard = $(
                         '<div class="mobile-step-card">' +
-                            '<div class="mobile-step-number">Шаг ' + (idx + 1) + ' из ' + steps.length + '</div>' +
+                            '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">' +
+                                '<div class="mobile-step-number">Шаг ' + (idx + 1) + ' из ' + steps.length + '</div>' +
+                                '<label style="display:flex; align-items:center; gap:6px; font-size:0.82em; font-weight:700; color:var(--mobile-text-muted); cursor:pointer;">' +
+                                    '<input type="checkbox" class="mobile-step-check" style="accent-color:var(--mobile-accent); width:16px; height:16px;"> Выполнено' +
+                                '</label>' +
+                            '</div>' +
                             '<h3 class="mobile-step-title">' + escapeHtml(step.title) + '</h3>' +
                             '<div class="mobile-step-text">' + textFormatted + '</div>' +
                             imageHtml +
                         '</div>'
                     );
                     container.append(stepCard);
+                });
+                
+                container.find('.mobile-step-check').on('change', function() {
+                    var card = $(this).closest('.mobile-step-card');
+                    if ($(this).is(':checked')) {
+                        card.css('opacity', '0.6');
+                    } else {
+                        card.css('opacity', '1.0');
+                    }
                 });
             }
             
@@ -4464,55 +4529,6 @@
                 $('.mobile-lightbox-img').attr('src', src);
                 $('.mobile-lightbox').fadeIn(200);
             });
-            
-            renderMobileSupportBar(config);
-        }
-
-        function renderMobileInstructionsList(instList, config) {
-            var container = $('.mobile-container');
-            container.empty();
-            
-            var header = $(
-                '<div class="mobile-header">' +
-                    '<div style="width:40px;"></div>' +
-                    '<h1 class="mobile-header-title">База инструкций</h1>' +
-                    '<div style="width:40px;"></div>' +
-                '</div>'
-            );
-            $('.mobile-header').remove();
-            $('body').prepend(header);
-            
-            container.append('<h2 class="mobile-list-title">Выберите тему</h2>');
-            
-            if (instList.length === 0) {
-                container.append('<div style="text-align:center; padding:40px; color:rgba(255,255,255,0.4);">Список тем пуст</div>');
-            } else {
-                instList.forEach(function(inst) {
-                    var isSingle = inst.type === 'single';
-                    var countText = isSingle ? 'Одностраничная памятка' : ('Инструкция • шагов: ' + (inst.steps ? inst.steps.length : 0));
-                    
-                    var card = $(
-                        '<div class="mobile-list-card" data-id="' + escapeHtml(inst.id) + '">' +
-                            '<div>' +
-                                '<div class="mobile-list-card-title">' + escapeHtml(inst.title) + '</div>' +
-                                '<div class="mobile-list-card-subtitle">' + countText + '</div>' +
-                            '</div>' +
-                            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" style="width:1.2em;height:1.2em;color:#00e5ff;"><path d="M9 18l6-6-6-6"/></svg>' +
-                        '</div>'
-                    );
-                    container.append(card);
-                });
-                
-                container.find('.mobile-list-card').on('click', function() {
-                    var instId = $(this).attr('data-id');
-                    var newUrl = window.location.origin + window.location.pathname + '?inst=' + instId;
-                    window.history.pushState({}, '', newUrl);
-                    var inst = instList.find(function(i) { return i.id === instId; });
-                    if (inst) {
-                        renderMobileSingleInstruction(inst, config);
-                    }
-                });
-            }
             
             renderMobileSupportBar(config);
         }
