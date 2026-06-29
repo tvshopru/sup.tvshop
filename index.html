@@ -1722,6 +1722,24 @@
             return instructions;
         }
 
+        function loadQrLibrary(callback) {
+            if (window.QRCode) {
+                callback();
+                return;
+            }
+            console.log('QRCode', 'Loading library dynamically...');
+            var script = document.createElement('script');
+            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js';
+            script.onload = function() {
+                console.log('QRCode', 'Library loaded successfully.');
+                callback();
+            };
+            script.onerror = function() {
+                console.error('QRCode', 'Failed to load QR library from CDN.');
+            };
+            document.head.appendChild(script);
+        }
+
         function getRutubeEmbedUrl(url) {
             if (!url) return '';
             if (url.indexOf('play/embed') !== -1) return url;
