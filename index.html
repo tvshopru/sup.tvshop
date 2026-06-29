@@ -2218,11 +2218,55 @@
                         if (card === 'support') {
                             Lampa.Noty.show('Свяжитесь с нами в Telegram: ' + config.supportTg);
                         } else if (card === 'promo') {
-                            Lampa.Noty.show('Для подключения Premium обратитесь к ' + config.supportTg);
+                            _this.showPromoModal();
                         } else if (card.indexOf('news-') === 0) {
                             var title = $(this).find('.news-item-title').text();
                             Lampa.Noty.show(title);
                         }
+                    });
+                };
+
+                this.showPromoModal = function() {
+                    var promoUrl = 'https://clck.ru/3UPTFy';
+                    var qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=' + encodeURIComponent(promoUrl);
+
+                    var modalHtml = $(
+                        '<div class="promo-tv-modal" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(9, 11, 14, 0.96); z-index: 999999; display: flex; align-items: center; justify-content: center; animation: admin-fade-in 0.3s ease-out;">' +
+                            '<div class="dashboard-card" style="width: 580px; padding: 2.2em; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.2em; box-shadow: 0 10px 40px rgba(0,0,0,0.6); border-radius: 12px; background: #0e121a; border: 1px solid rgba(255,255,255,0.08);">' +
+                                '<h2 style="font-size: 1.8em; font-weight: 700; color: #fff; margin: 0; border-bottom: 2px solid rgba(255,255,255,0.08); padding-bottom: 0.5em; width: 100%;">Премиум Телевидение</h2>' +
+                                '<p style="color: rgba(255,255,255,0.85); font-size: 1.1em; line-height: 1.55; margin: 0; text-align: left;">' +
+                                    'Для подключения Premium-телевидения (более 1500 каналов, HD/4K качество, архив передач) выполните следующие шаги:<br><br>' +
+                                    '1. Отсканируйте QR-код ниже камерой вашего смартфона.<br>' +
+                                    '2. Зарегистрируйтесь на открывшемся сайте партнера.<br>' +
+                                    '3. Оплатите подписку и получите настройки для просмотра.' +
+                                '</p>' +
+                                '<div style="background: #fff; padding: 0.8em; border-radius: 0.8em; width: 180px; height: 180px; display: flex; align-items: center; justify-content: center; margin: 0.3em 0;">' +
+                                    '<img src="' + qrUrl + '" style="width: 100%; height: 100%; object-fit: contain;">' +
+                                '</div>' +
+                                '<button class="modal-close-btn selector admin-pc-btn admin-pc-btn-primary" style="width: 100%; padding: 0.8em; font-size: 1.1em; font-weight: 700; border-radius: 0.5em;">Назад к порталу</button>' +
+                            '</div>' +
+                        '</div>'
+                    );
+
+                    $('body').append(modalHtml);
+
+                    var last_active_context = Lampa.Controller.enabled().name;
+                    Lampa.Controller.add('promo_modal', {
+                        toggle: function toggle() {
+                            Lampa.Controller.collectionSet(modalHtml);
+                            Lampa.Controller.collectionFocus(modalHtml.find('.selector')[0], modalHtml);
+                        },
+                        back: function back() {
+                            modalHtml.remove();
+                            Lampa.Controller.toggle(last_active_context);
+                        }
+                    });
+
+                    Lampa.Controller.toggle('promo_modal');
+
+                    modalHtml.find('.modal-close-btn').on('hover:enter click', function() {
+                        modalHtml.remove();
+                        Lampa.Controller.toggle(last_active_context);
                     });
                 };
 
@@ -4341,12 +4385,16 @@
         function renderMobileMainTab(container, config) {
             renderMobileHeader('TV SHOP', false, null, false);
             
-            var promo = config.promo || { title: 'Добро пожаловать!', desc: 'Качественная настройка и поддержка вашего Android Smart TV и приставок.', badge: 'Акция' };
+            var promo = config.promo || { title: 'Добро пожаловать!', text: 'Качественная настройка и поддержка вашего Android Smart TV и приставок.', badge: 'Акция' };
+            var promoText = (promo.text || '').replace(/\n/g, '<br>');
             var promoHtml = 
                 '<div class="mobile-card" style="background:linear-gradient(135deg, rgba(0,229,255,0.12) 0%, var(--mobile-card-bg) 100%) !important; border: 1px solid rgba(0,229,255,0.2) !important;">' +
                     '<div class="mobile-step-number" style="color:var(--mobile-accent) !important; margin-bottom:4px;">' + escapeHtml(promo.badge || 'Промо') + '</div>' +
                     '<h2 style="font-size:1.35em; font-weight:800; color:var(--mobile-text); margin-bottom:8px;">' + escapeHtml(promo.title) + '</h2>' +
-                    '<p style="font-size:0.98em; line-height:1.5; color:var(--mobile-text-secondary); margin:0;">' + escapeHtml(promo.desc) + '</p>' +
+                    '<p style="font-size:0.98em; line-height:1.5; color:var(--mobile-text-secondary); margin:0;">' + promoText + '</p>' +
+                    '<a href="https://clck.ru/3UPTFy" target="_blank" class="mobile-video-btn" style="margin-top:14px; margin-bottom:0 !important;">' +
+                        'Перейти к регистрации' +
+                    '</a>' +
                 '</div>';
             container.append(promoHtml);
             
