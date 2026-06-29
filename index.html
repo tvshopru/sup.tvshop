@@ -2066,19 +2066,33 @@
                             '</div>';
                     }
 
+                    var qr_block_html = 
+                        '<div style="display:flex; align-items:center; gap:1.2em; margin-top:1em; margin-bottom:1em; background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.05); padding:10px 14px; border-radius:8px; box-sizing:border-box; width:100%;">' +
+                            '<div id="instructions-step-qrcode" style="width:72px; height:72px; background:#fff; padding:4px; border-radius:6px; box-sizing:border-box; display:flex; align-items:center; justify-content:center; flex-shrink:0;"></div>' +
+                            '<div style="display:flex; flex-direction:column; gap:0.2em;">' +
+                                '<div style="color:#00e5ff; font-weight:700; font-size:0.85em; text-transform:uppercase; letter-spacing:0.5px;">Инструкция на смартфоне</div>' +
+                                '<div style="color:rgba(255,255,255,0.5); font-size:0.8em; line-height:1.3; font-weight:500;">Отсканируйте QR-код камерой телефона, чтобы читать инструкцию с экрана смартфона.</div>' +
+                            '</div>' +
+                        '</div>';
+
                     var step_inner_html = 
                         '<div class="instructions-left" style="width: ' + leftWidth + '; height: 100%;">' +
                             '<div class="dashboard-card instructions-card" style="height: 100%; display: flex; flex-direction: column; justify-content: space-between;">' +
-                                '<div style="display:flex; justify-content:space-between; align-items:center;">' +
-                                    stepBadgeHtml +
-                                    '<div style="color:rgba(255,255,255,0.4); font-size:0.9em; font-weight:bold;">' + escapeHtml(inst.title) + '</div>' +
+                                '<div>' +
+                                    '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 0.6em;">' +
+                                        stepBadgeHtml +
+                                        '<div style="color:rgba(255,255,255,0.4); font-size:0.9em; font-weight:bold;">' + escapeHtml(inst.title) + '</div>' +
+                                    '</div>' +
+                                    '<h2 class="instructions-title" style="margin-top:0;">' + escapeHtml(step.title) + '</h2>' +
+                                    '<div class="instructions-text">' + escapeHtml(step.text).replace(/\n/g, '<br>') + '</div>' +
                                 '</div>' +
-                                '<h2 class="instructions-title">' + escapeHtml(step.title) + '</h2>' +
-                                '<div class="instructions-text">' + escapeHtml(step.text).replace(/\n/g, '<br>') + '</div>' +
-                                video_btn_html +
-                                '<div class="instructions-footer-hint">' +
-                                    hintSvg +
-                                    '<span>' + hintText + '</span>' +
+                                '<div>' +
+                                    video_btn_html +
+                                    qr_block_html +
+                                    '<div class="instructions-footer-hint">' +
+                                        hintSvg +
+                                        '<span>' + hintText + '</span>' +
+                                    '</div>' +
                                 '</div>' +
                             '</div>' +
                          '</div>' +
@@ -2087,6 +2101,23 @@
                     html.html(step_inner_html);
 
                     var _this = this;
+
+                    // Generate QR code dynamically
+                    var qrUrl = window.location.origin + window.location.pathname + '?inst=' + inst.id;
+                    loadQrLibrary(function() {
+                        var qrEl = document.getElementById('instructions-step-qrcode');
+                        if (qrEl) {
+                            qrEl.innerHTML = '';
+                            new QRCode(qrEl, {
+                                text: qrUrl,
+                                width: 64,
+                                height: 64,
+                                colorDark : "#000000",
+                                colorLight : "#ffffff",
+                                correctLevel : QRCode.CorrectLevel.M
+                            });
+                        }
+                    });
                     
                     // Bind click/enter to the zoom card specifically
                     if (rightHtml !== '') {
@@ -2563,6 +2594,13 @@
 
         var isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname === '';
         var isAdminMode = (window.location.search.indexOf('admin=') !== -1 || window.location.search.indexOf('manage') !== -1 || window.location.search.indexOf('control') !== -1) && isLocalhost;
+        var isMobileMode = window.location.search.indexOf('inst=') !== -1 || window.location.search.indexOf('mobile') !== -1;
+
+        if (isMobileMode) {
+            $(function() {
+                $('body').addClass('mobile-body').css('background', '');
+            });
+        }
 
         function loadCurrentLampa() {
             var css = 'css/app.css';
@@ -3649,7 +3687,246 @@
             }
         }
 
-        if (isAdminMode) {
+        function initMobileInstructionView() {
+            // Clear TV elements
+            $('body').empty().addClass('mobile-body').css('background', '');
+            
+            var container = $('<div class="mobile-container"></div>');
+            $('body').append(container);
+            
+            var lightbox = $(
+                '<div class="mobile-lightbox">' +
+                    '<span class="mobile-lightbox-close">&times;</span>' +
+                    '<img class="mobile-lightbox-img" src="" alt="Zoomed view">' +
+                '</div>'
+            );
+            $('body').append(lightbox);
+            
+            lightbox.find('.mobile-lightbox-close').on('click', function() {
+                lightbox.fadeOut(200);
+            });
+            
+            window.loadPortalConfig(function() {
+                var config = window.portal_config || {};
+                var instList = config.instructions || [];
+                
+                var getQueryParam = function(name) {
+                    var match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
+                    return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
+                };
+                
+                var activeInstId = getQueryParam('inst');
+                var activeInst = null;
+                if (activeInstId) {
+                    activeInst = instList.find(function(i) { return i.id === activeInstId; });
+                }
+                
+                if (activeInst) {
+                    renderMobileSingleInstruction(activeInst, config);
+                } else {
+                    renderMobileInstructionsList(instList, config);
+                }
+            });
+        }
+
+        function renderMobileSingleInstruction(inst, config) {
+            var container = $('.mobile-container');
+            container.empty();
+            
+            var header = $(
+                '<div class="mobile-header">' +
+                    '<button class="mobile-btn-back" id="mobile-btn-go-list">' +
+                        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" style="width:1.1em;height:1.1em;"><path d="M15 18l-6-6 6-6"/></svg>' +
+                        'Назад' +
+                    '</button>' +
+                    '<h1 class="mobile-header-title">' + escapeHtml(inst.title) + '</h1>' +
+                    '<button class="mobile-btn-share" id="mobile-btn-share" title="Поделиться">' +
+                        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:1.2em;height:1.2em;"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13"/></svg>' +
+                    '</button>' +
+                '</div>'
+            );
+            $('.mobile-header').remove();
+            $('body').prepend(header);
+            
+            $('#mobile-btn-go-list').on('click', function() {
+                var newUrl = window.location.origin + window.location.pathname + '?mobile=1';
+                window.history.pushState({}, '', newUrl);
+                var instList = (window.portal_config || {}).instructions || [];
+                renderMobileInstructionsList(instList, window.portal_config || {});
+            });
+            
+            $('#mobile-btn-share').on('click', function() {
+                var shareUrl = window.location.href;
+                if (navigator.share) {
+                    navigator.share({
+                        title: inst.title,
+                        text: 'Инструкция: ' + inst.title,
+                        url: shareUrl
+                    }).catch(function(err) {});
+                } else {
+                    var tempInput = $('<input>');
+                    $('body').append(tempInput);
+                    tempInput.val(shareUrl).select();
+                    document.execCommand('copy');
+                    tempInput.remove();
+                    alert('Ссылка скопирована в буфер обмена!');
+                }
+            });
+            
+            var isSingle = inst.type === 'single';
+            
+            if (isSingle) {
+                var step = (inst.steps && inst.steps.length > 0) ? inst.steps[0] : { title: inst.title, text: '', imageUrl: 'app_logo.png?v=2' };
+                
+                var videoBtnHtml = '';
+                if (inst.videoUrl) {
+                    videoBtnHtml = 
+                        '<a href="' + escapeHtml(inst.videoUrl) + '" target="_blank" class="mobile-video-btn">' +
+                            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:1.2em;height:1.2em;margin-right:6px;"><polygon points="5 3 19 12 5 21 5 3" fill="currentColor"/></svg>' +
+                            'Открыть видеоинструкцию' +
+                        '</a>';
+                }
+                
+                var imageHtml = '';
+                var hasCustomImage = step.imageUrl && step.imageUrl !== 'app_logo.png' && step.imageUrl !== 'app_logo.png?v=2' && !step.imageUrl.includes('app_logo.png');
+                if (hasCustomImage) {
+                    imageHtml = 
+                        '<div class="mobile-image-card">' +
+                            '<img class="mobile-image" src="' + escapeHtml(step.imageUrl) + '" alt="Иллюстрация">' +
+                        '</div>';
+                }
+                
+                var textFormatted = escapeHtml(step.text).replace(/\n/g, '<br>');
+                
+                var card = $(
+                    '<div class="mobile-card">' +
+                        '<h2 style="font-size:1.25em; font-weight:800; color:#00e5ff; margin:0 0 12px 0;">' + escapeHtml(step.title) + '</h2>' +
+                        '<div class="mobile-step-text" style="font-size:1.02em; color:rgba(255,255,255,0.9);">' + textFormatted + '</div>' +
+                        videoBtnHtml +
+                        imageHtml +
+                    '</div>'
+                );
+                container.append(card);
+                
+            } else {
+                var steps = inst.steps || [];
+                
+                if (inst.videoUrl) {
+                    var videoBtnHtml = 
+                        '<a href="' + escapeHtml(inst.videoUrl) + '" target="_blank" class="mobile-video-btn" style="margin-bottom: 20px;">' +
+                            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:1.2em;height:1.2em;margin-right:6px;"><polygon points="5 3 19 12 5 21 5 3" fill="currentColor"/></svg>' +
+                            'Открыть видеоинструкцию' +
+                        '</a>';
+                    container.append(videoBtnHtml);
+                }
+                
+                steps.forEach(function(step, idx) {
+                    var imageHtml = '';
+                    var hasCustomImage = step.imageUrl && step.imageUrl !== 'app_logo.png' && step.imageUrl !== 'app_logo.png?v=2' && !step.imageUrl.includes('app_logo.png');
+                    if (hasCustomImage) {
+                        imageHtml = 
+                            '<div class="mobile-image-card">' +
+                                '<img class="mobile-image" src="' + escapeHtml(step.imageUrl) + '" alt="Иллюстрация">' +
+                            '</div>';
+                    }
+                    
+                    var textFormatted = escapeHtml(step.text).replace(/\n/g, '<br>');
+                    
+                    var stepCard = $(
+                        '<div class="mobile-step-card">' +
+                            '<div class="mobile-step-number">Шаг ' + (idx + 1) + ' из ' + steps.length + '</div>' +
+                            '<h3 class="mobile-step-title">' + escapeHtml(step.title) + '</h3>' +
+                            '<div class="mobile-step-text">' + textFormatted + '</div>' +
+                            imageHtml +
+                        '</div>'
+                    );
+                    container.append(stepCard);
+                });
+            }
+            
+            container.find('.mobile-image-card').on('click', function() {
+                var src = $(this).find('img').attr('src');
+                $('.mobile-lightbox-img').attr('src', src);
+                $('.mobile-lightbox').fadeIn(200);
+            });
+            
+            renderMobileSupportBar(config);
+        }
+
+        function renderMobileInstructionsList(instList, config) {
+            var container = $('.mobile-container');
+            container.empty();
+            
+            var header = $(
+                '<div class="mobile-header">' +
+                    '<div style="width:40px;"></div>' +
+                    '<h1 class="mobile-header-title">База инструкций</h1>' +
+                    '<div style="width:40px;"></div>' +
+                '</div>'
+            );
+            $('.mobile-header').remove();
+            $('body').prepend(header);
+            
+            container.append('<h2 class="mobile-list-title">Выберите тему</h2>');
+            
+            if (instList.length === 0) {
+                container.append('<div style="text-align:center; padding:40px; color:rgba(255,255,255,0.4);">Список тем пуст</div>');
+            } else {
+                instList.forEach(function(inst) {
+                    var isSingle = inst.type === 'single';
+                    var countText = isSingle ? 'Одностраничная памятка' : ('Инструкция • шагов: ' + (inst.steps ? inst.steps.length : 0));
+                    
+                    var card = $(
+                        '<div class="mobile-list-card" data-id="' + escapeHtml(inst.id) + '">' +
+                            '<div>' +
+                                '<div class="mobile-list-card-title">' + escapeHtml(inst.title) + '</div>' +
+                                '<div class="mobile-list-card-subtitle">' + countText + '</div>' +
+                            '</div>' +
+                            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" style="width:1.2em;height:1.2em;color:#00e5ff;"><path d="M9 18l6-6-6-6"/></svg>' +
+                        '</div>'
+                    );
+                    container.append(card);
+                });
+                
+                container.find('.mobile-list-card').on('click', function() {
+                    var instId = $(this).attr('data-id');
+                    var newUrl = window.location.origin + window.location.pathname + '?inst=' + instId;
+                    window.history.pushState({}, '', newUrl);
+                    var inst = instList.find(function(i) { return i.id === instId; });
+                    if (inst) {
+                        renderMobileSingleInstruction(inst, config);
+                    }
+                });
+            }
+            
+            renderMobileSupportBar(config);
+        }
+
+        function renderMobileSupportBar(config) {
+            $('.mobile-support-bar').remove();
+            var tgContact = config.supportTg || '@android_tv_shop';
+            var tgUrl = 'https://t.me/' + tgContact.replace('@', '');
+            
+            var supportBar = $(
+                '<div class="mobile-support-bar">' +
+                    '<div class="mobile-support-text-wrap">' +
+                        '<span class="mobile-support-lbl">Техническая поддержка</span>' +
+                        '<span class="mobile-support-val">' + escapeHtml(tgContact) + '</span>' +
+                    '</div>' +
+                    '<a href="' + tgUrl + '" target="_blank" class="mobile-tg-btn">' +
+                        '<svg viewBox="0 0 24 24" fill="currentColor" style="width:1.1em;height:1.1em;margin-right:4px;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.2-.08-.06-.19-.04-.27-.02-.12.02-1.96 1.24-5.52 3.64-.52.36-.99.53-1.41.52-.46-.01-1.35-.26-2.01-.48-.81-.27-1.46-.42-1.4-.88.03-.24.36-.49.99-.75 3.87-1.68 6.45-2.79 7.74-3.33 3.68-1.54 4.44-1.81 4.94-1.82.11 0 .36.03.52.16.14.11.18.26.19.38 0 .1.01.22 0 .33z"/></svg>' +
+                        'Telegram' +
+                    '</a>' +
+                '</div>'
+            );
+            $('body').append(supportBar);
+        }
+
+        if (isMobileMode) {
+            $(function() {
+                initMobileInstructionView();
+            });
+        } else if (isAdminMode) {
             $(function() {
                 initPCAdminPanel();
             });
