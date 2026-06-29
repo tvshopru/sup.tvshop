@@ -2122,9 +2122,9 @@
             function CustomMain(object) {
                 var html = $('<div class="dashboard-wrapper" style="width: 100%; height: 100%;"></div>');
                 var active_element = null;
+                var _this = this;
 
                 this.create = function () {
-                    var _this = this;
                     this.activity.loader(true);
                     
                     window.loadPortalConfig(function() {
