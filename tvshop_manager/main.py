@@ -1,9 +1,10 @@
 import os
 import json
+import time
 import asyncio
 import subprocess
 from typing import Set
-from fastapi import FastAPI, Request, HTTPException, Header, Query
+from fastapi import FastAPI, Request, HTTPException, Header, Query, File, UploadFile
 from fastapi.responses import StreamingResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
 
@@ -66,7 +67,7 @@ async def event_generator(request: Request):
 def redirect_to_index():
     return HTMLResponse(content=open(os.path.join(os.path.dirname(__file__), "web", "index.html"), "r", encoding="utf-8").read())
 
-# Verify client-supplied PIN endpoint
+# Verify client PIN
 @app.post("/api/verify")
 def verify_pin(payload: dict):
     _, _, admin_pin = get_paths()
@@ -86,7 +87,6 @@ def get_config(x_admin_pin: str = Header(None)):
     try:
         with open(config_path, "r", encoding="utf-8") as f:
             data = json.load(f)
-            # Remove any residual adminPin from public dictionary
             data.pop("adminPin", None)
             return data
     except Exception as e:
@@ -100,7 +100,6 @@ def save_config(payload: dict, x_admin_pin: str = Header(None)):
     _, config_path, _ = get_paths()
     log_message(f"Saving configuration updates to {config_path}")
     try:
-        # Strip adminPin payload to ensure it never goes public
         payload.pop("adminPin", None)
         with open(config_path, "w", encoding="utf-8") as f:
             json.dump(payload, f, indent=2, ensure_ascii=False)
@@ -108,6 +107,35 @@ def save_config(payload: dict, x_admin_pin: str = Header(None)):
         return {"status": "success"}
     except Exception as e:
         log_message(f"Error saving config: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+# New Endpoint: Handle file upload
+@app.post("/api/upload")
+async def upload_image(file: UploadFile = File(...), x_admin_pin: str = Header(None)):
+    verify_admin_pin(x_admin_pin)
+    
+    repo_path, _, _ = get_paths()
+    img_dir = os.path.join(repo_path, "img")
+    os.makedirs(img_dir, exist_ok=True)
+    
+    # Determine extension
+    ext = ".png"
+    if file.filename:
+        _, file_ext = os.path.splitext(file.filename)
+        if file_ext.lower() in [".png", ".jpg", ".jpeg", ".svg", ".webp", ".gif"]:
+            ext = file_ext.lower()
+            
+    filename = f"upload_{int(time.time() * 1000)}{ext}"
+    dest_path = os.path.join(img_dir, filename)
+    
+    try:
+        content = await file.read()
+        with open(dest_path, "wb") as f:
+            f.write(content)
+        log_message(f"Successfully uploaded and saved image to {dest_path}")
+        return {"path": f"img/{filename}"}
+    except Exception as e:
+        log_message(f"Error saving uploaded image: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/api/git/deploy")
@@ -154,19 +182,21 @@ def perform_git_deploy(repo_path: str) -> bool:
             return False
 
     log_message("--- GIT DEPLOY START ---")
-    if not run_cmd(["git", "add", "config.json"]):
+    
+    # Stage both config and uploaded images folder
+    if not run_cmd(["git", "add", "config.json", "img/"]):
         return False
         
     status_res = subprocess.run(
-        ["git", "status", "--porcelain", "config.json"],
+        ["git", "status", "--porcelain", "config.json", "img/"],
         cwd=repo_path,
         stdout=subprocess.PIPE,
         text=True
     )
     if not status_res.stdout.strip():
-        log_message("No modifications detected in config.json. Nothing to commit.")
+        log_message("No modifications detected in config.json or img/. Nothing to commit.")
     else:
-        if not run_cmd(["git", "commit", "-m", "Update portal configuration via manager application"]):
+        if not run_cmd(["git", "commit", "-m", "Update portal config and images via manager application"]):
             return False
             
     log_message("Fetching and rebasing remote changes...")

@@ -118,6 +118,83 @@ $(document).ready(function() {
     });
 });
 
+// Helper to make any image text input uploadable via file dialog or copy-paste (Ctrl+V)
+function makeImageUploadable(inputElements) {
+    inputElements.each(function() {
+        const input = $(this);
+        if (input.parent('.image-upload-wrapper').length) return; // Already wrapped
+
+        const wrapper = $('<div class="image-upload-wrapper" style="display:flex; gap:10px; align-items:center; width:100%;"></div>');
+        input.wrap(wrapper);
+
+        const uploadBtn = $(
+            '<button type="button" class="btn btn-secondary" style="padding: 10px 15px; font-size: 1.1em; flex-shrink: 0; line-height: 1;" title="Выбрать файл или вставить из буфера (Ctrl+V)">' +
+                '📁' +
+            '</button>'
+        );
+        const fileInput = $('<input type="file" accept="image/*" style="display:none;">');
+
+        input.after(fileInput);
+        input.after(uploadBtn);
+
+        // Click handler to open file selector
+        uploadBtn.on('click', function() {
+            fileInput.click();
+        });
+
+        // File selection handler
+        fileInput.on('change', function() {
+            const file = this.files[0];
+            if (file) {
+                uploadImageFile(file, input);
+            }
+        });
+
+        // Paste clipboard handler (Ctrl+V)
+        input.on('paste', function(e) {
+            const clipboardData = e.clipboardData || e.originalEvent.clipboardData;
+            if (!clipboardData) return;
+            const items = clipboardData.items;
+            for (let i = 0; i < items.length; i++) {
+                const item = items[i];
+                if (item.kind === 'file' && item.type.indexOf('image') !== -1) {
+                    const file = item.getAsFile();
+                    uploadImageFile(file, input);
+                    e.preventDefault();
+                    break;
+                }
+            }
+        });
+    });
+}
+
+// Upload file to FastAPI backend
+function uploadImageFile(file, targetInput) {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    showToast("Загрузка изображения на сервер...", "info");
+    appendLog("Отправка файла: " + (file.name || "изображение_буфера.png") + " (" + file.size + " байт)...");
+
+    $.ajax({
+        url: '/api/upload',
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(response) {
+            targetInput.val(response.path).trigger('change').trigger('input');
+            showToast("Изображение успешно загружено!", "success");
+            appendLog("Изображение загружено и сохранено по пути: " + response.path);
+            gatherValues();
+        },
+        error: function(xhr) {
+            showToast("Ошибка при загрузке изображения!", "error");
+            appendLog("Ошибка загрузки файла на сервер: " + xhr.responseText);
+        }
+    });
+}
+
 // Validate client entered PIN
 function submitLogin() {
     const pin = $('#login-pin-input').val().trim();
@@ -132,7 +209,6 @@ function submitLogin() {
             localStorage.setItem('portal_pin', pin);
             $('#login-overlay').fadeOut(200);
             $('#login-error-msg').hide();
-            // Initialize panel
             startSseLogs();
             loadConfig();
         },
@@ -201,6 +277,10 @@ function populateForm() {
     $('#input-promo-action').val(promo.actionText || '');
     $('#input-promo-image').val(promo.imageUrl || '');
 
+    // Bind uploaders to static fields
+    makeImageUploadable($('#input-support-qr'));
+    makeImageUploadable($('#input-promo-image'));
+
     renderNews();
     renderProducts();
     renderInstructionsList();
@@ -213,15 +293,6 @@ function gatherValues() {
     portalConfig.supportTg = $('#input-support-tg').val();
     portalConfig.supportQrUrl = $('#input-support-qr').val();
     portalConfig.oneSignalAppId = $('#input-onesignal-appid').val();
-    
-    // Update local PIN if changed
-    const newPin = $('#input-admin-pin').val().trim();
-    if (newPin && newPin !== localStorage.getItem('portal_pin')) {
-        // Wait, since adminPin is now stored in manager_config.json, if the user changes it here,
-        // we can let them save it? Actually, let's keep it read-only on the UI or not updated locally,
-        // or just let it update in the localStorage so they can reuse it.
-        // For simplicity, we keep it as display of the current session PIN.
-    }
 
     if (!portalConfig.promo) portalConfig.promo = {};
     portalConfig.promo.badge = $('#input-promo-badge').val();
@@ -361,6 +432,9 @@ function renderProducts() {
         `);
         list.append(card);
     });
+
+    // Make newly rendered product image inputs uploadable
+    makeImageUploadable(list.find('.prod-img-in'));
 
     $('.btn-delete-prod').on('click', function() {
         const idx = parseInt($(this).attr('data-index'));
@@ -594,6 +668,9 @@ function renderStepsList(inst) {
             renderStepsList(inst);
         });
     }
+
+    // Make newly rendered step image inputs uploadable
+    makeImageUploadable(container.find('.step-img-in'));
 }
 
 // Gather, Save to disk, and Push to remote Git
