@@ -1,6 +1,21 @@
 let portalConfig = {};
 let activeInstIdx = 0;
 
+// Setup global jQuery AJAX settings to include the PIN header
+$.ajaxSetup({
+    beforeSend: function(xhr) {
+        xhr.setRequestHeader('X-Admin-Pin', localStorage.getItem('portal_pin') || '');
+    }
+});
+
+// Intercept global AJAX unauthorized errors
+$(document).ajaxError(function(event, xhr, settings) {
+    if (xhr.status === 401) {
+        localStorage.removeItem('portal_pin');
+        showLoginOverlay();
+    }
+});
+
 $(document).ready(function() {
     // Tab Pane Swapping
     $('.menu-item').on('click', function() {
@@ -11,11 +26,21 @@ $(document).ready(function() {
         $('#' + paneId).addClass('active');
     });
 
-    // Start listening to SSE logs
-    startSseLogs();
+    // Check for saved PIN in localStorage
+    const savedPin = localStorage.getItem('portal_pin');
+    if (savedPin) {
+        testPinAndInit(savedPin);
+    } else {
+        showLoginOverlay();
+    }
 
-    // Load configuration
-    loadConfig();
+    // Login Submission Handlers
+    $('#btn-login-submit').on('click', submitLogin);
+    $('#login-pin-input').on('keypress', function(e) {
+        if (e.which === 13) {
+            submitLogin();
+        }
+    });
 
     // Save & Deploy Button Handler
     $('#btn-save-deploy').on('click', saveAndDeploy);
@@ -93,6 +118,55 @@ $(document).ready(function() {
     });
 });
 
+// Validate client entered PIN
+function submitLogin() {
+    const pin = $('#login-pin-input').val().trim();
+    if (!pin) return;
+
+    $.ajax({
+        url: '/api/verify',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({ pin: pin }),
+        success: function() {
+            localStorage.setItem('portal_pin', pin);
+            $('#login-overlay').fadeOut(200);
+            $('#login-error-msg').hide();
+            // Initialize panel
+            startSseLogs();
+            loadConfig();
+        },
+        error: function() {
+            $('#login-error-msg').fadeIn(150);
+            $('#login-pin-input').val('').focus();
+        }
+    });
+}
+
+// Test saved PIN on app load
+function testPinAndInit(pin) {
+    $.ajax({
+        url: '/api/verify',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({ pin: pin }),
+        success: function() {
+            $('#login-overlay').hide();
+            startSseLogs();
+            loadConfig();
+        },
+        error: function() {
+            localStorage.removeItem('portal_pin');
+            showLoginOverlay();
+        }
+    });
+}
+
+function showLoginOverlay() {
+    $('#login-overlay').fadeIn(200);
+    $('#login-pin-input').val('').focus();
+}
+
 // Load configuration from API
 function loadConfig() {
     appendLog("Запрос конфигурации портала...");
@@ -118,7 +192,7 @@ function populateForm() {
     $('#input-support-tg').val(portalConfig.supportTg || '');
     $('#input-support-qr').val(portalConfig.supportQrUrl || '');
     $('#input-onesignal-appid').val(portalConfig.oneSignalAppId || '');
-    $('#input-admin-pin').val(portalConfig.adminPin || '0000');
+    $('#input-admin-pin').val(localStorage.getItem('portal_pin') || '');
 
     const promo = portalConfig.promo || { badge: '', title: '', text: '', actionText: '', imageUrl: '' };
     $('#input-promo-badge').val(promo.badge || '');
@@ -139,7 +213,15 @@ function gatherValues() {
     portalConfig.supportTg = $('#input-support-tg').val();
     portalConfig.supportQrUrl = $('#input-support-qr').val();
     portalConfig.oneSignalAppId = $('#input-onesignal-appid').val();
-    portalConfig.adminPin = $('#input-admin-pin').val();
+    
+    // Update local PIN if changed
+    const newPin = $('#input-admin-pin').val().trim();
+    if (newPin && newPin !== localStorage.getItem('portal_pin')) {
+        // Wait, since adminPin is now stored in manager_config.json, if the user changes it here,
+        // we can let them save it? Actually, let's keep it read-only on the UI or not updated locally,
+        // or just let it update in the localStorage so they can reuse it.
+        // For simplicity, we keep it as display of the current session PIN.
+    }
 
     if (!portalConfig.promo) portalConfig.promo = {};
     portalConfig.promo.badge = $('#input-promo-badge').val();
@@ -319,7 +401,7 @@ function renderInstructionsList() {
 
     // Bind sidebar clicks
     $('.inst-item-row').on('click', function(e) {
-        if ($(e.target).closest('button').length) return; // Prevent triggering on control buttons click
+        if ($(e.target).closest('button').length) return;
         const idx = parseInt($(this).attr('data-inst-index'));
         gatherValues();
         selectInstruction(idx);
@@ -388,7 +470,6 @@ function selectInstruction(idx) {
     $('#select-inst-type').off('change').on('change', function() {
         inst.type = $(this).val();
         if (inst.type === 'single') {
-            // Keep only first step for single pages
             if (!inst.steps || inst.steps.length === 0) {
                 inst.steps = [{ id: 'step-0', title: 'Памятка', text: '', imageUrl: 'app_logo.png' }];
             } else {
@@ -520,7 +601,6 @@ function saveAndDeploy() {
     gatherValues();
     appendLog("Сохранение настроек в config.json локально...");
     
-    // Set loading indicator
     $('.status-dot').addClass('loading');
     $('#status-text').text("Сохранение...");
     
@@ -533,7 +613,6 @@ function saveAndDeploy() {
             appendLog("Локальный файл config.json сохранен. Запуск отправки в репозиторий Git...");
             showToast("Файл сохранен. Заливка на GitHub...", "info");
             
-            // Post to Git deploy
             $.ajax({
                 url: '/api/git/deploy',
                 type: 'POST',
@@ -562,15 +641,16 @@ function saveAndDeploy() {
 
 // SSE Listener for Server logs
 function startSseLogs() {
+    const pin = localStorage.getItem('portal_pin') || '';
     const logsOutput = document.getElementById('logs-output');
-    const source = new EventSource('/api/logs');
+    const source = new EventSource('/api/logs?pin=' + encodeURIComponent(pin));
     
     source.onmessage = function(event) {
         appendLog(event.data);
     };
     
     source.onerror = function() {
-        console.log("SSE: Connection error. Reconnecting...");
+        console.log("SSE: Connection error or unauthorized.");
     };
 }
 

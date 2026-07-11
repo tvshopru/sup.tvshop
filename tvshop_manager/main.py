@@ -3,10 +3,9 @@ import json
 import asyncio
 import subprocess
 from typing import Set
-from fastapi import FastAPI, Request, HTTPException
+from fastapi import FastAPI, Request, HTTPException, Header, Query
 from fastapi.responses import StreamingResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
-from pydantic import BaseModel
 
 app = FastAPI(title="TV SHOP Portal Manager")
 
@@ -18,24 +17,32 @@ def log_message(message: str):
     for q in list(listeners):
         q.put_nowait(message)
 
-# Helper to get paths
+# Helper to get paths and local secret keys
 def get_paths():
     manager_dir = os.path.dirname(os.path.abspath(__file__))
     config_path = os.path.join(manager_dir, "manager_config.json")
     
     repo_path = ".."
+    admin_pin = "0000"
     if os.path.exists(config_path):
         try:
             with open(config_path, "r", encoding="utf-8") as f:
                 data = json.load(f)
                 repo_path = data.get("repoPath", "..")
+                admin_pin = str(data.get("adminPin", "0000"))
         except Exception as e:
             print(f"Error reading manager_config.json: {e}")
             
     abs_repo_path = os.path.abspath(os.path.join(manager_dir, repo_path))
     portal_config_path = os.path.join(abs_repo_path, "config.json")
     
-    return abs_repo_path, portal_config_path
+    return abs_repo_path, portal_config_path, admin_pin
+
+# Validate secret header helper
+def verify_admin_pin(x_admin_pin: str = Header(None)):
+    _, _, admin_pin = get_paths()
+    if not x_admin_pin or x_admin_pin != admin_pin:
+        raise HTTPException(status_code=401, detail="Unauthorized: Invalid admin PIN")
 
 # SSE streaming event generator
 async def event_generator(request: Request):
@@ -44,15 +51,12 @@ async def event_generator(request: Request):
     log_message("SSE: Client connected")
     try:
         while True:
-            # Check client connection status
             if await request.is_disconnected():
                 break
             try:
-                # Wait for new log messages with 1s ping timeout
                 msg = await asyncio.wait_for(q.get(), timeout=1.0)
                 yield f"data: {msg}\n\n"
             except asyncio.TimeoutError:
-                # Send keep-alive comment
                 yield ": ping\n\n"
     finally:
         listeners.remove(q)
@@ -60,41 +64,59 @@ async def event_generator(request: Request):
 
 @app.get("/")
 def redirect_to_index():
-    # Serves the index.html from static files
     return HTMLResponse(content=open(os.path.join(os.path.dirname(__file__), "web", "index.html"), "r", encoding="utf-8").read())
 
+# Verify client-supplied PIN endpoint
+@app.post("/api/verify")
+def verify_pin(payload: dict):
+    _, _, admin_pin = get_paths()
+    client_pin = payload.get("pin", "")
+    if client_pin == admin_pin:
+        return {"status": "authorized"}
+    raise HTTPException(status_code=401, detail="Invalid PIN")
+
 @app.get("/api/config")
-def get_config():
-    _, config_path = get_paths()
+def get_config(x_admin_pin: str = Header(None)):
+    verify_admin_pin(x_admin_pin)
+    
+    _, config_path, _ = get_paths()
     log_message(f"Loading configuration from {config_path}")
     if not os.path.exists(config_path):
-        raise HTTPException(status_code=404, detail="config.json not found in repository path")
+        raise HTTPException(status_code=404, detail="config.json not found")
     try:
         with open(config_path, "r", encoding="utf-8") as f:
-            return json.load(f)
+            data = json.load(f)
+            # Remove any residual adminPin from public dictionary
+            data.pop("adminPin", None)
+            return data
     except Exception as e:
-        log_message(f"Error loading config.json: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"Error reading config: {str(e)}")
+        log_message(f"Error loading config: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/api/config")
-def save_config(payload: dict):
-    _, config_path = get_paths()
+def save_config(payload: dict, x_admin_pin: str = Header(None)):
+    verify_admin_pin(x_admin_pin)
+    
+    _, config_path, _ = get_paths()
     log_message(f"Saving configuration updates to {config_path}")
     try:
+        # Strip adminPin payload to ensure it never goes public
+        payload.pop("adminPin", None)
         with open(config_path, "w", encoding="utf-8") as f:
             json.dump(payload, f, indent=2, ensure_ascii=False)
         log_message("Config file successfully written to disk locally.")
         return {"status": "success"}
     except Exception as e:
-        log_message(f"Error saving config.json: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"Error writing config: {str(e)}")
+        log_message(f"Error saving config: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/api/git/deploy")
-async def deploy_to_git():
-    repo_path, _ = get_paths()
+async def deploy_to_git(x_admin_pin: str = Header(None)):
+    verify_admin_pin(x_admin_pin)
+    
+    repo_path, _, _ = get_paths()
     log_message(f"Initiating Git deployment in {repo_path}")
     
-    # Run Git actions asynchronously in a threadpool to prevent locking the server
     loop = asyncio.get_event_loop()
     success = await loop.run_in_executor(None, perform_git_deploy, repo_path)
     
@@ -104,7 +126,7 @@ async def deploy_to_git():
 
 def perform_git_deploy(repo_path: str) -> bool:
     env = os.environ.copy()
-    env["GIT_TERMINAL_PROMPT"] = "0"  # Prevent git from prompt blocking
+    env["GIT_TERMINAL_PROMPT"] = "0"
     
     def run_cmd(args) -> bool:
         log_message(f"Executing: {' '.join(args)}")
@@ -125,22 +147,16 @@ def perform_git_deploy(repo_path: str) -> bool:
                 for line in res.stderr.splitlines():
                     log_message(f"  [git-err] {line}")
             if res.returncode != 0:
-                log_message(f"  Command failed with code {res.returncode}")
                 return False
             return True
-        except subprocess.TimeoutExpired:
-            log_message("  Command execution timed out after 30 seconds.")
-            return False
         except Exception as ex:
-            log_message(f"  Exception running command: {str(ex)}")
+            log_message(f"  Exception: {str(ex)}")
             return False
 
-    # Git deployment workflow
     log_message("--- GIT DEPLOY START ---")
     if not run_cmd(["git", "add", "config.json"]):
         return False
         
-    # Check if there are changes to commit
     status_res = subprocess.run(
         ["git", "status", "--porcelain", "config.json"],
         cwd=repo_path,
@@ -153,11 +169,9 @@ def perform_git_deploy(repo_path: str) -> bool:
         if not run_cmd(["git", "commit", "-m", "Update portal configuration via manager application"]):
             return False
             
-    # Pull remote changes first
     log_message("Fetching and rebasing remote changes...")
     run_cmd(["git", "pull", "--rebase", "origin", "main"])
     
-    # Push to origin
     log_message("Pushing changes to GitHub repository...")
     if not run_cmd(["git", "push", "origin", "main"]):
         return False
@@ -166,7 +180,10 @@ def perform_git_deploy(repo_path: str) -> bool:
     return True
 
 @app.get("/api/logs")
-def stream_logs(request: Request):
+def stream_logs(request: Request, pin: str = Query(None)):
+    _, _, admin_pin = get_paths()
+    if not pin or pin != admin_pin:
+        raise HTTPException(status_code=401, detail="Unauthorized")
     return StreamingResponse(event_generator(request), media_type="text/event-stream")
 
 # Mount web assets static directory

@@ -634,3 +634,26 @@ select.form-control {
 .toast.info {
     border-left: 4px solid var(--accent-color);
 }
+
+.login-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(6, 8, 12, 0.85);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    z-index: 1000000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.3s ease;
+}
+
+.login-card {
+    width: 380px;
+    max-width: 90%;
+    padding: 30px !important;
+    animation: pane-fade-in 0.3s ease-out;
+}
