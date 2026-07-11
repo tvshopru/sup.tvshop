@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TV SHOP Portal Manager</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div class="manager-layout">
+        <!-- Sidebar Navigation -->
+        <div class="manager-sidebar">
+            <div class="sidebar-header">
+                <div class="brand-title">
+                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.75z" fill="currentColor"/></svg>
+                    TV SHOP Portal
+                </div>
+                <div class="brand-subtitle">Панель управления</div>
+            </div>
+
+            <div class="sidebar-menu">
+                <button class="menu-item active" data-pane="pane-support">
+                    <svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+                    Поддержка и Push
+                </button>
+                <button class="menu-item" data-pane="pane-promo">
+                    <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                    Премиум ТВ (Промо)
+                </button>
+                <button class="menu-item" data-pane="pane-news">
+                    <svg viewBox="0 0 24 24"><path d="M19 20H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h10l4 4v10a2 2 0 0 1-2 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                    Новости и анонсы
+                </button>
+                <button class="menu-item" data-pane="pane-instructions">
+                    <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                    Редактор инструкций
+                </button>
+                <button class="menu-item" data-pane="pane-products">
+                    <svg viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                    Магазин (Товары)
+                </button>
+            </div>
+
+            <div class="sidebar-footer">
+                <div class="server-status">
+                    <div class="status-dot"></div>
+                    <span id="status-text">Связь установлена</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="manager-content">
+            <div class="content-header">
+                <div class="header-info">
+                    <span class="location-path">tvshopru / sup.tvshop / config.json</span>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-secondary" id="btn-reset">Сбросить</button>
+                    <button class="btn btn-primary" id="btn-save-deploy">
+                        <svg viewBox="0 0 24 24" style="width:16px;height:16px;"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polygon points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                        Сохранить и опубликовать (GitHub)
+                    </button>
+                </div>
+            </div>
+
+            <div class="content-pane-wrapper">
+                <!-- Pane: Support -->
+                <div class="pane active" id="pane-support">
+                    <h2 class="pane-title">📞 Контакты поддержки и Push-уведомления</h2>
+                    <div class="card">
+                        <div class="form-group">
+                            <label for="input-support-text">Приветственный текст поддержки</label>
+                            <input type="text" id="input-support-text" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="input-support-tg">Телеграм-аккаунт поддержки (с @)</label>
+                            <input type="text" id="input-support-tg" class="form-control" placeholder="@android_tv_shop">
+                        </div>
+                        <div class="form-group">
+                            <label for="input-support-qr">Ссылка на QR-код (опционально, оставьте пустым для автогенерации)</label>
+                            <input type="text" id="input-support-qr" class="form-control" placeholder="https://...">
+                        </div>
+                        <div class="form-group">
+                            <label for="input-onesignal-appid">OneSignal App ID (для Push рассылок из админки OneSignal)</label>
+                            <input type="text" id="input-onesignal-appid" class="form-control" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx">
+                        </div>
+                        <div class="form-group pt-divider">
+                            <label for="input-admin-pin" style="color:var(--danger-color);">Секретный PIN-код портала</label>
+                            <input type="text" id="input-admin-pin" class="form-control pin-input" maxlength="10">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pane: Promo -->
+                <div class="pane" id="pane-promo">
+                    <h2 class="pane-title">📺 Премиум ТВ (Промо-карточка реферала)</h2>
+                    <div class="card">
+                        <div class="form-group">
+                            <label for="input-promo-badge">Бейдж акции (например: Акция, Премиум)</label>
+                            <input type="text" id="input-promo-badge" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="input-promo-title">Заголовок акции</label>
+                            <input type="text" id="input-promo-title" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="input-promo-text">Описание услуги</label>
+                            <textarea id="input-promo-text" class="form-control" style="min-height: 110px;"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="input-promo-action">Текст кнопки действия</label>
+                            <input type="text" id="input-promo-action" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="input-promo-image">Изображение (по умолчанию app_logo.png)</label>
+                            <input type="text" id="input-promo-image" class="form-control">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pane: News -->
+                <div class="pane" id="pane-news">
+                    <div class="pane-header-actions">
+                        <h2 class="pane-title">📰 Новости и важные анонсы</h2>
+                        <button class="btn btn-add" id="btn-add-news">+ Добавить новость</button>
+                    </div>
+                    <div class="items-list-container" id="news-list-container">
+                        <!-- Dynamic News Items -->
+                    </div>
+                </div>
+
+                <!-- Pane: Instructions -->
+                <div class="pane" id="pane-instructions" style="max-width:100%;">
+                    <h2 class="pane-title">📖 База руководств и инструкций</h2>
+                    <div class="split-layout">
+                        <!-- Left sidebar for instructions list -->
+                        <div class="split-left">
+                            <div class="instructions-list" id="instructions-sidebar-list">
+                                <!-- Dynamic Titles -->
+                            </div>
+                            <button class="btn btn-secondary w-100" id="btn-add-inst">+ Добавить руководство</button>
+                        </div>
+                        <!-- Right editor panel for selected instruction steps -->
+                        <div class="split-right" id="instruction-steps-editor" style="display:none;">
+                            <div class="card step-settings-card">
+                                <div class="form-group">
+                                    <label for="input-inst-title">Название темы</label>
+                                    <input type="text" id="input-inst-title" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label for="select-inst-type">Тип руководства</label>
+                                    <select id="select-inst-type" class="form-control">
+                                        <option value="steps">Пошаговая инструкция (слайдер на ТВ, список на мобильном)</option>
+                                        <option value="single">Одностраничная памятка (текст на ТВ, список на мобильном)</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="input-inst-video">Ссылка на видеоинструкцию (YouTube, Rutube - опционально)</label>
+                                    <input type="text" id="input-inst-video" class="form-control" placeholder="https://...">
+                                </div>
+                            </div>
+                            
+                            <h3 class="pane-subtitle">Шаги руководства</h3>
+                            <div class="steps-list" id="steps-list-container">
+                                <!-- Dynamic Steps -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pane: Products -->
+                <div class="pane" id="pane-products">
+                    <div class="pane-header-actions">
+                        <h2 class="pane-title">🛒 Заглушки магазина (Товары)</h2>
+                        <button class="btn btn-add" id="btn-add-product">+ Добавить товар</button>
+                    </div>
+                    <div class="items-list-container" id="products-list-container">
+                        <!-- Dynamic Products -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Terminal Logger SSE Panel -->
+            <div class="logs-panel">
+                <div class="logs-header">
+                    <span class="logs-title">💻 Консоль развертывания (SSE Realtime Logs)</span>
+                    <button class="logs-clear-btn" onclick="$('#logs-output').empty()">Очистить</button>
+                </div>
+                <div class="logs-output" id="logs-output">
+                    Ожидание логов сервера...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast Alerts -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>
