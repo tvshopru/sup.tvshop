@@ -127,20 +127,6 @@
       ]
     },
     {
-      "id": "inst-1783756292723",
-      "title": "Инструкция по настройке",
-      "type": "steps",
-      "videoUrl": "",
-      "steps": [
-        {
-          "id": "step-0",
-          "title": "Шаг 1: Подключение",
-          "text": "Текст первого шага...",
-          "imageUrl": "app_logo.png"
-        }
-      ]
-    },
-    {
       "id": "inst-televizo-backup",
       "title": "Восстановление бэкапа Televizo",
       "type": "steps",
@@ -181,48 +167,6 @@
           "title": "Шаг 6: Выбор плейлиста",
           "text": "Вернитесь в главное меню Televizo, нажмите кнопку смены плейлиста и выберите необходимый плейлист из списка.",
           "imageUrl": "img/upload_1784748865712.png"
-        }
-      ]
-    },
-    {
-      "id": "inst-1783756298970",
-      "title": "Инструкция по настройке",
-      "type": "steps",
-      "videoUrl": "",
-      "steps": [
-        {
-          "id": "step-0",
-          "title": "Шаг 1: Подключение",
-          "text": "Текст первого шага...",
-          "imageUrl": "app_logo.png"
-        }
-      ]
-    },
-    {
-      "id": "inst-1783756299594",
-      "title": "Инструкция по настройке",
-      "type": "steps",
-      "videoUrl": "",
-      "steps": [
-        {
-          "id": "step-0",
-          "title": "Шаг 1: Подключение",
-          "text": "Текст первого шага...",
-          "imageUrl": "app_logo.png"
-        }
-      ]
-    },
-    {
-      "id": "inst-1783756300266",
-      "title": "Инструкция по настройке",
-      "type": "steps",
-      "videoUrl": "",
-      "steps": [
-        {
-          "id": "step-0",
-          "title": "Шаг 1: Подключение",
-          "text": "Текст первого шага...",
-          "imageUrl": "app_logo.png"
         }
       ]
     }
