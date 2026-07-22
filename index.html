@@ -433,18 +433,46 @@
             display: inline-block;
         }
 
+        .support-qr-container {
+            display: flex;
+            flex-direction: row;
+            gap: 0.8em;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .support-qr-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.3em;
+        }
+
         .support-qr-wrapper {
             background: #fff;
-            padding: 0.6em;
-            border-radius: 0.8em;
+            padding: 0.4em;
+            border-radius: 0.6em;
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 150px;
-            height: 150px;
-            min-width: 150px;
-            min-height: 150px;
+            width: 120px;
+            height: 120px;
+            min-width: 120px;
+            min-height: 120px;
             box-sizing: border-box;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        .support-qr-label {
+            font-size: 0.75em;
+            font-weight: 800;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(255,255,255,0.08);
+            padding: 0.2em 0.6em;
+            border-radius: 0.4em;
         }
 
         .support-qr {
@@ -1611,7 +1639,9 @@
                     var config = window.portal_config || getDefaultConfig();
                     var tgContact = config.supportTg || '';
                     var tgLink = tgContact.startsWith('@') ? 'https://t.me/' + tgContact.substring(1) : tgContact;
-                    var qrUrl = config.supportQrUrl || ('https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' + encodeURIComponent(tgLink));
+                    var maxLink = config.supportMax || 'https://max.ru/join/K8fJHylVHjrJMeqV36SWe8wsdHSTUjl3t8iWhAfHFyk';
+                    var tgQrUrl = config.supportQrUrl || ('https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' + encodeURIComponent(tgLink));
+                    var maxQrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' + encodeURIComponent(maxLink);
                     
                     var newsHtml = '';
                     if (config.news && config.news.length) {
@@ -1638,8 +1668,19 @@
                                             '<p>' + escapeHtml(config.supportText) + '</p>' +
                                             '<div class="support-tg">' + escapeHtml(config.supportTg) + '</div>' +
                                         '</div>' +
-                                        '<div class="support-qr-wrapper">' +
-                                            '<img class="support-qr" src="' + qrUrl + '" alt="QR-код поддержки">' +
+                                        '<div class="support-qr-container">' +
+                                            '<div class="support-qr-card">' +
+                                                '<div class="support-qr-wrapper">' +
+                                                    '<img class="support-qr" src="' + tgQrUrl + '" alt="Telegram QR">' +
+                                                '</div>' +
+                                                '<div class="support-qr-label"><svg viewBox="0 0 24 24" fill="#0088cc" style="width:12px;height:12px;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.2-.08-.06-.19-.04-.27-.02-.12.02-1.96 1.24-5.52 3.64-.52.36-.99.53-1.41.52-.46-.01-1.35-.26-2.01-.48-.81-.27-1.46-.42-1.4-.88.03-.24.36-.49.99-.75 3.87-1.68 6.45-2.79 7.74-3.33 3.68-1.54 4.44-1.81 4.94-1.82.11 0 .36.03.52.16.14.11.18.26.19.38 0 .1.01.22 0 .33z"/></svg> Telegram</div>' +
+                                            '</div>' +
+                                            '<div class="support-qr-card">' +
+                                                '<div class="support-qr-wrapper">' +
+                                                    '<img class="support-qr" src="' + maxQrUrl + '" alt="MAX QR">' +
+                                                '</div>' +
+                                                '<div class="support-qr-label"><span style="color:#00e5ff;font-weight:900;">M</span> MAX</div>' +
+                                            '</div>' +
                                         '</div>' +
                                     '</div>' +
                                 '</div>' +
@@ -1898,23 +1939,36 @@
                         list.append(card);
                     });
 
-                    // Append static Telegram QR code banner below the grid list
+                    // Append static Telegram & MAX QR code banner below the grid list
                     var tgContact = config.supportTg || '@android_tv_shop';
                     var tgLink = tgContact.startsWith('@') ? 'https://t.me/' + tgContact.substring(1) : tgContact;
+                    var maxLink = config.supportMax || 'https://max.ru/join/K8fJHylVHjrJMeqV36SWe8wsdHSTUjl3t8iWhAfHFyk';
                     var tgQrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=' + encodeURIComponent(tgLink);
+                    var maxQrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=' + encodeURIComponent(maxLink);
                     
                     var bannerHtml = $(
-                        '<div class="dashboard-card" style="display:flex !important; flex-direction:row !important; align-items:center !important; justify-content:flex-start !important; gap:1.8em; padding:0.6em 1.5em; border-radius:12px; background: rgba(0, 136, 204, 0.04) !important; border: 1px solid rgba(0, 136, 204, 0.2) !important; box-sizing:border-box; margin-top:0.4em; width:100%; flex-shrink:0;">' +
-                            '<div style="background: #fff; padding: 0.4em; border-radius: 0.5em; width: 70px; height: 70px; display: flex; align-items: center; justify-content: center; flex-shrink:0; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">' +
-                                '<img src="' + tgQrUrl + '" style="width: 100%; height: 100%; object-fit: contain;">' +
+                        '<div class="dashboard-card" style="display:flex !important; flex-direction:row !important; align-items:center !important; justify-content:flex-start !important; gap:1.4em; padding:0.6em 1.5em; border-radius:12px; background: rgba(0, 136, 204, 0.04) !important; border: 1px solid rgba(0, 136, 204, 0.2) !important; box-sizing:border-box; margin-top:0.4em; width:100%; flex-shrink:0;">' +
+                            '<div style="display:flex; flex-direction:row; gap:0.6em; align-items:center;">' +
+                                '<div style="display:flex; flex-direction:column; align-items:center; gap:2px;">' +
+                                    '<div style="background: #fff; padding: 0.3em; border-radius: 0.5em; width: 65px; height: 65px; display: flex; align-items: center; justify-content: center; flex-shrink:0; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">' +
+                                        '<img src="' + tgQrUrl + '" style="width: 100%; height: 100%; object-fit: contain;">' +
+                                    '</div>' +
+                                    '<span style="font-size:0.7em; font-weight:800; color:#00e5ff;">Telegram</span>' +
+                                '</div>' +
+                                '<div style="display:flex; flex-direction:column; align-items:center; gap:2px;">' +
+                                    '<div style="background: #fff; padding: 0.3em; border-radius: 0.5em; width: 65px; height: 65px; display: flex; align-items: center; justify-content: center; flex-shrink:0; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">' +
+                                        '<img src="' + maxQrUrl + '" style="width: 100%; height: 100%; object-fit: contain;">' +
+                                    '</div>' +
+                                    '<span style="font-size:0.7em; font-weight:800; color:#00e5ff;">MAX</span>' +
+                                '</div>' +
                             '</div>' +
                             '<div style="display:flex; flex-direction:column; gap:0.1em; text-align:left;">' +
-                                '<h2 style="font-size:1.15em; font-weight:800; color:#fff; margin:0;">📢 Подписывайтесь на наш Telegram-канал</h2>' +
+                                '<h2 style="font-size:1.15em; font-weight:800; color:#fff; margin:0;">📢 Подписывайтесь на наш Telegram и MAX</h2>' +
                                 '<p style="color:rgba(255,255,255,0.7); font-size:0.8em; line-height:1.35; margin:0;">' +
                                     'Все новые инструкции, полезные плейлисты и важные обновления выходят там в первую очередь.<br>' +
-                                    '<b>Преимущество техподдержки:</b> Вы можете написать нам напрямую в Telegram и получить быструю помощь!' +
+                                    '<b>Преимущество техподдержки:</b> Пишите нам в Telegram или мессенджер MAX для быстрой помощи!' +
                                 '</p>' +
-                                '<div style="color:#00e5ff; font-weight:700; font-size:0.9em; margin-top:0.02em;">Наш канал: ' + escapeHtml(tgContact) + '</div>' +
+                                '<div style="color:#00e5ff; font-weight:700; font-size:0.9em; margin-top:0.02em;">Канал: ' + escapeHtml(tgContact) + ' | MAX Мессенджер</div>' +
                             '</div>' +
                         '</div>'
                     );
@@ -2882,17 +2936,23 @@
             
             var tgContact = config.supportTg || '@android_tv_shop';
             var tgUrl = 'https://t.me/' + tgContact.replace('@', '');
+            var maxUrl = config.supportMax || 'https://max.ru/join/K8fJHylVHjrJMeqV36SWe8wsdHSTUjl3t8iWhAfHFyk';
             var supportHtml = 
                 '<div class="mobile-card" style="display:flex; flex-direction:column; gap:12px; border: 1px solid var(--mobile-accent) !important; background: var(--mobile-accent-bg) !important;">' +
-                    '<h2 style="font-size:1.25em; font-weight:800; color:var(--mobile-text); display:flex; align-items:center; gap:8px;">📢 Telegram-канал и поддержка</h2>' +
+                    '<h2 style="font-size:1.25em; font-weight:800; color:var(--mobile-text); display:flex; align-items:center; gap:8px;">📢 Каналы и поддержка</h2>' +
                     '<p style="font-size:0.96em; line-height:1.55; color:var(--mobile-text-secondary); margin:0;">' +
-                        'Подписывайтесь на наш Telegram-канал, чтобы первыми получать свежие новости, новые полезные плейлисты и обновления инструкций.<br><br>' +
-                        '<b>Преимущество:</b> Вы можете написать нам напрямую в Telegram и получить оперативную помощь техподдержки по любым вопросам.' +
+                        'Подписывайтесь на наш Telegram-канал и мессенджер MAX, чтобы первыми получать свежие новости, полезные плейлисты и обновления инструкций.<br><br>' +
+                        '<b>Преимущество:</b> Напишите нам в удобный мессенджер для оперативной помощи техподдержки.' +
                     '</p>' +
-                    '<a href="' + tgUrl + '" target="_blank" class="mobile-tg-btn" style="align-self:stretch; justify-content:center; margin-top:4px;">' +
-                        '<svg viewBox="0 0 24 24" fill="currentColor" style="width:1.2em;height:1.2em;margin-right:4px;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.2-.08-.06-.19-.04-.27-.02-.12.02-1.96 1.24-5.52 3.64-.52.36-.99.53-1.41.52-.46-.01-1.35-.26-2.01-.48-.81-.27-1.46-.42-1.4-.88.03-.24.36-.49.99-.75 3.87-1.68 6.45-2.79 7.74-3.33 3.68-1.54 4.44-1.81 4.94-1.82.11 0 .36.03.52.16.14.11.18.26.19.38 0 .1.01.22 0 .33z"/></svg>' +
-                        'Подписаться и написать' +
-                    '</a>' +
+                    '<div style="display:flex; gap:8px; width:100%;">' +
+                        '<a href="' + tgUrl + '" target="_blank" class="mobile-tg-btn" style="flex:1; justify-content:center; margin-top:4px;">' +
+                            '<svg viewBox="0 0 24 24" fill="currentColor" style="width:1.2em;height:1.2em;margin-right:4px;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.2-.08-.06-.19-.04-.27-.02-.12.02-1.96 1.24-5.52 3.64-.52.36-.99.53-1.41.52-.46-.01-1.35-.26-2.01-.48-.81-.27-1.46-.42-1.4-.88.03-.24.36-.49.99-.75 3.87-1.68 6.45-2.79 7.74-3.33 3.68-1.54 4.44-1.81 4.94-1.82.11 0 .36.03.52.16.14.11.18.26.19.38 0 .1.01.22 0 .33z"/></svg>' +
+                            'Telegram' +
+                        '</a>' +
+                        '<a href="' + maxUrl + '" target="_blank" class="mobile-tg-btn" style="flex:1; justify-content:center; margin-top:4px; background:linear-gradient(135deg, #00c6ff, #0072ff);">' +
+                            '<span style="font-weight:900;margin-right:4px;">M</span> MAX' +
+                        '</a>' +
+                    '</div>' +
                 '</div>';
             container.append(supportHtml);
             
@@ -3125,17 +3185,22 @@
             $('.mobile-support-bar').remove();
             var tgContact = config.supportTg || '@android_tv_shop';
             var tgUrl = 'https://t.me/' + tgContact.replace('@', '');
+            var maxUrl = config.supportMax || 'https://max.ru/join/K8fJHylVHjrJMeqV36SWe8wsdHSTUjl3t8iWhAfHFyk';
             
             var supportBar = $(
                 '<div class="mobile-support-bar">' +
                     '<div class="mobile-support-text-wrap">' +
-                        '<span class="mobile-support-lbl">Техническая поддержка</span>' +
-                        '<span class="mobile-support-val">' + escapeHtml(tgContact) + '</span>' +
+                        '<span class="mobile-support-lbl">Поддержка</span>' +
+                        '<span class="mobile-support-val">TG / MAX</span>' +
                     '</div>' +
-                    '<a href="' + tgUrl + '" target="_blank" class="mobile-tg-btn">' +
-                        '<svg viewBox="0 0 24 24" fill="currentColor" style="width:1.1em;height:1.1em;margin-right:4px;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.2-.08-.06-.19-.04-.27-.02-.12.02-1.96 1.24-5.52 3.64-.52.36-.99.53-1.41.52-.46-.01-1.35-.26-2.01-.48-.81-.27-1.46-.42-1.4-.88.03-.24.36-.49.99-.75 3.87-1.68 6.45-2.79 7.74-3.33 3.68-1.54 4.44-1.81 4.94-1.82.11 0 .36.03.52.16.14.11.18.26.19.38 0 .1.01.22 0 .33z"/></svg>' +
-                        'Telegram' +
-                    '</a>' +
+                    '<div style="display:flex; gap:6px;">' +
+                        '<a href="' + tgUrl + '" target="_blank" class="mobile-tg-btn" style="padding:6px 10px; font-size:0.85em;">' +
+                            'TG' +
+                        '</a>' +
+                        '<a href="' + maxUrl + '" target="_blank" class="mobile-tg-btn" style="padding:6px 10px; font-size:0.85em; background:linear-gradient(135deg, #00c6ff, #0072ff);">' +
+                            'MAX' +
+                        '</a>' +
+                    '</div>' +
                 '</div>'
             );
             $('body').append(supportBar);

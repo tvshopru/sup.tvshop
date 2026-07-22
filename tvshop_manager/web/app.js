@@ -266,6 +266,7 @@ function loadConfig() {
 function populateForm() {
     $('#input-support-text').val(portalConfig.supportText || '');
     $('#input-support-tg').val(portalConfig.supportTg || '');
+    $('#input-support-max').val(portalConfig.supportMax || '');
     $('#input-support-qr').val(portalConfig.supportQrUrl || '');
     $('#input-onesignal-appid').val(portalConfig.oneSignalAppId || '');
     $('#input-admin-pin').val(localStorage.getItem('portal_pin') || '');
@@ -291,6 +292,7 @@ function populateForm() {
 function gatherValues() {
     portalConfig.supportText = $('#input-support-text').val();
     portalConfig.supportTg = $('#input-support-tg').val();
+    portalConfig.supportMax = $('#input-support-max').val();
     portalConfig.supportQrUrl = $('#input-support-qr').val();
     portalConfig.oneSignalAppId = $('#input-onesignal-appid').val();
 
