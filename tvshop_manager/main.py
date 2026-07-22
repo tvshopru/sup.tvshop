@@ -80,8 +80,25 @@ def verify_pin(payload: dict):
 def get_config(x_admin_pin: str = Header(None)):
     verify_admin_pin(x_admin_pin)
     
-    _, config_path, _ = get_paths()
-    log_message(f"Loading configuration from {config_path}")
+    repo_path, config_path, _ = get_paths()
+    log_message("Синхронизация с GitHub (git pull)...")
+    try:
+        res = subprocess.run(
+            ["git", "pull", "--rebase", "origin", "main"],
+            cwd=repo_path,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            timeout=15
+        )
+        if res.returncode == 0:
+            log_message("Успешно подтянуты свежие обновления с GitHub!")
+        else:
+            log_message(f"Внимание при git pull: {res.stderr}")
+    except Exception as pull_err:
+        log_message(f"Предупреждение при авто-обновлении с GitHub: {pull_err}")
+
+    log_message(f"Загрузка локальной конфигурации из {config_path}")
     if not os.path.exists(config_path):
         raise HTTPException(status_code=404, detail="config.json not found")
     try:
