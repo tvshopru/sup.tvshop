@@ -657,3 +657,11 @@ select.form-control {
     padding: 30px !important;
     animation: pane-fade-in 0.3s ease-out;
 }
+
+.login-card .brand-title svg {
+    width: 42px !important;
+    height: 42px !important;
+    max-width: 42px !important;
+    max-height: 42px !important;
+    flex-shrink: 0;
+}
