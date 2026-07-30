@@ -949,7 +949,7 @@
             border: 1px solid var(--mobile-card-border) !important;
             border-radius: 10px !important;
             overflow: hidden !important;
-            background: rgba(0, 0, 0, 0.25) !important;
+            background: rgba(0, 0, 0, 0.4) !important;
             margin-top: 14px !important;
             display: flex !important;
             justify-content: center !important;
@@ -957,14 +957,17 @@
             width: 100% !important;
             box-sizing: border-box !important;
             cursor: zoom-in !important;
+            padding: 0 !important;
         }
         .mobile-image {
+            width: 100% !important;
             max-width: 100% !important;
             height: auto !important;
             display: block !important;
             object-fit: contain !important;
-            max-height: 280px !important;
-            padding: 10px !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            border-radius: 0 !important;
             box-sizing: border-box !important;
         }
         .mobile-video-btn {
@@ -973,11 +976,8 @@
             justify-content: center !important;
             gap: 8px !important;
             width: 100% !important;
-            padding: 14px !important;
-            font-weight: 700 !important;
-            font-size: 1em !important;
-            color: var(--mobile-accent) !important;
-            background: var(--mobile-accent-bg) !important;
+            padding: 12px 16px !important;
+            background: rgba(0, 229, 255, 0.08) !important;
             border: 1px solid var(--mobile-accent) !important;
             border-radius: 8px !important;
             text-decoration: none !important;
@@ -1044,20 +1044,25 @@
             left: 0 !important;
             width: 100% !important;
             height: 100% !important;
-            background: rgba(3, 5, 8, 0.99) !important;
+            background: rgba(0, 0, 0, 0.95) !important;
+            backdrop-filter: blur(8px) !important;
+            -webkit-backdrop-filter: blur(8px) !important;
             z-index: 9999999 !important;
             display: none !important;
             align-items: center !important;
             justify-content: center !important;
             box-sizing: border-box !important;
             padding: 10px !important;
+            cursor: zoom-out !important;
         }
         .mobile-lightbox-img {
             max-width: 100% !important;
-            max-height: 85% !important;
+            max-height: 100% !important;
+            width: auto !important;
+            height: auto !important;
             object-fit: contain !important;
-            border-radius: 6px !important;
-            box-shadow: 0 8px 32px var(--mobile-shadow) !important;
+            border-radius: 8px !important;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8) !important;
         }
         .mobile-lightbox-close {
             position: absolute !important;
@@ -2710,7 +2715,7 @@
             );
             $('body').append(lightbox);
             
-            lightbox.find('.mobile-lightbox-close').on('click', function() {
+            lightbox.on('click', function() {
                 lightbox.fadeOut(200, function() {
                     $('.mobile-lightbox-img').removeAttr('src');
                 });
