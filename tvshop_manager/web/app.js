@@ -127,6 +127,11 @@ function makeImageUploadable(inputElements) {
         const wrapper = $('<div class="image-upload-wrapper" style="display:flex; gap:10px; align-items:center; width:100%;"></div>');
         input.wrap(wrapper);
 
+        const editBtn = $(
+            '<button type="button" class="btn btn-secondary btn-edit-annotator" style="padding: 10px 14px; font-size: 1em; flex-shrink: 0; line-height: 1;" title="Выделить кнопку / нарисовать рамку на скриншоте">' +
+                '✏️ Выделить' +
+            '</button>'
+        );
         const uploadBtn = $(
             '<button type="button" class="btn btn-secondary" style="padding: 10px 15px; font-size: 1.1em; flex-shrink: 0; line-height: 1;" title="Выбрать файл или вставить из буфера (Ctrl+V)">' +
                 '📁' +
@@ -136,6 +141,17 @@ function makeImageUploadable(inputElements) {
 
         input.after(fileInput);
         input.after(uploadBtn);
+        input.after(editBtn);
+
+        // Edit/Annotate Button Handler
+        editBtn.on('click', function() {
+            const imgPath = input.val().trim();
+            if (!imgPath) {
+                showToast("Сначала укажите или загрузите изображение шага!", "error");
+                return;
+            }
+            openAnnotatorModal(imgPath, input);
+        });
 
         // Click handler to open file selector
         uploadBtn.on('click', function() {
@@ -756,6 +772,187 @@ function showToast(message, type) {
         setTimeout(() => { toast.remove(); }, 300);
     }, 4000);
 }
+
+// Image Annotator Engine logic
+let annotatorBaseImg = new Image();
+let annotatorRects = [];
+let isDrawingRect = false;
+let rectStartX = 0, rectStartY = 0;
+let currentRectColor = '#ff3366';
+let activeAnnotatorInput = null;
+
+function openAnnotatorModal(imgPath, targetInput) {
+    activeAnnotatorInput = targetInput;
+    annotatorRects = [];
+    isDrawingRect = false;
+    currentRectColor = '#ff3366';
+
+    $('.annotator-tool-btn[data-color]').removeClass('active');
+    $('.annotator-tool-btn[data-color="#ff3366"]').addClass('active');
+
+    let fullImgUrl = imgPath;
+    if (!imgPath.startsWith('http') && !imgPath.startsWith('/')) {
+        fullImgUrl = '/' + imgPath;
+    }
+
+    annotatorBaseImg = new Image();
+    annotatorBaseImg.crossOrigin = "Anonymous";
+    
+    showToast("Загрузка изображения для выделения...", "info");
+    
+    annotatorBaseImg.onload = function() {
+        const canvas = document.getElementById('annotator-canvas');
+        canvas.width = annotatorBaseImg.naturalWidth;
+        canvas.height = annotatorBaseImg.naturalHeight;
+        drawAnnotatorCanvas();
+        $('#annotator-modal').css('display', 'flex').hide().fadeIn(200);
+    };
+
+    annotatorBaseImg.onerror = function() {
+        showToast("Не удалось открыть картинку для редактирования", "error");
+    };
+
+    annotatorBaseImg.src = fullImgUrl + (fullImgUrl.includes('?') ? '&' : '?') + 't=' + new Date().getTime();
+}
+
+function drawAnnotatorCanvas(previewRect) {
+    const canvas = document.getElementById('annotator-canvas');
+    if (!canvas || !annotatorBaseImg.width) return;
+    const ctx = canvas.getContext('2d');
+
+    // Draw background image
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(annotatorBaseImg, 0, 0);
+
+    // Draw existing rectangles
+    annotatorRects.forEach(r => {
+        ctx.strokeStyle = r.color;
+        ctx.lineWidth = Math.max(4, Math.round(canvas.width / 150));
+        ctx.fillStyle = r.color.startsWith('#') ? (r.color + '22') : 'rgba(255,51,102,0.15)';
+        ctx.beginPath();
+        ctx.roundRect ? ctx.roundRect(r.x, r.y, r.w, r.h, 6) : ctx.rect(r.x, r.y, r.w, r.h);
+        ctx.stroke();
+        ctx.fill();
+    });
+
+    // Draw currently dragging preview rectangle
+    if (previewRect) {
+        ctx.strokeStyle = previewRect.color;
+        ctx.lineWidth = Math.max(4, Math.round(canvas.width / 150));
+        ctx.fillStyle = previewRect.color.startsWith('#') ? (previewRect.color + '22') : 'rgba(255,51,102,0.15)';
+        ctx.beginPath();
+        ctx.roundRect ? ctx.roundRect(previewRect.x, previewRect.y, previewRect.w, previewRect.h, 6) : ctx.rect(previewRect.x, previewRect.y, previewRect.w, previewRect.h);
+        ctx.stroke();
+        ctx.fill();
+    }
+}
+
+$(document).ready(function() {
+    // Color selector buttons in Annotator
+    $('.annotator-tool-btn[data-color]').on('click', function() {
+        $('.annotator-tool-btn[data-color]').removeClass('active');
+        $(this).addClass('active');
+        currentRectColor = $(this).attr('data-color');
+    });
+
+    // Undo action
+    $('#btn-annotator-undo').on('click', function() {
+        if (annotatorRects.length > 0) {
+            annotatorRects.pop();
+            drawAnnotatorCanvas();
+        }
+    });
+
+    // Reset action
+    $('#btn-annotator-reset').on('click', function() {
+        annotatorRects = [];
+        drawAnnotatorCanvas();
+    });
+
+    // Cancel modal
+    $('#btn-annotator-cancel').on('click', function() {
+        $('#annotator-modal').fadeOut(200);
+    });
+
+    // Canvas drawing interaction
+    const canvas = document.getElementById('annotator-canvas');
+
+    function getCanvasCoords(e) {
+        const rect = canvas.getBoundingClientRect();
+        const scaleX = canvas.width / rect.width;
+        const scaleY = canvas.height / rect.height;
+        return {
+            x: (e.clientX - rect.left) * scaleX,
+            y: (e.clientY - rect.top) * scaleY
+        };
+    }
+
+    $(canvas).on('mousedown touchstart', function(e) {
+        e.preventDefault();
+        const clientEvt = e.originalEvent.touches ? e.originalEvent.touches[0] : e;
+        const pos = getCanvasCoords(clientEvt);
+        isDrawingRect = true;
+        rectStartX = pos.x;
+        rectStartY = pos.y;
+    });
+
+    $(canvas).on('mousemove touchmove', function(e) {
+        if (!isDrawingRect) return;
+        e.preventDefault();
+        const clientEvt = e.originalEvent.touches ? e.originalEvent.touches[0] : e;
+        const pos = getCanvasCoords(clientEvt);
+        
+        const previewRect = {
+            x: Math.min(rectStartX, pos.x),
+            y: Math.min(rectStartY, pos.y),
+            w: Math.abs(pos.x - rectStartX),
+            h: Math.abs(pos.y - rectStartY),
+            color: currentRectColor
+        };
+        drawAnnotatorCanvas(previewRect);
+    });
+
+    $(canvas).on('mouseup touchend touchcancel', function(e) {
+        if (!isDrawingRect) return;
+        isDrawingRect = false;
+        const clientEvt = e.originalEvent.changedTouches ? e.originalEvent.changedTouches[0] : e;
+        const pos = getCanvasCoords(clientEvt);
+
+        const w = Math.abs(pos.x - rectStartX);
+        const h = Math.abs(pos.y - rectStartY);
+
+        // Only save if rectangle has visible size (> 10px)
+        if (w > 10 && h > 10) {
+            annotatorRects.push({
+                x: Math.min(rectStartX, pos.x),
+                y: Math.min(rectStartY, pos.y),
+                w: w,
+                h: h,
+                color: currentRectColor
+            });
+        }
+        drawAnnotatorCanvas();
+    });
+
+    // Save annotated image back to server and set input value
+    $('#btn-annotator-save').on('click', function() {
+        if (!activeAnnotatorInput) return;
+        
+        drawAnnotatorCanvas();
+        const canvas = document.getElementById('annotator-canvas');
+
+        canvas.toBlob(function(blob) {
+            if (!blob) {
+                showToast("Ошибка сохранения вырезанного фрагмента!", "error");
+                return;
+            }
+            const file = new File([blob], "edited_step_" + new Date().getTime() + ".png", { type: "image/png" });
+            
+            uploadImageFile(file, activeAnnotatorInput);
+            $('#annotator-modal').fadeOut(200);
+        }, 'image/png');
+    });
+});
 
 // Helper to escape HTML characters
 function escapeHtml(string) {

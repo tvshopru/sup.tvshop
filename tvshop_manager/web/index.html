@@ -215,6 +215,51 @@
         </div>
     </div>
 
+    <!-- Image Annotator Editor Modal -->
+    <div class="annotator-modal" id="annotator-modal">
+        <div class="annotator-card">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <h3 style="font-size:1.15em; font-weight:800; color:var(--text-color); margin:0;">🎨 Графический редактор скриншота (Выделение кнопок)</h3>
+                <span style="color:var(--text-muted); font-size:0.85em;">Кликните и потяните мышь, чтобы выделить область</span>
+            </div>
+
+            <div class="annotator-toolbar">
+                <div class="annotator-tools-group">
+                    <button type="button" class="annotator-tool-btn active" data-color="#ff3366" style="border-left:4px solid #ff3366;">
+                        🔴 Красная рамка
+                    </button>
+                    <button type="button" class="annotator-tool-btn" data-color="#00e5ff" style="border-left:4px solid #00e5ff;">
+                        🔵 Голубая рамка
+                    </button>
+                    <button type="button" class="annotator-tool-btn" data-color="#ffb703" style="border-left:4px solid #ffb703;">
+                        🟡 Желтая рамка
+                    </button>
+                    <button type="button" class="annotator-tool-btn" data-color="#10b981" style="border-left:4px solid #10b981;">
+                        🟢 Зеленая рамка
+                    </button>
+                </div>
+
+                <div class="annotator-tools-group">
+                    <button type="button" class="annotator-tool-btn" id="btn-annotator-undo">
+                        ↩️ Отменить выделение
+                    </button>
+                    <button type="button" class="annotator-tool-btn" id="btn-annotator-reset">
+                        🔄 Сбросить оригинальное фото
+                    </button>
+                </div>
+            </div>
+
+            <div class="annotator-canvas-container">
+                <canvas id="annotator-canvas"></canvas>
+            </div>
+
+            <div style="display:flex; justify-content:flex-end; gap:12px; border-top:1px solid var(--border-color); padding-top:12px;">
+                <button type="button" class="btn btn-secondary" id="btn-annotator-cancel">Отмена</button>
+                <button type="button" class="btn btn-primary" id="btn-annotator-save">Сохранить выделение в шаг</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Notification Toast Alerts -->
     <div class="toast-container" id="toast-container"></div>
 
