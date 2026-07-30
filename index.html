@@ -2733,9 +2733,7 @@
                 }
             });
             
-            window.loadPortalConfig(function() {
-                var config = window.portal_config || {};
-                
+            function syncMobileStateFromUrl() {
                 var getQueryParam = function(name) {
                     var match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
                     return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
@@ -2754,7 +2752,22 @@
                     mobileCurrentTab = 'main';
                     mobileActiveInstId = null;
                 }
+            }
+
+            window.addEventListener('popstate', function(e) {
+                // If full screen lightbox image is open, close it first on Back button
+                if ($('.mobile-lightbox').hasClass('active')) {
+                    $('.mobile-lightbox').removeClass('active').fadeOut(200);
+                    return;
+                }
+                syncMobileStateFromUrl();
+                renderMobileContent();
+            });
+
+            window.loadPortalConfig(function() {
+                var config = window.portal_config || {};
                 
+                syncMobileStateFromUrl();
                 renderMobileContent();
                 
                 // Register PWA Service Worker
