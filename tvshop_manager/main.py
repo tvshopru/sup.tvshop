@@ -238,6 +238,14 @@ web_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "web")
 if os.path.exists(web_dir):
     app.mount("/static", StaticFiles(directory=web_dir), name="static")
 
+# Mount root repository directories (img, icons, css) so manager can display & edit screenshots directly
+repo_path, _, _ = get_paths()
+img_dir = os.path.join(repo_path, "img")
+if os.path.exists(img_dir):
+    app.mount("/img", StaticFiles(directory=img_dir), name="img")
+
+app.mount("/root", StaticFiles(directory=repo_path), name="root")
+
 if __name__ == "__main__":
     import uvicorn
     log_message("Starting TV SHOP Portal Manager dev server...")

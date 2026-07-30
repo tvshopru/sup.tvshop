@@ -792,11 +792,14 @@ function openAnnotatorModal(imgPath, targetInput) {
 
     let fullImgUrl = imgPath;
     if (!imgPath.startsWith('http') && !imgPath.startsWith('/')) {
-        fullImgUrl = '/' + imgPath;
+        if (imgPath.startsWith('img/')) {
+            fullImgUrl = '/' + imgPath;
+        } else {
+            fullImgUrl = '/root/' + imgPath;
+        }
     }
 
     annotatorBaseImg = new Image();
-    annotatorBaseImg.crossOrigin = "Anonymous";
     
     showToast("Загрузка изображения для выделения...", "info");
     
@@ -809,7 +812,12 @@ function openAnnotatorModal(imgPath, targetInput) {
     };
 
     annotatorBaseImg.onerror = function() {
-        showToast("Не удалось открыть картинку для редактирования", "error");
+        // Fallback retry via /root/
+        if (!fullImgUrl.startsWith('/root/')) {
+            annotatorBaseImg.src = '/root/' + imgPath.replace(/^\//, '') + '?t=' + new Date().getTime();
+            return;
+        }
+        showToast("Не удалось открыть картинку для редактирования: " + imgPath, "error");
     };
 
     annotatorBaseImg.src = fullImgUrl + (fullImgUrl.includes('?') ? '&' : '?') + 't=' + new Date().getTime();
