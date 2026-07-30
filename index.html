@@ -1048,12 +1048,15 @@
             backdrop-filter: blur(8px) !important;
             -webkit-backdrop-filter: blur(8px) !important;
             z-index: 9999999 !important;
-            display: none !important;
+            display: none;
             align-items: center !important;
             justify-content: center !important;
             box-sizing: border-box !important;
             padding: 10px !important;
             cursor: zoom-out !important;
+        }
+        .mobile-lightbox.active {
+            display: flex !important;
         }
         .mobile-lightbox-img {
             max-width: 100% !important;
@@ -2716,9 +2719,18 @@
             $('body').append(lightbox);
             
             lightbox.on('click', function() {
-                lightbox.fadeOut(200, function() {
+                lightbox.removeClass('active').fadeOut(200, function() {
                     $('.mobile-lightbox-img').removeAttr('src');
                 });
+            });
+
+            $(document).off('click.mobileLightbox').on('click.mobileLightbox', '.mobile-image-card, .mobile-image', function(e) {
+                e.stopPropagation();
+                var src = $(this).find('img').attr('src') || $(this).attr('src');
+                if (src) {
+                    $('.mobile-lightbox-img').attr('src', src);
+                    $('.mobile-lightbox').addClass('active').fadeIn(200);
+                }
             });
             
             window.loadPortalConfig(function() {
@@ -3177,12 +3189,6 @@
                 '</div>'
             );
             container.append(ctaCard);
-            
-            container.find('.mobile-image-card').on('click', function() {
-                var src = $(this).find('img').attr('src');
-                $('.mobile-lightbox-img').attr('src', src);
-                $('.mobile-lightbox').fadeIn(200);
-            });
             
             renderMobileSupportBar(config);
         }
