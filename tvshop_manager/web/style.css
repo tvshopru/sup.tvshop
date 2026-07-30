@@ -42,9 +42,107 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    padding: 30px 20px;
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    padding: 24px 16px;
+    transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1), min-width 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    box-sizing: border-box;
+}
+
+.btn-toggle-sidebar {
+    background: #f3f4f6;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--text-muted);
+    transition: all 0.2s;
+    flex-shrink: 0;
+}
+
+.btn-toggle-sidebar:hover {
+    background: #0070f3;
+    color: #ffffff;
+    border-color: #0070f3;
+}
+
+.btn-toggle-sidebar svg {
+    width: 16px;
+    height: 16px;
+    transition: transform 0.25s;
+}
+
+.manager-sidebar.collapsed {
+    width: 72px;
+    min-width: 72px;
+    padding: 24px 10px;
+}
+
+.manager-sidebar.collapsed .brand-text,
+.manager-sidebar.collapsed .brand-subtitle,
+.manager-sidebar.collapsed .menu-text {
+    display: none !important;
+}
+
+.manager-sidebar.collapsed .brand-title {
+    justify-content: center;
+}
+
+.manager-sidebar.collapsed .btn-toggle-sidebar svg {
+    transform: rotate(180deg);
+}
+
+.manager-sidebar.collapsed .menu-item {
+    justify-content: center;
+    padding: 14px 0;
+}
+
+/* Image Step Preview Box (Half Card Width) */
+.step-img-preview-box {
+    width: 100%;
+    height: 175px;
+    background: #f8fafc;
+    border: 2px dashed #cbd5e1;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.step-img-preview-box:hover {
+    border-color: #0070f3;
+    background: #f1f5f9;
+}
+
+.step-img-preview-box img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.step-img-edit-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 112, 243, 0.9);
+    color: #ffffff;
+    font-size: 0.82em;
+    font-weight: 700;
+    text-align: center;
+    padding: 6px;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.step-img-preview-box:hover .step-img-edit-overlay {
+    opacity: 1;
 }
 
 .sidebar-header {

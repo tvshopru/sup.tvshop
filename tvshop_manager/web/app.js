@@ -42,6 +42,17 @@ $(document).ready(function() {
         }
     });
 
+    // Sidebar toggle handler
+    $('#btn-toggle-sidebar').on('click', function() {
+        $('#manager-sidebar').toggleClass('collapsed');
+        const isCollapsed = $('#manager-sidebar').hasClass('collapsed');
+        localStorage.setItem('sidebar_collapsed', isCollapsed ? '1' : '0');
+    });
+
+    if (localStorage.getItem('sidebar_collapsed') === '1') {
+        $('#manager-sidebar').addClass('collapsed');
+    }
+
     // Save & Deploy Button Handler
     $('#btn-save-deploy').on('click', saveAndDeploy);
 
@@ -609,6 +620,35 @@ function renderStepsList(inst) {
         container.append(card);
     } else {
         steps.forEach((step, idx) => {
+            let imgSrc = step.imageUrl || '';
+            let fullImgUrl = imgSrc;
+            if (imgSrc && !imgSrc.startsWith('http') && !imgSrc.startsWith('/')) {
+                if (imgSrc.startsWith('img/')) {
+                    fullImgUrl = '/' + imgSrc;
+                } else {
+                    fullImgUrl = '/root/' + imgSrc;
+                }
+            }
+
+            let previewHtml = '';
+            if (imgSrc && imgSrc !== 'app_logo.png' && imgSrc !== 'app_logo.png?v=2') {
+                previewHtml = `
+                    <div class="step-img-preview-box" data-step-index="${idx}" title="Кликните на картинку, чтобы открыть графический редактор">
+                        <img src="${escapeHtml(fullImgUrl)}" alt="Превью шага" onerror="this.onerror=null; this.src='/root/${escapeHtml(imgSrc.replace(/^\//, ''))}';">
+                        <div class="step-img-edit-overlay">✏️ Кликните для редактирования</div>
+                    </div>
+                `;
+            } else {
+                previewHtml = `
+                    <div class="step-img-preview-box empty" data-step-index="${idx}" title="Нет картинки шага (кликните, чтобы добавить или выделить)">
+                        <div style="color:var(--text-muted); font-size:0.9em; text-align:center; display:flex; flex-direction:column; align-items:center; gap:6px;">
+                            <svg viewBox="0 0 24 24" style="width:32px;height:32px;opacity:0.4;fill:none;stroke:currentColor;stroke-width:1.5;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                            <span>Картинка не задана</span>
+                        </div>
+                    </div>
+                `;
+            }
+
             const card = $(`
                 <div class="step-card step-editor-card" data-step-index="${idx}">
                     <div class="item-card-header" style="border:none; padding:0; margin-bottom:8px;">
@@ -619,24 +659,44 @@ function renderStepsList(inst) {
                             <button class="btn-icon btn-icon-danger btn-step-delete" data-step-index="${idx}">×</button>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label>Заголовок шага</label>
-                        <input type="text" class="form-control step-title-in" value="${escapeHtml(step.title)}">
-                    </div>
-                    <div class="form-group">
-                        <label>Картинка шага (например, img/step_1.png)</label>
-                        <input type="text" class="form-control step-img-in" value="${escapeHtml(step.imageUrl || 'app_logo.png')}">
-                    </div>
-                    <div class="form-group">
-                        <label>Текст описания шага</label>
-                        <textarea class="form-control step-text-tx">${escapeHtml(step.text || '')}</textarea>
+                    <div class="step-split-row" style="display:grid; grid-template-columns: 1fr 1fr; gap:20px; align-items:start;">
+                        <div style="display:flex; flex-direction:column; gap:14px;">
+                            <div class="form-group">
+                                <label>Заголовок шага</label>
+                                <input type="text" class="form-control step-title-in" value="${escapeHtml(step.title)}">
+                            </div>
+                            <div class="form-group">
+                                <label>Картинка шага (например, img/step_1.png)</label>
+                                <input type="text" class="form-control step-img-in" value="${escapeHtml(step.imageUrl || 'app_logo.png')}">
+                            </div>
+                            <div class="form-group">
+                                <label>Текст описания шага</label>
+                                <textarea class="form-control step-text-tx" style="min-height:90px;">${escapeHtml(step.text || '')}</textarea>
+                            </div>
+                        </div>
+                        <div style="display:flex; flex-direction:column; gap:8px;">
+                            <label style="font-size:0.85em; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">Превью картинки шага</label>
+                            ${previewHtml}
+                        </div>
                     </div>
                 </div>
             `);
             container.append(card);
         });
 
-        container.append('<button class="btn btn-primary btn-add" id="btn-add-step">+ Добавить шаг</button>');
+        container.append('<button class="btn btn-primary btn-add" id="btn-add-step" style="margin-top:10px;">+ Добавить шаг</button>');
+
+        // Click on preview image triggers annotator editor directly
+        container.find('.step-img-preview-box').on('click', function() {
+            const stepIdx = $(this).attr('data-step-index');
+            const input = container.find(`.step-editor-card[data-step-index="${stepIdx}"] .step-img-in`);
+            const imgPath = input.val().trim();
+            if (!imgPath || imgPath === 'app_logo.png' || imgPath === 'app_logo.png?v=2') {
+                input.nextAll('input[type="file"]').click();
+                return;
+            }
+            openAnnotatorModal(imgPath, input);
+        });
 
         // Bind step actions
         $('.btn-step-up').on('click', function() {
