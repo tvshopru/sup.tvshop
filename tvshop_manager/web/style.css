@@ -1212,6 +1212,25 @@ select.form-control {
     border-radius: 0 6px 6px 0 !important;
 }
 
+.tg-content-editor mark, .article-body mark, .tg-text-highlight, span[style*="background-color"] {
+    background-color: #dbeafe !important;
+    color: #0369a1 !important;
+    padding: 2px 6px !important;
+    border-radius: 4px !important;
+    font-weight: 600 !important;
+}
+
+.tg-highlight-box {
+    background: #e0f2fe !important;
+    border-left: 4px solid #0284c7 !important;
+    color: #0369a1 !important;
+    padding: 10px 14px !important;
+    border-radius: 0 8px 8px 0 !important;
+    margin: 12px 0 !important;
+    font-weight: 600 !important;
+    line-height: 1.5 !important;
+}
+
 .tg-content-editor u, .tg-paper-title u, .article-body u {
     text-decoration: underline !important;
     text-underline-offset: 3px !important;

@@ -613,13 +613,18 @@ function initTelegramEditorEvents() {
         $('#tg-btn-theme-toggle span:first').text(isDark ? '🌙' : '☀️');
     });
 
-    // Toolbar Formatting Buttons
+    // Toolbar Formatting Buttons: prevent mousedown from losing selection
+    $('.tg-tb-btn').on('mousedown', function(e) {
+        e.preventDefault();
+    });
+
     $('.tg-tb-btn[data-command]').on('click', function(e) {
         e.preventDefault();
         const cmd = $(this).attr('data-command');
         const val = $(this).attr('data-value') || null;
         document.execCommand(cmd, false, val);
         $('#tg-content-editor').focus();
+        gatherValues();
     });
 
     $('#tg-btn-undo').on('click', function() {
@@ -630,15 +635,31 @@ function initTelegramEditorEvents() {
         document.execCommand('redo', false, null);
     });
 
-    // Highlight marker button
+    // Highlight marker button: toggle highlight on selection
     $('#tg-btn-highlight').on('click', function(e) {
         e.preventDefault();
-        try {
-            document.execCommand('hiliteColor', false, '#dbeafe');
-        } catch(err) {
-            document.execCommand('backColor', false, '#dbeafe');
+        const sel = window.getSelection();
+        if (sel && sel.rangeCount > 0 && !sel.isCollapsed) {
+            const range = sel.getRangeAt(0);
+            const selectedText = range.extractContents();
+            const span = document.createElement('span');
+            span.className = 'tg-text-highlight';
+            span.style.backgroundColor = '#dbeafe';
+            span.style.color = '#0369a1';
+            span.style.padding = '2px 6px';
+            span.style.borderRadius = '4px';
+            span.style.fontWeight = '600';
+            span.appendChild(selectedText);
+            range.insertNode(span);
+        } else {
+            try {
+                document.execCommand('hiliteColor', false, '#dbeafe');
+            } catch(err) {
+                document.execCommand('backColor', false, '#dbeafe');
+            }
         }
         $('#tg-content-editor').focus();
+        gatherValues();
     });
 
     // Link insert
