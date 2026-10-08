@@ -1212,7 +1212,7 @@ select.form-control {
     border-radius: 0 6px 6px 0 !important;
 }
 
-.tg-content-editor mark, .article-body mark, .tg-text-highlight, span[style*="background-color"] {
+.tg-content-editor mark, .article-body mark, .tg-text-highlight, span.tg-text-highlight {
     background-color: #dbeafe !important;
     color: #0369a1 !important;
     padding: 2px 6px !important;
