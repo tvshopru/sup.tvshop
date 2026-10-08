@@ -649,21 +649,20 @@
             var article = null;
             if (artId) {
                 article = articles.find(function(a) { return a.id === artId; });
-                if (!article && !isNaN(parseInt(artId))) {
+                if (!article && !isNaN(parseInt(artId)) && String(parseInt(artId)) === String(artId)) {
                     article = articles[parseInt(artId)];
                 }
-            }
-
-            // Fallback to first article if id not specified
-            if (!article && articles.length > 0) {
+            } else if (articles.length > 0) {
+                // If no ID passed in URL at all, default to first article
                 article = articles[0];
             }
 
             if (!article) {
+                document.title = 'Статья не найдена • TV SHOP';
                 container.innerHTML = 
                     '<div class="error-state">' +
                         '<h2>Статья не найдена</h2>' +
-                        '<p style="margin-top:8px;">Возможно, ссылка устарела или статья была перемещена.</p>' +
+                        '<p style="margin-top:8px;">Возможно, ссылка устарела или статья была удалена.</p>' +
                         '<a href="index.html" class="nav-btn" style="margin-top:20px; display:inline-flex;">← В каталог TV SHOP</a>' +
                     '</div>';
                 return;
