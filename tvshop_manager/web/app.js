@@ -798,7 +798,7 @@ function initTelegramEditorEvents() {
         });
     }
 
-    // Move Image Up (Supports stepping inside numbered/bulleted lists)
+    // Move Image Up (Supports stepping inside numbered/bulleted lists item by item)
     $('#tg-content-editor').on('click', '.tg-img-btn-move-up', function(e) {
         e.preventDefault();
         e.stopPropagation();
@@ -817,7 +817,7 @@ function initTelegramEditorEvents() {
 
             if (items.length > 1) {
                 // Split off the last item into a new following list
-                const lastItem = items.last();
+                const lastItem = items.last().detach();
                 const newFollowingList = $(`<${tag}>`).attr('start', startNum + items.length - 1);
                 newFollowingList.append(lastItem);
 
@@ -829,7 +829,6 @@ function initTelegramEditorEvents() {
             } else {
                 // List has only 1 item, move above the list
                 wrapper.insertBefore(prev);
-                mergeConsecutiveLists();
                 gatherValues();
                 showToast("Фото перемещено выше шага", "info");
                 return;
@@ -837,12 +836,11 @@ function initTelegramEditorEvents() {
         }
 
         wrapper.insertBefore(prev);
-        mergeConsecutiveLists();
         gatherValues();
         showToast("Фото перемещено выше", "info");
     });
 
-    // Move Image Down (Supports stepping inside numbered/bulleted lists)
+    // Move Image Down (Supports stepping inside numbered/bulleted lists item by item)
     $('#tg-content-editor').on('click', '.tg-img-btn-move-down', function(e) {
         e.preventDefault();
         e.stopPropagation();
@@ -861,7 +859,7 @@ function initTelegramEditorEvents() {
 
             if (items.length > 1) {
                 // Split off the first item into a preceding list
-                const firstItem = items.first();
+                const firstItem = items.first().detach();
                 const newPrecedingList = $(`<${tag}>`).attr('start', startNum);
                 newPrecedingList.append(firstItem);
 
@@ -875,7 +873,6 @@ function initTelegramEditorEvents() {
             } else {
                 // List has only 1 item, move below the list
                 wrapper.insertAfter(next);
-                mergeConsecutiveLists();
                 gatherValues();
                 showToast("Фото перемещено ниже шага", "info");
                 return;
@@ -883,7 +880,6 @@ function initTelegramEditorEvents() {
         }
 
         wrapper.insertAfter(next);
-        mergeConsecutiveLists();
         gatherValues();
         showToast("Фото перемещено ниже", "info");
     });
@@ -902,7 +898,6 @@ function initTelegramEditorEvents() {
         e.stopPropagation();
         if (confirm('Удалить это изображение из статьи?')) {
             $(this).closest('.tg-img-wrapper').remove();
-            mergeConsecutiveLists();
             gatherValues();
         }
     });
@@ -910,11 +905,22 @@ function initTelegramEditorEvents() {
     // Clean Drag and Drop for images (Supports dropping between list items)
     let draggedImgWrapper = null;
 
-    $('#tg-content-editor').on('dragstart', '.tg-img-wrapper, img', function(e) {
-        draggedImgWrapper = $(this).closest('.tg-img-wrapper');
+    $('#tg-content-editor').on('dragstart', '.tg-img-wrapper', function(e) {
+        draggedImgWrapper = $(this);
         if (e.originalEvent.dataTransfer) {
             e.originalEvent.dataTransfer.setData('text/plain', 'tvshop_img_drag');
             e.originalEvent.dataTransfer.effectAllowed = 'move';
+        }
+    });
+
+    $('#tg-content-editor').on('dragstart', 'img', function(e) {
+        const wrapper = $(this).closest('.tg-img-wrapper');
+        if (wrapper.length) {
+            draggedImgWrapper = wrapper;
+            if (e.originalEvent.dataTransfer) {
+                e.originalEvent.dataTransfer.setData('text/plain', 'tvshop_img_drag');
+                e.originalEvent.dataTransfer.effectAllowed = 'move';
+            }
         }
     });
 
@@ -943,14 +949,15 @@ function initTelegramEditorEvents() {
                 const parentList = targetLi.closest('ol, ul');
                 const tag = parentList.prop('tagName').toLowerCase();
                 const startNum = parseInt(parentList.attr('start')) || 1;
+                const allItems = parentList.children('li');
                 const liIndex = targetLi.index();
 
-                const precedingItems = parentList.children('li').slice(0, liIndex + 1);
-                const followingItems = parentList.children('li').slice(liIndex + 1);
+                const precedingItems = allItems.slice(0, liIndex + 1);
+                const followingItems = allItems.slice(liIndex + 1);
 
                 if (followingItems.length > 0) {
                     const followingList = $(`<${tag}>`).attr('start', startNum + liIndex + 1);
-                    followingList.append(followingItems);
+                    followingList.append(followingItems.detach());
                     
                     draggedImgWrapper.insertAfter(parentList);
                     followingList.insertAfter(draggedImgWrapper);
@@ -959,7 +966,6 @@ function initTelegramEditorEvents() {
                 }
 
                 wrapEditorImages();
-                mergeConsecutiveLists();
                 gatherValues();
                 showToast("Фото успешно перемещено между шагами!", "success");
                 draggedImgWrapper = null;
@@ -970,7 +976,6 @@ function initTelegramEditorEvents() {
             if (targetBlock.length && !targetBlock.is(draggedImgWrapper)) {
                 draggedImgWrapper.insertBefore(targetBlock);
                 wrapEditorImages();
-                mergeConsecutiveLists();
                 gatherValues();
                 showToast("Фото успешно перемещено!", "success");
             }
