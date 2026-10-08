@@ -1000,8 +1000,8 @@ select.form-control {
 
 .tg-content-editor h2 {
     font-size: 1.45em;
-    border-left: 4px solid #2481cc;
-    padding-left: 12px;
+    font-weight: 800;
+    margin: 1.4em 0 0.5em 0;
 }
 
 .tg-content-editor p {
@@ -1198,9 +1198,6 @@ select.form-control {
     color: #ffffff;
 }
 
-.tg-editor-wrapper.dark-theme .tg-content-editor h2 {
-    border-left-color: #00b4d8;
-}
 
 .tg-editor-wrapper.dark-theme .tg-content-editor a {
     color: #38bdf8;

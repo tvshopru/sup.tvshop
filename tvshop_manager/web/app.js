@@ -839,18 +839,11 @@ function isBulletLine(line) {
 
 function isHeadingLine(line, index, lines) {
     if (line.startsWith('## ') || line.startsWith('### ')) return true;
-    if (line.length > 90) return false;
+    if (line.length > 75) return false;
 
-    // Check for emojis or leading keywords
-    if (/^(🍿|📺|🎬|🔥|✨|👉|⚙️|📱|💡|📢|📌|Так же|Также|Не забывайте|Как |Настройка |Шаг |Инструкция)/i.test(line)) {
+    // Headings starting with emojis or specific section title keywords
+    if (/^(🍿|📺|🎬|🔥|✨|👉|⚙️|📱|💡|📢|📌|Так же в|Также в|Не забывайте|Как настроить|Настройка |Шаг \d+|Инструкция:)/i.test(line)) {
         return true;
-    }
-
-    // Check if next line is a photo or list and current line is short and strong
-    if (index + 1 < lines.length && (isPhotoMarker(lines[index + 1]) || isBulletLine(lines[index + 1]))) {
-        if (line.length < 70 && !line.endsWith('.') && !line.includes(',')) {
-            return true;
-        }
     }
 
     return false;
