@@ -200,20 +200,20 @@ def perform_git_deploy(repo_path: str) -> bool:
 
     log_message("--- GIT DEPLOY START ---")
     
-    # Stage both config and uploaded images folder
-    if not run_cmd(["git", "add", "config.json", "img/"]):
+    # Stage all updated and newly created files (config, articles, html, images)
+    if not run_cmd(["git", "add", "-A"]):
         return False
         
     status_res = subprocess.run(
-        ["git", "status", "--porcelain", "config.json", "img/"],
+        ["git", "status", "--porcelain"],
         cwd=repo_path,
         stdout=subprocess.PIPE,
         text=True
     )
     if not status_res.stdout.strip():
-        log_message("No modifications detected in config.json or img/. Nothing to commit.")
+        log_message("No modifications detected in repository. Checking for unpushed commits...")
     else:
-        if not run_cmd(["git", "commit", "-m", "Update portal config and images via manager application"]):
+        if not run_cmd(["git", "commit", "-m", "Update portal config, articles and assets via manager application"]):
             return False
             
     log_message("Fetching and rebasing remote changes...")
