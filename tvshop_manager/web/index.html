@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TV SHOP Portal Manager</title>
-    <link rel="stylesheet" href="/static/style.css?v=20261008_19">
+    <link rel="stylesheet" href="/static/style.css?v=20261008_20">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
@@ -209,7 +209,7 @@
                                     <div class="tg-article-paper" id="tg-article-paper">
                                         <!-- Realtime Header matching article.html -->
                                         <div class="tg-paper-header" id="tg-paper-header">
-                                            <h1 class="tg-paper-title" id="tg-paper-title" contenteditable="true" spellcheck="false" placeholder="Заголовок статьи...">Заголовок статьи</h1>
+                                            <h1 class="tg-paper-title" id="tg-paper-title" contenteditable="true" spellcheck="true" lang="ru" placeholder="Заголовок статьи...">Заголовок статьи</h1>
                                             <div class="tg-paper-meta-row">
                                                 <span class="tg-paper-author">
                                                     <svg viewBox="0 0 24 24" style="width:15px;height:15px;fill:currentColor;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.75z"/></svg>
@@ -228,7 +228,7 @@
                                         </div>
 
                                         <!-- Telegram Content Body Editor -->
-                                        <div class="tg-content-editor" id="tg-content-editor" contenteditable="true" spellcheck="false" placeholder="Напишите статью или просто вставьте скопированный пост из Telegram (Ctrl+V)..."></div>
+                                        <div class="tg-content-editor" id="tg-content-editor" contenteditable="true" spellcheck="true" lang="ru" placeholder="Напишите статью или просто вставьте скопированный пост из Telegram (Ctrl+V)..."></div>
                                     </div>
                                 </div>
                             </div>
@@ -421,7 +421,7 @@
             </p>
 
             <div class="form-group" style="margin:0;">
-                <textarea id="paste-telegram-textarea" class="form-control" style="min-height:260px; font-size:0.95em; line-height:1.6; font-family:inherit; resize:vertical;" placeholder="Вставьте скопированный пост из Telegram (Ctrl+V)..."></textarea>
+                <textarea id="paste-telegram-textarea" class="form-control" spellcheck="true" lang="ru" style="min-height:260px; font-size:0.95em; line-height:1.6; font-family:inherit; resize:vertical;" placeholder="Вставьте скопированный пост из Telegram (Ctrl+V)..."></textarea>
             </div>
 
             <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; border-top:1px solid var(--border-color); padding-top:16px;">

@@ -1546,11 +1546,11 @@ function renderNews() {
                 </div>
                 <div class="form-group">
                     <label>Заголовок новости</label>
-                    <input type="text" class="form-control news-title-in" value="${escapeHtml(n.title)}">
+                    <input type="text" class="form-control news-title-in" spellcheck="true" lang="ru" value="${escapeHtml(n.title)}">
                 </div>
                 <div class="form-group">
                     <label>Текст описания</label>
-                    <textarea class="form-control news-desc-tx">${escapeHtml(n.desc || '')}</textarea>
+                    <textarea class="form-control news-desc-tx" spellcheck="true" lang="ru">${escapeHtml(n.desc || '')}</textarea>
                 </div>
             </div>
         `);
@@ -1585,7 +1585,7 @@ function renderProducts() {
                 <div class="grid-2col">
                     <div class="form-group">
                         <label>Название товара</label>
-                        <input type="text" class="form-control prod-title-in" value="${escapeHtml(p.title)}">
+                        <input type="text" class="form-control prod-title-in" spellcheck="true" lang="ru" value="${escapeHtml(p.title)}">
                     </div>
                     <div class="form-group">
                         <label>Цена</label>
@@ -1611,7 +1611,7 @@ function renderProducts() {
                 </div>
                 <div class="form-group">
                     <label>Описание / Характеристики</label>
-                    <textarea class="form-control prod-desc-tx">${escapeHtml(p.desc || '')}</textarea>
+                    <textarea class="form-control prod-desc-tx" spellcheck="true" lang="ru">${escapeHtml(p.desc || '')}</textarea>
                 </div>
             </div>
         `);
@@ -1761,7 +1761,7 @@ function renderStepsList(inst) {
             <div class="step-card step-editor-card" data-step-index="0">
                 <div class="form-group">
                     <label>Заголовок памятки</label>
-                    <input type="text" class="form-control step-title-in" value="${escapeHtml(step.title)}">
+                    <input type="text" class="form-control step-title-in" spellcheck="true" lang="ru" value="${escapeHtml(step.title)}">
                 </div>
                 <div class="form-group">
                     <label>Путь к картинке (по умолчанию app_logo.png)</label>
@@ -1769,7 +1769,7 @@ function renderStepsList(inst) {
                 </div>
                 <div class="form-group">
                     <label>Текст памятки</label>
-                    <textarea class="form-control step-text-tx" style="min-height: 180px;">${escapeHtml(step.text || '')}</textarea>
+                    <textarea class="form-control step-text-tx" spellcheck="true" lang="ru" style="min-height: 180px;">${escapeHtml(step.text || '')}</textarea>
                 </div>
             </div>
         `);
@@ -1819,7 +1819,7 @@ function renderStepsList(inst) {
                         <div style="display:flex; flex-direction:column; gap:14px;">
                             <div class="form-group">
                                 <label>Заголовок шага</label>
-                                <input type="text" class="form-control step-title-in" value="${escapeHtml(step.title)}">
+                                <input type="text" class="form-control step-title-in" spellcheck="true" lang="ru" value="${escapeHtml(step.title)}">
                             </div>
                             <div class="form-group">
                                 <label>Картинка шага (например, img/step_1.png)</label>
@@ -1827,7 +1827,7 @@ function renderStepsList(inst) {
                             </div>
                             <div class="form-group">
                                 <label>Текст описания шага</label>
-                                <textarea class="form-control step-text-tx" style="min-height:90px;">${escapeHtml(step.text || '')}</textarea>
+                                <textarea class="form-control step-text-tx" spellcheck="true" lang="ru" style="min-height:90px;">${escapeHtml(step.text || '')}</textarea>
                             </div>
                         </div>
                         <div style="display:flex; flex-direction:column; gap:8px;">
