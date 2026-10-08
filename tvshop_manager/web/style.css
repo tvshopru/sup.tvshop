@@ -950,24 +950,30 @@ select.form-control {
 }
 
 .tg-content-canvas-wrapper {
-    background: #ffffff;
+    background: #f1f5f9;
     border: 1px solid var(--border-color);
     border-radius: 14px;
-    padding: 36px 44px;
+    padding: 24px 16px;
     flex: 1;
     overflow-y: auto;
     min-height: 480px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
     transition: background 0.2s, border-color 0.2s;
 }
 
 .tg-content-editor {
+    max-width: 720px;
+    margin: 0 auto;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 40px 48px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
     color: #1f2937;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     font-size: 1.12em;
-    line-height: 1.7;
+    line-height: 1.75;
     outline: none;
-    min-height: 420px;
+    min-height: 520px;
 }
 
 .tg-content-editor:empty:before {
@@ -980,43 +986,52 @@ select.form-control {
 .tg-content-editor h1, .tg-content-editor h2, .tg-content-editor h3 {
     color: #111827;
     font-weight: 800;
-    margin: 1.2em 0 0.6em 0;
+    margin: 1.3em 0 0.6em 0;
     line-height: 1.3;
+}
+
+.tg-content-editor h1 {
+    font-size: 1.85em;
+    margin-top: 0;
+    margin-bottom: 0.8em;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 12px;
 }
 
 .tg-content-editor h2 {
     font-size: 1.45em;
     border-left: 4px solid #2481cc;
-    padding-left: 10px;
+    padding-left: 12px;
 }
 
 .tg-content-editor p {
-    margin-bottom: 1.1em;
+    margin-bottom: 1.2em;
 }
 
 .tg-content-editor a {
     color: #2481cc;
     text-decoration: underline;
+    text-underline-offset: 3px;
     cursor: pointer;
 }
 
 .tg-content-editor blockquote {
     border-left: 4px solid #2481cc;
-    padding-left: 14px;
-    margin: 1.2em 0;
+    padding-left: 16px;
+    margin: 1.3em 0;
     color: #374151;
     font-style: italic;
     background: #f0f7ff;
-    padding: 10px 16px;
-    border-radius: 0 8px 8px 0;
+    padding: 12px 18px;
+    border-radius: 0 10px 10px 0;
 }
 
 .tg-content-editor ul, .tg-content-editor ol {
-    margin: 0.8em 0 1.2em 1.8em;
+    margin: 0.8em 0 1.3em 24px;
 }
 
 .tg-content-editor li {
-    margin-bottom: 0.4em;
+    margin-bottom: 0.5em;
 }
 
 .tg-content-editor pre, .tg-content-editor code {
@@ -1043,14 +1058,65 @@ select.form-control {
 
 .tg-content-editor img {
     max-width: 100%;
-    max-height: 520px;
+    max-height: 540px;
     border-radius: 10px;
-    margin: 14px 0;
+    margin: 14px 0 6px 0;
     display: block;
     cursor: pointer;
     transition: all 0.2s ease;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
     border: 2px solid transparent;
+}
+
+.tg-content-editor img:hover {
+    border-color: #2481cc;
+    transform: scale(1.008);
+    box-shadow: 0 8px 24px rgba(36, 129, 204, 0.25);
+}
+
+.tg-img-caption {
+    font-size: 0.85em;
+    color: #9ca3af;
+    text-align: center;
+    margin-bottom: 16px;
+    outline: none;
+}
+
+.tg-img-caption:empty:before {
+    content: "Подпись к фото...";
+    color: #cbd5e1;
+}
+
+/* Telegram Photo Placeholder Dropzone */
+.tg-photo-placeholder {
+    border: 2px dashed #93c5fd;
+    background: #eff6ff;
+    border-radius: 12px;
+    padding: 24px;
+    margin: 16px 0;
+    text-align: center;
+    cursor: pointer;
+    color: #2481cc;
+    font-weight: 700;
+    font-size: 0.95em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s;
+    user-select: none;
+}
+
+.tg-photo-placeholder:hover {
+    background: #dbeafe;
+    border-color: #2481cc;
+    transform: translateY(-2px);
+}
+
+.tg-photo-placeholder-sub {
+    font-size: 0.8em;
+    font-weight: 500;
+    color: #64748b;
 }
 
 .tg-content-editor img:hover {

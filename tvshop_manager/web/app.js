@@ -604,12 +604,36 @@ function initTelegramEditorEvents() {
         }
     });
 
+    // Active placeholder reference for image replacement
+    let activePhotoPlaceholder = null;
+
+    // Click on photo placeholder to upload
+    $('#tg-content-editor').on('click', '.tg-photo-placeholder', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        activePhotoPlaceholder = $(this);
+        $('#tg-file-input').click();
+    });
+
+    // Magic Auto-Format Button
+    $('#tg-btn-magic-format').on('click', function() {
+        const rawContent = $('#tg-content-editor').text();
+        if (rawContent && rawContent.trim()) {
+            const formattedHtml = formatTelegramPostContent(rawContent);
+            $('#tg-content-editor').html(formattedHtml);
+            showToast("Пост отформатирован в стиль Telegram!", "success");
+            gatherValues();
+        } else {
+            showToast("Вставьте текст поста в редактор", "info");
+        }
+    });
+
     // Intelligent Paste Handler (Ctrl+V) for Telegram Post Content & Images
     $('#tg-content-editor').on('paste', function(e) {
         const clipboardData = e.originalEvent.clipboardData || window.clipboardData;
         if (!clipboardData) return;
 
-        // Check if pasting an image file from clipboard
+        // Check if pasting an image file directly from clipboard
         const items = clipboardData.items;
         if (items) {
             for (let i = 0; i < items.length; i++) {
@@ -617,25 +641,52 @@ function initTelegramEditorEvents() {
                     const file = items[i].getAsFile();
                     if (file) {
                         e.preventDefault();
-                        uploadArticleImageFile(file);
+                        uploadArticleImageFile(file, activePhotoPlaceholder);
+                        activePhotoPlaceholder = null;
                         return;
                     }
                 }
             }
         }
 
-        // Handle rich HTML paste from Telegram Desktop / Web
+        // If target is inside an existing photo placeholder, paste replaces it
+        const sel = window.getSelection();
+        if (sel && sel.anchorNode) {
+            const node = $(sel.anchorNode);
+            const placeholder = node.closest('.tg-photo-placeholder');
+            if (placeholder.length) {
+                activePhotoPlaceholder = placeholder;
+            }
+        }
+
+        const plainText = clipboardData.getData('text/plain');
+        // If pasted plain text contains Telegram markers like "Photo", "•", "http"
+        if (plainText && (plainText.indexOf('Photo') !== -1 || plainText.indexOf('•') !== -1 || plainText.indexOf('Фото') !== -1 || plainText.indexOf('\n') !== -1)) {
+            e.preventDefault();
+            const formattedHtml = formatTelegramPostContent(plainText);
+            document.execCommand('insertHTML', false, formattedHtml);
+            showToast("Пост Telegram успешно вставлен и структурирован!", "success");
+            gatherValues();
+            return;
+        }
+
+        // Handle rich HTML paste
         const htmlData = clipboardData.getData('text/html');
         if (htmlData) {
-            // Clean up unwanted tags while preserving formatting, images, links and lists
             const tempDiv = $('<div>').html(htmlData);
             tempDiv.find('script, style, meta, link, iframe').remove();
-            
-            // Check if user copied whole post
+            // Remove dirty inline styles (e.g. background-color: yellow, color: rgb(0,0,0))
+            tempDiv.find('*').each(function() {
+                const el = $(this);
+                if (el.is('mark') || el.css('background-color') === 'rgb(255, 255, 0)' || el.css('background-color') === 'yellow') {
+                    el.css('background-color', '');
+                }
+            });
             const cleanedHtml = tempDiv.html();
             if (cleanedHtml && cleanedHtml.trim().length > 0) {
                 e.preventDefault();
                 document.execCommand('insertHTML', false, cleanedHtml);
+                gatherValues();
                 return;
             }
         }
@@ -661,7 +712,111 @@ function initTelegramEditorEvents() {
     });
 }
 
-function uploadArticleImageFile(file) {
+function formatTelegramPostContent(rawText) {
+    if (!rawText || !rawText.trim()) return '';
+
+    const lines = rawText.split(/\r?\n/);
+    let titleExtracted = false;
+    let htmlOutput = [];
+    let inList = false;
+    let listType = null;
+
+    function closeList() {
+        if (inList) {
+            htmlOutput.push(listType === 'ul' ? '</ul>' : '</ol>');
+            inList = false;
+            listType = null;
+        }
+    }
+
+    for (let i = 0; i < lines.length; i++) {
+        let line = lines[i].trim();
+        if (!line) {
+            closeList();
+            continue;
+        }
+
+        // 1. Photo marker from Telegram copy
+        if (line.toLowerCase() === 'photo' || line.toLowerCase() === 'фото' || line.startsWith('Photo, [') || line.startsWith('Фото, [')) {
+            closeList();
+            htmlOutput.push(`
+                <div class="tg-photo-placeholder" data-placeholder="true">
+                    <span style="font-size:1.8em;">📷</span>
+                    <span>Нажмите, чтобы вставить скриншот</span>
+                    <span class="tg-photo-placeholder-sub">или просто перетащите файл / вставьте из буфера (Ctrl+V)</span>
+                </div>
+                <div class="tg-img-caption" contenteditable="true">Подпись</div>
+            `);
+            continue;
+        }
+
+        // 2. Auto Title detection on first line
+        if (!titleExtracted && i === 0 && line.length > 3 && line.length < 120) {
+            const cleanTitle = line.replace(/^[•\-\*#\s]+/, '').trim();
+            const curTitle = $('#input-art-title').val().trim();
+            if (!curTitle || curTitle === 'Новая статья' || curTitle === 'Без названия') {
+                $('#input-art-title').val(cleanTitle).trigger('input');
+            }
+            titleExtracted = true;
+            continue;
+        }
+
+        // 3. Bullet list item (• or - or *)
+        const bulletMatch = line.match(/^[•\-\*]\s+(.*)$/);
+        if (bulletMatch) {
+            if (!inList || listType !== 'ul') {
+                closeList();
+                htmlOutput.push('<ul>');
+                inList = true;
+                listType = 'ul';
+            }
+            htmlOutput.push(`<li>${escapeAndFormatInline(bulletMatch[1])}</li>`);
+            continue;
+        }
+
+        // 4. Numbered list item (1. or 2))
+        const numMatch = line.match(/^(\d+)[\.\)]\s+(.*)$/);
+        if (numMatch) {
+            if (!inList || listType !== 'ol') {
+                closeList();
+                htmlOutput.push('<ol>');
+                inList = true;
+                listType = 'ol';
+            }
+            htmlOutput.push(`<li>${escapeAndFormatInline(numMatch[2])}</li>`);
+            continue;
+        }
+
+        closeList();
+
+        // 5. Quote / Highlight banner
+        if (line.startsWith('>') || line.startsWith('💡') || line.startsWith('📢') || line.startsWith('И все после') || line.startsWith('Важно:') || line.startsWith('Внимание:')) {
+            const cleanQuote = line.replace(/^>\s*/, '');
+            htmlOutput.push(`<blockquote><b>${escapeAndFormatInline(cleanQuote)}</b></blockquote>`);
+            continue;
+        }
+
+        // 6. Section Subheading
+        if (line.startsWith('## ') || line.startsWith('### ')) {
+            htmlOutput.push(`<h2>${escapeAndFormatInline(line.replace(/^#+\s*/, ''))}</h2>`);
+            continue;
+        }
+
+        // 7. Regular paragraph
+        htmlOutput.push(`<p>${escapeAndFormatInline(line)}</p>`);
+    }
+
+    closeList();
+    return htmlOutput.join('\n');
+}
+
+function escapeAndFormatInline(text) {
+    if (!text) return '';
+    const urlRegex = /(https?:\/\/[^\s<]+)/g;
+    return text.replace(urlRegex, '<a href="$1" target="_blank">$1</a>');
+}
+
+function uploadArticleImageFile(file, targetPlaceholder) {
     const formData = new FormData();
     formData.append('file', file);
 
@@ -675,9 +830,14 @@ function uploadArticleImageFile(file) {
         processData: false,
         contentType: false,
         success: function(response) {
-            const imgHtml = '<p><img src="' + response.path + '" style="max-width:100%; border-radius:10px; margin:14px 0;" title="Кликните для выделения кнопок" /></p>';
-            $('#tg-content-editor').focus();
-            document.execCommand('insertHTML', false, imgHtml);
+            const imgHtml = '<img src="' + response.path + '" style="max-width:100%; border-radius:10px; margin:14px 0 6px 0;" title="Кликните для редактирования / аннотаций" />';
+            
+            if (targetPlaceholder && targetPlaceholder.length) {
+                targetPlaceholder.replaceWith(imgHtml);
+            } else {
+                $('#tg-content-editor').focus();
+                document.execCommand('insertHTML', false, imgHtml);
+            }
             showToast("Изображение вставлено в статью!", "success");
             appendLog("Изображение добавлено в статью: " + response.path);
             gatherValues();
