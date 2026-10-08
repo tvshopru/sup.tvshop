@@ -1104,18 +1104,18 @@ function formatInlineMarkup(text) {
 function isPhotoMarker(line) {
     if (!line) return false;
     const lower = $('<div>').html(line).text().trim().toLowerCase();
-    return lower === 'photo' || lower === 'фото' || lower.startsWith('photo, [') || lower.startsWith('фото, [');
+    return lower === 'photo' || lower === 'фото' || lower.startsWith('photo, [') || lower.startsWith('фото, [') || lower.startsWith('📷');
 }
 
 function isBulletLine(line) {
-    return /^[\s\u00A0]*(?:[•●▪▫◦✦★\-\*—–]|&bull;|&#8226;|&middot;)/.test(line);
+    return /^[\s\u00A0\u200B\t]*(?:[•\u2022\u2023\u2043\u25E6\u25AA\u25AB\u25CF\u25CB\-\*\—\–]|&bull;|&#8226;|&middot;)/.test(line);
 }
 
 function isStepOrBulletLine(line) {
     if (!line) return false;
     if (isBulletLine(line)) return true;
     const plain = $('<div>').html(line).text().trim();
-    if (plain.length < 140 && /^(Открываем|Нажимаем|Заходим|Сканируем|Регистрируемся|Переходим|Выбираем|Вводим|Включаем|Выключаем|Скачиваем|Устанавливаем|Жмем|Жмём|Кликаем|Авторизуемся|Вставляем|Копируем|Подключаем|Запускаем|Перезагружаем|Добавляем|Ищем|Проверяем|Подтверждаем|Ждем|Ждём|Выполняем)\b/i.test(plain)) {
+    if (plain.length < 150 && /^(Открыва[ею]м|Нажима[ею]м|Заход[ия]м|Сканиру[ею]м|Регистриру[ею]мся|Переход[ия]м|Выбира[ею]м|Ввод[ия]м|Включа[ею]м|Выключа[ею]м|Скачива[ею]м|Устанавлива[ею]м|Жм[её]м|Клика[ею]м|Авторизу[ею]мся|Вставля[ею]м|Копиру[ею]м|Подключа[ею]м|Запуска[ею]м|Перезагружа[ею]м|Добавля[ею]м|Ищ[ею]м|Проверя[ею]м|Подтвержда[ею]м|Жд[её]м|Выполня[ею]м|Откройте|Нажмите|Зайдите|Сканируйте|Зарегистрируйтесь|Перейдите|Выберите|Введите|Включите|Выключите|Скачайте|Установите|Кликните|Авторизуйтесь|Вставьте|Скопируйте|Подключите|Запустите|Перезагрузите|Добавьте|Найдите|Проверьте|Подтвердите|Подождите|Выполните)\b/i.test(plain)) {
         return true;
     }
     return false;
@@ -1124,7 +1124,7 @@ function isStepOrBulletLine(line) {
 function isHeadingLine(line) {
     const plain = $('<div>').html(line).text().trim();
     if (plain.startsWith('## ') || plain.startsWith('### ')) return true;
-    if (plain.length > 85) return false;
+    if (plain.length > 90) return false;
 
     // Headings starting with emojis or specific section title keywords
     if (/^(👉|⚙️|📱|💡|📢|📌|🔥|✨|Так же в|Также в|Не забывайте|Как настроить|Настройка|Шаг \d+|Инструкция:)/i.test(plain)) {
