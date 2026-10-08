@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <title>Инструкции и статьи • TV SHOP</title>
+    <meta name="description" content="База знаний, пошаговые инструкции и полезные статьи для пользователей TV SHOP">
+    <link rel="icon" type="image/png" href="app_logo.png?v=2">
+
+    <!-- Open Graph for Telegram & Social previews -->
+    <meta property="og:site_name" content="TV SHOP">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Инструкции и статьи • TV SHOP">
+    <meta property="og:description" content="База знаний, пошаговые инструкции и полезные статьи для пользователей TV SHOP">
+    <meta property="og:image" content="app_logo.png">
+
+    <style>
+        :root {
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-primary: #111827;
+            --text-secondary: #4b5563;
+            --text-muted: #9ca3af;
+            --accent-color: #2481cc;
+            --accent-hover: #1b66a3;
+            --accent-light: #e8f4fd;
+            --border-color: #e5e7eb;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+            --shadow-md: 0 4px 14px rgba(0,0,0,0.08);
+            --header-bg: rgba(255, 255, 255, 0.9);
+        }
+
+        body.dark-theme {
+            --bg-color: #0f141c;
+            --card-bg: #171f2b;
+            --text-primary: #f3f4f6;
+            --text-secondary: #cbd5e1;
+            --text-muted: #64748b;
+            --accent-color: #00b4d8;
+            --accent-hover: #0096c7;
+            --accent-light: rgba(0, 180, 216, 0.12);
+            --border-color: #243042;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.4);
+            --shadow-md: 0 4px 20px rgba(0,0,0,0.4);
+            --header-bg: rgba(15, 20, 28, 0.9);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            font-size: 16px;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+
+        /* Top Bar */
+        .top-navbar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            background: var(--header-bg);
+            border-bottom: 1px solid var(--border-color);
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .brand-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--text-primary);
+            font-weight: 800;
+            font-size: 1.05em;
+            letter-spacing: 0.3px;
+        }
+
+        .brand-link img {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            object-fit: contain;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-btn {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            border-radius: 20px;
+            padding: 6px 14px;
+            font-size: 0.88em;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .nav-btn:hover {
+            background: var(--accent-light);
+            color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+
+        .nav-btn-icon {
+            width: 36px;
+            height: 36px;
+            padding: 0;
+            justify-content: center;
+        }
+
+        /* Main Container */
+        .catalog-container {
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 36px 20px 80px 20px;
+            flex: 1;
+        }
+
+        /* Header Hero */
+        .catalog-hero {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .catalog-hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--accent-light);
+            color: var(--accent-color);
+            font-size: 0.85em;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 20px;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .catalog-hero-title {
+            font-size: 2.2em;
+            font-weight: 800;
+            color: var(--text-primary);
+            letter-spacing: -0.5px;
+            margin-bottom: 8px;
+        }
+
+        .catalog-hero-sub {
+            font-size: 1.05em;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Search & Filter Bar */
+        .search-filter-box {
+            margin-bottom: 28px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .search-input-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        .search-input-wrapper svg {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 18px;
+            height: 18px;
+            color: var(--text-muted);
+            pointer-events: none;
+        }
+
+        .search-input {
+            width: 100%;
+            background: var(--card-bg);
+            border: 1.5px solid var(--border-color);
+            border-radius: 12px;
+            padding: 12px 16px 12px 46px;
+            font-size: 1em;
+            color: var(--text-primary);
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .search-input:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(36, 129, 204, 0.15);
+        }
+
+        /* Category Chips */
+        .category-chips {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .category-chip {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.15s;
+        }
+
+        .category-chip:hover {
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+        }
+
+        .category-chip.active {
+            background: var(--accent-color);
+            border-color: var(--accent-color);
+            color: #ffffff;
+        }
+
+        /* Articles Grid */
+        .articles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        @media (max-width: 650px) {
+            .articles-grid {
+                grid-template-columns: 1fr;
+            }
+            .catalog-hero-title {
+                font-size: 1.8em;
+            }
+        }
+
+        /* Article Card */
+        .article-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            text-decoration: none;
+            color: inherit;
+            box-shadow: var(--shadow-sm);
+            transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .article-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--accent-color);
+        }
+
+        .card-top-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 0.82em;
+            color: var(--text-muted);
+        }
+
+        .card-type-tag {
+            background: var(--accent-light);
+            color: var(--accent-color);
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 0.85em;
+        }
+
+        .card-title {
+            font-size: 1.15em;
+            font-weight: 800;
+            color: var(--text-primary);
+            line-height: 1.4;
+            margin-bottom: 10px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .card-snippet {
+            font-size: 0.9em;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            margin-bottom: 18px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            flex-grow: 1;
+        }
+
+        .card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-top: 1px solid var(--border-color);
+            padding-top: 14px;
+            margin-top: auto;
+            font-size: 0.88em;
+            font-weight: 700;
+            color: var(--accent-color);
+        }
+
+        .card-footer svg {
+            transition: transform 0.2s;
+        }
+
+        .article-card:hover .card-footer svg {
+            transform: translateX(4px);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+            grid-column: 1 / -1;
+        }
+
+        .empty-state svg {
+            width: 48px;
+            height: 48px;
+            margin-bottom: 12px;
+            opacity: 0.4;
+        }
+
+        /* Channel Promo Banner */
+        .channel-banner {
+            margin-top: 50px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .channel-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .channel-info img {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            object-fit: contain;
+            background: #fff;
+            padding: 4px;
+            border: 1px solid var(--border-color);
+        }
+
+        .tg-join-btn {
+            background: #2481cc;
+            color: #ffffff !important;
+            padding: 10px 22px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.92em;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.2s;
+        }
+
+        .tg-join-btn:hover {
+            background: #1b66a3;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Navigation Bar -->
+    <header class="top-navbar">
+        <a href="index.html" class="brand-link" title="На главную TV SHOP">
+            <img src="app_logo.png?v=2" alt="TV SHOP Logo">
+            <span>TV SHOP</span>
+        </a>
+        <div class="nav-actions">
+            <button class="nav-btn nav-btn-icon" id="theme-toggle-btn" title="Сменить тему (День/Ночь)">
+                <svg id="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px;display:none;">
+                    <circle cx="12" cy="12" r="5"></circle>
+                    <line x1="12" y1="1" x2="12" y2="3"></line>
+                    <line x1="12" y1="21" x2="12" y2="23"></line>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                    <line x1="1" y1="12" x2="3" y2="12"></line>
+                    <line x1="21" y1="12" x2="23" y2="12"></line>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                </svg>
+                <svg id="theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px;">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                </svg>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="catalog-container">
+        
+        <!-- Hero Title -->
+        <div class="catalog-hero">
+            <div class="catalog-hero-badge">База знаний</div>
+            <h1 class="catalog-hero-title">Инструкции и статьи</h1>
+            <p class="catalog-hero-sub">Пошаговые руководства, настройка приложений и полезные материалы от команды TV SHOP</p>
+        </div>
+
+        <!-- Search & Filter Controls -->
+        <div class="search-filter-box">
+            <div class="search-input-wrapper">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <input type="text" id="catalog-search" class="search-input" placeholder="Поиск по инструкциям и статьям...">
+            </div>
+            
+            <div class="category-chips">
+                <button type="button" class="category-chip active" data-filter="all">Все материалы</button>
+                <button type="button" class="category-chip" data-filter="youtube">YouTube</button>
+                <button type="button" class="category-chip" data-filter="tv">Телевидение</button>
+                <button type="button" class="category-chip" data-filter="settings">Настройка</button>
+                <button type="button" class="category-chip" data-filter="apps">Приложения</button>
+            </div>
+        </div>
+
+        <!-- Grid of Articles -->
+        <div class="articles-grid" id="articles-grid">
+            <!-- Rendered dynamically -->
+        </div>
+
+        <!-- Channel Promo Footer -->
+        <div class="channel-banner">
+            <div class="channel-info">
+                <img src="app_logo.png?v=2" alt="TV SHOP Logo">
+                <div>
+                    <div style="font-weight: 800; font-size: 1.1em; color: var(--text-primary);">TV SHOP — Поддержка и инструкции</div>
+                    <div style="font-size: 0.9em; color: var(--text-muted);">Задавайте вопросы и читайте свежие новости в Telegram</div>
+                </div>
+            </div>
+            <a id="channel-tg-link" href="https://t.me/android_tv_shop" target="_blank" class="tg-join-btn">
+                <svg viewBox="0 0 24 24" fill="currentColor" style="width:18px;height:18px;"><path d="M5.4 11.9l11.7-4.5c.5-.2 1.1.1 1 .7l-2 9.4c-.1.6-.7.8-1.2.5l-3.3-2.4-1.6 1.5c-.2.2-.4.3-.7.3l.2-3.4 6.2-5.6c.3-.2-.1-.4-.4-.2l-7.7 4.9-3.3-1c-.7-.2-.7-.7.1-1z"/></svg>
+                Наш Telegram
+            </a>
+        </div>
+
+    </main>
+
+    <script>
+        // Theme Management
+        (function initTheme() {
+            var savedTheme = localStorage.getItem('article-theme') || 'light';
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark-theme');
+                updateThemeIcons(true);
+            } else {
+                document.body.classList.remove('dark-theme');
+                updateThemeIcons(false);
+            }
+        })();
+
+        function updateThemeIcons(isDark) {
+            var sun = document.getElementById('theme-icon-sun');
+            var moon = document.getElementById('theme-icon-moon');
+            if (sun && moon) {
+                sun.style.display = isDark ? 'block' : 'none';
+                moon.style.display = isDark ? 'none' : 'block';
+            }
+        }
+
+        document.getElementById('theme-toggle-btn').addEventListener('click', function() {
+            var isDark = document.body.classList.toggle('dark-theme');
+            localStorage.setItem('article-theme', isDark ? 'dark' : 'light');
+            updateThemeIcons(isDark);
+        });
+
+        // Load and Render Articles
+        var allArticles = [];
+        var activeFilter = 'all';
+
+        fetch('config.json?v=' + Date.now())
+            .then(function(res) { return res.json(); })
+            .then(function(config) {
+                allArticles = config.articles || [];
+                
+                var tgContact = config.supportTg || '@android_tv_shop';
+                var tgUrl = 'https://t.me/' + tgContact.replace('@', '');
+                var tgBtn = document.getElementById('channel-tg-link');
+                if (tgBtn) tgBtn.setAttribute('href', tgUrl);
+
+                renderGrid();
+            })
+            .catch(function(err) {
+                document.getElementById('articles-grid').innerHTML = 
+                    '<div class="empty-state"><h3>Ошибка загрузки каталога</h3><p>' + err.message + '</p></div>';
+            });
+
+        function extractSnippet(html) {
+            if (!html) return '';
+            var temp = document.createElement('div');
+            temp.innerHTML = html;
+            var text = temp.textContent || temp.innerText || '';
+            return text.replace(/\s+/g, ' ').trim();
+        }
+
+        function categorizeArticle(art) {
+            var title = (art.title || '').toLowerCase();
+            var text = (art.contentHtml || '').toLowerCase();
+            var full = title + ' ' + text;
+
+            if (full.includes('youtube') || full.includes('ютуб') || full.includes('byebye')) return 'youtube';
+            if (full.includes('телевизор') || full.includes('телевизо') || full.includes('televizo') || full.includes('yosso') || full.includes('плейлист') || full.includes('тв') || full.includes('канал')) return 'tv';
+            if (full.includes('питани') || full.includes('кэш') || full.includes('удали') || full.includes('настройк')) return 'settings';
+            return 'apps';
+        }
+
+        function renderGrid() {
+            var grid = document.getElementById('articles-grid');
+            var searchVal = (document.getElementById('catalog-search').value || '').trim().toLowerCase();
+
+            var filtered = allArticles.filter(function(art) {
+                var cat = categorizeArticle(art);
+                if (activeFilter !== 'all' && cat !== activeFilter) {
+                    return false;
+                }
+
+                if (searchVal) {
+                    var title = (art.title || '').toLowerCase();
+                    var snippet = extractSnippet(art.contentHtml).toLowerCase();
+                    if (!title.includes(searchVal) && !snippet.includes(searchVal)) {
+                        return false;
+                    }
+                }
+                return true;
+            });
+
+            if (filtered.length === 0) {
+                grid.innerHTML = 
+                    '<div class="empty-state">' +
+                        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>' +
+                        '<h3>Ничего не найдено</h3>' +
+                        '<p style="margin-top:6px;">Попробуйте изменить поисковый запрос или выбрать другую категорию</p>' +
+                    '</div>';
+                return;
+            }
+
+            var html = '';
+            filtered.forEach(function(art) {
+                var snippet = extractSnippet(art.contentHtml);
+                var artUrl = 'article.html?id=' + encodeURIComponent(art.id);
+                var isInstruction = (art.title || '').toLowerCase().includes('настройк') || (art.title || '').toLowerCase().includes('инструкц') || (art.title || '').toLowerCase().includes('восстановлен') || (art.title || '').toLowerCase().includes('как ');
+                var tagLabel = isInstruction ? 'Инструкция' : 'Статья';
+
+                html += 
+                    '<a href="' + artUrl + '" class="article-card">' +
+                        '<div>' +
+                            '<div class="card-top-meta">' +
+                                '<span class="card-type-tag">' + tagLabel + '</span>' +
+                                '<span>' + (art.date || 'Сегодня') + '</span>' +
+                            '</div>' +
+                            '<h3 class="card-title">' + escapeHtml(art.title) + '</h3>' +
+                            '<p class="card-snippet">' + escapeHtml(snippet) + '</p>' +
+                        '</div>' +
+                        '<div class="card-footer">' +
+                            '<span>Читать руководство</span>' +
+                            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:16px;height:16px;"><polyline points="9 18 15 12 9 6"></polyline></svg>' +
+                        '</div>' +
+                    '</a>';
+            });
+
+            grid.innerHTML = html;
+        }
+
+        // Search Input Event
+        document.getElementById('catalog-search').addEventListener('input', function() {
+            renderGrid();
+        });
+
+        // Filter Chips Event
+        document.querySelectorAll('.category-chip').forEach(function(chip) {
+            chip.addEventListener('click', function() {
+                document.querySelectorAll('.category-chip').forEach(function(c) { c.classList.remove('active'); });
+                this.classList.add('active');
+                activeFilter = this.getAttribute('data-filter');
+                renderGrid();
+            });
+        });
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+    </script>
+</body>
+</html>
