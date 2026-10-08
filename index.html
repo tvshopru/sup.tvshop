@@ -2963,17 +2963,25 @@
                 };
                 
                 var activeInstId = getQueryParam('inst');
+                var activeArtId = getQueryParam('art');
                 var activeTab = getQueryParam('tab');
                 
-                if (activeInstId) {
+                if (activeArtId) {
+                    mobileCurrentTab = 'articles';
+                    mobileActiveArtId = activeArtId;
+                    mobileActiveInstId = null;
+                } else if (activeInstId) {
                     mobileCurrentTab = 'instructions';
                     mobileActiveInstId = activeInstId;
+                    mobileActiveArtId = null;
                 } else if (activeTab) {
                     mobileCurrentTab = activeTab;
                     mobileActiveInstId = null;
+                    mobileActiveArtId = null;
                 } else {
                     mobileCurrentTab = 'main';
                     mobileActiveInstId = null;
+                    mobileActiveArtId = null;
                 }
             }
 
