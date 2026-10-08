@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TV SHOP Portal Manager</title>
-    <link rel="stylesheet" href="/static/style.css?v=20261008_10">
+    <link rel="stylesheet" href="/static/style.css?v=20261008_11">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
@@ -153,19 +153,16 @@
                 </div>
 
                 <!-- Pane: Articles (Telegram WYSIWYG) -->
-                <div class="pane" id="pane-articles" style="max-width:100%;">
-                    <div class="pane-header-actions" style="margin-bottom: 12px;">
-                        <h2 class="pane-title" style="margin:0; font-size:1.25em;">✍️ Статьи (Telegram)</h2>
-                        <div style="display:flex; gap:10px; align-items:center;">
-                            <button type="button" class="btn btn-secondary" id="btn-paste-clipboard-article" style="display:inline-flex; align-items:center; gap:6px; font-weight:700;">
-                                📋 Вставить из буфера
-                            </button>
-                            <button class="btn btn-add" id="btn-add-article">+ Новая статья</button>
-                        </div>
-                    </div>
+                <div class="pane" id="pane-articles" style="max-width:100%; padding: 8px 14px !important;">
                     <div class="tg-split-layout">
-                        <!-- Left column: Articles list -->
+                        <!-- Left column: Articles list & action buttons -->
                         <div class="tg-split-left">
+                            <div style="display:flex; flex-direction:column; gap:6px; margin-bottom:8px;">
+                                <button class="btn btn-add" id="btn-add-article" style="width:100%; justify-content:center; padding:9px 12px; font-weight:700;">+ Новая статья</button>
+                                <button type="button" class="btn btn-secondary" id="btn-paste-clipboard-article" style="width:100%; justify-content:center; display:inline-flex; align-items:center; gap:6px; font-weight:700; padding:8px 12px; font-size:0.88em;">
+                                    📋 Вставить из буфера
+                                </button>
+                            </div>
                             <div class="instructions-list" id="articles-sidebar-list">
                                 <!-- Dynamic Articles Titles -->
                             </div>

@@ -872,14 +872,23 @@ select.form-control {
     border-radius: 4px;
 }
 
-/* ========================================================= */
-/* Telegram Articles WYSIWYG Editor Styles (3-Column Layout)  */
-/* ========================================================= */
+#pane-articles {
+    padding: 6px 14px !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    display: flex;
+    flex-direction: column;
+}
+
+#pane-articles.active {
+    display: flex !important;
+}
+
 .tg-split-layout {
     display: flex;
     gap: 16px;
-    height: calc(100vh - 150px);
-    min-height: 520px;
+    height: calc(100vh - 78px);
+    flex-grow: 1;
     overflow: hidden;
     width: 100%;
 }
