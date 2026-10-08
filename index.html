@@ -1165,6 +1165,78 @@
         .mobile-nav-item.active {
             color: var(--mobile-accent) !important;
         }
+
+        /* Article content styling on mobile */
+        .article-mobile-body {
+            color: var(--mobile-text) !important;
+            font-size: 1.05em !important;
+            line-height: 1.65 !important;
+            word-break: break-word !important;
+        }
+        .article-mobile-body p {
+            margin: 0 0 14px 0 !important;
+            line-height: 1.65 !important;
+        }
+        .article-mobile-body h1, .article-mobile-body h2, .article-mobile-body h3, .article-mobile-body h4 {
+            color: var(--mobile-text) !important;
+            margin: 20px 0 10px 0 !important;
+            line-height: 1.3 !important;
+        }
+        .article-mobile-body a {
+            color: var(--mobile-accent) !important;
+            text-decoration: underline !important;
+            word-break: break-all !important;
+        }
+        .article-mobile-body img {
+            max-width: 100% !important;
+            height: auto !important;
+            border-radius: 10px !important;
+            margin: 14px 0 !important;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.3) !important;
+            cursor: zoom-in !important;
+            display: block !important;
+        }
+        .article-mobile-body blockquote {
+            border-left: 4px solid var(--mobile-accent) !important;
+            margin: 14px 0 !important;
+            padding: 10px 16px !important;
+            background: rgba(0, 229, 255, 0.05) !important;
+            border-radius: 0 8px 8px 0 !important;
+            color: var(--mobile-text) !important;
+            font-style: italic !important;
+        }
+        .article-mobile-body pre, .article-mobile-body code {
+            font-family: 'Consolas', 'Courier New', monospace !important;
+            background: rgba(0, 0, 0, 0.3) !important;
+            color: var(--mobile-accent) !important;
+            border-radius: 6px !important;
+            padding: 2px 6px !important;
+            font-size: 0.92em !important;
+        }
+        .article-mobile-body pre {
+            padding: 12px !important;
+            overflow-x: auto !important;
+            white-space: pre-wrap !important;
+            word-break: break-all !important;
+        }
+        .article-mobile-body ul, .article-mobile-body ol {
+            margin: 0 0 14px 0 !important;
+            padding-left: 24px !important;
+        }
+        .article-mobile-body li {
+            margin-bottom: 6px !important;
+        }
+        .article-mobile-body s, .article-mobile-body del {
+            text-decoration: line-through !important;
+            opacity: 0.7 !important;
+        }
+        .article-mobile-body u {
+            text-decoration: underline !important;
+        }
+        .article-mobile-body b, .article-mobile-body strong {
+            font-weight: 700 !important;
+            color: var(--mobile-text) !important;
+        }
     </style>
 </head>
 <body style="background: #1d1f20;">
@@ -2947,7 +3019,7 @@
                 });
             });
 
-            $(document).off('click.mobileLightbox').on('click.mobileLightbox', '.mobile-image-card, .mobile-image', function(e) {
+            $(document).off('click.mobileLightbox').on('click.mobileLightbox', '.mobile-image-card, .mobile-image, .article-mobile-body img', function(e) {
                 e.stopPropagation();
                 var src = $(this).find('img').attr('src') || $(this).attr('src');
                 if (src) {
@@ -3074,35 +3146,6 @@
         }
 
         var mobileActiveArtId = null;
-
-        function syncMobileStateFromUrl() {
-            var getQueryParam = function(name) {
-                var match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
-                return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
-            };
-            
-            var activeInstId = getQueryParam('inst');
-            var activeArtId = getQueryParam('art');
-            var activeTab = getQueryParam('tab');
-            
-            if (activeArtId) {
-                mobileCurrentTab = 'articles';
-                mobileActiveArtId = activeArtId;
-                mobileActiveInstId = null;
-            } else if (activeInstId) {
-                mobileCurrentTab = 'instructions';
-                mobileActiveInstId = activeInstId;
-                mobileActiveArtId = null;
-            } else if (activeTab) {
-                mobileCurrentTab = activeTab;
-                mobileActiveInstId = null;
-                mobileActiveArtId = null;
-            } else {
-                mobileCurrentTab = 'main';
-                mobileActiveInstId = null;
-                mobileActiveArtId = null;
-            }
-        }
 
         function renderMobileContent() {
             var container = $('.mobile-container');
@@ -3294,31 +3337,6 @@
             }
         }
 
-        function renderMobileContent() {
-            var container = $('.mobile-container');
-            container.empty();
-            $('.mobile-support-bar').remove();
-            
-            renderMobileNavBar();
-            
-            var config = window.portal_config || {};
-            
-            if (mobileCurrentTab === 'main') {
-                renderMobileMainTab(container, config);
-            } else if (mobileCurrentTab === 'shop') {
-                renderMobileShopTab(container, config);
-            } else if (mobileCurrentTab === 'instructions') {
-                if (mobileActiveInstId) {
-                    var instList = config.instructions || [];
-                    var activeInst = instList.find(function(i) { return i.id === mobileActiveInstId; });
-                    if (activeInst) {
-                        renderMobileSingleInstruction(activeInst, config);
-                        return;
-                    }
-                }
-                renderMobileInstructionsList(container, config);
-            }
-        }
 
         function renderMobileMainTab(container, config) {
             renderMobileHeader('TV SHOP', false, null, false);
