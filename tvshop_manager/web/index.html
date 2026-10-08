@@ -156,7 +156,12 @@
                 <div class="pane" id="pane-articles" style="max-width:100%;">
                     <div class="pane-header-actions" style="margin-bottom: 12px;">
                         <h2 class="pane-title" style="margin:0; font-size:1.25em;">✍️ Статьи (Telegram)</h2>
-                        <button class="btn btn-add" id="btn-add-article">+ Новая статья</button>
+                        <div style="display:flex; gap:10px; align-items:center;">
+                            <button type="button" class="btn btn-secondary" id="btn-paste-clipboard-article" style="display:inline-flex; align-items:center; gap:6px; font-weight:700;">
+                                📋 Вставить из буфера
+                            </button>
+                            <button class="btn btn-add" id="btn-add-article">+ Новая статья</button>
+                        </div>
                     </div>
                     <div class="tg-split-layout">
                         <!-- Left column: Articles list -->
@@ -193,6 +198,9 @@
                                     <div class="tg-tb-group">
                                         <button type="button" class="tg-tb-btn" id="tg-btn-link" title="Вставить ссылку">🔗</button>
                                         <button type="button" class="tg-tb-btn" id="tg-btn-image" title="Вставить изображение">🖼️</button>
+                                        <button type="button" class="tg-tb-btn" id="tg-btn-paste-in-editor" title="Вставить из буфера обмена (Ctrl+V)" style="width:auto; padding:0 10px; border-radius:16px; font-size:0.85em; gap:4px; display:inline-flex; color:#0070f3; background:#eef2f6;">
+                                            <span>📋</span> <span>Вставить из буфера</span>
+                                        </button>
                                         <button type="button" class="tg-tb-btn" id="tg-btn-magic-format" title="Авто-форматирование из Telegram" style="width:auto; padding:0 10px; border-radius:16px; font-size:0.85em; gap:4px; display:inline-flex; color:#2481cc; background:#e8f4fd;">
                                             <span>✨</span> <span>Авто-формат TG</span>
                                         </button>

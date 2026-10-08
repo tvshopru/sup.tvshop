@@ -107,23 +107,12 @@ $(document).ready(function() {
 
     // Add Article (Telegram format)
     $('#btn-add-article').on('click', function() {
-        gatherValues();
-        if (!portalConfig.articles) portalConfig.articles = [];
+        createNewBlankArticle();
+    });
 
-        const today = new Date();
-        const months = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
-        const dateStr = today.getDate() + ' ' + months[today.getMonth()] + ' ' + today.getFullYear();
-
-        const nextIdx = portalConfig.articles.length;
-        portalConfig.articles.unshift({
-            id: 'art-' + new Date().getTime(),
-            title: 'Новая статья',
-            date: dateStr,
-            videoUrl: '',
-            contentHtml: '<h2>Заголовок статьи</h2><p>Напишите текст или вставьте скопированный пост из Telegram (Ctrl+V)...</p>'
-        });
-        renderArticlesList();
-        selectArticle(0);
+    // Paste New Article directly from Clipboard
+    $('#btn-paste-clipboard-article').on('click', function() {
+        pasteArticleFromClipboard(true);
     });
 
     // Add Instruction Guide
@@ -687,12 +676,17 @@ function initTelegramEditorEvents() {
         $('#tg-file-input').click();
     });
 
+    // In-Editor Paste Button in toolbar
+    $('#tg-btn-paste-in-editor').on('click', function() {
+        pasteArticleFromClipboard(false);
+    });
+
     // Magic Auto-Format Button
     $('#tg-btn-magic-format').on('click', function() {
         const rawHtml = $('#tg-content-editor').html();
         const rawText = $('#tg-content-editor').text();
         if (rawHtml && rawHtml.trim()) {
-            const formattedHtml = formatTelegramClipboard(rawHtml, rawText);
+            const formattedHtml = formatTelegramClipboard(rawHtml, rawText, false);
             $('#tg-content-editor').html(formattedHtml);
             showToast("Пост отформатирован в стиль Telegram!", "success");
             gatherValues();
@@ -737,7 +731,7 @@ function initTelegramEditorEvents() {
 
         if ((htmlData && htmlData.trim().length > 0) || (plainText && plainText.trim().length > 0)) {
             e.preventDefault();
-            const formattedHtml = formatTelegramClipboard(htmlData, plainText);
+            const formattedHtml = formatTelegramClipboard(htmlData, plainText, false);
             document.execCommand('insertHTML', false, formattedHtml);
             showToast("Пост Telegram успешно вставлен и структурирован!", "success");
             gatherValues();
@@ -763,6 +757,90 @@ function initTelegramEditorEvents() {
         };
         openAnnotatorModal(src, proxyInput);
     });
+}
+
+function createNewBlankArticle() {
+    gatherValues();
+    if (!portalConfig.articles) portalConfig.articles = [];
+
+    const today = new Date();
+    const months = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
+    const dateStr = today.getDate() + ' ' + months[today.getMonth()] + ' ' + today.getFullYear();
+
+    portalConfig.articles.unshift({
+        id: 'art-' + new Date().getTime(),
+        title: 'Новая статья',
+        date: dateStr,
+        videoUrl: '',
+        contentHtml: '<p>Напишите текст или нажмите кнопку «Вставить из буфера» (Ctrl+V)...</p>'
+    });
+    renderArticlesList();
+    selectArticle(0);
+}
+
+// Paste directly from clipboard (button action)
+async function pasteArticleFromClipboard(isNewArticle) {
+    let htmlData = '';
+    let plainText = '';
+
+    try {
+        if (navigator.clipboard && navigator.clipboard.read) {
+            const clipboardItems = await navigator.clipboard.read();
+            for (const item of clipboardItems) {
+                if (item.types.includes('text/html')) {
+                    const blob = await item.getType('text/html');
+                    htmlData = await blob.text();
+                }
+                if (item.types.includes('text/plain')) {
+                    const blob = await item.getType('text/plain');
+                    plainText = await blob.text();
+                }
+            }
+        } else if (navigator.clipboard && navigator.clipboard.readText) {
+            plainText = await navigator.clipboard.readText();
+        }
+    } catch (err) {
+        console.warn('Clipboard API access:', err);
+    }
+
+    if (!htmlData && !plainText) {
+        const manual = prompt('Вставьте скопированный пост из Telegram (Ctrl+V):');
+        if (manual) {
+            plainText = manual;
+        } else {
+            showToast("Буфер обмена пуст или доступ заблокирован браузером", "info");
+            return;
+        }
+    }
+
+    if (isNewArticle) {
+        gatherValues();
+        if (!portalConfig.articles) portalConfig.articles = [];
+
+        const today = new Date();
+        const months = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
+        const dateStr = today.getDate() + ' ' + months[today.getMonth()] + ' ' + today.getFullYear();
+
+        const formattedHtml = formatTelegramClipboard(htmlData, plainText, true);
+        const titleVal = $('#input-art-title').val().trim() || 'Статья Telegram';
+
+        const newArt = {
+            id: 'art-' + new Date().getTime(),
+            title: titleVal,
+            date: dateStr,
+            videoUrl: '',
+            contentHtml: formattedHtml
+        };
+        portalConfig.articles.unshift(newArt);
+        renderArticlesList();
+        selectArticle(0);
+        showToast("Новая статья создана и структурирована из буфера!", "success");
+    } else {
+        const formattedHtml = formatTelegramClipboard(htmlData, plainText, false);
+        $('#tg-content-editor').html(formattedHtml);
+        showToast("Пост вставлен и структурирован в текущую статью!", "success");
+        gatherValues();
+    }
 }
 
 // Comprehensive Telegram Post Parser (Preserves <u>, <b>, <i>, <ul><li> bullets, <blockquote>, <h2>)
@@ -803,10 +881,10 @@ function formatTelegramClipboard(htmlData, plainText) {
         sourceContent = plainText || '';
     }
 
-    return parseTelegramBlocks(sourceContent);
+    return parseTelegramBlocks(sourceContent, isNewArticle);
 }
 
-function parseTelegramBlocks(content) {
+function parseTelegramBlocks(content, isNewArticle) {
     if (!content || !content.trim()) return '';
 
     // Split by newlines, decode and clean lines
@@ -825,17 +903,18 @@ function parseTelegramBlocks(content) {
 
     let i = 0;
 
-    // 1. Title detection only if article title is empty or line is an explicit header
+    // 1. Title detection only if creating new article or current title is default
     const currentTitle = $('#input-art-title').val().trim();
-    const hasTitle = currentTitle && currentTitle !== 'Без названия' && currentTitle !== 'Заголовок статьи';
+    const shouldExtractTitle = isNewArticle || (!currentTitle || currentTitle === 'Без названия' || currentTitle === 'Новая статья' || currentTitle === 'Заголовок статьи');
 
-    if (!hasTitle && rawLines.length > 0) {
+    if (shouldExtractTitle && rawLines.length > 0) {
         const firstLine = rawLines[0];
         const plainFirst = $('<div>').html(firstLine).text().trim();
         
         // Only treat first line as title if it's not a bullet/photo and is short
-        if (!isPhotoMarker(firstLine) && !isBulletLine(firstLine) && plainFirst.length <= 85) {
+        if (!isPhotoMarker(firstLine) && !isBulletLine(firstLine) && plainFirst.length <= 90) {
             $('#input-art-title').val(plainFirst).trigger('input');
+            $('#tg-paper-title').text(plainFirst);
             i = 1; // consume first line as title
         }
     }
@@ -862,8 +941,8 @@ function parseTelegramBlocks(content) {
             continue;
         }
 
-        // Bullet list item: checks for •, ●, ▪, ▫, ◦, ✦, ★, -, —, –, *, &bull;, &#8226;
-        const bulletMatch = line.match(/^[\s\u00A0]*(?:[•●▪▫◦✦★\-\*—–]|&bull;|&#8226;|&middot;)\s*(.*)$/i);
+        // Bullet list item: checks for •, \u2022, ●, ▪, ▫, ◦, ✦, ★, -, —, –, *, &bull;, &#8226;
+        const bulletMatch = line.match(/^[\s\u00A0\u200B\t]*(?:[•\u2022\u2023\u2043\u25E6\u25AA\u25AB\u25CF\u25CB\-\*\—\–]|&bull;|&#8226;|&middot;)\s*(.+)$/i);
         if (bulletMatch) {
             if (!inList || listType !== 'ul') {
                 closeList();
@@ -876,7 +955,7 @@ function parseTelegramBlocks(content) {
         }
 
         // Numbered list item (1. or 2))
-        const numMatch = line.match(/^[\s\u00A0]*(\d+)[\.\)]\s*(.*)$/);
+        const numMatch = line.match(/^[\s\u00A0\u200B\t]*(\d+)[\.\)]\s*(.+)$/);
         if (numMatch) {
             if (!inList || listType !== 'ol') {
                 closeList();

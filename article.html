@@ -278,12 +278,30 @@
             color: var(--text-primary);
         }
 
-        .article-body ul, .article-body ol {
-            margin: 0.8em 0 1.4em 24px;
+        .article-body u {
+            text-decoration: underline !important;
+            text-underline-offset: 3px !important;
+        }
+
+        .article-body ul {
+            margin: 1em 0 1.4em 0;
+            padding-left: 32px;
+            list-style-type: disc !important;
+            list-style-position: outside;
+        }
+
+        .article-body ol {
+            margin: 1em 0 1.4em 0;
+            padding-left: 32px;
+            list-style-type: decimal !important;
+            list-style-position: outside;
         }
 
         .article-body li {
-            margin-bottom: 0.4em;
+            display: list-item !important;
+            list-style-type: inherit !important;
+            margin-bottom: 0.5em;
+            line-height: 1.7;
         }
 
         .article-body pre, .article-body code {
