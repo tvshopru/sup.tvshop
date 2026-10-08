@@ -506,7 +506,7 @@ function selectArticle(idx) {
     $('#tg-content-editor').html(art.contentHtml || '');
 
     // Set and calculate direct article link
-    const prodBase = "https://sup.tvshop.ru";
+    const prodBase = "https://tvshopru.github.io/sup.tvshop";
     const artId = art.id || ('art-' + idx);
     const directUrl = `${prodBase}/?art=${encodeURIComponent(artId)}`;
     $('#art-direct-link-text').text(directUrl);
