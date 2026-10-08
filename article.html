@@ -797,6 +797,19 @@
                     el.remove();
                 }
             });
+            var lis = temp.querySelectorAll('li');
+            lis.forEach(function(li) {
+                var txt = li.textContent.trim();
+                if (!txt && !li.querySelector('img, span, strong, b, a')) {
+                    li.remove();
+                }
+            });
+            var lists = temp.querySelectorAll('ol, ul');
+            lists.forEach(function(l) {
+                if (!l.querySelector('li')) {
+                    l.remove();
+                }
+            });
             return temp.innerHTML;
         }
 

@@ -378,7 +378,7 @@ function gatherValues() {
         art.date = $('#input-art-date').val();
         art.videoUrl = $('#input-art-video').val().trim();
         
-        // Clean un-replaced photo placeholders and default caption text before saving
+        // Clean un-replaced photo placeholders, default captions, and empty li/p tags
         const tempDiv = $('<div>').html($('#tg-content-editor').html());
         tempDiv.find('.tg-photo-placeholder').remove();
         tempDiv.find('.tg-img-hover-actions').remove();
@@ -390,6 +390,18 @@ function gatherValues() {
         tempDiv.find('.tg-img-caption').each(function() {
             const text = $(this).text().trim();
             if (!text || text === 'Подпись' || text === 'Подпись к фото...') {
+                $(this).remove();
+            }
+        });
+        // Remove empty li or empty ol/ul elements
+        tempDiv.find('li').each(function() {
+            const txt = $(this).text().trim();
+            if (!txt && !$(this).children('img, span, strong, b, a').length) {
+                $(this).remove();
+            }
+        });
+        tempDiv.find('ol, ul').each(function() {
+            if (!$(this).children('li').length) {
                 $(this).remove();
             }
         });
@@ -1512,15 +1524,54 @@ function uploadArticleImageFile(file, targetPlaceholder) {
                         <button type="button" class="tg-img-btn tg-img-btn-del" title="Удалить фото">❌</button>
                     </div>
                 </div>
-                <p><br></p>
             `;
             
             if (targetPlaceholder && targetPlaceholder.length) {
                 targetPlaceholder.replaceWith(imgHtml);
             } else {
-                $('#tg-content-editor').focus();
-                document.execCommand('insertHTML', false, imgHtml);
+                const sel = window.getSelection();
+                let inserted = false;
+
+                if (sel && sel.anchorNode) {
+                    const node = $(sel.anchorNode);
+                    const targetLi = node.closest('li');
+                    
+                    if (targetLi.length && targetLi.closest('#tg-content-editor').length) {
+                        const parentList = targetLi.closest('ol, ul');
+                        const tag = parentList.prop('tagName').toLowerCase();
+                        const startNum = parseInt(parentList.attr('start')) || 1;
+                        const allItems = parentList.children('li');
+                        const liIndex = targetLi.index();
+
+                        const followingItems = allItems.slice(liIndex + 1);
+                        const $imgNode = $(imgHtml);
+
+                        if (followingItems.length > 0) {
+                            const followingList = $(`<${tag}>`).attr('start', startNum + liIndex + 1);
+                            followingList.append(followingItems.detach());
+                            
+                            $imgNode.insertAfter(parentList);
+                            followingList.insertAfter($imgNode);
+                        } else {
+                            $imgNode.insertAfter(parentList);
+                        }
+                        inserted = true;
+                    }
+                }
+
+                if (!inserted) {
+                    $('#tg-content-editor').focus();
+                    try {
+                        inserted = document.execCommand('insertHTML', false, imgHtml);
+                    } catch (e) {
+                        inserted = false;
+                    }
+                    if (!inserted) {
+                        $('#tg-content-editor').append(imgHtml);
+                    }
+                }
             }
+
             wrapEditorImages();
             showToast("Изображение вставлено в статью!", "success");
             appendLog("Изображение добавлено в статью: " + response.path);
