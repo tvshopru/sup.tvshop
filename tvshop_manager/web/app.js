@@ -689,9 +689,10 @@ function initTelegramEditorEvents() {
 
     // Magic Auto-Format Button
     $('#tg-btn-magic-format').on('click', function() {
-        const rawContent = $('#tg-content-editor').text();
-        if (rawContent && rawContent.trim()) {
-            const formattedHtml = formatTelegramPostContent(rawContent);
+        const rawHtml = $('#tg-content-editor').html();
+        const rawText = $('#tg-content-editor').text();
+        if (rawHtml && rawHtml.trim()) {
+            const formattedHtml = formatTelegramClipboard(rawHtml, rawText);
             $('#tg-content-editor').html(formattedHtml);
             showToast("Пост отформатирован в стиль Telegram!", "success");
             gatherValues();
@@ -731,36 +732,16 @@ function initTelegramEditorEvents() {
             }
         }
 
+        const htmlData = clipboardData.getData('text/html');
         const plainText = clipboardData.getData('text/plain');
-        // If pasted plain text contains Telegram markers like "Photo", "•", "http"
-        if (plainText && (plainText.indexOf('Photo') !== -1 || plainText.indexOf('•') !== -1 || plainText.indexOf('Фото') !== -1 || plainText.indexOf('\n') !== -1)) {
+
+        if ((htmlData && htmlData.trim().length > 0) || (plainText && plainText.trim().length > 0)) {
             e.preventDefault();
-            const formattedHtml = formatTelegramPostContent(plainText);
+            const formattedHtml = formatTelegramClipboard(htmlData, plainText);
             document.execCommand('insertHTML', false, formattedHtml);
             showToast("Пост Telegram успешно вставлен и структурирован!", "success");
             gatherValues();
             return;
-        }
-
-        // Handle rich HTML paste
-        const htmlData = clipboardData.getData('text/html');
-        if (htmlData) {
-            const tempDiv = $('<div>').html(htmlData);
-            tempDiv.find('script, style, meta, link, iframe').remove();
-            // Remove dirty inline styles (e.g. background-color: yellow, color: rgb(0,0,0))
-            tempDiv.find('*').each(function() {
-                const el = $(this);
-                if (el.is('mark') || el.css('background-color') === 'rgb(255, 255, 0)' || el.css('background-color') === 'yellow') {
-                    el.css('background-color', '');
-                }
-            });
-            const cleanedHtml = tempDiv.html();
-            if (cleanedHtml && cleanedHtml.trim().length > 0) {
-                e.preventDefault();
-                document.execCommand('insertHTML', false, cleanedHtml);
-                gatherValues();
-                return;
-            }
         }
     });
 
@@ -784,14 +765,55 @@ function initTelegramEditorEvents() {
     });
 }
 
-function formatTelegramPostContent(rawText) {
-    if (!rawText || !rawText.trim()) return '';
+// Comprehensive Telegram Post Parser (Preserves <u>, <b>, <i>, <ul><li> bullets, <blockquote>, <h2>)
+function formatTelegramClipboard(htmlData, plainText) {
+    let sourceContent = '';
 
-    const lines = rawText.split(/\r?\n/).map(l => l.trim());
+    if (htmlData && htmlData.trim().length > 0) {
+        const temp = $('<div>').html(htmlData);
+        temp.find('script, style, meta, link, iframe').remove();
+
+        // Normalize inline styles into semantic tags
+        temp.find('*').each(function() {
+            const el = $(this);
+            const style = (el.attr('style') || '').toLowerCase();
+
+            if (style.indexOf('text-decoration: underline') !== -1 || style.indexOf('text-decoration-line: underline') !== -1 || el.is('ins')) {
+                el.wrapInner('<u></u>');
+            }
+            if (style.indexOf('font-weight: bold') !== -1 || style.indexOf('font-weight: 700') !== -1 || el.is('strong')) {
+                el.wrapInner('<b></b>');
+            }
+            if (style.indexOf('font-style: italic') !== -1 || el.is('em')) {
+                el.wrapInner('<i></i>');
+            }
+            if (style.indexOf('line-through') !== -1 || el.is('del') || el.is('strike')) {
+                el.wrapInner('<s></s>');
+            }
+        });
+
+        // Convert breaks and block elements into newline-separated chunks
+        temp.find('br').replaceWith('\n');
+        temp.find('p, div, li, h1, h2, h3, blockquote').each(function() {
+            $(this).prepend('\n').append('\n');
+        });
+
+        sourceContent = temp.html();
+    } else {
+        sourceContent = plainText || '';
+    }
+
+    return parseTelegramBlocks(sourceContent);
+}
+
+function parseTelegramBlocks(content) {
+    if (!content || !content.trim()) return '';
+
+    // Split by newlines, decode and clean lines
+    const rawLines = content.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0);
     let htmlOutput = [];
     let inList = false;
     let listType = null;
-    let titleExtracted = false;
 
     function closeList() {
         if (inList) {
@@ -803,10 +825,10 @@ function formatTelegramPostContent(rawText) {
 
     let i = 0;
 
-    // 1. Gather full multi-line title at the start until empty line or Photo marker
+    // 1. Title detection at start (Multi-line title before first photo or bullet)
     let titleParts = [];
-    while (i < lines.length) {
-        let line = lines[i];
+    while (i < rawLines.length) {
+        let line = rawLines[i];
         if (!line) {
             if (titleParts.length > 0) break;
             i++;
@@ -820,14 +842,14 @@ function formatTelegramPostContent(rawText) {
     }
 
     if (titleParts.length > 0) {
-        const fullTitle = titleParts.join(' ').replace(/\s+/g, ' ').trim();
-        $('#input-art-title').val(fullTitle).trigger('input');
-        titleExtracted = true;
+        const fullTitleHtml = titleParts.join(' ').replace(/\s+/g, ' ').trim();
+        const cleanTitleText = $('<div>').html(fullTitleHtml).text().trim();
+        $('#input-art-title').val(cleanTitleText).trigger('input');
     }
 
     // 2. Process remaining lines
-    for (; i < lines.length; i++) {
-        let line = lines[i];
+    for (; i < rawLines.length; i++) {
+        let line = rawLines[i];
         if (!line) {
             closeList();
             continue;
@@ -847,8 +869,8 @@ function formatTelegramPostContent(rawText) {
             continue;
         }
 
-        // Bullet list item (• or - or * or —)
-        const bulletMatch = line.match(/^[•\-\*—]\s+(.*)$/);
+        // Bullet list item (•, ●, ▪, ▫, ◦, ✦, ★, -, —, –, *)
+        const bulletMatch = line.match(/^[\s\u00A0]*[•●▪▫◦✦★\-\*—–]\s*(.*)$/i);
         if (bulletMatch) {
             if (!inList || listType !== 'ul') {
                 closeList();
@@ -856,12 +878,12 @@ function formatTelegramPostContent(rawText) {
                 inList = true;
                 listType = 'ul';
             }
-            htmlOutput.push(`<li>${escapeAndFormatInline(bulletMatch[1])}</li>`);
+            htmlOutput.push(`<li>${formatInlineMarkup(bulletMatch[1])}</li>`);
             continue;
         }
 
         // Numbered list item (1. or 2))
-        const numMatch = line.match(/^(\d+)[\.\)]\s+(.*)$/);
+        const numMatch = line.match(/^[\s\u00A0]*(\d+)[\.\)]\s*(.*)$/);
         if (numMatch) {
             if (!inList || listType !== 'ol') {
                 closeList();
@@ -869,61 +891,86 @@ function formatTelegramPostContent(rawText) {
                 inList = true;
                 listType = 'ol';
             }
-            htmlOutput.push(`<li>${escapeAndFormatInline(numMatch[2])}</li>`);
+            htmlOutput.push(`<li>${formatInlineMarkup(numMatch[2])}</li>`);
             continue;
         }
 
         closeList();
 
         // Quote / Callout Banner
-        if (line.startsWith('>') || line.startsWith('И все после') || line.startsWith('Важно:') || line.startsWith('Внимание:')) {
-            const cleanQuote = line.replace(/^>\s*/, '');
-            htmlOutput.push(`<blockquote><b>${escapeAndFormatInline(cleanQuote)}</b></blockquote>`);
+        if (line.startsWith('&gt;') || line.startsWith('>') || line.startsWith('<blockquote>') || line.startsWith('И все после') || line.startsWith('Важно:') || line.startsWith('Внимание:')) {
+            const cleanQuote = line.replace(/^(&gt;|>)\s*/, '').replace(/<\/?blockquote>/gi, '');
+            htmlOutput.push(`<blockquote><b>${formatInlineMarkup(cleanQuote)}</b></blockquote>`);
             continue;
         }
 
         // Section Subheading (h2) detection:
-        // Starts with ##, or starts with emoji/keywords (🍿, 📺, 🎬, 👉, Так же, Не забывайте, Как, Шаг), or is short and ends with ! or :
-        if (isHeadingLine(line, i, lines)) {
+        if (isHeadingLine(line, i, rawLines)) {
             const cleanHead = line.replace(/^#+\s*/, '').trim();
-            htmlOutput.push(`<h2>${escapeAndFormatInline(cleanHead)}</h2>`);
+            htmlOutput.push(`<h2>${formatInlineMarkup(cleanHead)}</h2>`);
+            continue;
+        }
+
+        // Existing image tag
+        if (line.startsWith('<img') || line.indexOf('<img') !== -1) {
+            htmlOutput.push(line);
             continue;
         }
 
         // Regular paragraph
-        htmlOutput.push(`<p>${escapeAndFormatInline(line)}</p>`);
+        htmlOutput.push(`<p>${formatInlineMarkup(line)}</p>`);
     }
 
     closeList();
     return htmlOutput.join('\n');
 }
 
+function formatInlineMarkup(text) {
+    if (!text) return '';
+    let result = text;
+
+    // Convert markdown underlines: __text__ -> <u>text</u>
+    result = result.replace(/__([^_]+)__/g, '<u>$1</u>');
+
+    // Convert markdown bold: **text** -> <b>text</b>
+    result = result.replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>');
+
+    // Convert markdown italic: *text* -> <i>text</i>
+    result = result.replace(/(^|[^\*])\*([^\*]+)\*([^\*]|$)/g, '$1<i>$2</i>$3');
+
+    // Convert markdown strike: ~~text~~ -> <s>text</s>
+    result = result.replace(/~~([^~]+)~~/g, '<s>$1</s>');
+
+    // Autolink standalone URLs not already inside <a> or href
+    const urlRegex = /(?<!href=["'])(https?:\/\/[^\s<"']+)/g;
+    result = result.replace(urlRegex, function(url) {
+        return `<a href="${url}" target="_blank">${url}</a>`;
+    });
+
+    return result;
+}
+
 function isPhotoMarker(line) {
     if (!line) return false;
-    const lower = line.toLowerCase();
+    const lower = $('<div>').html(line).text().trim().toLowerCase();
     return lower === 'photo' || lower === 'фото' || lower.startsWith('photo, [') || lower.startsWith('фото, [');
 }
 
 function isBulletLine(line) {
-    return /^[•\-\*—\d+[\.\)]]/.test(line);
+    return /^[\s\u00A0]*[•●▪▫◦✦★\-\*—–]/.test(line);
 }
 
 function isHeadingLine(line, index, lines) {
-    if (line.startsWith('## ') || line.startsWith('### ')) return true;
-    if (line.length > 75) return false;
+    const plain = $('<div>').html(line).text().trim();
+    if (plain.startsWith('## ') || plain.startsWith('### ')) return true;
+    if (plain.length > 75) return false;
 
     // Headings starting with emojis or specific section title keywords
-    if (/^(🍿|📺|🎬|🔥|✨|👉|⚙️|📱|💡|📢|📌|Так же в|Также в|Не забывайте|Как настроить|Настройка |Шаг \d+|Инструкция:)/i.test(line)) {
+    if (/^(🍿|📺|🎬|🔥|✨|👉|⚙️|📱|💡|📢|📌|Так же в|Также в|Не забывайте|Как настроить|Настройка |Шаг \d+|Инструкция:)/i.test(plain)) {
         return true;
     }
 
     return false;
-}
-
-function escapeAndFormatInline(text) {
-    if (!text) return '';
-    const urlRegex = /(https?:\/\/[^\s<]+)/g;
-    return text.replace(urlRegex, '<a href="$1" target="_blank">$1</a>');
 }
 
 function uploadArticleImageFile(file, targetPlaceholder) {
