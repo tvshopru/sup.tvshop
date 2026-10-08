@@ -732,7 +732,45 @@ function initTelegramEditorEvents() {
         if ((htmlData && htmlData.trim().length > 0) || (plainText && plainText.trim().length > 0)) {
             e.preventDefault();
             const formattedHtml = formatTelegramClipboard(htmlData, plainText, false);
-            document.execCommand('insertHTML', false, formattedHtml);
+            
+            const currentEditorText = $('#tg-content-editor').text().trim();
+            const isPlaceholderText = currentEditorText === 'Напишите текст или нажмите кнопку «Вставить из буфера» (Ctrl+V)...' || !currentEditorText;
+
+            if (isPlaceholderText) {
+                $('#tg-content-editor').html(formattedHtml);
+            } else {
+                let inserted = false;
+                try {
+                    inserted = document.execCommand('insertHTML', false, formattedHtml);
+                } catch (cmdErr) {
+                    inserted = false;
+                }
+                if (!inserted) {
+                    const sel = window.getSelection();
+                    if (sel && sel.rangeCount > 0) {
+                        const range = sel.getRangeAt(0);
+                        range.deleteContents();
+                        const el = document.createElement("div");
+                        el.innerHTML = formattedHtml;
+                        const frag = document.createDocumentFragment();
+                        let node, lastNode;
+                        while ((node = el.firstChild)) {
+                            lastNode = frag.appendChild(node);
+                        }
+                        range.insertNode(frag);
+                        if (lastNode) {
+                            range.setStartAfter(lastNode);
+                            range.collapse(true);
+                            sel.removeAllRanges();
+                            sel.addRange(range);
+                        }
+                    } else {
+                        $('#tg-content-editor').append(formattedHtml);
+                    }
+                }
+            }
+
+            updateArticleReadingTime();
             showToast("Пост Telegram успешно вставлен и структурирован!", "success");
             gatherValues();
             return;
@@ -796,17 +834,25 @@ async function pasteArticleFromClipboard(isNewArticle) {
                     plainText = await blob.text();
                 }
             }
-        } else if (navigator.clipboard && navigator.clipboard.readText) {
-            plainText = await navigator.clipboard.readText();
         }
     } catch (err) {
-        console.warn('Clipboard API access:', err);
+        console.warn('Clipboard read error (falling back to readText):', err);
+    }
+
+    if (!htmlData && !plainText) {
+        try {
+            if (navigator.clipboard && navigator.clipboard.readText) {
+                plainText = await navigator.clipboard.readText();
+            }
+        } catch (err2) {
+            console.warn('Clipboard readText error:', err2);
+        }
     }
 
     if (!htmlData && !plainText) {
         const manual = prompt('Вставьте скопированный пост из Telegram (Ctrl+V):');
-        if (manual) {
-            plainText = manual;
+        if (manual && manual.trim()) {
+            plainText = manual.trim();
         } else {
             showToast("Буфер обмена пуст или доступ заблокирован браузером", "info");
             return;
@@ -838,50 +884,57 @@ async function pasteArticleFromClipboard(isNewArticle) {
     } else {
         const formattedHtml = formatTelegramClipboard(htmlData, plainText, false);
         $('#tg-content-editor').html(formattedHtml);
+        updateArticleReadingTime();
         showToast("Пост вставлен и структурирован в текущую статью!", "success");
         gatherValues();
     }
 }
 
 // Comprehensive Telegram Post Parser (Preserves <u>, <b>, <i>, <ul><li> bullets, <blockquote>, <h2>)
-function formatTelegramClipboard(htmlData, plainText) {
+function formatTelegramClipboard(htmlData, plainText, isNewArticle) {
     let sourceContent = '';
 
     if (htmlData && htmlData.trim().length > 0) {
-        const temp = $('<div>').html(htmlData);
-        temp.find('script, style, meta, link, iframe').remove();
+        try {
+            const temp = $('<div>').html(htmlData);
+            temp.find('script, style, meta, link, iframe').remove();
 
-        // Normalize inline styles into semantic tags
-        temp.find('*').each(function() {
-            const el = $(this);
-            const style = (el.attr('style') || '').toLowerCase();
+            // Normalize inline styles into semantic tags
+            temp.find('*').each(function() {
+                const el = $(this);
+                const style = (el.attr('style') || '').toLowerCase();
 
-            if (style.indexOf('text-decoration: underline') !== -1 || style.indexOf('text-decoration-line: underline') !== -1 || el.is('ins')) {
-                el.wrapInner('<u></u>');
-            }
-            if (style.indexOf('font-weight: bold') !== -1 || style.indexOf('font-weight: 700') !== -1 || el.is('strong')) {
-                el.wrapInner('<b></b>');
-            }
-            if (style.indexOf('font-style: italic') !== -1 || el.is('em')) {
-                el.wrapInner('<i></i>');
-            }
-            if (style.indexOf('line-through') !== -1 || el.is('del') || el.is('strike')) {
-                el.wrapInner('<s></s>');
-            }
-        });
+                if (style.indexOf('text-decoration: underline') !== -1 || style.indexOf('text-decoration-line: underline') !== -1 || el.is('ins')) {
+                    el.wrapInner('<u></u>');
+                }
+                if (style.indexOf('font-weight: bold') !== -1 || style.indexOf('font-weight: 700') !== -1 || el.is('strong')) {
+                    el.wrapInner('<b></b>');
+                }
+                if (style.indexOf('font-style: italic') !== -1 || el.is('em')) {
+                    el.wrapInner('<i></i>');
+                }
+                if (style.indexOf('line-through') !== -1 || el.is('del') || el.is('strike')) {
+                    el.wrapInner('<s></s>');
+                }
+            });
 
-        // Convert breaks and block elements into newline-separated chunks
-        temp.find('br').replaceWith('\n');
-        temp.find('p, div, li, h1, h2, h3, blockquote').each(function() {
-            $(this).prepend('\n').append('\n');
-        });
+            // Convert breaks and block elements into newline-separated chunks
+            temp.find('br').replaceWith('\n');
 
-        sourceContent = temp.html();
+            // Strip block element containers so clean lines remain
+            let rawHtml = temp.html()
+                .replace(/<\/?(p|div|li|ul|ol|h1|h2|h3|h4|h5|h6|table|tbody|tr|td)[^>]*>/gi, '\n');
+
+            sourceContent = rawHtml;
+        } catch (err) {
+            console.error('Error in HTML clipboard parsing:', err);
+            sourceContent = plainText || '';
+        }
     } else {
         sourceContent = plainText || '';
     }
 
-    return parseTelegramBlocks(sourceContent, isNewArticle);
+    return parseTelegramBlocks(sourceContent, !!isNewArticle);
 }
 
 function parseTelegramBlocks(content, isNewArticle) {
