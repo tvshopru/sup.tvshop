@@ -140,6 +140,7 @@ $(document).ready(function() {
     });
 
     initTelegramEditorEvents();
+    initTelegramPasteModal();
 });
 
 // Helper to make any image text input uploadable via file dialog or copy-paste (Ctrl+V)
@@ -816,78 +817,82 @@ function createNewBlankArticle() {
     selectArticle(0);
 }
 
-// Paste directly from clipboard (button action)
-async function pasteArticleFromClipboard(isNewArticle) {
-    let htmlData = '';
-    let plainText = '';
+// Telegram Import Modal Handlers
+function initTelegramPasteModal() {
+    $('#btn-close-paste-modal, #btn-cancel-paste-modal').on('click', function() {
+        $('#modal-paste-telegram').fadeOut(150);
+    });
 
-    try {
-        if (navigator.clipboard && navigator.clipboard.read) {
-            const clipboardItems = await navigator.clipboard.read();
-            for (const item of clipboardItems) {
-                if (item.types.includes('text/html')) {
-                    const blob = await item.getType('text/html');
-                    htmlData = await blob.text();
-                }
-                if (item.types.includes('text/plain')) {
-                    const blob = await item.getType('text/plain');
-                    plainText = await blob.text();
-                }
-            }
-        }
-    } catch (err) {
-        console.warn('Clipboard read error (falling back to readText):', err);
-    }
-
-    if (!htmlData && !plainText) {
-        try {
-            if (navigator.clipboard && navigator.clipboard.readText) {
-                plainText = await navigator.clipboard.readText();
-            }
-        } catch (err2) {
-            console.warn('Clipboard readText error:', err2);
-        }
-    }
-
-    if (!htmlData && !plainText) {
-        const manual = prompt('Вставьте скопированный пост из Telegram (Ctrl+V):');
-        if (manual && manual.trim()) {
-            plainText = manual.trim();
-        } else {
-            showToast("Буфер обмена пуст или доступ заблокирован браузером", "info");
+    $('#btn-create-new-article-modal').on('click', function() {
+        const text = $('#paste-telegram-textarea').val();
+        if (!text || !text.trim()) {
+            showToast("Вставьте текст поста в поле!", "info");
             return;
         }
+        $('#modal-paste-telegram').fadeOut(150);
+        createNewArticleFromText(text);
+    });
+
+    $('#btn-insert-current-article').on('click', function() {
+        const text = $('#paste-telegram-textarea').val();
+        if (!text || !text.trim()) {
+            showToast("Вставьте текст поста в поле!", "info");
+            return;
+        }
+        $('#modal-paste-telegram').fadeOut(150);
+        insertTextIntoCurrentArticle(text);
+    });
+}
+
+function openTelegramPasteModal(defaultModeIsNew) {
+    $('#paste-telegram-textarea').val('');
+    $('#modal-paste-telegram').css('display', 'flex').hide().fadeIn(150);
+    $('#paste-telegram-textarea').focus();
+
+    if (navigator.clipboard && navigator.clipboard.readText) {
+        navigator.clipboard.readText().then(clipText => {
+            if (clipText && clipText.trim()) {
+                $('#paste-telegram-textarea').val(clipText);
+            }
+        }).catch(() => {});
     }
+}
 
-    if (isNewArticle) {
-        gatherValues();
-        if (!portalConfig.articles) portalConfig.articles = [];
+function createNewArticleFromText(rawText) {
+    gatherValues();
+    if (!portalConfig.articles) portalConfig.articles = [];
 
-        const today = new Date();
-        const months = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
-        const dateStr = today.getDate() + ' ' + months[today.getMonth()] + ' ' + today.getFullYear();
+    const today = new Date();
+    const months = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
+    const dateStr = today.getDate() + ' ' + months[today.getMonth()] + ' ' + today.getFullYear();
 
-        const formattedHtml = formatTelegramClipboard(htmlData, plainText, true);
-        const titleVal = $('#input-art-title').val().trim() || 'Статья Telegram';
+    const formattedHtml = parseTelegramBlocks(rawText, true);
+    const titleVal = $('#input-art-title').val().trim() || 'Статья Telegram';
 
-        const newArt = {
-            id: 'art-' + new Date().getTime(),
-            title: titleVal,
-            date: dateStr,
-            videoUrl: '',
-            contentHtml: formattedHtml
-        };
-        portalConfig.articles.unshift(newArt);
-        renderArticlesList();
-        selectArticle(0);
-        showToast("Новая статья создана и структурирована из буфера!", "success");
-    } else {
-        const formattedHtml = formatTelegramClipboard(htmlData, plainText, false);
-        $('#tg-content-editor').html(formattedHtml);
-        updateArticleReadingTime();
-        showToast("Пост вставлен и структурирован в текущую статью!", "success");
-        gatherValues();
-    }
+    const newArt = {
+        id: 'art-' + new Date().getTime(),
+        title: titleVal,
+        date: dateStr,
+        videoUrl: '',
+        contentHtml: formattedHtml
+    };
+    portalConfig.articles.unshift(newArt);
+    renderArticlesList();
+    selectArticle(0);
+    showToast("Новая статья создана и структурирована!", "success");
+}
+
+function insertTextIntoCurrentArticle(rawText) {
+    const formattedHtml = parseTelegramBlocks(rawText, false);
+    $('#tg-content-editor').html(formattedHtml);
+    updateArticleReadingTime();
+    showToast("Пост вставлен и структурирован в текущую статью!", "success");
+    gatherValues();
+}
+
+// Paste directly from clipboard (button action)
+function pasteArticleFromClipboard(isNewArticle) {
+    openTelegramPasteModal(isNewArticle);
 }
 
 // Comprehensive Telegram Post Parser (Preserves <u>, <b>, <i>, <ul><li> bullets, <blockquote>, <h2>)

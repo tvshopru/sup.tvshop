@@ -401,9 +401,37 @@
         </div>
     </div>
 
+    <!-- Telegram Direct Text Paste Modal -->
+    <div class="annotator-modal" id="modal-paste-telegram" style="display:none;">
+        <div class="annotator-card" style="max-width: 680px; padding: 24px;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <h3 style="font-size:1.2em; font-weight:800; color:var(--text-color); margin:0; display:flex; align-items:center; gap:8px;">
+                    📥 Импорт поста из Telegram
+                </h3>
+                <button type="button" class="btn-icon" id="btn-close-paste-modal" style="width:28px; height:28px; font-size:1.1em;">×</button>
+            </div>
+            
+            <p style="font-size:0.9em; color:var(--text-muted); margin:0; line-height:1.5;">
+                Вставьте скопированный текст поста из Telegram в поле ниже. Заголовок, подчёркивания, шаги со списками (точками •), цитаты и блоки фото сформируются автоматически.
+            </p>
+
+            <div class="form-group" style="margin:0;">
+                <textarea id="paste-telegram-textarea" class="form-control" style="min-height:260px; font-size:0.95em; line-height:1.6; font-family:inherit; resize:vertical;" placeholder="Вставьте скопированный пост из Telegram (Ctrl+V)..."></textarea>
+            </div>
+
+            <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; border-top:1px solid var(--border-color); padding-top:16px;">
+                <button type="button" class="btn btn-secondary" id="btn-cancel-paste-modal">Отмена</button>
+                <div style="display:flex; gap:10px;">
+                    <button type="button" class="btn btn-secondary" id="btn-insert-current-article">📝 В текущую статью</button>
+                    <button type="button" class="btn btn-primary" id="btn-create-new-article-modal" style="font-weight:700;">✨ Создать новую статью</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Notification Toast Alerts -->
     <div class="toast-container" id="toast-container"></div>
 
-    <script src="/static/app.js?v=20261008_7"></script>
+    <script src="/static/app.js?v=20261008_8"></script>
 </body>
 </html>
