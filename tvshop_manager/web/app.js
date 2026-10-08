@@ -965,10 +965,24 @@ function parseTelegramBlocks(content, isNewArticle) {
         const plainFirst = $('<div>').html(firstLine).text().trim();
         
         // Only treat first line as title if it's not a bullet/photo and is short
-        if (!isPhotoMarker(firstLine) && !isBulletLine(firstLine) && plainFirst.length <= 90) {
-            $('#input-art-title').val(plainFirst).trigger('input');
-            $('#tg-paper-title').text(plainFirst);
-            i = 1; // consume first line as title
+        if (!isPhotoMarker(firstLine) && !isBulletLine(firstLine) && plainFirst.length <= 110) {
+            let combinedTitle = plainFirst;
+            i = 1;
+
+            // Check if line 1 ended with preposition (e.g., "в", "на", "для", "с") or line 2 is short continuation
+            if (rawLines.length > 1) {
+                const secondLine = rawLines[1];
+                const plainSecond = $('<div>').html(secondLine).text().trim();
+                const endsWithPrep = /\b(в|на|с|со|для|по|к|ко|из|изо|о|об|обо|от|ото|при|через|под|над|без|про|до)$/i.test(plainFirst.replace(/[.,:!?\s]+$/, ''));
+                
+                if (endsWithPrep || (plainFirst.length + plainSecond.length < 80 && !isPhotoMarker(secondLine) && !isStepOrBulletLine(secondLine) && !plainSecond.includes('.') && !isHeadingLine(secondLine))) {
+                    combinedTitle = (plainFirst + ' ' + plainSecond).replace(/\s+/g, ' ').trim();
+                    i = 2; // consume both line 1 and line 2 as title!
+                }
+            }
+
+            $('#input-art-title').val(combinedTitle).trigger('input');
+            $('#tg-paper-title').text(combinedTitle);
         }
     }
 
@@ -1007,6 +1021,18 @@ function parseTelegramBlocks(content, isNewArticle) {
             continue;
         }
 
+        // Step action sentence (e.g. Открываем..., Нажимаем..., Сканируем...)
+        if (isStepOrBulletLine(line)) {
+            if (!inList || listType !== 'ul') {
+                closeList();
+                htmlOutput.push('<ul>');
+                inList = true;
+                listType = 'ul';
+            }
+            htmlOutput.push(`<li>${formatInlineMarkup(line)}</li>`);
+            continue;
+        }
+
         // Numbered list item (1. or 2))
         const numMatch = line.match(/^[\s\u00A0\u200B\t]*(\d+)[\.\)]\s*(.+)$/);
         if (numMatch) {
@@ -1030,7 +1056,7 @@ function parseTelegramBlocks(content, isNewArticle) {
         }
 
         // Section Subheading (h2) detection:
-        if (isHeadingLine(line, i, rawLines)) {
+        if (isHeadingLine(line)) {
             const cleanHead = line.replace(/^#+\s*/, '').trim();
             htmlOutput.push(`<h2>${formatInlineMarkup(cleanHead)}</h2>`);
             continue;
@@ -1085,13 +1111,23 @@ function isBulletLine(line) {
     return /^[\s\u00A0]*(?:[•●▪▫◦✦★\-\*—–]|&bull;|&#8226;|&middot;)/.test(line);
 }
 
-function isHeadingLine(line, index, lines) {
+function isStepOrBulletLine(line) {
+    if (!line) return false;
+    if (isBulletLine(line)) return true;
+    const plain = $('<div>').html(line).text().trim();
+    if (plain.length < 140 && /^(Открываем|Нажимаем|Заходим|Сканируем|Регистрируемся|Переходим|Выбираем|Вводим|Включаем|Выключаем|Скачиваем|Устанавливаем|Жмем|Жмём|Кликаем|Авторизуемся|Вставляем|Копируем|Подключаем|Запускаем|Перезагружаем|Добавляем|Ищем|Проверяем|Подтверждаем|Ждем|Ждём|Выполняем)\b/i.test(plain)) {
+        return true;
+    }
+    return false;
+}
+
+function isHeadingLine(line) {
     const plain = $('<div>').html(line).text().trim();
     if (plain.startsWith('## ') || plain.startsWith('### ')) return true;
-    if (plain.length > 75) return false;
+    if (plain.length > 85) return false;
 
     // Headings starting with emojis or specific section title keywords
-    if (/^(🍿|📺|🎬|🔥|✨|👉|⚙️|📱|💡|📢|📌|Так же в|Также в|Не забывайте|Как настроить|Настройка |Шаг \d+|Инструкция:)/i.test(plain)) {
+    if (/^(👉|⚙️|📱|💡|📢|📌|🔥|✨|Так же в|Также в|Не забывайте|Как настроить|Настройка|Шаг \d+|Инструкция:)/i.test(plain)) {
         return true;
     }
 
