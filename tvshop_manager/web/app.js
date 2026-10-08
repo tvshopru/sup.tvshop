@@ -492,6 +492,7 @@ function renderArticlesList() {
                 selectArticle(0);
             } else {
                 $('#article-editor-panel').hide();
+                $('#article-meta-sidebar').hide();
             }
         }
     });
@@ -502,6 +503,7 @@ function selectArticle(idx) {
     const articles = portalConfig.articles || [];
     if (idx < 0 || idx >= articles.length) {
         $('#article-editor-panel').hide();
+        $('#article-meta-sidebar').hide();
         return;
     }
 
@@ -539,6 +541,7 @@ function selectArticle(idx) {
     });
 
     $('#article-editor-panel').css('display', 'flex');
+    $('#article-meta-sidebar').css('display', 'flex');
 }
 
 // Telegram Editor Toolbar and Clipboard / Annotator Events
@@ -546,17 +549,18 @@ function initTelegramEditorEvents() {
     // Editor Theme Toggle (Light / Dark)
     const savedEditorTheme = localStorage.getItem('tg-editor-theme') || 'light';
     if (savedEditorTheme === 'dark') {
-        $('.tg-editor-wrapper').addClass('dark-theme');
+        $('.tg-editor-wrapper, .tg-split-layout').addClass('dark-theme');
         $('#tg-theme-name').text('Тёмная');
         $('#tg-btn-theme-toggle span:first').text('🌙');
     } else {
-        $('.tg-editor-wrapper').removeClass('dark-theme');
+        $('.tg-editor-wrapper, .tg-split-layout').removeClass('dark-theme');
         $('#tg-theme-name').text('Светлая');
         $('#tg-btn-theme-toggle span:first').text('☀️');
     }
 
     $('#tg-btn-theme-toggle').off('click').on('click', function() {
         const isDark = $('.tg-editor-wrapper').toggleClass('dark-theme').hasClass('dark-theme');
+        $('.tg-split-layout').toggleClass('dark-theme', isDark);
         localStorage.setItem('tg-editor-theme', isDark ? 'dark' : 'light');
         $('#tg-theme-name').text(isDark ? 'Тёмная' : 'Светлая');
         $('#tg-btn-theme-toggle span:first').text(isDark ? '🌙' : '☀️');
@@ -610,6 +614,7 @@ function initTelegramEditorEvents() {
                 selectArticle(0);
             } else {
                 $('#article-editor-panel').hide();
+                $('#article-meta-sidebar').hide();
             }
         }
     });

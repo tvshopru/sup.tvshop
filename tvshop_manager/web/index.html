@@ -50,6 +50,17 @@
                     <span class="menu-text">Магазин (Товары)</span>
                 </button>
             </div>
+
+            <!-- Terminal Logger SSE Panel inside Sidebar -->
+            <div class="logs-panel" id="sidebar-logs-panel">
+                <div class="logs-header">
+                    <span class="logs-title">💻 Консоль (Logs)</span>
+                    <button type="button" class="logs-clear-btn" onclick="$('#logs-output').empty()">Очистить</button>
+                </div>
+                <div class="logs-output" id="logs-output">
+                    Ожидание логов...
+                </div>
+            </div>
         </div>
 
         <!-- Main Content Area -->
@@ -143,23 +154,20 @@
 
                 <!-- Pane: Articles (Telegram WYSIWYG) -->
                 <div class="pane" id="pane-articles" style="max-width:100%;">
-                    <div class="pane-header-actions" style="margin-bottom: 16px;">
-                        <div>
-                            <h2 class="pane-title" style="margin-bottom: 4px;">✍️ Статьи и публикации (Формат Telegram)</h2>
-                            <span style="color: var(--text-muted); font-size: 0.88em;">Создавайте статьи в едином редакторе или просто вставляйте готовые посты из Telegram (Ctrl+V)</span>
-                        </div>
+                    <div class="pane-header-actions" style="margin-bottom: 12px;">
+                        <h2 class="pane-title" style="margin:0; font-size:1.25em;">✍️ Статьи (Telegram)</h2>
                         <button class="btn btn-add" id="btn-add-article">+ Новая статья</button>
                     </div>
-                    <div class="split-layout">
-                        <!-- Left sidebar for articles list -->
-                        <div class="split-left">
+                    <div class="tg-split-layout">
+                        <!-- Left column: Articles list -->
+                        <div class="tg-split-left">
                             <div class="instructions-list" id="articles-sidebar-list">
                                 <!-- Dynamic Articles Titles -->
                             </div>
                         </div>
-                        <!-- Right Telegram-like editor panel -->
-                        <div class="split-right" id="article-editor-panel" style="display:none;">
-                            <!-- Telegram Editor Floating/Top Toolbar -->
+
+                        <!-- Center column: Telegram editor canvas -->
+                        <div class="tg-split-center" id="article-editor-panel" style="display:none;">
                             <div class="tg-editor-wrapper">
                                 <div class="tg-editor-toolbar" id="tg-editor-toolbar">
                                     <div class="tg-tb-group">
@@ -195,45 +203,53 @@
                                         <button type="button" class="tg-tb-btn" id="tg-btn-theme-toggle" title="Переключить тему редактора (Светлая / Тёмная)" style="width:auto; padding:0 10px; border-radius:16px; font-size:0.85em; gap:4px; display:inline-flex;">
                                             <span>☀️</span> <span id="tg-theme-name" style="font-size:0.9em;">Светлая</span>
                                         </button>
-                                        <button type="button" class="btn btn-danger btn-sm" id="btn-delete-article" style="padding: 4px 10px; font-size: 0.82em; margin-left:6px;">Удалить статью</button>
-                                    </div>
-                                </div>
-
-                                <!-- Telegram Article Header Info (Title, Date, Video URL, Link) -->
-                                <div class="tg-article-meta-card">
-                                    <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap; margin-bottom:12px;">
-                                        <div class="form-group" style="flex:2; min-width:250px; margin-bottom:0;">
-                                            <label for="input-art-title" style="font-size:0.82em; font-weight:700;">Заголовок статьи</label>
-                                            <input type="text" id="input-art-title" class="form-control" placeholder="Например: Открываем все бесплатные источники в Prisma!">
-                                        </div>
-                                        <div class="form-group" style="flex:1; min-width:140px; margin-bottom:0;">
-                                            <label for="input-art-date" style="font-size:0.82em; font-weight:700;">Дата публикации</label>
-                                            <input type="text" id="input-art-date" class="form-control">
-                                        </div>
-                                        <div class="form-group" style="flex:1.5; min-width:200px; margin-bottom:0;">
-                                            <label for="input-art-video" style="font-size:0.82em; font-weight:700;">Видеоинструкция (YouTube/Rutube)</label>
-                                            <input type="text" id="input-art-video" class="form-control" placeholder="https://...">
-                                        </div>
-                                    </div>
-                                    <div style="display:flex; justify-content:space-between; align-items:center; background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:8px 14px; gap:10px; flex-wrap:wrap;">
-                                        <div style="display:flex; align-items:center; gap:8px; font-size:0.86em; color:var(--text-muted); flex:1; min-width:200px;">
-                                            <span style="font-weight:700; color:var(--text-color);">⚡ Автономная ссылка статьи:</span>
-                                            <code id="art-direct-link-text" style="background:#eef2f6; padding:3px 8px; border-radius:4px; color:#0070f3; font-weight:600; word-break:break-all;">https://sup.tvshop.ru/article.html?id=...</code>
-                                        </div>
-                                        <div style="display:flex; gap:8px;">
-                                            <button type="button" class="btn btn-secondary btn-sm" id="btn-copy-art-link" style="padding:5px 12px; font-size:0.82em; font-weight:700;">
-                                                📋 Скопировать ссылку
-                                            </button>
-                                            <a id="btn-open-art-link" href="#" target="_blank" class="btn btn-secondary btn-sm" style="padding:5px 12px; font-size:0.82em; text-decoration:none; display:inline-flex; align-items:center; gap:4px;">
-                                                ↗ Открыть статью
-                                            </a>
-                                        </div>
                                     </div>
                                 </div>
 
                                 <!-- Telegram Post Content Canvas -->
                                 <div class="tg-content-canvas-wrapper">
                                     <div class="tg-content-editor" id="tg-content-editor" contenteditable="true" spellcheck="false" placeholder="Напишите статью или просто вставьте скопированный пост из Telegram (Ctrl+V)..."></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right column: Article Metadata & Link Sidebar -->
+                        <div class="tg-split-right" id="article-meta-sidebar" style="display:none;">
+                            <div class="card tg-meta-sidebar-card">
+                                <h3 style="font-size: 1.05em; font-weight: 800; margin-bottom: 14px; color: var(--text-color); display:flex; align-items:center; gap:8px;">
+                                    <span>⚙️</span> Параметры статьи
+                                </h3>
+                                
+                                <div class="form-group">
+                                    <label for="input-art-title" style="font-size:0.84em; font-weight:700;">Заголовок статьи</label>
+                                    <input type="text" id="input-art-title" class="form-control" placeholder="Например: Открываем бесплатные источники в Prisma">
+                                </div>
+                                <div class="form-group">
+                                    <label for="input-art-date" style="font-size:0.84em; font-weight:700;">Дата публикации</label>
+                                    <input type="text" id="input-art-date" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label for="input-art-video" style="font-size:0.84em; font-weight:700;">Видео (YouTube / Rutube)</label>
+                                    <input type="text" id="input-art-video" class="form-control" placeholder="https://...">
+                                </div>
+
+                                <div class="tg-meta-direct-link-box">
+                                    <label style="font-size:0.82em; font-weight:700; color:var(--text-color); display:block; margin-bottom:6px;">⚡ Автономная ссылка статьи:</label>
+                                    <div id="art-direct-link-text" class="tg-link-preview-box">https://...</div>
+                                    <div style="display:flex; flex-direction:column; gap:8px; margin-top:10px;">
+                                        <button type="button" class="btn btn-secondary btn-sm w-100" id="btn-copy-art-link" style="padding:8px 12px; font-size:0.84em; font-weight:700; justify-content:center;">
+                                            📋 Скопировать ссылку
+                                        </button>
+                                        <a id="btn-open-art-link" href="#" target="_blank" class="btn btn-secondary btn-sm w-100" style="padding:8px 12px; font-size:0.84em; text-decoration:none; justify-content:center;">
+                                            ↗ Открыть статью
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <div style="margin-top: 20px; border-top: 1px solid var(--border-color); padding-top: 16px;">
+                                    <button type="button" class="btn btn-danger w-100" id="btn-delete-article" style="padding: 10px; font-size: 0.88em; justify-content:center;">
+                                        🗑️ Удалить статью
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -288,17 +304,6 @@
                     <div class="items-list-container" id="products-list-container">
                         <!-- Dynamic Products -->
                     </div>
-                </div>
-            </div>
-
-            <!-- Terminal Logger SSE Panel -->
-            <div class="logs-panel">
-                <div class="logs-header">
-                    <span class="logs-title">💻 Консоль развертывания (SSE Realtime Logs)</span>
-                    <button class="logs-clear-btn" onclick="$('#logs-output').empty()">Очистить</button>
-                </div>
-                <div class="logs-output" id="logs-output">
-                    Ожидание логов сервера...
                 </div>
             </div>
         </div>
