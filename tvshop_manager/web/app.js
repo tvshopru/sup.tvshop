@@ -825,29 +825,22 @@ function parseTelegramBlocks(content) {
 
     let i = 0;
 
-    // 1. Title detection at start (Multi-line title before first photo or bullet)
-    let titleParts = [];
-    while (i < rawLines.length) {
-        let line = rawLines[i];
-        if (!line) {
-            if (titleParts.length > 0) break;
-            i++;
-            continue;
+    // 1. Title detection only if article title is empty or line is an explicit header
+    const currentTitle = $('#input-art-title').val().trim();
+    const hasTitle = currentTitle && currentTitle !== 'Без названия' && currentTitle !== 'Заголовок статьи';
+
+    if (!hasTitle && rawLines.length > 0) {
+        const firstLine = rawLines[0];
+        const plainFirst = $('<div>').html(firstLine).text().trim();
+        
+        // Only treat first line as title if it's not a bullet/photo and is short
+        if (!isPhotoMarker(firstLine) && !isBulletLine(firstLine) && plainFirst.length <= 85) {
+            $('#input-art-title').val(plainFirst).trigger('input');
+            i = 1; // consume first line as title
         }
-        if (isPhotoMarker(line) || isBulletLine(line)) {
-            break;
-        }
-        titleParts.push(line);
-        i++;
     }
 
-    if (titleParts.length > 0) {
-        const fullTitleHtml = titleParts.join(' ').replace(/\s+/g, ' ').trim();
-        const cleanTitleText = $('<div>').html(fullTitleHtml).text().trim();
-        $('#input-art-title').val(cleanTitleText).trigger('input');
-    }
-
-    // 2. Process remaining lines
+    // 2. Process all content lines
     for (; i < rawLines.length; i++) {
         let line = rawLines[i];
         if (!line) {
@@ -869,8 +862,8 @@ function parseTelegramBlocks(content) {
             continue;
         }
 
-        // Bullet list item (•, ●, ▪, ▫, ◦, ✦, ★, -, —, –, *)
-        const bulletMatch = line.match(/^[\s\u00A0]*[•●▪▫◦✦★\-\*—–]\s*(.*)$/i);
+        // Bullet list item: checks for •, ●, ▪, ▫, ◦, ✦, ★, -, —, –, *, &bull;, &#8226;
+        const bulletMatch = line.match(/^[\s\u00A0]*(?:[•●▪▫◦✦★\-\*—–]|&bull;|&#8226;|&middot;)\s*(.*)$/i);
         if (bulletMatch) {
             if (!inList || listType !== 'ul') {
                 closeList();
@@ -957,7 +950,7 @@ function isPhotoMarker(line) {
 }
 
 function isBulletLine(line) {
-    return /^[\s\u00A0]*[•●▪▫◦✦★\-\*—–]/.test(line);
+    return /^[\s\u00A0]*(?:[•●▪▫◦✦★\-\*—–]|&bull;|&#8226;|&middot;)/.test(line);
 }
 
 function isHeadingLine(line, index, lines) {
