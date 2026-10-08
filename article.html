@@ -775,8 +775,21 @@
             if (!html) return '';
             var temp = document.createElement('div');
             temp.innerHTML = html;
-            var placeholders = temp.querySelectorAll('.tg-photo-placeholder');
+            var placeholders = temp.querySelectorAll('.tg-photo-placeholder, .tg-img-hover-actions');
             placeholders.forEach(function(el) { el.remove(); });
+            var wrappers = temp.querySelectorAll('.tg-img-wrapper');
+            wrappers.forEach(function(w) {
+                var img = w.querySelector('img');
+                if (img) w.replaceWith(img);
+            });
+            var imgs = temp.querySelectorAll('img');
+            imgs.forEach(function(img) {
+                var src = img.getAttribute('src') || '';
+                src = src.replace(/^https?:\/\/[^\/]+\/(img\/[^\s"']+)/i, '$1');
+                src = src.replace(/^https?:\/\/[^\/]+:?\d*\/(img\/[^\s"']+)/i, '$1');
+                img.setAttribute('src', src);
+                img.removeAttribute('title');
+            });
             var captions = temp.querySelectorAll('.tg-img-caption');
             captions.forEach(function(el) {
                 var txt = el.textContent.trim();

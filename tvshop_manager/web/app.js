@@ -784,6 +784,36 @@ function initTelegramEditorEvents() {
         $('#tg-file-input').click();
     });
 
+    // Move Image Up
+    $('#tg-content-editor').on('click', '.tg-img-btn-move-up', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        const wrapper = $(this).closest('.tg-img-wrapper');
+        const prev = wrapper.prev();
+        if (prev.length) {
+            wrapper.insertBefore(prev);
+            gatherValues();
+            showToast("Фото перемещено выше", "info");
+        } else {
+            showToast("Фото уже в самом верху", "info");
+        }
+    });
+
+    // Move Image Down
+    $('#tg-content-editor').on('click', '.tg-img-btn-move-down', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        const wrapper = $(this).closest('.tg-img-wrapper');
+        const next = wrapper.next();
+        if (next.length) {
+            wrapper.insertAfter(next);
+            gatherValues();
+            showToast("Фото перемещено ниже", "info");
+        } else {
+            showToast("Фото уже в самом низу", "info");
+        }
+    });
+
     // Click Replace Image button on hover
     $('#tg-content-editor').on('click', '.tg-img-btn-replace', function(e) {
         e.preventDefault();
@@ -799,6 +829,42 @@ function initTelegramEditorEvents() {
         if (confirm('Удалить это изображение из статьи?')) {
             $(this).closest('.tg-img-wrapper').remove();
             gatherValues();
+        }
+    });
+
+    // Clean Drag and Drop for images (Prevents duplicate broken images on drag)
+    let draggedImgWrapper = null;
+
+    $('#tg-content-editor').on('dragstart', '.tg-img-wrapper, img', function(e) {
+        draggedImgWrapper = $(this).closest('.tg-img-wrapper');
+        if (e.originalEvent.dataTransfer) {
+            e.originalEvent.dataTransfer.setData('text/plain', 'tvshop_img_drag');
+            e.originalEvent.dataTransfer.effectAllowed = 'move';
+        }
+    });
+
+    $('#tg-content-editor').on('dragover', function(e) {
+        if (draggedImgWrapper && draggedImgWrapper.length) {
+            e.preventDefault();
+            if (e.originalEvent.dataTransfer) {
+                e.originalEvent.dataTransfer.dropEffect = 'move';
+            }
+        }
+    });
+
+    $('#tg-content-editor').on('drop', function(e) {
+        if (draggedImgWrapper && draggedImgWrapper.length) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const target = $(document.elementFromPoint(e.clientX, e.clientY)).closest('#tg-content-editor > *');
+            if (target.length && !target.is(draggedImgWrapper)) {
+                draggedImgWrapper.insertBefore(target);
+                wrapEditorImages();
+                gatherValues();
+                showToast("Фото успешно перемещено!", "success");
+            }
+            draggedImgWrapper = null;
         }
     });
 
@@ -1287,11 +1353,18 @@ function wrapEditorImages($container) {
     if (!$container || !$container.length) $container = $('#tg-content-editor');
     $container.find('img').each(function() {
         const img = $(this);
+        let src = img.attr('src') || '';
+        src = src.replace(/^https?:\/\/[^\/]+\/(img\/[^\s"']+)/i, '$1');
+        src = src.replace(/^https?:\/\/[^\/]+:?\d*\/(img\/[^\s"']+)/i, '$1');
+        img.attr('src', src);
         img.removeAttr('title');
+
         if (!img.parent().hasClass('tg-img-wrapper')) {
-            img.wrap('<div class="tg-img-wrapper" contenteditable="false"></div>');
+            img.wrap('<div class="tg-img-wrapper" contenteditable="false" draggable="true"></div>');
             img.after(`
                 <div class="tg-img-hover-actions">
+                    <button type="button" class="tg-img-btn tg-img-btn-move tg-img-btn-move-up" title="Переместить фото выше">⬆️ Выше</button>
+                    <button type="button" class="tg-img-btn tg-img-btn-move tg-img-btn-move-down" title="Переместить фото ниже">⬇️ Ниже</button>
                     <button type="button" class="tg-img-btn tg-img-btn-replace" title="Заменить изображение">🔄 Заменить</button>
                     <button type="button" class="tg-img-btn tg-img-btn-del" title="Удалить фото">❌</button>
                 </div>
@@ -1315,9 +1388,11 @@ function uploadArticleImageFile(file, targetPlaceholder) {
         contentType: false,
         success: function(response) {
             const imgHtml = `
-                <div class="tg-img-wrapper" contenteditable="false">
+                <div class="tg-img-wrapper" contenteditable="false" draggable="true">
                     <img src="${response.path}" />
                     <div class="tg-img-hover-actions">
+                        <button type="button" class="tg-img-btn tg-img-btn-move tg-img-btn-move-up" title="Переместить фото выше">⬆️ Выше</button>
+                        <button type="button" class="tg-img-btn tg-img-btn-move tg-img-btn-move-down" title="Переместить фото ниже">⬇️ Ниже</button>
                         <button type="button" class="tg-img-btn tg-img-btn-replace" title="Заменить изображение">🔄 Заменить</button>
                         <button type="button" class="tg-img-btn tg-img-btn-del" title="Удалить фото">❌</button>
                     </div>
