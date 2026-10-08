@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TV SHOP Portal Manager</title>
-    <link rel="stylesheet" href="/static/style.css?v=20261008_11">
+    <link rel="stylesheet" href="/static/style.css?v=20261008_12">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
@@ -51,6 +51,13 @@
                 </button>
             </div>
 
+            <!-- Sidebar Sync Actions -->
+            <div class="sidebar-sync-box" style="margin-top:auto; padding:8px 0; display:flex; flex-direction:column; gap:6px;">
+                <button class="btn btn-primary w-100 btn-save-deploy" style="justify-content:center; font-weight:700; font-size:0.85em; padding:8px 10px;">
+                    💾 Опубликовать на GitHub
+                </button>
+            </div>
+
             <!-- Terminal Logger SSE Panel inside Sidebar -->
             <div class="logs-panel" id="sidebar-logs-panel">
                 <div class="logs-header">
@@ -63,25 +70,8 @@
             </div>
         </div>
 
-        <!-- Main Content Area -->
+        <!-- Main Content Area (Starts immediately from top) -->
         <div class="manager-content">
-            <div class="content-header">
-                <div class="header-info">
-                    <span class="location-path">tvshopru / sup.tvshop / config.json</span>
-                </div>
-                <div class="header-actions">
-                    <div class="server-status" style="margin-right:15px; background:#f3f4f6; padding:6px 12px; border-radius:20px; border:1px solid #e5e7eb;">
-                        <div class="status-dot"></div>
-                        <span id="status-text" style="font-weight:600;">Связь установлена</span>
-                    </div>
-                    <button class="btn btn-secondary" id="btn-reset">Сбросить</button>
-                    <button class="btn btn-primary" id="btn-save-deploy">
-                        <svg viewBox="0 0 24 24" style="width:16px;height:16px;"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polygon points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-                        Сохранить и опубликовать (GitHub)
-                    </button>
-                </div>
-            </div>
-
             <div class="content-pane-wrapper">
                 <!-- Pane: Support -->
                 <div class="pane active" id="pane-support">
@@ -243,6 +233,21 @@
 
                         <!-- Right column: Article Metadata & Link Sidebar -->
                         <div class="tg-split-right" id="article-meta-sidebar" style="display:none;">
+                            <!-- Sync & Save Actions Card -->
+                            <div class="card tg-meta-sidebar-card" style="padding:14px; margin-bottom:10px; display:flex; flex-direction:column; gap:8px;">
+                                <div class="server-status" style="justify-content:center; background:#f3f4f6; padding:5px 10px; border-radius:20px; border:1px solid #e5e7eb; font-size:0.82em;">
+                                    <div class="status-dot"></div>
+                                    <span class="status-text" id="status-text" style="font-weight:700;">Связь установлена</span>
+                                </div>
+                                <button class="btn btn-primary w-100 btn-save-deploy" id="btn-save-deploy" style="justify-content:center; font-weight:800; padding:10px 14px; font-size:0.92em;">
+                                    <svg viewBox="0 0 24 24" style="width:16px;height:16px;"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polygon points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                                    💾 Сохранить и опубликовать
+                                </button>
+                                <button class="btn btn-secondary w-100 btn-reset" id="btn-reset" style="justify-content:center; font-size:0.82em; padding:6px 10px;">
+                                    🔄 Сбросить изменения
+                                </button>
+                            </div>
+
                             <div class="card tg-meta-sidebar-card">
                                 <h3 style="font-size: 1.05em; font-weight: 800; margin-bottom: 14px; color: var(--text-color); display:flex; align-items:center; gap:8px;">
                                     <span>⚙️</span> Параметры статьи
@@ -429,6 +434,6 @@
     <!-- Notification Toast Alerts -->
     <div class="toast-container" id="toast-container"></div>
 
-    <script src="/static/app.js?v=20261008_10"></script>
+    <script src="/static/app.js?v=20261008_12"></script>
 </body>
 </html>
