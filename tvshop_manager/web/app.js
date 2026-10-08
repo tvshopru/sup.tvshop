@@ -630,6 +630,17 @@ function initTelegramEditorEvents() {
         document.execCommand('redo', false, null);
     });
 
+    // Highlight marker button
+    $('#tg-btn-highlight').on('click', function(e) {
+        e.preventDefault();
+        try {
+            document.execCommand('hiliteColor', false, '#dbeafe');
+        } catch(err) {
+            document.execCommand('backColor', false, '#dbeafe');
+        }
+        $('#tg-content-editor').focus();
+    });
+
     // Link insert
     $('#tg-btn-link').on('click', function() {
         const url = prompt('Введите URL ссылки:', 'https://');
@@ -1053,10 +1064,10 @@ function parseTelegramBlocks(content, isNewArticle) {
 
         closeList();
 
-        // Quote / Callout Banner
-        if (line.startsWith('&gt;') || line.startsWith('>') || line.startsWith('<blockquote>') || line.startsWith('И все после') || line.startsWith('Важно:') || line.startsWith('Внимание:')) {
+        // Quote / Callout Banner (only if starts with > or &gt;)
+        if (line.startsWith('&gt;') || line.startsWith('>') || line.startsWith('<blockquote>')) {
             const cleanQuote = line.replace(/^(&gt;|>)\s*/, '').replace(/<\/?blockquote>/gi, '');
-            htmlOutput.push(`<blockquote><b>${formatInlineMarkup(cleanQuote)}</b></blockquote>`);
+            htmlOutput.push(`<blockquote>${formatInlineMarkup(cleanQuote)}</blockquote>`);
             continue;
         }
 
