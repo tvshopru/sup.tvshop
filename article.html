@@ -92,17 +92,13 @@
         .brand-link {
             display: flex;
             align-items: center;
-            gap: 10px;
             text-decoration: none;
-            color: var(--text-primary);
-            font-weight: 700;
-            font-size: 0.95em;
-            letter-spacing: 0.3px;
+            flex-shrink: 0;
         }
 
         .brand-link img {
-            width: 26px;
-            height: 26px;
+            width: 30px;
+            height: 30px;
             border-radius: 6px;
             object-fit: contain;
         }
@@ -110,23 +106,26 @@
         .nav-actions {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
+            flex-shrink: 0;
         }
 
         .nav-btn {
             background: transparent;
             border: 1px solid var(--border-color);
             color: var(--text-secondary);
-            border-radius: 20px;
-            padding: 6px 12px;
-            font-size: 0.85em;
+            border-radius: 16px;
+            padding: 4px 9px;
+            font-size: 0.8em;
             font-weight: 600;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
-            gap: 6px;
+            gap: 4px;
             text-decoration: none;
+            white-space: nowrap;
             transition: all 0.2s;
+            line-height: 1.2;
         }
 
         .nav-btn:hover {
@@ -136,8 +135,8 @@
         }
 
         .nav-btn-icon {
-            width: 34px;
-            height: 34px;
+            width: 30px;
+            height: 30px;
             padding: 0;
             border-radius: 50%;
             display: inline-flex;
@@ -403,61 +402,63 @@
 
         /* Footer & Channel promo */
         .article-footer {
-            margin-top: 50px;
-            padding-top: 30px;
+            margin-top: 36px;
+            padding-top: 20px;
             border-top: 1px solid var(--border-color);
         }
 
         .footer-channel-card {
             background: var(--bg-secondary);
             border: 1px solid var(--border-color);
-            border-radius: 14px;
-            padding: 22px;
+            border-radius: 10px;
+            padding: 10px 14px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 16px;
-            flex-wrap: wrap;
+            gap: 12px;
+            flex-wrap: nowrap;
         }
 
         .footer-channel-info {
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 10px;
+            min-width: 0;
         }
 
         .footer-channel-info img {
-            width: 46px;
-            height: 46px;
-            border-radius: 10px;
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
             object-fit: contain;
             background: #fff;
-            padding: 3px;
+            padding: 2px;
             border: 1px solid var(--border-color);
+            flex-shrink: 0;
         }
 
         .footer-channel-name {
-            font-weight: 800;
-            font-size: 1.05em;
+            font-weight: 700;
+            font-size: 0.9em;
             color: var(--text-primary);
-        }
-
-        .footer-channel-sub {
-            font-size: 0.85em;
-            color: var(--text-muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .tg-join-btn {
             background: #2481cc;
             color: #ffffff !important;
-            padding: 10px 20px;
-            border-radius: 20px;
+            padding: 6px 14px;
+            border-radius: 16px;
             font-weight: 700;
-            font-size: 0.9em;
+            font-size: 0.82em;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
+            white-space: nowrap;
+            flex-shrink: 0;
             transition: background 0.2s;
         }
 
@@ -544,7 +545,6 @@
     <header class="top-navbar">
         <a href="index.html" class="brand-link" title="На главную TV SHOP">
             <img src="app_logo.png?v=2" alt="TV SHOP Logo">
-            <span>TV SHOP</span>
         </a>
         <div class="nav-actions">
             <a href="articles.html" class="nav-btn" title="Каталог всех статей и инструкций">
