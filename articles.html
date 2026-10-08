@@ -218,45 +218,11 @@
             box-shadow: 0 0 0 3px rgba(36, 129, 204, 0.15);
         }
 
-        /* Category Chips */
-        .category-chips {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            overflow-x: auto;
-            padding-bottom: 4px;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .category-chip {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            color: var(--text-secondary);
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 0.85em;
-            font-weight: 600;
-            cursor: pointer;
-            white-space: nowrap;
-            transition: all 0.15s;
-        }
-
-        .category-chip:hover {
-            border-color: var(--accent-color);
-            color: var(--accent-color);
-        }
-
-        .category-chip.active {
-            background: var(--accent-color);
-            border-color: var(--accent-color);
-            color: #ffffff;
-        }
-
         /* Articles Grid */
         .articles-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
         }
 
         @media (max-width: 650px) {
@@ -273,7 +239,7 @@
             background: var(--card-bg);
             border: 1px solid var(--border-color);
             border-radius: 14px;
-            padding: 20px;
+            padding: 18px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -283,6 +249,7 @@
             transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
             position: relative;
             overflow: hidden;
+            min-height: 140px;
         }
 
         .article-card:hover {
@@ -295,8 +262,8 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 12px;
-            font-size: 0.82em;
+            margin-bottom: 10px;
+            font-size: 0.8em;
             color: var(--text-muted);
         }
 
@@ -310,27 +277,11 @@
         }
 
         .card-title {
-            font-size: 1.15em;
+            font-size: 1.1em;
             font-weight: 800;
             color: var(--text-primary);
             line-height: 1.4;
-            margin-bottom: 10px;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        .card-snippet {
-            font-size: 0.9em;
-            color: var(--text-secondary);
-            line-height: 1.5;
-            margin-bottom: 18px;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            flex-grow: 1;
+            margin-bottom: 14px;
         }
 
         .card-footer {
@@ -338,9 +289,9 @@
             align-items: center;
             justify-content: space-between;
             border-top: 1px solid var(--border-color);
-            padding-top: 14px;
+            padding-top: 12px;
             margin-top: auto;
-            font-size: 0.88em;
+            font-size: 0.85em;
             font-weight: 700;
             color: var(--accent-color);
         }
@@ -458,19 +409,11 @@
             <p class="catalog-hero-sub">Пошаговые руководства, настройка приложений и полезные материалы от команды TV SHOP</p>
         </div>
 
-        <!-- Search & Filter Controls -->
+        <!-- Search Filter Control -->
         <div class="search-filter-box">
             <div class="search-input-wrapper">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
                 <input type="text" id="catalog-search" class="search-input" placeholder="Поиск по инструкциям и статьям...">
-            </div>
-            
-            <div class="category-chips">
-                <button type="button" class="category-chip active" data-filter="all">Все материалы</button>
-                <button type="button" class="category-chip" data-filter="youtube">YouTube</button>
-                <button type="button" class="category-chip" data-filter="tv">Телевидение</button>
-                <button type="button" class="category-chip" data-filter="settings">Настройка</button>
-                <button type="button" class="category-chip" data-filter="apps">Приложения</button>
             </div>
         </div>
 
@@ -525,8 +468,8 @@
         });
 
         // Load and Render Articles
+        // Load and Render Articles
         var allArticles = [];
-        var activeFilter = 'all';
 
         fetch('config.json?v=' + Date.now())
             .then(function(res) { return res.json(); })
@@ -545,39 +488,14 @@
                     '<div class="empty-state"><h3>Ошибка загрузки каталога</h3><p>' + err.message + '</p></div>';
             });
 
-        function extractSnippet(html) {
-            if (!html) return '';
-            var temp = document.createElement('div');
-            temp.innerHTML = html;
-            var text = temp.textContent || temp.innerText || '';
-            return text.replace(/\s+/g, ' ').trim();
-        }
-
-        function categorizeArticle(art) {
-            var title = (art.title || '').toLowerCase();
-            var text = (art.contentHtml || '').toLowerCase();
-            var full = title + ' ' + text;
-
-            if (full.includes('youtube') || full.includes('ютуб') || full.includes('byebye')) return 'youtube';
-            if (full.includes('телевизор') || full.includes('телевизо') || full.includes('televizo') || full.includes('yosso') || full.includes('плейлист') || full.includes('тв') || full.includes('канал')) return 'tv';
-            if (full.includes('питани') || full.includes('кэш') || full.includes('удали') || full.includes('настройк')) return 'settings';
-            return 'apps';
-        }
-
         function renderGrid() {
             var grid = document.getElementById('articles-grid');
             var searchVal = (document.getElementById('catalog-search').value || '').trim().toLowerCase();
 
             var filtered = allArticles.filter(function(art) {
-                var cat = categorizeArticle(art);
-                if (activeFilter !== 'all' && cat !== activeFilter) {
-                    return false;
-                }
-
                 if (searchVal) {
                     var title = (art.title || '').toLowerCase();
-                    var snippet = extractSnippet(art.contentHtml).toLowerCase();
-                    if (!title.includes(searchVal) && !snippet.includes(searchVal)) {
+                    if (!title.includes(searchVal)) {
                         return false;
                     }
                 }
@@ -589,14 +507,13 @@
                     '<div class="empty-state">' +
                         '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>' +
                         '<h3>Ничего не найдено</h3>' +
-                        '<p style="margin-top:6px;">Попробуйте изменить поисковый запрос или выбрать другую категорию</p>' +
+                        '<p style="margin-top:6px;">Попробуйте изменить поисковый запрос</p>' +
                     '</div>';
                 return;
             }
 
             var html = '';
             filtered.forEach(function(art) {
-                var snippet = extractSnippet(art.contentHtml);
                 var artUrl = 'article.html?id=' + encodeURIComponent(art.id);
                 var isInstruction = (art.title || '').toLowerCase().includes('настройк') || (art.title || '').toLowerCase().includes('инструкц') || (art.title || '').toLowerCase().includes('восстановлен') || (art.title || '').toLowerCase().includes('как ');
                 var tagLabel = isInstruction ? 'Инструкция' : 'Статья';
@@ -609,7 +526,6 @@
                                 '<span>' + (art.date || 'Сегодня') + '</span>' +
                             '</div>' +
                             '<h3 class="card-title">' + escapeHtml(art.title) + '</h3>' +
-                            '<p class="card-snippet">' + escapeHtml(snippet) + '</p>' +
                         '</div>' +
                         '<div class="card-footer">' +
                             '<span>Читать руководство</span>' +
@@ -624,16 +540,6 @@
         // Search Input Event
         document.getElementById('catalog-search').addEventListener('input', function() {
             renderGrid();
-        });
-
-        // Filter Chips Event
-        document.querySelectorAll('.category-chip').forEach(function(chip) {
-            chip.addEventListener('click', function() {
-                document.querySelectorAll('.category-chip').forEach(function(c) { c.classList.remove('active'); });
-                this.classList.add('active');
-                activeFilter = this.getAttribute('data-filter');
-                renderGrid();
-            });
         });
 
         function escapeHtml(str) {
