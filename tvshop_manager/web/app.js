@@ -1,5 +1,6 @@
 let portalConfig = {};
 let activeInstIdx = 0;
+let activeArticleIdx = 0;
 
 // Setup global jQuery AJAX settings to include the PIN header
 $.ajaxSetup({
@@ -104,6 +105,27 @@ $(document).ready(function() {
         renderProducts();
     });
 
+    // Add Article (Telegram format)
+    $('#btn-add-article').on('click', function() {
+        gatherValues();
+        if (!portalConfig.articles) portalConfig.articles = [];
+
+        const today = new Date();
+        const months = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
+        const dateStr = today.getDate() + ' ' + months[today.getMonth()] + ' ' + today.getFullYear();
+
+        const nextIdx = portalConfig.articles.length;
+        portalConfig.articles.unshift({
+            id: 'art-' + new Date().getTime(),
+            title: 'Новая статья',
+            date: dateStr,
+            videoUrl: '',
+            contentHtml: '<h2>Заголовок статьи</h2><p>Напишите текст или вставьте скопированный пост из Telegram (Ctrl+V)...</p>'
+        });
+        renderArticlesList();
+        selectArticle(0);
+    });
+
     // Add Instruction Guide
     $('#btn-add-inst').on('click', function() {
         gatherValues();
@@ -127,6 +149,8 @@ $(document).ready(function() {
         renderInstructionsList();
         selectInstruction(nextIdx);
     });
+
+    initTelegramEditorEvents();
 });
 
 // Helper to make any image text input uploadable via file dialog or copy-paste (Ctrl+V)
@@ -311,6 +335,10 @@ function populateForm() {
 
     renderNews();
     renderProducts();
+    renderArticlesList();
+    if (portalConfig.articles && portalConfig.articles.length > 0) {
+        selectArticle(0);
+    }
     renderInstructionsList();
     selectInstruction(0);
 }
@@ -353,6 +381,15 @@ function gatherValues() {
         }
     });
 
+    // Gather current article settings if visible
+    if (portalConfig.articles && portalConfig.articles[activeArticleIdx]) {
+        const art = portalConfig.articles[activeArticleIdx];
+        art.title = $('#input-art-title').val();
+        art.date = $('#input-art-date').val();
+        art.videoUrl = $('#input-art-video').val().trim();
+        art.contentHtml = $('#tg-content-editor').html();
+    }
+
     // Gather current instruction settings if visible
     if (portalConfig.instructions && portalConfig.instructions[activeInstIdx]) {
         const inst = portalConfig.instructions[activeInstIdx];
@@ -370,6 +407,250 @@ function gatherValues() {
             }
         });
     }
+}
+
+// Render Articles Sidebar list
+function renderArticlesList() {
+    const list = $('#articles-sidebar-list');
+    list.empty();
+    const articles = portalConfig.articles || [];
+
+    articles.forEach((art, idx) => {
+        const activeClass = idx === activeArticleIdx ? 'active' : '';
+        const row = $(`
+            <div class="inst-item-row ${activeClass}" data-art-index="${idx}">
+                <div class="inst-item-row-header">
+                    <span class="inst-item-row-title">${escapeHtml(art.title || 'Без названия')}</span>
+                    <div class="inst-row-controls">
+                        <button class="btn-icon btn-art-up" data-art-index="${idx}" title="Вверх">↑</button>
+                        <button class="btn-icon btn-art-down" data-art-index="${idx}" title="Вниз">↓</button>
+                        <button class="btn-icon btn-icon-danger btn-art-delete" data-art-index="${idx}" title="Удалить">×</button>
+                    </div>
+                </div>
+                <span class="inst-item-row-sub">Статья • ${escapeHtml(art.date || '')}</span>
+            </div>
+        `);
+        list.append(row);
+    });
+
+    // Bind article sidebar row clicks
+    $('.inst-item-row[data-art-index]').on('click', function(e) {
+        if ($(e.target).closest('button').length) return;
+        const idx = parseInt($(this).attr('data-art-index'));
+        gatherValues();
+        selectArticle(idx);
+    });
+
+    // Article Up/Down/Delete Actions
+    $('.btn-art-up').on('click', function(e) {
+        e.stopPropagation();
+        const idx = parseInt($(this).attr('data-art-index'));
+        if (idx > 0) {
+            gatherValues();
+            const temp = portalConfig.articles[idx];
+            portalConfig.articles[idx] = portalConfig.articles[idx - 1];
+            portalConfig.articles[idx - 1] = temp;
+            activeArticleIdx = idx - 1;
+            renderArticlesList();
+            selectArticle(activeArticleIdx);
+        }
+    });
+
+    $('.btn-art-down').on('click', function(e) {
+        e.stopPropagation();
+        const idx = parseInt($(this).attr('data-art-index'));
+        if (idx < portalConfig.articles.length - 1) {
+            gatherValues();
+            const temp = portalConfig.articles[idx];
+            portalConfig.articles[idx] = portalConfig.articles[idx + 1];
+            portalConfig.articles[idx + 1] = temp;
+            activeArticleIdx = idx + 1;
+            renderArticlesList();
+            selectArticle(activeArticleIdx);
+        }
+    });
+
+    $('.btn-art-delete').on('click', function(e) {
+        e.stopPropagation();
+        const idx = parseInt($(this).attr('data-art-index'));
+        if (confirm(`Удалить статью "${portalConfig.articles[idx].title}"?`)) {
+            gatherValues();
+            portalConfig.articles.splice(idx, 1);
+            activeArticleIdx = 0;
+            renderArticlesList();
+            if (portalConfig.articles.length > 0) {
+                selectArticle(0);
+            } else {
+                $('#article-editor-panel').hide();
+            }
+        }
+    });
+}
+
+// Select Article item to display in Telegram Editor
+function selectArticle(idx) {
+    const articles = portalConfig.articles || [];
+    if (idx < 0 || idx >= articles.length) {
+        $('#article-editor-panel').hide();
+        return;
+    }
+
+    activeArticleIdx = idx;
+    $('.inst-item-row[data-art-index]').removeClass('active');
+    $(`.inst-item-row[data-art-index="${idx}"]`).addClass('active');
+
+    const art = articles[idx];
+    $('#input-art-title').val(art.title || '');
+    $('#input-art-date').val(art.date || '');
+    $('#input-art-video').val(art.videoUrl || '');
+    $('#tg-content-editor').html(art.contentHtml || '');
+
+    // Dynamic title rename in left sidebar
+    $('#input-art-title').off('input').on('input', function() {
+        art.title = $(this).val();
+        $(`.inst-item-row[data-art-index="${idx}"] .inst-item-row-title`).text(art.title || 'Без названия');
+    });
+
+    $('#article-editor-panel').show();
+}
+
+// Telegram Editor Toolbar and Clipboard / Annotator Events
+function initTelegramEditorEvents() {
+    // Toolbar Formatting Buttons
+    $('.tg-tb-btn[data-command]').on('click', function(e) {
+        e.preventDefault();
+        const cmd = $(this).attr('data-command');
+        const val = $(this).attr('data-value') || null;
+        document.execCommand(cmd, false, val);
+        $('#tg-content-editor').focus();
+    });
+
+    $('#tg-btn-undo').on('click', function() {
+        document.execCommand('undo', false, null);
+    });
+
+    $('#tg-btn-redo').on('click', function() {
+        document.execCommand('redo', false, null);
+    });
+
+    // Link insert
+    $('#tg-btn-link').on('click', function() {
+        const url = prompt('Введите URL ссылки:', 'https://');
+        if (url) {
+            document.execCommand('createLink', false, url);
+        }
+    });
+
+    // Image file button
+    $('#tg-btn-image').on('click', function() {
+        $('#tg-file-input').click();
+    });
+
+    $('#tg-file-input').on('change', function() {
+        const file = this.files[0];
+        if (file) {
+            uploadArticleImageFile(file);
+        }
+        $(this).val('');
+    });
+
+    // Delete Article Button
+    $('#btn-delete-article').on('click', function() {
+        if (confirm('Удалить текущую статью?')) {
+            portalConfig.articles.splice(activeArticleIdx, 1);
+            activeArticleIdx = 0;
+            renderArticlesList();
+            if (portalConfig.articles && portalConfig.articles.length > 0) {
+                selectArticle(0);
+            } else {
+                $('#article-editor-panel').hide();
+            }
+        }
+    });
+
+    // Intelligent Paste Handler (Ctrl+V) for Telegram Post Content & Images
+    $('#tg-content-editor').on('paste', function(e) {
+        const clipboardData = e.originalEvent.clipboardData || window.clipboardData;
+        if (!clipboardData) return;
+
+        // Check if pasting an image file from clipboard
+        const items = clipboardData.items;
+        if (items) {
+            for (let i = 0; i < items.length; i++) {
+                if (items[i].type.indexOf('image') !== -1) {
+                    const file = items[i].getAsFile();
+                    if (file) {
+                        e.preventDefault();
+                        uploadArticleImageFile(file);
+                        return;
+                    }
+                }
+            }
+        }
+
+        // Handle rich HTML paste from Telegram Desktop / Web
+        const htmlData = clipboardData.getData('text/html');
+        if (htmlData) {
+            // Clean up unwanted tags while preserving formatting, images, links and lists
+            const tempDiv = $('<div>').html(htmlData);
+            tempDiv.find('script, style, meta, link, iframe').remove();
+            
+            // Check if user copied whole post
+            const cleanedHtml = tempDiv.html();
+            if (cleanedHtml && cleanedHtml.trim().length > 0) {
+                e.preventDefault();
+                document.execCommand('insertHTML', false, cleanedHtml);
+                return;
+            }
+        }
+    });
+
+    // Click on image inside Telegram editor to open Annotator Editor
+    $('#tg-content-editor').on('click', 'img', function() {
+        const img = $(this);
+        const src = img.attr('src');
+        if (!src) return;
+
+        // Create a dummy input proxy for annotator
+        const proxyInput = {
+            val: function(newSrc) {
+                if (newSrc !== undefined) {
+                    img.attr('src', newSrc);
+                    gatherValues();
+                }
+                return src;
+            }
+        };
+        openAnnotatorModal(src, proxyInput);
+    });
+}
+
+function uploadArticleImageFile(file) {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    showToast("Загрузка изображения статьи...", "info");
+    appendLog("Загрузка медиа статьи: " + (file.name || "telegram_image.png") + "...");
+
+    $.ajax({
+        url: '/api/upload',
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(response) {
+            const imgHtml = '<p><img src="' + response.path + '" style="max-width:100%; border-radius:10px; margin:14px 0;" title="Кликните для выделения кнопок" /></p>';
+            $('#tg-content-editor').focus();
+            document.execCommand('insertHTML', false, imgHtml);
+            showToast("Изображение вставлено в статью!", "success");
+            appendLog("Изображение добавлено в статью: " + response.path);
+            gatherValues();
+        },
+        error: function(xhr) {
+            showToast("Ошибка при загрузке изображения!", "error");
+            appendLog("Ошибка загрузки изображения в статью: " + xhr.responseText);
+        }
+    });
 }
 
 // Render News tab
