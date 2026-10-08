@@ -498,6 +498,14 @@ function renderArticlesList() {
     });
 }
 
+// Helper to calculate and update estimated reading time
+function updateArticleReadingTime() {
+    const text = $('#tg-content-editor').text().trim();
+    const words = text ? text.split(/\s+/).length : 0;
+    const mins = Math.max(1, Math.ceil(words / 150));
+    $('#tg-paper-readtime').text(`${mins} мин чтения`);
+}
+
 // Select Article item to display in Telegram Editor
 function selectArticle(idx) {
     const articles = portalConfig.articles || [];
@@ -512,10 +520,25 @@ function selectArticle(idx) {
     $(`.inst-item-row[data-art-index="${idx}"]`).addClass('active');
 
     const art = articles[idx];
-    $('#input-art-title').val(art.title || '');
-    $('#input-art-date').val(art.date || '');
-    $('#input-art-video').val(art.videoUrl || '');
+    const initialTitle = art.title || '';
+    const initialDate = art.date || '';
+    const initialVideo = art.videoUrl || '';
+
+    $('#input-art-title').val(initialTitle);
+    $('#tg-paper-title').text(initialTitle || 'Заголовок статьи');
+    $('#input-art-date').val(initialDate);
+    $('#tg-paper-date').text(initialDate || 'Сегодня');
+    $('#input-art-video').val(initialVideo);
+    
+    if (initialVideo) {
+        $('#tg-paper-video-badge').show();
+        $('#tg-paper-video-link').attr('href', initialVideo);
+    } else {
+        $('#tg-paper-video-badge').hide();
+    }
+
     $('#tg-content-editor').html(art.contentHtml || '');
+    updateArticleReadingTime();
 
     // Set and calculate direct article link (Telegraph-like standalone reader)
     const prodBase = "https://tvshopru.github.io/sup.tvshop";
@@ -534,10 +557,44 @@ function selectArticle(idx) {
         }
     });
 
-    // Dynamic title rename in left sidebar
+    // Dynamic title rename in left sidebar & paper header (Two-way sync)
     $('#input-art-title').off('input').on('input', function() {
-        art.title = $(this).val();
-        $(`.inst-item-row[data-art-index="${idx}"] .inst-item-row-title`).text(art.title || 'Без названия');
+        const val = $(this).val();
+        art.title = val;
+        $('#tg-paper-title').text(val || 'Заголовок статьи');
+        $(`.inst-item-row[data-art-index="${idx}"] .inst-item-row-title`).text(val || 'Без названия');
+    });
+
+    $('#tg-paper-title').off('input').on('input', function() {
+        const val = $(this).text().trim();
+        art.title = val;
+        $('#input-art-title').val(val);
+        $(`.inst-item-row[data-art-index="${idx}"] .inst-item-row-title`).text(val || 'Без названия');
+    });
+
+    // Dynamic date sync
+    $('#input-art-date').off('input').on('input', function() {
+        const val = $(this).val();
+        art.date = val;
+        $('#tg-paper-date').text(val || 'Сегодня');
+        $(`.inst-item-row[data-art-index="${idx}"] .inst-item-row-sub`).text(`Статья • ${val}`);
+    });
+
+    // Dynamic video sync
+    $('#input-art-video').off('input').on('input', function() {
+        const val = $(this).val().trim();
+        art.videoUrl = val;
+        if (val) {
+            $('#tg-paper-video-badge').show();
+            $('#tg-paper-video-link').attr('href', val);
+        } else {
+            $('#tg-paper-video-badge').hide();
+        }
+    });
+
+    // Reading time calculation on content changes
+    $('#tg-content-editor').off('input.readtime').on('input.readtime', function() {
+        updateArticleReadingTime();
     });
 
     $('#article-editor-panel').css('display', 'flex');
@@ -765,7 +822,6 @@ function formatTelegramPostContent(rawText) {
     if (titleParts.length > 0) {
         const fullTitle = titleParts.join(' ').replace(/\s+/g, ' ').trim();
         $('#input-art-title').val(fullTitle).trigger('input');
-        htmlOutput.push(`<h1>${escapeAndFormatInline(fullTitle)}</h1>`);
         titleExtracted = true;
     }
 
