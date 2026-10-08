@@ -623,6 +623,8 @@
                     '</a>';
             }
 
+            var cleanBodyHtml = cleanArticleBody(article.contentHtml || '');
+
             var html = 
                 '<article>' +
                     '<header class="article-header">' +
@@ -638,7 +640,7 @@
                     '</header>' +
                     videoBtnHtml +
                     '<div class="article-body">' +
-                        (article.contentHtml || '') +
+                        cleanBodyHtml +
                     '</div>' +
                     '<footer class="article-footer">' +
                         '<div class="footer-channel-card">' +
@@ -704,6 +706,22 @@
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') closeLightbox();
         });
+
+        function cleanArticleBody(html) {
+            if (!html) return '';
+            var temp = document.createElement('div');
+            temp.innerHTML = html;
+            var placeholders = temp.querySelectorAll('.tg-photo-placeholder');
+            placeholders.forEach(function(el) { el.remove(); });
+            var captions = temp.querySelectorAll('.tg-img-caption');
+            captions.forEach(function(el) {
+                var txt = el.textContent.trim();
+                if (!txt || txt === 'Подпись' || txt === 'Подпись к фото...') {
+                    el.remove();
+                }
+            });
+            return temp.innerHTML;
+        }
 
         function escapeHtml(str) {
             if (!str) return '';

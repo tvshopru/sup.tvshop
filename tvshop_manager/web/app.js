@@ -387,7 +387,17 @@ function gatherValues() {
         art.title = $('#input-art-title').val();
         art.date = $('#input-art-date').val();
         art.videoUrl = $('#input-art-video').val().trim();
-        art.contentHtml = $('#tg-content-editor').html();
+        
+        // Clean un-replaced photo placeholders and default caption text before saving
+        const tempDiv = $('<div>').html($('#tg-content-editor').html());
+        tempDiv.find('.tg-photo-placeholder').remove();
+        tempDiv.find('.tg-img-caption').each(function() {
+            const text = $(this).text().trim();
+            if (!text || text === 'Подпись' || text === 'Подпись к фото...') {
+                $(this).remove();
+            }
+        });
+        art.contentHtml = tempDiv.html();
     }
 
     // Gather current instruction settings if visible
