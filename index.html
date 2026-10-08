@@ -1362,6 +1362,9 @@
             if (loaded.products && Array.isArray(loaded.products)) {
                 result.products = loaded.products;
             }
+            if (loaded.articles && Array.isArray(loaded.articles)) {
+                result.articles = loaded.articles;
+            }
             return result;
         }
 
@@ -1372,6 +1375,7 @@
                 "supportTg": "@android_tv_shop",
                 "supportQrUrl": "",
                 "oneSignalAppId": "",
+                "articles": [],
                 "promo": {
                     "badge": "Премиум ТВ",
                     "title": "Платный проект ТВ",
