@@ -528,7 +528,7 @@ function selectArticle(idx) {
         $(`.inst-item-row[data-art-index="${idx}"] .inst-item-row-title`).text(art.title || 'Без названия');
     });
 
-    $('#article-editor-panel').show();
+    $('#article-editor-panel').css('display', 'flex');
 }
 
 // Telegram Editor Toolbar and Clipboard / Annotator Events

@@ -865,14 +865,22 @@ select.form-control {
 /* ========================================================= */
 /* Telegram Articles WYSIWYG Editor Styles                   */
 /* ========================================================= */
-.tg-editor-wrapper {
+#article-editor-panel {
     display: flex;
-/* Telegram Article WYSIWYG Editor */
+    flex-direction: column;
+    flex-grow: 1;
+    min-width: 0;
+    height: 100%;
+    overflow-y: auto;
+}
+
 .tg-editor-wrapper {
     display: flex;
     flex-direction: column;
     gap: 16px;
     height: 100%;
+    min-width: 0;
+    width: 100%;
 }
 
 .tg-editor-toolbar {
