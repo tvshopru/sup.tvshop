@@ -381,6 +381,12 @@ function gatherValues() {
         // Clean un-replaced photo placeholders and default caption text before saving
         const tempDiv = $('<div>').html($('#tg-content-editor').html());
         tempDiv.find('.tg-photo-placeholder').remove();
+        tempDiv.find('.tg-img-hover-actions').remove();
+        tempDiv.find('.tg-img-wrapper').each(function() {
+            const img = $(this).find('img');
+            $(this).replaceWith(img);
+        });
+        tempDiv.find('img').removeAttr('title');
         tempDiv.find('.tg-img-caption').each(function() {
             const text = $(this).text().trim();
             if (!text || text === 'Подпись' || text === 'Подпись к фото...') {
@@ -528,6 +534,7 @@ function selectArticle(idx) {
     }
 
     $('#tg-content-editor').html(art.contentHtml || '');
+    wrapEditorImages($('#tg-content-editor'));
     updateArticleReadingTime();
 
     // Set and calculate direct article link (Telegraph-like standalone reader)
@@ -618,6 +625,65 @@ function initTelegramEditorEvents() {
         e.preventDefault();
     });
 
+    // Heading H2 Toggle (Click turns into H2, clicking again turns back to P)
+    $('#tg-btn-heading-toggle').on('click', function(e) {
+        e.preventDefault();
+        const sel = window.getSelection();
+        let isHeading = false;
+        if (sel && sel.anchorNode) {
+            const parent = $(sel.anchorNode).closest('h1, h2, h3, h4, p', '#tg-content-editor');
+            if (parent.is('h1, h2, h3, h4')) {
+                isHeading = true;
+            }
+        }
+        if (isHeading) {
+            document.execCommand('formatBlock', false, 'p');
+        } else {
+            document.execCommand('formatBlock', false, 'h2');
+        }
+        $('#tg-content-editor').focus();
+        gatherValues();
+    });
+
+    // Font Size Controls (A+ and A-)
+    $('#tg-btn-font-grow').on('click', function(e) {
+        e.preventDefault();
+        adjustFontSize(1);
+    });
+
+    $('#tg-btn-font-shrink').on('click', function(e) {
+        e.preventDefault();
+        adjustFontSize(-1);
+    });
+
+    function adjustFontSize(dir) {
+        const sel = window.getSelection();
+        if (!sel || !sel.rangeCount) return;
+
+        if (!sel.isCollapsed) {
+            const range = sel.getRangeAt(0);
+            const parentSpan = $(sel.anchorNode).closest('span[data-scale]');
+            let scale = parentSpan.length ? parseFloat(parentSpan.attr('data-scale')) : 1.0;
+            scale = Math.max(0.75, Math.min(2.2, scale + (dir * 0.15)));
+            scale = Math.round(scale * 100) / 100;
+
+            const span = document.createElement('span');
+            span.setAttribute('data-scale', scale);
+            span.style.fontSize = scale + 'em';
+            span.appendChild(range.extractContents());
+            range.insertNode(span);
+        } else if (sel.anchorNode) {
+            const block = $(sel.anchorNode).closest('p, h2, h3, li', '#tg-content-editor');
+            if (block.length) {
+                let cur = parseFloat(block.css('font-size')) || 16;
+                let next = Math.max(12, Math.min(36, cur + (dir * 2)));
+                block.css('font-size', next + 'px');
+            }
+        }
+        $('#tg-content-editor').focus();
+        gatherValues();
+    }
+
     $('.tg-tb-btn[data-command]').on('click', function(e) {
         e.preventDefault();
         const cmd = $(this).attr('data-command');
@@ -678,7 +744,8 @@ function initTelegramEditorEvents() {
     $('#tg-file-input').on('change', function() {
         const file = this.files[0];
         if (file) {
-            uploadArticleImageFile(file);
+            uploadArticleImageFile(file, activePhotoPlaceholder);
+            activePhotoPlaceholder = null;
         }
         $(this).val('');
     });
@@ -701,12 +768,38 @@ function initTelegramEditorEvents() {
     // Active placeholder reference for image replacement
     let activePhotoPlaceholder = null;
 
+    // Delete photo placeholder on ✕
+    $('#tg-content-editor').on('click', '.tg-photo-badge-delete', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        $(this).closest('.tg-photo-placeholder').remove();
+        gatherValues();
+    });
+
     // Click on photo placeholder to upload
     $('#tg-content-editor').on('click', '.tg-photo-placeholder', function(e) {
         e.preventDefault();
         e.stopPropagation();
         activePhotoPlaceholder = $(this);
         $('#tg-file-input').click();
+    });
+
+    // Click Replace Image button on hover
+    $('#tg-content-editor').on('click', '.tg-img-btn-replace', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        activePhotoPlaceholder = $(this).closest('.tg-img-wrapper');
+        $('#tg-file-input').click();
+    });
+
+    // Click Delete Image button on hover
+    $('#tg-content-editor').on('click', '.tg-img-btn-del', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        if (confirm('Удалить это изображение из статьи?')) {
+            $(this).closest('.tg-img-wrapper').remove();
+            gatherValues();
+        }
     });
 
     // In-Editor Paste Button in toolbar
@@ -721,6 +814,7 @@ function initTelegramEditorEvents() {
         if (rawHtml && rawHtml.trim()) {
             const formattedHtml = formatTelegramClipboard(rawHtml, rawText, false);
             $('#tg-content-editor').html(formattedHtml);
+            wrapEditorImages();
             showToast("Пост отформатирован в стиль Telegram!", "success");
             gatherValues();
         } else {
@@ -1031,16 +1125,15 @@ function parseTelegramBlocks(content, isNewArticle) {
             continue;
         }
 
-        // Photo marker from Telegram copy
+        // Photo marker from Telegram copy (compact badge)
         if (isPhotoMarker(line)) {
             closeList();
             htmlOutput.push(`
-                <div class="tg-photo-placeholder" data-placeholder="true">
-                    <span style="font-size:1.8em;">📷</span>
-                    <span>Нажмите, чтобы вставить скриншот</span>
-                    <span class="tg-photo-placeholder-sub">или просто перетащите файл / вставьте из буфера (Ctrl+V)</span>
+                <div class="tg-photo-placeholder" data-placeholder="true" contenteditable="false">
+                    <span class="tg-photo-badge-icon">📷</span>
+                    <span class="tg-photo-badge-text">Вставить фото</span>
+                    <button type="button" class="tg-photo-badge-delete" title="Удалить метку фото">✕</button>
                 </div>
-                <div class="tg-img-caption" contenteditable="true">Подпись</div>
             `);
             continue;
         }
@@ -1190,6 +1283,23 @@ function isHeadingLine(line) {
     return false;
 }
 
+function wrapEditorImages($container) {
+    if (!$container || !$container.length) $container = $('#tg-content-editor');
+    $container.find('img').each(function() {
+        const img = $(this);
+        img.removeAttr('title');
+        if (!img.parent().hasClass('tg-img-wrapper')) {
+            img.wrap('<div class="tg-img-wrapper" contenteditable="false"></div>');
+            img.after(`
+                <div class="tg-img-hover-actions">
+                    <button type="button" class="tg-img-btn tg-img-btn-replace" title="Заменить изображение">🔄 Заменить</button>
+                    <button type="button" class="tg-img-btn tg-img-btn-del" title="Удалить фото">❌</button>
+                </div>
+            `);
+        }
+    });
+}
+
 function uploadArticleImageFile(file, targetPlaceholder) {
     const formData = new FormData();
     formData.append('file', file);
@@ -1204,7 +1314,16 @@ function uploadArticleImageFile(file, targetPlaceholder) {
         processData: false,
         contentType: false,
         success: function(response) {
-            const imgHtml = '<img src="' + response.path + '" style="max-width:100%; border-radius:10px; margin:14px 0 6px 0;" title="Кликните для редактирования / аннотаций" />';
+            const imgHtml = `
+                <div class="tg-img-wrapper" contenteditable="false">
+                    <img src="${response.path}" />
+                    <div class="tg-img-hover-actions">
+                        <button type="button" class="tg-img-btn tg-img-btn-replace" title="Заменить изображение">🔄 Заменить</button>
+                        <button type="button" class="tg-img-btn tg-img-btn-del" title="Удалить фото">❌</button>
+                    </div>
+                </div>
+                <p><br></p>
+            `;
             
             if (targetPlaceholder && targetPlaceholder.length) {
                 targetPlaceholder.replaceWith(imgHtml);
@@ -1212,6 +1331,7 @@ function uploadArticleImageFile(file, targetPlaceholder) {
                 $('#tg-content-editor').focus();
                 document.execCommand('insertHTML', false, imgHtml);
             }
+            wrapEditorImages();
             showToast("Изображение вставлено в статью!", "success");
             appendLog("Изображение добавлено в статью: " + response.path);
             gatherValues();

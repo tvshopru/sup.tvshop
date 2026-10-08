@@ -1330,49 +1330,109 @@ select.form-control {
     color: #cbd5e1;
 }
 
-/* Telegram Photo Placeholder Dropzone */
+/* Telegram Compact Photo Placeholder Badge */
 .tg-photo-placeholder {
-    border: 2px dashed #93c5fd;
-    background: #eff6ff;
-    border-radius: 12px;
-    padding: 24px;
-    margin: 16px 0;
-    text-align: center;
-    cursor: pointer;
-    color: #2481cc;
-    font-weight: 700;
-    font-size: 0.95em;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    transition: all 0.2s;
-    user-select: none;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    background: #eff6ff !important;
+    border: 1.5px dashed #3b82f6 !important;
+    border-radius: 6px !important;
+    padding: 4px 10px !important;
+    margin: 6px 0 !important;
+    cursor: pointer !important;
+    color: #2481cc !important;
+    font-weight: 600 !important;
+    font-size: 0.88em !important;
+    user-select: none !important;
+    vertical-align: middle !important;
+    transition: all 0.2s ease !important;
 }
 
 .tg-photo-placeholder:hover {
-    background: #dbeafe;
-    border-color: #2481cc;
-    transform: translateY(-2px);
+    background: #dbeafe !important;
+    border-color: #1d4ed8 !important;
 }
 
-.tg-photo-placeholder-sub {
-    font-size: 0.8em;
-    font-weight: 500;
-    color: #64748b;
+.tg-photo-badge-delete {
+    background: transparent !important;
+    border: none !important;
+    color: #94a3b8 !important;
+    font-size: 1.05em !important;
+    cursor: pointer !important;
+    padding: 0 0 0 6px !important;
+    line-height: 1 !important;
+    font-weight: 700 !important;
 }
 
-.tg-content-editor img:hover {
-    border-color: #2481cc;
-    transform: scale(1.008);
-    box-shadow: 0 8px 24px rgba(36, 129, 204, 0.25);
+.tg-photo-badge-delete:hover {
+    color: #ef4444 !important;
 }
 
-.tg-content-editor .tg-img-container {
+/* Image Wrappers and Floating Controls */
+.tg-img-wrapper {
     position: relative;
-    display: inline-block;
+    display: block;
+    margin: 14px 0;
     max-width: 100%;
-    margin: 12px 0;
+}
+
+.tg-content-editor img, .tg-img-wrapper img {
+    max-width: 100%;
+    max-height: 540px;
+    border-radius: 10px;
+    display: block;
+    cursor: grab;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    border: 2px solid transparent;
+}
+
+.tg-content-editor img:hover, .tg-img-wrapper:hover img {
+    border-color: #2481cc;
+}
+
+.tg-img-hover-actions {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    display: none;
+    gap: 6px;
+    background: rgba(15, 23, 42, 0.85);
+    backdrop-filter: blur(8px);
+    padding: 4px 8px;
+    border-radius: 8px;
+    z-index: 20;
+    user-select: none;
+}
+
+.tg-img-wrapper:hover .tg-img-hover-actions {
+    display: flex;
+}
+
+.tg-img-btn {
+    background: rgba(255, 255, 255, 0.15);
+    border: none;
+    color: #ffffff;
+    padding: 4px 8px;
+    border-radius: 5px;
+    font-size: 0.8em;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.15s;
+}
+
+.tg-img-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    color: #ffffff;
+}
+
+.tg-img-btn-del:hover {
+    background: #ef4444 !important;
+    color: #ffffff !important;
 }
 
 .tg-content-editor .tg-img-container .tg-img-annotate-badge {
