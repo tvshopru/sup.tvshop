@@ -193,9 +193,9 @@
                                     </div>
                                 </div>
 
-                                <!-- Telegram Article Header Info (Title, Date, Video URL) -->
+                                <!-- Telegram Article Header Info (Title, Date, Video URL, Link) -->
                                 <div class="tg-article-meta-card">
-                                    <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap;">
+                                    <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap; margin-bottom:12px;">
                                         <div class="form-group" style="flex:2; min-width:250px; margin-bottom:0;">
                                             <label for="input-art-title" style="font-size:0.82em; font-weight:700;">Заголовок статьи</label>
                                             <input type="text" id="input-art-title" class="form-control" placeholder="Например: Открываем все бесплатные источники в Prisma!">
@@ -207,6 +207,20 @@
                                         <div class="form-group" style="flex:1.5; min-width:200px; margin-bottom:0;">
                                             <label for="input-art-video" style="font-size:0.82em; font-weight:700;">Видеоинструкция (YouTube/Rutube)</label>
                                             <input type="text" id="input-art-video" class="form-control" placeholder="https://...">
+                                        </div>
+                                    </div>
+                                    <div style="display:flex; justify-content:space-between; align-items:center; background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:8px 14px; gap:10px; flex-wrap:wrap;">
+                                        <div style="display:flex; align-items:center; gap:8px; font-size:0.86em; color:var(--text-muted); flex:1; min-width:200px;">
+                                            <span style="font-weight:700; color:var(--text-color);">🔗 Прямая ссылка:</span>
+                                            <code id="art-direct-link-text" style="background:#eef2f6; padding:3px 8px; border-radius:4px; color:#0070f3; font-weight:600; word-break:break-all;">https://sup.tvshop.ru/?art=...</code>
+                                        </div>
+                                        <div style="display:flex; gap:8px;">
+                                            <button type="button" class="btn btn-secondary btn-sm" id="btn-copy-art-link" style="padding:5px 12px; font-size:0.82em; font-weight:700;">
+                                                📋 Скопировать ссылку
+                                            </button>
+                                            <a id="btn-open-art-link" href="#" target="_blank" class="btn btn-secondary btn-sm" style="padding:5px 12px; font-size:0.82em; text-decoration:none; display:inline-flex; align-items:center; gap:4px;">
+                                                ↗ Открыть на сайте
+                                            </a>
                                         </div>
                                     </div>
                                 </div>

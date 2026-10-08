@@ -505,6 +505,23 @@ function selectArticle(idx) {
     $('#input-art-video').val(art.videoUrl || '');
     $('#tg-content-editor').html(art.contentHtml || '');
 
+    // Set and calculate direct article link
+    const prodBase = "https://sup.tvshop.ru";
+    const artId = art.id || ('art-' + idx);
+    const directUrl = `${prodBase}/?art=${encodeURIComponent(artId)}`;
+    $('#art-direct-link-text').text(directUrl);
+    $('#btn-open-art-link').attr('href', directUrl);
+
+    $('#btn-copy-art-link').off('click').on('click', function() {
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(directUrl).then(() => {
+                showToast("Ссылка на статью скопирована в буфер!", "success");
+            });
+        } else {
+            prompt("Скопируйте ссылку:", directUrl);
+        }
+    });
+
     // Dynamic title rename in left sidebar
     $('#input-art-title').off('input').on('input', function() {
         art.title = $(this).val();
