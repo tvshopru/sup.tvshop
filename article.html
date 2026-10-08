@@ -269,12 +269,14 @@
         }
 
         .article-body blockquote {
-            border-left: 4px solid var(--quote-border);
-            background: var(--quote-bg);
-            padding: 14px 18px;
-            margin: 1.4em 0;
-            border-radius: 0 10px 10px 0;
-            font-style: italic;
+            border-left: 3.5px solid var(--accent-color) !important;
+            background: rgba(36, 129, 204, 0.08) !important;
+            padding: 8px 14px !important;
+            margin: 12px 0 !important;
+            border-radius: 0 6px 6px 0 !important;
+            font-style: normal !important;
+            font-weight: 500;
+            line-height: 1.5;
             color: var(--text-primary);
         }
 
@@ -284,8 +286,8 @@
         }
 
         .article-body ul {
-            margin: 1.2em 0 !important;
-            padding-left: 12px !important;
+            margin: 0.8em 0 !important;
+            padding-left: 8px !important;
             list-style: disc inside !important;
             list-style-type: disc !important;
             list-style-position: inside !important;
@@ -293,8 +295,8 @@
         }
 
         .article-body ol {
-            margin: 1.2em 0 !important;
-            padding-left: 12px !important;
+            margin: 0.8em 0 !important;
+            padding-left: 8px !important;
             list-style: decimal inside !important;
             list-style-type: decimal !important;
             list-style-position: inside !important;
@@ -306,8 +308,8 @@
             list-style: disc inside !important;
             list-style-type: disc !important;
             list-style-position: inside !important;
-            margin-bottom: 0.6em !important;
-            line-height: 1.65 !important;
+            margin-bottom: 0.35em !important;
+            line-height: 1.5 !important;
         }
 
         .article-body ol > li {
@@ -315,8 +317,13 @@
             list-style: decimal inside !important;
             list-style-type: decimal !important;
             list-style-position: inside !important;
-            margin-bottom: 0.6em !important;
-            line-height: 1.65 !important;
+            margin-bottom: 0.35em !important;
+            line-height: 1.5 !important;
+        }
+
+        .article-body ul > li::marker {
+            color: var(--accent-color) !important;
+            font-size: 1.1em !important;
         }
 
         .article-body ul > li::marker {

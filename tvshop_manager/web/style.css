@@ -1189,7 +1189,8 @@ select.form-control {
 }
 
 .tg-content-editor p {
-    margin-bottom: 1.2em;
+    margin-bottom: 0.7em;
+    line-height: 1.5;
 }
 
 .tg-content-editor a {
@@ -1200,14 +1201,15 @@ select.form-control {
 }
 
 .tg-content-editor blockquote {
-    border-left: 4px solid #2481cc;
-    padding-left: 16px;
-    margin: 1.3em 0;
-    color: #374151;
-    font-style: italic;
-    background: #f0f7ff;
-    padding: 12px 18px;
-    border-radius: 0 10px 10px 0;
+    border-left: 3.5px solid #2481cc !important;
+    background: rgba(36, 129, 204, 0.08) !important;
+    padding: 8px 14px !important;
+    margin: 10px 0 !important;
+    color: inherit !important;
+    font-style: normal !important;
+    font-weight: 500;
+    line-height: 1.5;
+    border-radius: 0 6px 6px 0 !important;
 }
 
 .tg-content-editor u, .tg-paper-title u, .article-body u {
@@ -1216,8 +1218,8 @@ select.form-control {
 }
 
 .tg-content-editor ul, .tg-article-paper ul, .article-body ul, #tg-content-editor ul {
-    margin: 1.2em 0 !important;
-    padding-left: 12px !important;
+    margin: 0.8em 0 !important;
+    padding-left: 8px !important;
     list-style: disc inside !important;
     list-style-type: disc !important;
     list-style-position: inside !important;
@@ -1225,8 +1227,8 @@ select.form-control {
 }
 
 .tg-content-editor ol, .tg-article-paper ol, .article-body ol, #tg-content-editor ol {
-    margin: 1.2em 0 !important;
-    padding-left: 12px !important;
+    margin: 0.8em 0 !important;
+    padding-left: 8px !important;
     list-style: decimal inside !important;
     list-style-type: decimal !important;
     list-style-position: inside !important;
@@ -1238,8 +1240,8 @@ select.form-control {
     list-style: disc inside !important;
     list-style-type: disc !important;
     list-style-position: inside !important;
-    margin-bottom: 0.6em !important;
-    line-height: 1.65 !important;
+    margin-bottom: 0.35em !important;
+    line-height: 1.5 !important;
 }
 
 .tg-content-editor ol > li, .tg-article-paper ol > li, .article-body ol > li, #tg-content-editor ol > li {
@@ -1247,13 +1249,13 @@ select.form-control {
     list-style: decimal inside !important;
     list-style-type: decimal !important;
     list-style-position: inside !important;
-    margin-bottom: 0.6em !important;
-    line-height: 1.65 !important;
+    margin-bottom: 0.35em !important;
+    line-height: 1.5 !important;
 }
 
 .tg-content-editor ul > li::marker, .tg-article-paper ul > li::marker, .article-body ul > li::marker {
     color: #2481cc !important;
-    font-size: 1.2em !important;
+    font-size: 1.1em !important;
 }
 
 .tg-content-editor pre, .tg-content-editor code {
