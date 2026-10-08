@@ -1085,9 +1085,16 @@ function parseTelegramBlocks(content, isNewArticle) {
 
         closeList();
 
-        // Quote / Callout Banner (only if starts with > or &gt;)
-        if (line.startsWith('&gt;') || line.startsWith('>') || line.startsWith('<blockquote>')) {
-            const cleanQuote = line.replace(/^(&gt;|>)\s*/, '').replace(/<\/?blockquote>/gi, '');
+        // Highlight Detection (Telegram Highlight Block / Callout)
+        if (isHighlightLine(line)) {
+            const cleanText = line.replace(/^(&gt;|>)\s*/, '').replace(/<\/?(blockquote|mark|p)>/gi, '').trim();
+            htmlOutput.push(`<p><span class="tg-text-highlight" style="background-color: #dbeafe; color: #0369a1; padding: 4px 10px; border-radius: 6px; font-weight: 600; display: inline-block;">${formatInlineMarkup(cleanText)}</span></p>`);
+            continue;
+        }
+
+        // Quote / Callout Banner (only if explicit blockquote)
+        if (line.startsWith('<blockquote>')) {
+            const cleanQuote = line.replace(/<\/?blockquote>/gi, '');
             htmlOutput.push(`<blockquote>${formatInlineMarkup(cleanQuote)}</blockquote>`);
             continue;
         }
@@ -1158,13 +1165,25 @@ function isStepOrBulletLine(line) {
     return false;
 }
 
+function isHighlightLine(line) {
+    if (!line) return false;
+    const plain = $('<div>').html(line).text().trim();
+    if (/^(И все после|Важно|Внимание|Примечание|Обратите внимание|Лайфхак|Совет)\b/i.test(plain)) {
+        return true;
+    }
+    if (line.startsWith('&gt;') || line.startsWith('>') || line.includes('tg-text-highlight') || line.includes('<mark>') || line.includes('background-color')) {
+        return true;
+    }
+    return false;
+}
+
 function isHeadingLine(line) {
     const plain = $('<div>').html(line).text().trim();
     if (plain.startsWith('## ') || plain.startsWith('### ')) return true;
     if (plain.length > 90) return false;
 
     // Headings starting with emojis or specific section title keywords
-    if (/^(👉|⚙️|📱|💡|📢|📌|🔥|✨|Так же в|Также в|Не забывайте|Как настроить|Настройка|Шаг \d+|Инструкция:)/i.test(plain)) {
+    if (/^(👉|⚙️|📱|📢|✨|Так же в|Также в|Не забывайте|Как настроить|Настройка|Шаг \d+|Инструкция:)/i.test(plain)) {
         return true;
     }
 
