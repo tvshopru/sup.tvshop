@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <title>Статья • TV SHOP</title>
+    <meta name="description" content="Инструкции, руководства и полезные статьи от TV SHOP">
+    <link rel="icon" type="image/png" href="app_logo.png?v=2">
+
+    <!-- Open Graph for Telegram & Social previews -->
+    <meta property="og:site_name" content="TV SHOP">
+    <meta property="og:type" content="article">
+    <meta property="og:title" id="og-title" content="Статья TV SHOP">
+    <meta property="og:description" id="og-desc" content="Полезное руководство и настройка">
+    <meta property="og:image" content="app_logo.png">
+
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --bg-secondary: #f8fafc;
+            --card-bg: #ffffff;
+            --text-primary: #111827;
+            --text-secondary: #4b5563;
+            --text-muted: #9ca3af;
+            --accent-color: #2481cc;
+            --accent-hover: #1b66a3;
+            --accent-light: #e8f4fd;
+            --border-color: #e5e7eb;
+            --code-bg: #f3f4f6;
+            --code-text: #1f2937;
+            --quote-bg: #f0f7ff;
+            --quote-border: #2481cc;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+            --shadow-md: 0 4px 14px rgba(0,0,0,0.08);
+            --header-bg: rgba(255, 255, 255, 0.85);
+        }
+
+        body.dark-theme {
+            --bg-color: #0f141c;
+            --bg-secondary: #171f2b;
+            --card-bg: #171f2b;
+            --text-primary: #f3f4f6;
+            --text-secondary: #cbd5e1;
+            --text-muted: #64748b;
+            --accent-color: #00b4d8;
+            --accent-hover: #0096c7;
+            --accent-light: rgba(0, 180, 216, 0.12);
+            --border-color: #243042;
+            --code-bg: #1e293b;
+            --code-text: #38bdf8;
+            --quote-bg: rgba(0, 180, 216, 0.08);
+            --quote-border: #00b4d8;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.4);
+            --shadow-md: 0 4px 20px rgba(0,0,0,0.4);
+            --header-bg: rgba(15, 20, 28, 0.85);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            font-size: 17px;
+            line-height: 1.7;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+
+        /* Top Bar */
+        .top-navbar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            background: var(--header-bg);
+            border-bottom: 1px solid var(--border-color);
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .brand-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--text-primary);
+            font-weight: 700;
+            font-size: 0.95em;
+            letter-spacing: 0.3px;
+        }
+
+        .brand-link img {
+            width: 26px;
+            height: 26px;
+            border-radius: 6px;
+            object-fit: contain;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-btn {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            border-radius: 20px;
+            padding: 6px 12px;
+            font-size: 0.85em;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .nav-btn:hover {
+            background: var(--accent-light);
+            color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+
+        .nav-btn-icon {
+            width: 34px;
+            height: 34px;
+            padding: 0;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Main Container (Telegraph Max Width) */
+        .article-container {
+            width: 100%;
+            max-width: 740px;
+            margin: 0 auto;
+            padding: 36px 20px 80px 20px;
+            flex: 1;
+        }
+
+        /* Article Meta Header */
+        .article-header {
+            margin-bottom: 30px;
+            padding-bottom: 22px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .article-title {
+            font-size: 2.2em;
+            font-weight: 800;
+            line-height: 1.25;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+            letter-spacing: -0.5px;
+        }
+
+        @media (max-width: 600px) {
+            .article-title {
+                font-size: 1.75em;
+            }
+            .article-container {
+                padding-top: 24px;
+            }
+        }
+
+        .article-meta-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            font-size: 0.9em;
+            color: var(--text-muted);
+        }
+
+        .author-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--accent-color);
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .author-badge:hover {
+            text-decoration: underline;
+        }
+
+        .meta-dot {
+            opacity: 0.5;
+        }
+
+        /* Video Action Banner */
+        .video-banner-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: var(--accent-light);
+            color: var(--accent-color);
+            border: 1px solid var(--accent-color);
+            border-radius: 12px;
+            padding: 14px 20px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1em;
+            margin-bottom: 28px;
+            transition: all 0.2s;
+        }
+
+        .video-banner-btn:hover {
+            background: var(--accent-color);
+            color: #ffffff;
+            box-shadow: 0 4px 14px rgba(36, 129, 204, 0.3);
+        }
+
+        /* Content Body Typography */
+        .article-body {
+            color: var(--text-primary);
+            font-size: 1.06em;
+            line-height: 1.75;
+            word-wrap: break-word;
+        }
+
+        .article-body p {
+            margin-bottom: 1.3em;
+        }
+
+        .article-body h1, .article-body h2, .article-body h3, .article-body h4 {
+            color: var(--text-primary);
+            font-weight: 800;
+            line-height: 1.3;
+            margin: 1.6em 0 0.6em 0;
+        }
+
+        .article-body h2 {
+            font-size: 1.45em;
+            border-left: 4px solid var(--accent-color);
+            padding-left: 12px;
+        }
+
+        .article-body h3 {
+            font-size: 1.25em;
+        }
+
+        .article-body a {
+            color: var(--accent-color);
+            text-decoration: underline;
+            text-underline-offset: 3px;
+            word-break: break-all;
+        }
+
+        .article-body a:hover {
+            color: var(--accent-hover);
+        }
+
+        .article-body blockquote {
+            border-left: 4px solid var(--quote-border);
+            background: var(--quote-bg);
+            padding: 14px 18px;
+            margin: 1.4em 0;
+            border-radius: 0 10px 10px 0;
+            font-style: italic;
+            color: var(--text-primary);
+        }
+
+        .article-body ul, .article-body ol {
+            margin: 0.8em 0 1.4em 24px;
+        }
+
+        .article-body li {
+            margin-bottom: 0.4em;
+        }
+
+        .article-body pre, .article-body code {
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+            background: var(--code-bg);
+            color: var(--code-text);
+            border-radius: 6px;
+            font-size: 0.9em;
+        }
+
+        .article-body code {
+            padding: 2px 6px;
+        }
+
+        .article-body pre {
+            padding: 16px;
+            margin: 1.4em 0;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            border: 1px solid var(--border-color);
+        }
+
+        .article-body hr {
+            border: none;
+            height: 1px;
+            background: var(--border-color);
+            margin: 2.2em 0;
+        }
+
+        .article-body img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 12px;
+            margin: 18px 0;
+            display: block;
+            cursor: zoom-in;
+            box-shadow: var(--shadow-md);
+            transition: transform 0.2s ease;
+        }
+
+        .article-body img:hover {
+            transform: scale(1.008);
+        }
+
+        .article-body b, .article-body strong {
+            font-weight: 700;
+        }
+
+        .article-body s, .article-body del {
+            text-decoration: line-through;
+            opacity: 0.65;
+        }
+
+        /* Footer & Channel promo */
+        .article-footer {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .footer-channel-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .footer-channel-info {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .footer-channel-info img {
+            width: 46px;
+            height: 46px;
+            border-radius: 10px;
+            object-fit: contain;
+            background: #fff;
+            padding: 3px;
+            border: 1px solid var(--border-color);
+        }
+
+        .footer-channel-name {
+            font-weight: 800;
+            font-size: 1.05em;
+            color: var(--text-primary);
+        }
+
+        .footer-channel-sub {
+            font-size: 0.85em;
+            color: var(--text-muted);
+        }
+
+        .tg-join-btn {
+            background: #2481cc;
+            color: #ffffff !important;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.9em;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.2s;
+        }
+
+        .tg-join-btn:hover {
+            background: #1b66a3;
+        }
+
+        /* Lightbox Fullscreen */
+        .lightbox-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.92);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            z-index: 99999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            cursor: zoom-out;
+            padding: 20px;
+        }
+
+        .lightbox-overlay.active {
+            display: flex;
+        }
+
+        .lightbox-img {
+            max-width: 96%;
+            max-height: 94%;
+            object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 44px;
+            height: 44px;
+            background: rgba(255, 255, 255, 0.15);
+            color: #ffffff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .lightbox-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Loading & Error States */
+        .loading-state, .error-state {
+            text-align: center;
+            padding: 80px 20px;
+            color: var(--text-muted);
+        }
+
+        .spinner {
+            width: 36px;
+            height: 36px;
+            border: 3px solid var(--border-color);
+            border-top-color: var(--accent-color);
+            border-radius: 50%;
+            margin: 0 auto 16px auto;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Navigation Bar -->
+    <header class="top-navbar">
+        <a href="index.html" class="brand-link" title="На главную TV SHOP">
+            <img src="app_logo.png?v=2" alt="TV SHOP Logo">
+            <span>TV SHOP</span>
+        </a>
+        <div class="nav-actions">
+            <button class="nav-btn nav-btn-icon" id="theme-toggle-btn" title="Сменить тему (День/Ночь)">
+                <svg id="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px;display:none;">
+                    <circle cx="12" cy="12" r="5"></circle>
+                    <line x1="12" y1="1" x2="12" y2="3"></line>
+                    <line x1="12" y1="21" x2="12" y2="23"></line>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                    <line x1="1" y1="12" x2="3" y2="12"></line>
+                    <line x1="21" y1="12" x2="23" y2="12"></line>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                </svg>
+                <svg id="theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px;">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                </svg>
+            </button>
+            <button class="nav-btn" id="share-btn" title="Поделиться статьей">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;">
+                    <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+                    <polyline points="16 6 12 2 8 6"></polyline>
+                    <line x1="12" y1="2" x2="12" y2="15"></line>
+                </svg>
+                <span>Поделиться</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="article-container" id="main-container">
+        <div class="loading-state" id="loading-state">
+            <div class="spinner"></div>
+            <div>Загрузка статьи...</div>
+        </div>
+    </main>
+
+    <!-- Fullscreen Lightbox -->
+    <div class="lightbox-overlay" id="lightbox-overlay">
+        <div class="lightbox-close" id="lightbox-close">&times;</div>
+        <img class="lightbox-img" id="lightbox-img" alt="Zoomed view">
+    </div>
+
+    <script>
+        // Theme Management
+        (function initTheme() {
+            var savedTheme = localStorage.getItem('article-theme') || 'light';
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark-theme');
+                updateThemeIcons(true);
+            } else {
+                document.body.classList.remove('dark-theme');
+                updateThemeIcons(false);
+            }
+        })();
+
+        function updateThemeIcons(isDark) {
+            var sun = document.getElementById('theme-icon-sun');
+            var moon = document.getElementById('theme-icon-moon');
+            if (sun && moon) {
+                sun.style.display = isDark ? 'block' : 'none';
+                moon.style.display = isDark ? 'none' : 'block';
+            }
+        }
+
+        document.getElementById('theme-toggle-btn').addEventListener('click', function() {
+            var isDark = document.body.classList.toggle('dark-theme');
+            localStorage.setItem('article-theme', isDark ? 'dark' : 'light');
+            updateThemeIcons(isDark);
+        });
+
+        // Query Param Helper
+        function getQueryParam(name) {
+            var match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
+            return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
+        }
+
+        // Fetch Config and Render
+        var targetArtId = getQueryParam('id') || getQueryParam('art');
+
+        fetch('config.json?v=' + Date.now())
+            .then(function(res) {
+                if (!res.ok) throw new Error('Не удалось загрузить конфигурацию');
+                return res.json();
+            })
+            .then(function(config) {
+                renderArticle(config, targetArtId);
+            })
+            .catch(function(err) {
+                document.getElementById('main-container').innerHTML = 
+                    '<div class="error-state">' +
+                        '<h2>Ошибка загрузки</h2>' +
+                        '<p style="margin-top:8px;">' + (err.message || 'Статья недоступна') + '</p>' +
+                        '<a href="index.html" class="nav-btn" style="margin-top:20px; display:inline-flex;">← На главную</a>' +
+                    '</div>';
+            });
+
+        function renderArticle(config, artId) {
+            var container = document.getElementById('main-container');
+            var articles = config.articles || [];
+            
+            var article = null;
+            if (artId) {
+                article = articles.find(function(a) { return a.id === artId; });
+                if (!article && !isNaN(parseInt(artId))) {
+                    article = articles[parseInt(artId)];
+                }
+            }
+
+            // Fallback to first article if id not specified
+            if (!article && articles.length > 0) {
+                article = articles[0];
+            }
+
+            if (!article) {
+                container.innerHTML = 
+                    '<div class="error-state">' +
+                        '<h2>Статья не найдена</h2>' +
+                        '<p style="margin-top:8px;">Возможно, ссылка устарела или статья была перемещена.</p>' +
+                        '<a href="index.html" class="nav-btn" style="margin-top:20px; display:inline-flex;">← В каталог TV SHOP</a>' +
+                    '</div>';
+                return;
+            }
+
+            // Update Meta & Title
+            var titleText = article.title || 'Статья';
+            document.title = titleText + ' • TV SHOP';
+            var ogTitle = document.getElementById('og-title');
+            if (ogTitle) ogTitle.setAttribute('content', titleText);
+
+            var tgContact = config.supportTg || '@android_tv_shop';
+            var tgUrl = 'https://t.me/' + tgContact.replace('@', '');
+
+            var videoBtnHtml = '';
+            if (article.videoUrl) {
+                videoBtnHtml = 
+                    '<a href="' + escapeHtml(article.videoUrl) + '" target="_blank" class="video-banner-btn">' +
+                        '<svg viewBox="0 0 24 24" fill="currentColor" style="width:22px;height:22px;"><polygon points="5 3 19 12 5 21 5 3"/></svg>' +
+                        'Смотреть видеоинструкцию' +
+                    '</a>';
+            }
+
+            var html = 
+                '<article>' +
+                    '<header class="article-header">' +
+                        '<h1 class="article-title">' + escapeHtml(titleText) + '</h1>' +
+                        '<div class="article-meta-row">' +
+                            '<a href="' + tgUrl + '" target="_blank" class="author-badge">' +
+                                '<svg viewBox="0 0 24 24" fill="#2481cc" style="width:18px;height:18px;"><circle cx="12" cy="12" r="12" fill="#2481cc"/><path d="M5.4 11.9l11.7-4.5c.5-.2 1.1.1 1 .7l-2 9.4c-.1.6-.7.8-1.2.5l-3.3-2.4-1.6 1.5c-.2.2-.4.3-.7.3l.2-3.4 6.2-5.6c.3-.2-.1-.4-.4-.2l-7.7 4.9-3.3-1c-.7-.2-.7-.7.1-1z" fill="#fff"/></svg>' +
+                                'TV SHOP' +
+                            '</a>' +
+                            '<span class="meta-dot">•</span>' +
+                            '<span>' + escapeHtml(article.date || 'Сегодня') + '</span>' +
+                        '</div>' +
+                    '</header>' +
+                    videoBtnHtml +
+                    '<div class="article-body">' +
+                        (article.contentHtml || '') +
+                    '</div>' +
+                    '<footer class="article-footer">' +
+                        '<div class="footer-channel-card">' +
+                            '<div class="footer-channel-info">' +
+                                '<img src="app_logo.png?v=2" alt="TV SHOP Logo">' +
+                                '<div>' +
+                                    '<div class="footer-channel-name">TV SHOP — Поддержка и инструкции</div>' +
+                                    '<div class="footer-channel-sub">Свежие плейлисты, новости и помощь</div>' +
+                                '</div>' +
+                            '</div>' +
+                            '<a href="' + tgUrl + '" target="_blank" class="tg-join-btn">' +
+                                '<svg viewBox="0 0 24 24" fill="currentColor" style="width:18px;height:18px;"><path d="M5.4 11.9l11.7-4.5c.5-.2 1.1.1 1 .7l-2 9.4c-.1.6-.7.8-1.2.5l-3.3-2.4-1.6 1.5c-.2.2-.4.3-.7.3l.2-3.4 6.2-5.6c.3-.2-.1-.4-.4-.2l-7.7 4.9-3.3-1c-.7-.2-.7-.7.1-1z"/></svg>' +
+                                'Наш Telegram' +
+                            '</a>' +
+                        '</div>' +
+                    '</footer>' +
+                '</article>';
+
+            container.innerHTML = html;
+
+            // Image Lightbox zoom handler
+            var images = container.querySelectorAll('.article-body img');
+            images.forEach(function(img) {
+                img.addEventListener('click', function() {
+                    openLightbox(this.src);
+                });
+            });
+
+            // Share Button
+            document.getElementById('share-btn').onclick = function() {
+                var shareUrl = window.location.href;
+                if (navigator.share) {
+                    navigator.share({
+                        title: titleText,
+                        url: shareUrl
+                    }).catch(function() {});
+                } else if (navigator.clipboard) {
+                    navigator.clipboard.writeText(shareUrl).then(function() {
+                        alert('Ссылка на статью скопирована в буфер обмена!');
+                    });
+                } else {
+                    prompt('Скопируйте ссылку:', shareUrl);
+                }
+            };
+        }
+
+        // Lightbox Functions
+        var lightboxOverlay = document.getElementById('lightbox-overlay');
+        var lightboxImg = document.getElementById('lightbox-img');
+
+        function openLightbox(src) {
+            lightboxImg.src = src;
+            lightboxOverlay.classList.add('active');
+        }
+
+        function closeLightbox() {
+            lightboxOverlay.classList.remove('active');
+            lightboxImg.src = '';
+        }
+
+        lightboxOverlay.addEventListener('click', closeLightbox);
+        document.getElementById('lightbox-close').addEventListener('click', closeLightbox);
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeLightbox();
+        });
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+    </script>
+</body>
+</html>

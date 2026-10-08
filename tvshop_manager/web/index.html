@@ -189,7 +189,10 @@
                                     </div>
                                     <div class="tg-tb-divider"></div>
                                     <div class="tg-tb-group" style="margin-left: auto;">
-                                        <button type="button" class="btn btn-danger btn-sm" id="btn-delete-article" style="padding: 4px 10px; font-size: 0.82em;">Удалить статью</button>
+                                        <button type="button" class="tg-tb-btn" id="tg-btn-theme-toggle" title="Переключить тему редактора (Светлая / Тёмная)" style="width:auto; padding:0 10px; border-radius:16px; font-size:0.85em; gap:4px; display:inline-flex;">
+                                            <span>☀️</span> <span id="tg-theme-name" style="font-size:0.9em;">Светлая</span>
+                                        </button>
+                                        <button type="button" class="btn btn-danger btn-sm" id="btn-delete-article" style="padding: 4px 10px; font-size: 0.82em; margin-left:6px;">Удалить статью</button>
                                     </div>
                                 </div>
 
@@ -211,15 +214,15 @@
                                     </div>
                                     <div style="display:flex; justify-content:space-between; align-items:center; background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:8px 14px; gap:10px; flex-wrap:wrap;">
                                         <div style="display:flex; align-items:center; gap:8px; font-size:0.86em; color:var(--text-muted); flex:1; min-width:200px;">
-                                            <span style="font-weight:700; color:var(--text-color);">🔗 Прямая ссылка:</span>
-                                            <code id="art-direct-link-text" style="background:#eef2f6; padding:3px 8px; border-radius:4px; color:#0070f3; font-weight:600; word-break:break-all;">https://sup.tvshop.ru/?art=...</code>
+                                            <span style="font-weight:700; color:var(--text-color);">⚡ Автономная ссылка статьи:</span>
+                                            <code id="art-direct-link-text" style="background:#eef2f6; padding:3px 8px; border-radius:4px; color:#0070f3; font-weight:600; word-break:break-all;">https://sup.tvshop.ru/article.html?id=...</code>
                                         </div>
                                         <div style="display:flex; gap:8px;">
                                             <button type="button" class="btn btn-secondary btn-sm" id="btn-copy-art-link" style="padding:5px 12px; font-size:0.82em; font-weight:700;">
                                                 📋 Скопировать ссылку
                                             </button>
                                             <a id="btn-open-art-link" href="#" target="_blank" class="btn btn-secondary btn-sm" style="padding:5px 12px; font-size:0.82em; text-decoration:none; display:inline-flex; align-items:center; gap:4px;">
-                                                ↗ Открыть на сайте
+                                                ↗ Открыть статью
                                             </a>
                                         </div>
                                     </div>

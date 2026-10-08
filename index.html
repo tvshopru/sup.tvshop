@@ -3219,7 +3219,8 @@
             var container = $('.mobile-container');
             container.empty();
 
-            var shareUrl = window.location.origin + window.location.pathname + '?art=' + (art.id || '');
+            var basePath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
+            var shareUrl = window.location.origin + basePath + 'article.html?id=' + (art.id || '');
             renderMobileHeader(art.title || 'Статья', true, function() {
                 mobileActiveArtId = null;
                 var newUrl = window.location.origin + window.location.pathname + '?mobile=1&tab=articles';

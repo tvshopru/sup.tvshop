@@ -505,10 +505,10 @@ function selectArticle(idx) {
     $('#input-art-video').val(art.videoUrl || '');
     $('#tg-content-editor').html(art.contentHtml || '');
 
-    // Set and calculate direct article link
+    // Set and calculate direct article link (Telegraph-like standalone reader)
     const prodBase = "https://tvshopru.github.io/sup.tvshop";
     const artId = art.id || ('art-' + idx);
-    const directUrl = `${prodBase}/?art=${encodeURIComponent(artId)}`;
+    const directUrl = `${prodBase}/article.html?id=${encodeURIComponent(artId)}`;
     $('#art-direct-link-text').text(directUrl);
     $('#btn-open-art-link').attr('href', directUrl);
 
@@ -533,6 +533,25 @@ function selectArticle(idx) {
 
 // Telegram Editor Toolbar and Clipboard / Annotator Events
 function initTelegramEditorEvents() {
+    // Editor Theme Toggle (Light / Dark)
+    const savedEditorTheme = localStorage.getItem('tg-editor-theme') || 'light';
+    if (savedEditorTheme === 'dark') {
+        $('.tg-editor-wrapper').addClass('dark-theme');
+        $('#tg-theme-name').text('Тёмная');
+        $('#tg-btn-theme-toggle span:first').text('🌙');
+    } else {
+        $('.tg-editor-wrapper').removeClass('dark-theme');
+        $('#tg-theme-name').text('Светлая');
+        $('#tg-btn-theme-toggle span:first').text('☀️');
+    }
+
+    $('#tg-btn-theme-toggle').off('click').on('click', function() {
+        const isDark = $('.tg-editor-wrapper').toggleClass('dark-theme').hasClass('dark-theme');
+        localStorage.setItem('tg-editor-theme', isDark ? 'dark' : 'light');
+        $('#tg-theme-name').text(isDark ? 'Тёмная' : 'Светлая');
+        $('#tg-btn-theme-toggle span:first').text(isDark ? '🌙' : '☀️');
+    });
+
     // Toolbar Formatting Buttons
     $('.tg-tb-btn[data-command]').on('click', function(e) {
         e.preventDefault();
