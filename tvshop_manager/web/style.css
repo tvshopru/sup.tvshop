@@ -1211,25 +1211,45 @@ select.form-control {
     text-underline-offset: 3px !important;
 }
 
-.tg-content-editor ul, .tg-article-paper ul, .article-body ul {
-    margin: 1em 0 1.4em 0 !important;
+.tg-content-editor ul, .tg-article-paper ul, .article-body ul, #tg-content-editor ul {
+    margin: 1.2em 0 !important;
     padding-left: 32px !important;
+    list-style: disc outside !important;
     list-style-type: disc !important;
     list-style-position: outside !important;
+    display: block !important;
 }
 
-.tg-content-editor ol, .tg-article-paper ol, .article-body ol {
-    margin: 1em 0 1.4em 0 !important;
+.tg-content-editor ol, .tg-article-paper ol, .article-body ol, #tg-content-editor ol {
+    margin: 1.2em 0 !important;
     padding-left: 32px !important;
+    list-style: decimal outside !important;
     list-style-type: decimal !important;
     list-style-position: outside !important;
+    display: block !important;
 }
 
-.tg-content-editor li, .tg-article-paper li, .article-body li {
+.tg-content-editor ul > li, .tg-article-paper ul > li, .article-body ul > li, #tg-content-editor ul > li {
     display: list-item !important;
-    list-style-type: inherit !important;
-    margin-bottom: 0.5em !important;
-    line-height: 1.7 !important;
+    list-style: disc outside !important;
+    list-style-type: disc !important;
+    list-style-position: outside !important;
+    margin-bottom: 0.6em !important;
+    line-height: 1.65 !important;
+}
+
+.tg-content-editor ol > li, .tg-article-paper ol > li, .article-body ol > li, #tg-content-editor ol > li {
+    display: list-item !important;
+    list-style: decimal outside !important;
+    list-style-type: decimal !important;
+    list-style-position: outside !important;
+    margin-bottom: 0.6em !important;
+    line-height: 1.65 !important;
+}
+
+.tg-content-editor ul > li::marker, .tg-article-paper ul > li::marker, .article-body ul > li::marker {
+    color: #2481cc !important;
+    font-size: 1.15em !important;
 }
 
 .tg-content-editor pre, .tg-content-editor code {
