@@ -715,11 +715,11 @@ function initTelegramEditorEvents() {
 function formatTelegramPostContent(rawText) {
     if (!rawText || !rawText.trim()) return '';
 
-    const lines = rawText.split(/\r?\n/);
-    let titleExtracted = false;
+    const lines = rawText.split(/\r?\n/).map(l => l.trim());
     let htmlOutput = [];
     let inList = false;
     let listType = null;
+    let titleExtracted = false;
 
     function closeList() {
         if (inList) {
@@ -729,15 +729,41 @@ function formatTelegramPostContent(rawText) {
         }
     }
 
-    for (let i = 0; i < lines.length; i++) {
-        let line = lines[i].trim();
+    let i = 0;
+
+    // 1. Gather full multi-line title at the start until empty line or Photo marker
+    let titleParts = [];
+    while (i < lines.length) {
+        let line = lines[i];
+        if (!line) {
+            if (titleParts.length > 0) break;
+            i++;
+            continue;
+        }
+        if (isPhotoMarker(line) || isBulletLine(line)) {
+            break;
+        }
+        titleParts.push(line);
+        i++;
+    }
+
+    if (titleParts.length > 0) {
+        const fullTitle = titleParts.join(' ').replace(/\s+/g, ' ').trim();
+        $('#input-art-title').val(fullTitle).trigger('input');
+        htmlOutput.push(`<h1>${escapeAndFormatInline(fullTitle)}</h1>`);
+        titleExtracted = true;
+    }
+
+    // 2. Process remaining lines
+    for (; i < lines.length; i++) {
+        let line = lines[i];
         if (!line) {
             closeList();
             continue;
         }
 
-        // 1. Photo marker from Telegram copy
-        if (line.toLowerCase() === 'photo' || line.toLowerCase() === 'фото' || line.startsWith('Photo, [') || line.startsWith('Фото, [')) {
+        // Photo marker from Telegram copy
+        if (isPhotoMarker(line)) {
             closeList();
             htmlOutput.push(`
                 <div class="tg-photo-placeholder" data-placeholder="true">
@@ -750,19 +776,8 @@ function formatTelegramPostContent(rawText) {
             continue;
         }
 
-        // 2. Auto Title detection on first line
-        if (!titleExtracted && i === 0 && line.length > 3 && line.length < 120) {
-            const cleanTitle = line.replace(/^[•\-\*#\s]+/, '').trim();
-            const curTitle = $('#input-art-title').val().trim();
-            if (!curTitle || curTitle === 'Новая статья' || curTitle === 'Без названия') {
-                $('#input-art-title').val(cleanTitle).trigger('input');
-            }
-            titleExtracted = true;
-            continue;
-        }
-
-        // 3. Bullet list item (• or - or *)
-        const bulletMatch = line.match(/^[•\-\*]\s+(.*)$/);
+        // Bullet list item (• or - or * or —)
+        const bulletMatch = line.match(/^[•\-\*—]\s+(.*)$/);
         if (bulletMatch) {
             if (!inList || listType !== 'ul') {
                 closeList();
@@ -774,7 +789,7 @@ function formatTelegramPostContent(rawText) {
             continue;
         }
 
-        // 4. Numbered list item (1. or 2))
+        // Numbered list item (1. or 2))
         const numMatch = line.match(/^(\d+)[\.\)]\s+(.*)$/);
         if (numMatch) {
             if (!inList || listType !== 'ol') {
@@ -789,25 +804,56 @@ function formatTelegramPostContent(rawText) {
 
         closeList();
 
-        // 5. Quote / Highlight banner
-        if (line.startsWith('>') || line.startsWith('💡') || line.startsWith('📢') || line.startsWith('И все после') || line.startsWith('Важно:') || line.startsWith('Внимание:')) {
+        // Quote / Callout Banner
+        if (line.startsWith('>') || line.startsWith('И все после') || line.startsWith('Важно:') || line.startsWith('Внимание:')) {
             const cleanQuote = line.replace(/^>\s*/, '');
             htmlOutput.push(`<blockquote><b>${escapeAndFormatInline(cleanQuote)}</b></blockquote>`);
             continue;
         }
 
-        // 6. Section Subheading
-        if (line.startsWith('## ') || line.startsWith('### ')) {
-            htmlOutput.push(`<h2>${escapeAndFormatInline(line.replace(/^#+\s*/, ''))}</h2>`);
+        // Section Subheading (h2) detection:
+        // Starts with ##, or starts with emoji/keywords (🍿, 📺, 🎬, 👉, Так же, Не забывайте, Как, Шаг), or is short and ends with ! or :
+        if (isHeadingLine(line, i, lines)) {
+            const cleanHead = line.replace(/^#+\s*/, '').trim();
+            htmlOutput.push(`<h2>${escapeAndFormatInline(cleanHead)}</h2>`);
             continue;
         }
 
-        // 7. Regular paragraph
+        // Regular paragraph
         htmlOutput.push(`<p>${escapeAndFormatInline(line)}</p>`);
     }
 
     closeList();
     return htmlOutput.join('\n');
+}
+
+function isPhotoMarker(line) {
+    if (!line) return false;
+    const lower = line.toLowerCase();
+    return lower === 'photo' || lower === 'фото' || lower.startsWith('photo, [') || lower.startsWith('фото, [');
+}
+
+function isBulletLine(line) {
+    return /^[•\-\*—\d+[\.\)]]/.test(line);
+}
+
+function isHeadingLine(line, index, lines) {
+    if (line.startsWith('## ') || line.startsWith('### ')) return true;
+    if (line.length > 90) return false;
+
+    // Check for emojis or leading keywords
+    if (/^(🍿|📺|🎬|🔥|✨|👉|⚙️|📱|💡|📢|📌|Так же|Также|Не забывайте|Как |Настройка |Шаг |Инструкция)/i.test(line)) {
+        return true;
+    }
+
+    // Check if next line is a photo or list and current line is short and strong
+    if (index + 1 < lines.length && (isPhotoMarker(lines[index + 1]) || isBulletLine(lines[index + 1]))) {
+        if (line.length < 70 && !line.endsWith('.') && !line.includes(',')) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 function escapeAndFormatInline(text) {
