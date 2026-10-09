@@ -1350,6 +1350,7 @@ async function syncArticleEditorData() {
             const savedData = await editorInstance.save();
             if (portalConfig.articles && portalConfig.articles[activeArticleIdx]) {
                 portalConfig.articles[activeArticleIdx].contentData = savedData;
+                portalConfig.articles[activeArticleIdx].blocks = savedData;
                 portalConfig.articles[activeArticleIdx].contentHtml = editorDataToHtml(savedData);
             }
         } catch (err) {}

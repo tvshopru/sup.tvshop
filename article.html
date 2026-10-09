@@ -267,16 +267,33 @@
             color: var(--accent-hover);
         }
 
-        .article-body blockquote {
-            border-left: 3.5px solid var(--accent-color) !important;
+        .article-body blockquote, blockquote.article-quote-block {
+            border-left: 4px solid var(--accent-color) !important;
             background: rgba(36, 129, 204, 0.08) !important;
-            padding: 8px 14px !important;
-            margin: 12px 0 !important;
-            border-radius: 0 6px 6px 0 !important;
+            padding: 12px 18px !important;
+            margin: 16px 0 !important;
+            border-radius: 0 10px 10px 0 !important;
             font-style: normal !important;
             font-weight: 500;
-            line-height: 1.5;
+            line-height: 1.6;
             color: var(--text-primary);
+        }
+
+        body.dark-theme .article-body blockquote, body.dark-theme blockquote.article-quote-block {
+            background: rgba(0, 180, 216, 0.1) !important;
+            border-left-color: var(--accent-color) !important;
+        }
+
+        .article-body blockquote p, blockquote.article-quote-block p {
+            margin: 0 !important;
+        }
+
+        .article-body blockquote cite, blockquote.article-quote-block cite {
+            display: block;
+            margin-top: 8px;
+            font-size: 0.85em;
+            color: var(--text-secondary);
+            font-style: normal;
         }
 
         .article-body mark, .tg-text-highlight, span.tg-text-highlight {
@@ -885,8 +902,9 @@
             }
 
             var cleanBodyHtml = '';
-            if (article.blocks && article.blocks.blocks && article.blocks.blocks.length > 0) {
-                cleanBodyHtml = renderBlocksToHtml(article.blocks);
+            var blocksObj = article.contentData || article.blocks;
+            if (blocksObj && blocksObj.blocks && blocksObj.blocks.length > 0) {
+                cleanBodyHtml = renderBlocksToHtml(blocksObj);
             } else {
                 cleanBodyHtml = cleanArticleBody(article.contentHtml || '');
             }
