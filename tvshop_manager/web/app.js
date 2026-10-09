@@ -560,6 +560,7 @@ class RemoteKeyInlineTool {
 // ==========================================================================
 let editorInstance = null;
 let isEditorReady = false;
+let undoInstance = null;
 
 // HTML to Editor.js Blocks Converter
 function htmlToEditorData(html) {
@@ -1062,6 +1063,20 @@ function initEditorJS(initialData) {
             onReady: () => {
                 isEditorReady = true;
                 updateArticleReadingTimeFromData(initialData);
+                if (window.Undo) {
+                    try {
+                        undoInstance = new Undo({
+                            editor: editorInstance,
+                            maxLength: 50,
+                            shortcuts: {
+                                undo: 'CMD+Z',
+                                redo: 'CMD+Y'
+                            }
+                        });
+                    } catch (e) {
+                        console.warn("Undo manager init warning:", e);
+                    }
+                }
             },
             onChange: async () => {
                 if (!isEditorReady || !editorInstance) return;
@@ -1084,6 +1099,25 @@ function initEditorJS(initialData) {
 
 // Quick insertion toolbar button handlers
 function initEditorToolbarActions() {
+    // Undo & Redo Actions
+    $('#ed-btn-undo').off('click').on('click', function(e) {
+        e.preventDefault();
+        if (undoInstance && typeof undoInstance.undo === 'function') {
+            undoInstance.undo();
+        } else {
+            document.execCommand('undo');
+        }
+    });
+
+    $('#ed-btn-redo').off('click').on('click', function(e) {
+        e.preventDefault();
+        if (undoInstance && typeof undoInstance.redo === 'function') {
+            undoInstance.redo();
+        } else {
+            document.execCommand('redo');
+        }
+    });
+
     $('#ed-btn-add-header').off('click').on('click', function() {
         if (editorInstance && isEditorReady) {
             editorInstance.blocks.insert('header', { text: '', level: 2 });
