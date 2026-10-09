@@ -78,7 +78,7 @@ body.dark-theme .article-body h3,
 }
 
 /* Lists */
-.article-body ul {
+.article-body ul:not(.article-checklist-list) {
     margin: 0.8em 0 !important;
     padding-left: 20px !important;
     list-style: disc !important;
@@ -92,7 +92,7 @@ body.dark-theme .article-body h3,
     display: block !important;
 }
 
-.article-body ul > li,
+.article-body ul:not(.article-checklist-list) > li,
 .article-body ol > li {
     display: list-item !important;
     margin-bottom: 0.45em !important;
@@ -100,34 +100,58 @@ body.dark-theme .article-body h3,
     padding-left: 4px !important;
 }
 
-.article-body ul > li::marker,
+.article-body ul:not(.article-checklist-list) > li::marker,
 .article-body ol > li::marker {
     color: var(--accent-color, #2481cc) !important;
     font-weight: 700 !important;
 }
 
 /* Checklist */
+.article-body ul.article-checklist-list,
 .article-checklist-list {
     list-style: none !important;
-    padding-left: 4px !important;
+    padding-left: 0 !important;
     margin: 0.8em 0 !important;
 }
 
+.article-body ul.article-checklist-list > li,
 .article-checklist-item {
+    list-style: none !important;
     display: flex !important;
-    align-items: baseline !important;
-    gap: 8px !important;
-    margin-bottom: 0.45em !important;
+    align-items: center !important;
+    gap: 10px !important;
+    margin-bottom: 0.5em !important;
+    line-height: 1.5 !important;
+}
+
+.article-body ul.article-checklist-list > li::marker {
+    content: "" !important;
+}
+
+.checklist-box {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    border: 1.8px solid #cbd5e1;
+    border-radius: 4px;
+    font-size: 11px;
+    color: transparent;
+    user-select: none;
+    flex-shrink: 0;
+    transition: all 0.15s ease;
+}
+
+.article-checklist-item.checked .checklist-box {
+    background: var(--accent-color, #2481cc);
+    border-color: var(--accent-color, #2481cc);
+    color: #ffffff;
 }
 
 .article-checklist-item.checked {
     opacity: 0.7;
     text-decoration: line-through;
-}
-
-.checklist-box {
-    font-size: 1.1em;
-    color: var(--accent-color, #2481cc);
 }
 
 /* Quotes (CodeX Blockquote) */
