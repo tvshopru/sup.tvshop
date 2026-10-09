@@ -2167,6 +2167,27 @@ h3.ce-header {
     margin-right: 2px !important;
 }
 
+.editorjs-canvas-holder {
+    width: 100%;
+    min-height: 440px;
+    color: var(--text-color);
+    padding: 10px 4px 60px 4px;
+    counter-reset: article-ordered-counter;
+}
+
+/* Continuous sequential numbering for ordered lists across blocks & images */
+.cdx-list--ordered {
+    counter-reset: none !important;
+}
+
+.cdx-list--ordered .cdx-list__item {
+    counter-increment: article-ordered-counter !important;
+}
+
+.cdx-list--ordered .cdx-list__item::before {
+    content: counter(article-ordered-counter) ". " !important;
+}
+
 .ce-paragraph {
     font-size: 1.06em;
     line-height: 1.75;

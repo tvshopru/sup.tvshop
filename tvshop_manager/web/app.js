@@ -767,6 +767,8 @@ function htmlToEditorData(html) {
 function editorDataToHtml(data) {
     if (!data || !data.blocks || !Array.isArray(data.blocks)) return '';
 
+    let runningOrderedIndex = 1;
+
     return data.blocks.map(block => {
         const type = block.type;
         const d = block.data || {};
@@ -780,12 +782,18 @@ function editorDataToHtml(data) {
                 return `<p>${d.text || ''}</p>`;
             }
             case 'list': {
-                const tag = d.style === 'ordered' ? 'ol' : 'ul';
+                const isOrdered = d.style === 'ordered';
+                const tag = isOrdered ? 'ol' : 'ul';
+                const startAttr = isOrdered ? ` start="${runningOrderedIndex}"` : '';
+
                 const itemsHtml = (d.items || []).map(item => {
                     const content = typeof item === 'object' ? (item.content || item.text || '') : item;
+                    if (isOrdered) {
+                        runningOrderedIndex++;
+                    }
                     return `<li>${content}</li>`;
                 }).join('');
-                return `<${tag}>${itemsHtml}</${tag}>`;
+                return `<${tag}${startAttr}>${itemsHtml}</${tag}>`;
             }
             case 'image': {
                 const url = (d.file && d.file.url) || d.url || '';
