@@ -377,6 +377,8 @@ function gatherValues() {
         art.title = $('#input-art-title').val() || art.title;
         art.date = $('#input-art-date').val() || art.date;
         art.videoUrl = $('#input-art-video').val().trim();
+        art.status = $('#select-art-status').val() || 'published';
+        art.category = $('#input-art-category').val().trim();
     }
 
     // Gather current instruction settings if visible
@@ -398,32 +400,88 @@ function gatherValues() {
     }
 }
 
-// Render Articles Sidebar list
+let articleFilterStatus = 'all';
+let articleSearchQuery = '';
+
+// Render Articles Sidebar list with search, status filtering and draft badges
 function renderArticlesList() {
     const list = $('#articles-sidebar-list');
     list.empty();
     const articles = portalConfig.articles || [];
 
-    articles.forEach((art, idx) => {
-        const activeClass = idx === activeArticleIdx ? 'active' : '';
-        const row = $(`
-            <div class="inst-item-row ${activeClass}" data-art-index="${idx}">
-                <div class="inst-item-row-header">
-                    <span class="inst-item-row-title">${escapeHtml(art.title || 'Без названия')}</span>
-                    <div class="inst-row-controls">
-                        <button class="btn-icon btn-art-up" data-art-index="${idx}" title="Вверх">↑</button>
-                        <button class="btn-icon btn-art-down" data-art-index="${idx}" title="Вниз">↓</button>
-                        <button class="btn-icon btn-icon-danger btn-art-delete" data-art-index="${idx}" title="Удалить">×</button>
-                    </div>
-                </div>
-                <span class="inst-item-row-sub">Статья • ${escapeHtml(art.date || '')}</span>
-            </div>
-        `);
-        list.append(row);
+    // Calculate article counts
+    let totalCount = articles.length;
+    let pubCount = 0;
+    let draftCount = 0;
+
+    articles.forEach(art => {
+        const isDraft = art.status === 'draft' || art.isDraft === true || art.draft === true;
+        if (isDraft) draftCount++;
+        else pubCount++;
     });
 
+    $('#count-art-all').text(totalCount);
+    $('#count-art-pub').text(pubCount);
+    $('#count-art-draft').text(draftCount);
+
+    // Filter articles based on search query and status tab
+    const query = articleSearchQuery.toLowerCase().trim();
+    const filteredArticles = [];
+
+    articles.forEach((art, originalIdx) => {
+        const isDraft = art.status === 'draft' || art.isDraft === true || art.draft === true;
+        
+        // Status filter
+        if (articleFilterStatus === 'published' && isDraft) return;
+        if (articleFilterStatus === 'draft' && !isDraft) return;
+
+        // Search query filter
+        if (query) {
+            const title = (art.title || '').toLowerCase();
+            const cat = (art.category || '').toLowerCase();
+            const date = (art.date || '').toLowerCase();
+            const rawHtml = (art.contentHtml || '').toLowerCase();
+            if (!title.includes(query) && !cat.includes(query) && !date.includes(query) && !rawHtml.includes(query)) {
+                return;
+            }
+        }
+
+        filteredArticles.push({ art: art, originalIdx: originalIdx });
+    });
+
+    if (filteredArticles.length === 0) {
+        list.append('<div style="text-align:center; padding:24px 12px; color:var(--text-muted); font-size:0.88em;">Ничего не найдено</div>');
+    } else {
+        filteredArticles.forEach(item => {
+            const art = item.art;
+            const idx = item.originalIdx;
+            const activeClass = idx === activeArticleIdx ? 'active' : '';
+            const isDraft = art.status === 'draft' || art.isDraft === true || art.draft === true;
+            const statusBadge = isDraft ? '<span class="badge-draft-sidebar">Черновик</span>' : '';
+            const catBadge = art.category ? `<span class="badge-category-tag" style="margin-left:4px; font-size:0.7em;">${escapeHtml(art.category)}</span>` : '';
+
+            const row = $(`
+                <div class="inst-item-row ${activeClass}" data-art-index="${idx}">
+                    <div class="inst-item-row-header">
+                        <span class="inst-item-row-title">${statusBadge}${escapeHtml(art.title || 'Без названия')}</span>
+                        <div class="inst-row-controls">
+                            <button class="btn-icon btn-art-up" data-art-index="${idx}" title="Вверх">↑</button>
+                            <button class="btn-icon btn-art-down" data-art-index="${idx}" title="Вниз">↓</button>
+                            <button class="btn-icon btn-icon-danger btn-art-delete" data-art-index="${idx}" title="Удалить">×</button>
+                        </div>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:2px;">
+                        <span class="inst-item-row-sub">${escapeHtml(art.date || 'Сегодня')}</span>
+                        ${catBadge}
+                    </div>
+                </div>
+            `);
+            list.append(row);
+        });
+    }
+
     // Bind article sidebar row clicks
-    $('.inst-item-row[data-art-index]').on('click', function(e) {
+    $('.inst-item-row[data-art-index]').off('click').on('click', function(e) {
         if ($(e.target).closest('button').length) return;
         const idx = parseInt($(this).attr('data-art-index'));
         gatherValues();
@@ -431,7 +489,7 @@ function renderArticlesList() {
     });
 
     // Article Up/Down/Delete Actions
-    $('.btn-art-up').on('click', function(e) {
+    $('.btn-art-up').off('click').on('click', function(e) {
         e.stopPropagation();
         const idx = parseInt($(this).attr('data-art-index'));
         if (idx > 0) {
@@ -445,7 +503,7 @@ function renderArticlesList() {
         }
     });
 
-    $('.btn-art-down').on('click', function(e) {
+    $('.btn-art-down').off('click').on('click', function(e) {
         e.stopPropagation();
         const idx = parseInt($(this).attr('data-art-index'));
         if (idx < portalConfig.articles.length - 1) {
@@ -459,7 +517,7 @@ function renderArticlesList() {
         }
     });
 
-    $('.btn-art-delete').on('click', function(e) {
+    $('.btn-art-delete').off('click').on('click', function(e) {
         e.stopPropagation();
         const idx = parseInt($(this).attr('data-art-index'));
         if (confirm(`Удалить статью "${portalConfig.articles[idx].title}"?`)) {
@@ -1250,12 +1308,31 @@ function selectArticle(idx) {
     const initialTitle = art.title || '';
     const initialDate = art.date || '';
     const initialVideo = art.videoUrl || '';
+    const initialStatus = art.status || (art.isDraft ? 'draft' : 'published');
+    const initialCategory = art.category || '';
 
     $('#input-art-title').val(initialTitle);
     $('#tg-paper-title').text(initialTitle || 'Заголовок статьи');
     $('#input-art-date').val(initialDate);
     $('#tg-paper-date').text(initialDate || 'Сегодня');
     $('#input-art-video').val(initialVideo);
+    $('#select-art-status').val(initialStatus);
+    $('#input-art-category').val(initialCategory);
+
+    // Sync header draft badge and category
+    if (initialStatus === 'draft') {
+        $('#tg-paper-draft-badge').show();
+    } else {
+        $('#tg-paper-draft-badge').hide();
+    }
+
+    if (initialCategory) {
+        $('#tg-paper-category-badge').text(initialCategory).show();
+        $('#tg-paper-category-dot').show();
+    } else {
+        $('#tg-paper-category-badge').hide();
+        $('#tg-paper-category-dot').hide();
+    }
     
     if (initialVideo) {
         $('#tg-paper-video-badge').show();
@@ -1286,7 +1363,7 @@ function selectArticle(idx) {
         }
     });
 
-    // Two-way sync for title / date / video
+    // Two-way sync for title / date / video / status / category
     $('#input-art-title').off('input').on('input', function() {
         const val = $(this).val();
         art.title = val;
@@ -1319,35 +1396,184 @@ function selectArticle(idx) {
         }
     });
 
+    $('#select-art-status').off('change').on('change', function() {
+        const val = $(this).val();
+        art.status = val;
+        if (val === 'draft') {
+            $('#tg-paper-draft-badge').show();
+        } else {
+            $('#tg-paper-draft-badge').hide();
+        }
+        renderArticlesList();
+    });
+
+    $('#input-art-category').off('input').on('input', function() {
+        const val = $(this).val().trim();
+        art.category = val;
+        if (val) {
+            $('#tg-paper-category-badge').text(val).show();
+            $('#tg-paper-category-dot').show();
+        } else {
+            $('#tg-paper-category-badge').hide();
+            $('#tg-paper-category-dot').hide();
+        }
+        renderArticlesList();
+    });
+
     $('#article-editor-panel').css('display', 'flex');
     $('#article-meta-sidebar').css('display', 'flex');
 }
 
-// Editor Toolbar Theme Toggle and Events
+// Duplicate an article as draft
+function duplicateArticle(idx) {
+    gatherValues();
+    const articles = portalConfig.articles || [];
+    if (idx < 0 || idx >= articles.length) return;
+
+    const source = articles[idx];
+    const copy = JSON.parse(JSON.stringify(source));
+    copy.id = 'art-' + new Date().getTime();
+    copy.title = (copy.title || 'Статья') + ' (Копия)';
+    copy.status = 'draft'; // Duplicates default to draft for safe editing
+
+    portalConfig.articles.splice(idx + 1, 0, copy);
+    activeArticleIdx = idx + 1;
+    renderArticlesList();
+    selectArticle(activeArticleIdx);
+    showToast("Статья успешно дублирована как черновик!", "success");
+}
+
+// Open Article Live Preview Modal
+function openArticleLivePreview() {
+    if (activeArticleIdx < 0 || !portalConfig.articles || !portalConfig.articles[activeArticleIdx]) {
+        showToast("Сначала выберите или создайте статью!", "info");
+        return;
+    }
+
+    gatherValues();
+    const art = portalConfig.articles[activeArticleIdx];
+    const isDraft = art.status === 'draft' || art.isDraft === true;
+
+    // Header & Meta in Preview
+    $('#prev-art-title').text(art.title || 'Заголовок статьи');
+    $('#prev-art-date').text(art.date || 'Сегодня');
+    $('#prev-art-readtime').text($('#tg-paper-readtime').text() || '1 мин чтения');
+
+    if (art.category) {
+        $('#prev-art-category').text(art.category).show();
+        $('#prev-art-cat-dot').show();
+    } else {
+        $('#prev-art-category').hide();
+        $('#prev-art-cat-dot').hide();
+    }
+
+    if (isDraft) {
+        $('#preview-status-pill').show();
+    } else {
+        $('#preview-status-pill').hide();
+    }
+
+    if (art.videoUrl) {
+        $('#prev-art-video-banner').show();
+        $('#prev-art-video-link').attr('href', art.videoUrl);
+    } else {
+        $('#prev-art-video-banner').hide();
+    }
+
+    // Direct tab link button
+    const prodBase = "https://tvshopru.github.io/sup.tvshop";
+    const artId = art.id || ('art-' + activeArticleIdx);
+    $('#btn-prev-open-tab').off('click').on('click', function() {
+        window.open(`${prodBase}/article.html?id=${encodeURIComponent(artId)}`, '_blank');
+    });
+
+    // Save and render body
+    if (editorInstance && isEditorReady) {
+        editorInstance.save().then(savedData => {
+            art.contentData = savedData;
+            art.contentHtml = editorDataToHtml(savedData);
+            $('#prev-art-body').html(art.contentHtml || '<p style="color:#94a3b8; font-style:italic;">Текст статьи пока пуст...</p>');
+            $('#modal-article-preview').css('display', 'flex').hide().fadeIn(150);
+        }).catch(() => {
+            $('#prev-art-body').html(art.contentHtml || '<p style="color:#94a3b8; font-style:italic;">Текст статьи пока пуст...</p>');
+            $('#modal-article-preview').css('display', 'flex').hide().fadeIn(150);
+        });
+    } else {
+        $('#prev-art-body').html(art.contentHtml || '<p style="color:#94a3b8; font-style:italic;">Текст статьи пока пуст...</p>');
+        $('#modal-article-preview').css('display', 'flex').hide().fadeIn(150);
+    }
+}
+
+// Editor Toolbar Theme Toggle, Live Preview, Search & Events
 function initTelegramEditorEvents() {
     // Editor Theme Toggle (Light / Dark)
     const savedEditorTheme = localStorage.getItem('tg-editor-theme') || 'light';
     if (savedEditorTheme === 'dark') {
-        $('.tg-editor-wrapper, .tg-split-layout').addClass('dark-theme');
-        $('#tg-theme-name').text('Тёмная');
-        $('#tg-btn-theme-toggle span:first').text('🌙');
+        $('.tg-editor-wrapper, .tg-split-layout, .preview-modal-card').addClass('dark-theme');
+        $('#tg-theme-name, #prev-theme-text').text('Тёмная');
+        $('#tg-btn-theme-toggle span:first, #prev-theme-icon').text('🌙');
     } else {
-        $('.tg-editor-wrapper, .tg-split-layout').removeClass('dark-theme');
-        $('#tg-theme-name').text('Светлая');
-        $('#tg-btn-theme-toggle span:first').text('☀️');
+        $('.tg-editor-wrapper, .tg-split-layout, .preview-modal-card').removeClass('dark-theme');
+        $('#tg-theme-name, #prev-theme-text').text('Светлая');
+        $('#tg-btn-theme-toggle span:first, #prev-theme-icon').text('☀️');
     }
 
     $('#tg-btn-theme-toggle').off('click').on('click', function() {
         const isDark = $('.tg-editor-wrapper').toggleClass('dark-theme').hasClass('dark-theme');
-        $('.tg-split-layout').toggleClass('dark-theme', isDark);
+        $('.tg-split-layout, .preview-modal-card').toggleClass('dark-theme', isDark);
         localStorage.setItem('tg-editor-theme', isDark ? 'dark' : 'light');
-        $('#tg-theme-name').text(isDark ? 'Тёмная' : 'Светлая');
-        $('#tg-btn-theme-toggle span:first').text(isDark ? '🌙' : '☀️');
+        $('#tg-theme-name, #prev-theme-text').text(isDark ? 'Тёмная' : 'Светлая');
+        $('#tg-btn-theme-toggle span:first, #prev-theme-icon').text(isDark ? '🌙' : '☀️');
     });
 
     // In-Editor Paste Button in toolbar
     $('#tg-btn-paste-in-editor').off('click').on('click', function() {
         pasteArticleFromClipboard(false);
+    });
+
+    // Search and Status Filters
+    $('#articles-search-input').off('input').on('input', function() {
+        articleSearchQuery = $(this).val();
+        renderArticlesList();
+    });
+
+    $('.art-filter-btn').off('click').on('click', function() {
+        $('.art-filter-btn').removeClass('active');
+        $(this).addClass('active');
+        articleFilterStatus = $(this).attr('data-filter') || 'all';
+        renderArticlesList();
+    });
+
+    // Live Preview Buttons
+    $('#tg-btn-live-preview, #btn-sidebar-preview').off('click').on('click', function() {
+        openArticleLivePreview();
+    });
+
+    $('#btn-close-preview-modal').off('click').on('click', function() {
+        $('#modal-article-preview').fadeOut(150);
+    });
+
+    // Device switcher in Preview Modal
+    $('.prev-dev-btn').off('click').on('click', function() {
+        $('.prev-dev-btn').removeClass('active');
+        $(this).addClass('active');
+        const dev = $(this).attr('data-device');
+        $('#preview-device-frame').removeClass('mode-mobile mode-tv');
+        if (dev === 'mobile') {
+            $('#preview-device-frame').addClass('mode-mobile');
+        } else if (dev === 'tv') {
+            $('#preview-device-frame').addClass('mode-tv');
+        }
+    });
+
+    // Theme toggle inside Preview Modal
+    $('#btn-prev-theme-toggle').off('click').on('click', function() {
+        $('#tg-btn-theme-toggle').click();
+    });
+
+    // Duplicate Article Button
+    $('#btn-duplicate-article').off('click').on('click', function() {
+        duplicateArticle(activeArticleIdx);
     });
 }
 

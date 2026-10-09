@@ -484,9 +484,13 @@
             var searchVal = (document.getElementById('catalog-search').value || '').trim().toLowerCase();
 
             var filtered = allArticles.filter(function(art) {
+                if (art.status === 'draft' || art.isDraft === true || art.draft === true) {
+                    return false;
+                }
                 if (searchVal) {
                     var title = (art.title || '').toLowerCase();
-                    if (!title.includes(searchVal)) {
+                    var cat = (art.category || '').toLowerCase();
+                    if (!title.includes(searchVal) && !cat.includes(searchVal)) {
                         return false;
                     }
                 }
@@ -506,12 +510,14 @@
             var html = '';
             filtered.forEach(function(art) {
                 var artUrl = 'article.html?id=' + encodeURIComponent(art.id);
+                var catBadge = art.category ? '<span style="background:var(--accent-light); color:var(--accent-color); font-size:0.75em; font-weight:700; padding:2px 8px; border-radius:10px;">' + escapeHtml(art.category) + '</span>' : '';
 
                 html += 
                     '<a href="' + artUrl + '" class="article-card">' +
                         '<div>' +
-                            '<div class="card-top-meta">' +
+                            '<div class="card-top-meta" style="display:flex; justify-content:space-between; align-items:center;">' +
                                 '<span>' + (art.date || 'Сегодня') + '</span>' +
+                                catBadge +
                             '</div>' +
                             '<h3 class="card-title">' + escapeHtml(art.title) + '</h3>' +
                         '</div>' +

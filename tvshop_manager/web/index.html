@@ -158,7 +158,7 @@
                 <!-- Pane: Articles (Telegram WYSIWYG) -->
                 <div class="pane" id="pane-articles" style="max-width:100%; padding: 8px 14px !important;">
                     <div class="tg-split-layout">
-                        <!-- Left column: Articles list & action buttons -->
+                        <!-- Left column: Articles list, search, filters & action buttons -->
                         <div class="tg-split-left">
                             <div style="display:flex; flex-direction:column; gap:6px; margin-bottom:8px;">
                                 <button class="btn btn-add" id="btn-add-article" style="width:100%; justify-content:center; padding:9px 12px; font-weight:700;">+ Новая статья</button>
@@ -166,6 +166,17 @@
                                     📋 Вставить из буфера
                                 </button>
                             </div>
+
+                            <!-- Fast Search & Filter Tabs for massive articles organization -->
+                            <div class="art-search-box" style="margin-bottom:6px;">
+                                <input type="text" id="articles-search-input" class="form-control" placeholder="🔍 Поиск по статьям..." style="font-size:0.84em; padding:6px 10px;">
+                            </div>
+                            <div class="art-filter-tabs" id="art-filter-tabs" style="display:flex; gap:4px; margin-bottom:8px;">
+                                <button type="button" class="art-filter-btn active" data-filter="all">Все (<span id="count-art-all">0</span>)</button>
+                                <button type="button" class="art-filter-btn" data-filter="published">🟢 Опубл. (<span id="count-art-pub">0</span>)</button>
+                                <button type="button" class="art-filter-btn" data-filter="draft">🟡 Черновики (<span id="count-art-draft">0</span>)</button>
+                            </div>
+
                             <div class="instructions-list" id="articles-sidebar-list">
                                 <!-- Dynamic Articles Titles -->
                             </div>
@@ -194,6 +205,9 @@
                                     </div>
                                     <div class="tg-tb-divider"></div>
                                     <div class="tg-tb-group">
+                                        <button type="button" class="tg-tb-btn" id="tg-btn-live-preview" title="Открыть локальный предпросмотр статьи" style="padding:0 12px; border-radius:16px; font-size:0.85em; gap:4px; display:inline-flex; color:#0369a1; background:#e0f2fe; font-weight:700; flex-shrink:0; white-space:nowrap;">
+                                            <span>👁️</span> <span>Предпросмотр</span>
+                                        </button>
                                         <button type="button" class="tg-tb-btn" id="tg-btn-paste-in-editor" title="Импорт поста из Telegram" style="padding:0 12px; border-radius:16px; font-size:0.85em; gap:4px; display:inline-flex; color:#2481cc; background:#e8f4fd; flex-shrink:0; white-space:nowrap;">
                                             <span>📥</span> <span>Импорт из TG</span>
                                         </button>
@@ -210,6 +224,9 @@
                                     <div class="tg-article-paper" id="tg-article-paper">
                                         <!-- Realtime Header matching article.html -->
                                         <div class="tg-paper-header" id="tg-paper-header">
+                                            <div id="tg-paper-draft-badge" style="display:none; margin-bottom:10px;">
+                                                <span class="badge-draft-pill">🟡 Черновик (не виден читателям)</span>
+                                            </div>
                                             <h1 class="tg-paper-title" id="tg-paper-title" contenteditable="true" spellcheck="true" lang="ru" placeholder="Заголовок статьи...">Заголовок статьи</h1>
                                             <div class="tg-paper-meta-row">
                                                 <span class="tg-paper-author">
@@ -220,6 +237,8 @@
                                                 <span class="tg-paper-date" id="tg-paper-date">Сегодня</span>
                                                 <span class="meta-dot">•</span>
                                                 <span class="tg-paper-readtime" id="tg-paper-readtime">1 мин чтения</span>
+                                                <span class="meta-dot" id="tg-paper-category-dot" style="display:none;">•</span>
+                                                <span class="badge-category-tag" id="tg-paper-category-badge" style="display:none;">Рубрика</span>
                                             </div>
                                             <div id="tg-paper-video-badge" style="display:none; margin-top:14px;">
                                                 <a id="tg-paper-video-link" href="#" target="_blank" class="tg-paper-video-btn">
@@ -248,6 +267,9 @@
                                     <svg viewBox="0 0 24 24" style="width:16px;height:16px;"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polygon points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
                                     💾 Сохранить и опубликовать
                                 </button>
+                                <button type="button" class="btn btn-secondary w-100" id="btn-sidebar-preview" style="justify-content:center; font-weight:700; font-size:0.86em; padding:8px 10px; background:#e0f2fe; color:#0369a1; border-color:#bae6fd;">
+                                    👁️ Предпросмотр статьи
+                                </button>
                                 <button class="btn btn-secondary w-100 btn-reset" id="btn-reset" style="justify-content:center; font-size:0.82em; padding:6px 10px;">
                                     🔄 Сбросить изменения
                                 </button>
@@ -259,8 +281,19 @@
                                 </h3>
                                 
                                 <div class="form-group">
+                                    <label for="select-art-status" style="font-size:0.84em; font-weight:700;">Статус публикации</label>
+                                    <select id="select-art-status" class="form-control" style="font-weight:700;">
+                                        <option value="published">🟢 Опубликовано (видно читателям)</option>
+                                        <option value="draft">🟡 Черновик (скрыто на сайте)</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
                                     <label for="input-art-title" style="font-size:0.84em; font-weight:700;">Заголовок статьи</label>
                                     <input type="text" id="input-art-title" class="form-control" placeholder="Например: Открываем бесплатные источники в Prisma">
+                                </div>
+                                <div class="form-group">
+                                    <label for="input-art-category" style="font-size:0.84em; font-weight:700;">Рубрика / Тематика</label>
+                                    <input type="text" id="input-art-category" class="form-control" placeholder="Например: Настройка ТВ, TorrServe, Приложения">
                                 </div>
                                 <div class="form-group">
                                     <label for="input-art-date" style="font-size:0.84em; font-weight:700;">Дата публикации</label>
@@ -269,6 +302,12 @@
                                 <div class="form-group">
                                     <label for="input-art-video" style="font-size:0.84em; font-weight:700;">Видео (YouTube / Rutube)</label>
                                     <input type="text" id="input-art-video" class="form-control" placeholder="https://...">
+                                </div>
+
+                                <div style="display:flex; flex-direction:column; gap:6px; margin: 12px 0;">
+                                    <button type="button" class="btn btn-secondary w-100" id="btn-duplicate-article" style="padding:8px 12px; font-size:0.84em; font-weight:700; justify-content:center;">
+                                        📄 Дублировать статью
+                                    </button>
                                 </div>
 
                                 <div class="tg-meta-direct-link-box">
@@ -436,9 +475,82 @@
         </div>
     </div>
 
+    <!-- Live Article Preview Modal -->
+    <div class="annotator-modal" id="modal-article-preview" style="display:none;">
+        <div class="preview-modal-card">
+            <!-- Preview Top Control Bar -->
+            <div class="preview-modal-bar">
+                <div class="preview-bar-left">
+                    <span class="preview-bar-title">👁️ Предпросмотр статьи</span>
+                    <span id="preview-status-pill" class="badge-draft-pill" style="display:none;">🟡 Черновик</span>
+                </div>
+                <div class="preview-device-switcher">
+                    <button type="button" class="prev-dev-btn active" data-device="desktop" title="Вид на компьютере / ноутбуке">💻 <span>ПК</span></button>
+                    <button type="button" class="prev-dev-btn" data-device="mobile" title="Вид на смартфоне (вертикальный)">📱 <span>Смартфон</span></button>
+                    <button type="button" class="prev-dev-btn" data-device="tv" title="Вид на телевизоре (Android TV)">📺 <span>Smart TV</span></button>
+                </div>
+                <div class="preview-bar-right">
+                    <button type="button" class="nav-btn" id="btn-prev-theme-toggle" title="Переключить тему (Светлая / Тёмная)">
+                        <span id="prev-theme-icon">☀️</span> <span id="prev-theme-text" style="font-size:0.85em;">Светлая</span>
+                    </button>
+                    <button type="button" class="nav-btn" id="btn-prev-open-tab" title="Открыть в новой вкладке">
+                        ↗ <span>В новой вкладке</span>
+                    </button>
+                    <button type="button" class="btn-icon" id="btn-close-preview-modal" style="width:30px; height:30px; font-size:1.2em; font-weight:700;">×</button>
+                </div>
+            </div>
+
+            <!-- Preview Viewport Frame -->
+            <div class="preview-viewport-wrapper">
+                <div class="preview-device-frame" id="preview-device-frame">
+                    <!-- Article rendered paper matching article.html -->
+                    <div class="article-container preview-article-container" id="preview-article-container">
+                        <div class="article-header">
+                            <h1 class="article-title" id="prev-art-title">Заголовок статьи</h1>
+                            <div class="article-meta-row">
+                                <span class="author-badge">
+                                    <svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:currentColor;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.75z"/></svg>
+                                    TV SHOP
+                                </span>
+                                <span class="meta-dot">•</span>
+                                <span id="prev-art-date">Сегодня</span>
+                                <span class="meta-dot">•</span>
+                                <span id="prev-art-readtime">1 мин чтения</span>
+                                <span class="meta-dot" id="prev-art-cat-dot" style="display:none;">•</span>
+                                <span class="badge-category-tag" id="prev-art-category" style="display:none;">Рубрика</span>
+                            </div>
+                        </div>
+
+                        <div id="prev-art-video-banner" style="display:none;">
+                            <a id="prev-art-video-link" href="#" target="_blank" class="video-banner-btn">
+                                ▶ Смотреть видеоинструкцию
+                            </a>
+                        </div>
+
+                        <!-- Rendered Article Body -->
+                        <div class="article-body" id="prev-art-body">
+                            <!-- Injected HTML -->
+                        </div>
+
+                        <!-- Footer Banner -->
+                        <div class="article-footer">
+                            <div class="footer-channel-card">
+                                <div class="footer-channel-info">
+                                    <img src="app_logo.png?v=2" alt="TV SHOP Logo">
+                                    <div class="footer-channel-name">TV SHOP — Поддержка и инструкции</div>
+                                </div>
+                                <span class="tg-join-btn">Наш Telegram</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Notification Toast Alerts -->
     <div class="toast-container" id="toast-container"></div>
 
-    <script src="/static/app.js?v=20261009_11"></script>
+    <script src="/static/app.js?v=20261009_13"></script>
 </body>
 </html>
