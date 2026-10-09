@@ -302,7 +302,7 @@
       "videoUrl": "",
       "contentHtml": "<p>Расскажу как пользоваться телефоном&nbsp;<br><br></p>\n<figure class=\"article-image-figure\"><img src=\"img/1791573960403_screenshot_20261008_184705.png\" alt=\"\" loading=\"lazy\" /></figure>\n<div class=\"article-table-responsive\"><table class=\"article-table\"><tbody><tr><td>Привет&nbsp; thdh</td><td>Привет&nbsp;</td><td>Привет&nbsp;</td></tr></tbody></table></div>\n<p>Нажмите кнопку пульта <kbd class=\"tv-remote-key\">OK</kbd></p>\n<ul class=\"article-checklist-list\"><li class=\"article-checklist-item\"><span class=\"checklist-box\">☐</span> авыпыв</li><li class=\"article-checklist-item\"><span class=\"checklist-box\">☐</span> вапыв</li><li class=\"article-checklist-item\"><span class=\"checklist-box\">☐</span> выапвыа</li><li class=\"article-checklist-item\"><span class=\"checklist-box\">☐</span> выапыва</li><li class=\"article-checklist-item\"><span class=\"checklist-box\">☐</span> выапыва</li></ul>\n<p>Нажмите кнопку пульта <kbd class=\"tv-remote-key\">OK</kbd></p>",
       "contentData": {
-        "time": 1791573976409,
+        "time": 1791575076465,
         "blocks": [
           {
             "id": "-vpnpRtN40",
@@ -401,10 +401,10 @@
         ],
         "version": "2.30.5"
       },
-      "status": "published",
+      "status": "draft",
       "category": "",
       "blocks": {
-        "time": 1791573976409,
+        "time": 1791575076465,
         "blocks": [
           {
             "id": "-vpnpRtN40",
