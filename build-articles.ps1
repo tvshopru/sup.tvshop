@@ -56,18 +56,8 @@ foreach ($art in $articles) {
     $desc = if ($plain.Length -gt 180) { $plain.Substring(0, 177) + "..." } else { $plain }
     if (-not $desc) { $desc = "Инструкция и руководство от TV SHOP" }
 
-    # Extract image
-    $imgMatch = [System.Text.RegularExpressions.Regex]::Match($bodyHtml, "<img[^>]+src=['""]([^'""]+)['""]", [System.Text.RegularExpressions.RegexOptions]::IgnoreCase)
+    # Open Graph image: TV SHOP square logo for compact preview card on the right
     $ogImg = "https://tvshopru.github.io/sup.tvshop/app_logo.png"
-    if ($imgMatch.Success) {
-        $src = $imgMatch.Groups[1].Value
-        if ($src.StartsWith("http")) {
-            $ogImg = $src
-        } else {
-            $srcClean = $src -replace "^\.\./", "" -replace "^/", ""
-            $ogImg = "https://tvshopru.github.io/sup.tvshop/$srcClean"
-        }
-    }
 
     $canonical = "https://tvshopru.github.io/sup.tvshop/articles/$artId.html"
     
@@ -97,16 +87,18 @@ foreach ($art in $articles) {
     <link rel="icon" type="image/png" href="../app_logo.png?v=2">
     <link rel="canonical" href="$canonical">
 
-    <!-- Open Graph for Telegram & Social Previews -->
+    <!-- Open Graph for Telegram & Social Previews (Compact Card) -->
     <meta property="og:site_name" content="TV SHOP">
     <meta property="og:type" content="article">
     <meta property="og:title" content="$safeTitle">
     <meta property="og:description" content="$safeDesc">
     <meta property="og:image" content="$ogImg">
+    <meta property="og:image:width" content="300">
+    <meta property="og:image:height" content="300">
     <meta property="og:url" content="$canonical">
 
-    <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary_large_image">
+    <!-- Twitter Card (Compact summary) -->
+    <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="$safeTitle">
     <meta name="twitter:description" content="$safeDesc">
     <meta name="twitter:image" content="$ogImg">

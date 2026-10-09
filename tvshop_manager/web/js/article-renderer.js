@@ -498,19 +498,8 @@
             var plainText = (bodyHtml || '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
             var description = plainText.length > 180 ? plainText.substring(0, 177) + '...' : (plainText || 'Инструкции и руководства от TV SHOP');
 
-            // Extract first image for Open Graph
-            var imgMatch = (bodyHtml || '').match(/<img[^>]+src=["']([^"']+)["']/i);
+            // Always use official square TV SHOP logo for compact Telegram snippet on the right
             var ogImage = 'https://tvshopru.github.io/sup.tvshop/app_logo.png';
-            if (imgMatch && imgMatch[1]) {
-                var imgSrc = imgMatch[1];
-                if (imgSrc.startsWith('http://') || imgSrc.startsWith('https://')) {
-                    ogImage = imgSrc;
-                } else {
-                    ogImage = baseUrl + '/' + imgSrc.replace(/^\//, '');
-                }
-            } else if (article.coverImage) {
-                ogImage = article.coverImage.startsWith('http') ? article.coverImage : (baseUrl + '/' + article.coverImage.replace(/^\//, ''));
-            }
 
             var canonicalUrl = baseUrl + '/articles/' + encodeURIComponent(artId) + '.html';
             var readTime = this.calculateReadTime(article.contentData || article.blocks) || 1;
@@ -526,19 +515,21 @@
 '<head>\n' +
 '    <meta charset="UTF-8">\n' +
 '    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">\n' +
-'    <title>' + this.escapeHtml(title) + ' • TV SHOP</title>\n' +
+'    <title>' + this.escapeHtml(title) + ' - TV SHOP</title>\n' +
 '    <meta name="description" content="' + this.escapeHtml(description) + '">\n' +
 '    <link rel="icon" type="image/png" href="../app_logo.png?v=2">\n' +
 '    <link rel="canonical" href="' + canonicalUrl + '">\n\n' +
-'    <!-- Open Graph for Telegram & Social Previews -->\n' +
+'    <!-- Open Graph for Telegram & Social Previews (Compact Card) -->\n' +
 '    <meta property="og:site_name" content="TV SHOP">\n' +
 '    <meta property="og:type" content="article">\n' +
 '    <meta property="og:title" content="' + this.escapeHtml(title) + '">\n' +
 '    <meta property="og:description" content="' + this.escapeHtml(description) + '">\n' +
 '    <meta property="og:image" content="' + this.escapeHtml(ogImage) + '">\n' +
+'    <meta property="og:image:width" content="300">\n' +
+'    <meta property="og:image:height" content="300">\n' +
 '    <meta property="og:url" content="' + canonicalUrl + '">\n\n' +
-'    <!-- Twitter Card -->\n' +
-'    <meta name="twitter:card" content="summary_large_image">\n' +
+'    <!-- Twitter Card (Compact summary) -->\n' +
+'    <meta name="twitter:card" content="summary">\n' +
 '    <meta name="twitter:title" content="' + this.escapeHtml(title) + '">\n' +
 '    <meta name="twitter:description" content="' + this.escapeHtml(description) + '">\n' +
 '    <meta name="twitter:image" content="' + this.escapeHtml(ogImage) + '">\n\n' +
