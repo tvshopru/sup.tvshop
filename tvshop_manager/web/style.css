@@ -2141,11 +2141,30 @@ h3.ce-header {
 }
 
 .codex-editor__redactor {
+    padding-left: 46px !important;
+    padding-right: 16px !important;
     padding-bottom: 80px !important;
 }
 
 .ce-block__content, .ce-toolbar__content {
     max-width: 100% !important;
+}
+
+/* Force Block Actions (+ and Drag Handle) to always appear on the LEFT */
+.ce-toolbar__actions {
+    left: -44px !important;
+    right: auto !important;
+    position: absolute !important;
+    top: 0 !important;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 4px !important;
+    padding-right: 0 !important;
+}
+
+.ce-toolbar__plus {
+    margin-right: 2px !important;
 }
 
 .ce-paragraph {
