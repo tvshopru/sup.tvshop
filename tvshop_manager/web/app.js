@@ -477,132 +477,146 @@ function renderArticlesList() {
     });
 }
 
-// Editor.js Instance and State
-let articleEditor = null;
-let isEditorJsReady = false;
+// Quill.js Editor Instance and Management
+let quill = null;
 
-// Synchronize Editor.js blocks back into portalConfig
-async function syncArticleEditorData() {
-    if (articleEditor && typeof articleEditor.save === 'function' && portalConfig.articles && portalConfig.articles[activeArticleIdx]) {
-        try {
-            const output = await articleEditor.save();
-            const art = portalConfig.articles[activeArticleIdx];
-            art.blocks = output;
-            if (typeof renderBlocksToHtml === 'function') {
-                art.contentHtml = renderBlocksToHtml(output);
+function initQuillEditor() {
+    if (quill) return;
+
+    try {
+        quill = new Quill('#quill-editor', {
+            theme: 'snow',
+            placeholder: 'Напишите текст руководства или вставьте скопированный пост из Telegram (Ctrl+V)...',
+            modules: {
+                toolbar: '#quill-toolbar'
             }
-        } catch (e) {
-            console.error("Error saving Editor.js data:", e);
-        }
+        });
+
+        // Custom Toolbar Image Handler: Upload directly to FastAPI /api/upload
+        const toolbar = quill.getModule('toolbar');
+        toolbar.addHandler('image', function() {
+            $('#quill-file-input').click();
+        });
+
+        $('#quill-file-input').off('change').on('change', function() {
+            const file = this.files[0];
+            if (file) {
+                uploadQuillImageFile(file);
+            }
+            $(this).val('');
+        });
+
+        // Remote Key Button [OK] in Toolbar
+        $('#btn-quill-remote-badge').off('click').on('click', function(e) {
+            e.preventDefault();
+            const range = quill.getSelection(true);
+            if (range) {
+                const text = quill.getText(range.index, range.length).trim() || 'OK';
+                quill.deleteText(range.index, range.length);
+                const kbdHtml = `<kbd class="tv-remote-key">${escapeHtml(text)}</kbd>&nbsp;`;
+                quill.clipboard.dangerouslyPasteHTML(range.index, kbdHtml);
+                quill.setSelection(range.index + text.length + 1);
+                updateArticleReadingTime();
+                gatherValues();
+            }
+        });
+
+        // Handle Drag & Drop of Image Files onto Quill Canvas
+        quill.root.addEventListener('dragover', function(e) {
+            e.preventDefault();
+        });
+
+        quill.root.addEventListener('drop', function(e) {
+            if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                const file = e.dataTransfer.files[0];
+                if (file.type.indexOf('image') !== -1) {
+                    e.preventDefault();
+                    uploadQuillImageFile(file);
+                }
+            }
+        });
+
+        // Handle Paste (Ctrl+V) of Image Files from Clipboard
+        quill.root.addEventListener('paste', function(e) {
+            const clipboardData = e.clipboardData || window.clipboardData;
+            if (!clipboardData) return;
+            const items = clipboardData.items;
+            if (items) {
+                for (let i = 0; i < items.length; i++) {
+                    if (items[i].type.indexOf('image') !== -1) {
+                        const file = items[i].getAsFile();
+                        if (file) {
+                            e.preventDefault();
+                            uploadQuillImageFile(file);
+                            return;
+                        }
+                    }
+                }
+            }
+        });
+
+        // Dynamic text change update
+        quill.on('text-change', function() {
+            updateArticleReadingTime();
+            if (portalConfig.articles && portalConfig.articles[activeArticleIdx]) {
+                portalConfig.articles[activeArticleIdx].contentHtml = quill.root.innerHTML;
+            }
+        });
+
+    } catch (err) {
+        console.error("Error initializing Quill.js:", err);
     }
+}
+
+function uploadQuillImageFile(file) {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    showToast("Загрузка изображения на сервер...", "info");
+    appendLog("Загрузка медиа в статью: " + (file.name || "quill_image.png") + "...");
+
+    $.ajax({
+        url: '/api/upload',
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        headers: {
+            'x-admin-pin': localStorage.getItem('portal_pin') || ''
+        },
+        success: function(response) {
+            const imgUrl = response.path || (response.file && response.file.url);
+            if (!imgUrl) {
+                showToast("Ошибка получения пути картинки", "error");
+                return;
+            }
+            const range = quill.getSelection(true);
+            const index = range ? range.index : quill.getLength();
+            quill.insertEmbed(index, 'image', imgUrl, 'user');
+            quill.setSelection(index + 1);
+            showToast("Изображение успешно вставлено!", "success");
+            appendLog("Изображение загружено: " + imgUrl);
+            updateArticleReadingTime();
+            gatherValues();
+        },
+        error: function(xhr) {
+            showToast("Ошибка при загрузке изображения!", "error");
+            appendLog("Ошибка загрузки изображения: " + xhr.responseText);
+        }
+    });
 }
 
 // Helper to calculate and update estimated reading time
 function updateArticleReadingTime() {
-    if (!articleEditor || !articleEditor.save) return;
-    articleEditor.save().then(output => {
-        let totalWords = 0;
-        if (output && output.blocks) {
-            output.blocks.forEach(b => {
-                if (b.data && b.data.text) {
-                    totalWords += b.data.text.replace(/<[^>]*>/g, '').trim().split(/\s+/).filter(Boolean).length;
-                } else if (b.data && b.data.items) {
-                    b.data.items.forEach(it => {
-                        const str = typeof it === 'string' ? it : (it.text || it.content || '');
-                        totalWords += str.replace(/<[^>]*>/g, '').trim().split(/\s+/).filter(Boolean).length;
-                    });
-                }
-            });
-        }
-        const mins = Math.max(1, Math.ceil(totalWords / 150));
-        $('#tg-paper-readtime').text(`${mins} мин чтения`);
-    }).catch(() => {});
+    if (!quill) return;
+    const text = quill.getText().trim();
+    const words = text ? text.split(/\s+/).filter(Boolean).length : 0;
+    const mins = Math.max(1, Math.ceil(words / 150));
+    $('#tg-paper-readtime').text(`${mins} мин чтения`);
 }
 
-// Initialize Editor.js instance with tools
-function initEditorJsInstance(initialBlocks) {
-    if (articleEditor && typeof articleEditor.destroy === 'function') {
-        try {
-            articleEditor.destroy();
-        } catch (e) {
-            console.warn("Editor.js destroy warning:", e);
-        }
-        articleEditor = null;
-    }
-
-    $('#editorjs-holder').empty();
-    isEditorJsReady = false;
-
-    const holder = document.getElementById('editorjs-holder');
-    if (!holder) return;
-
-    const adminPin = localStorage.getItem('portal_pin') || '';
-
-    const toolsConfig = {
-        header: {
-            class: (typeof ArticleHeaderTool !== 'undefined') ? ArticleHeaderTool : (typeof Header !== 'undefined' ? Header : undefined),
-            inlineToolbar: true,
-            config: {
-                placeholder: 'Введите заголовок шага или раздела...',
-                defaultLevel: 2
-            }
-        },
-        list: {
-            class: (typeof ArticleListTool !== 'undefined') ? ArticleListTool : (typeof List !== 'undefined' ? List : undefined),
-            inlineToolbar: true
-        },
-        image: {
-            class: (typeof ArticleImageTool !== 'undefined') ? ArticleImageTool : (typeof ImageTool !== 'undefined' ? ImageTool : undefined)
-        },
-        alert: {
-            class: (typeof ArticleAlertTool !== 'undefined') ? ArticleAlertTool : undefined
-        },
-        button: {
-            class: (typeof ArticleButtonTool !== 'undefined') ? ArticleButtonTool : undefined
-        },
-        spoiler: {
-            class: (typeof ArticleSpoilerTool !== 'undefined') ? ArticleSpoilerTool : undefined
-        },
-        embed: {
-            class: (typeof ArticleEmbedTool !== 'undefined') ? ArticleEmbedTool : (typeof Embed !== 'undefined' ? Embed : undefined)
-        },
-        remoteKey: (typeof RemoteKeyInlineTool !== 'undefined') ? RemoteKeyInlineTool : undefined
-    };
-
-    // Clean out unresolvable tools
-    Object.keys(toolsConfig).forEach(k => {
-        if (!toolsConfig[k] || (typeof toolsConfig[k] === 'object' && !toolsConfig[k].class)) {
-            if (typeof toolsConfig[k] !== 'function') {
-                delete toolsConfig[k];
-            }
-        }
-    });
-
-    try {
-        articleEditor = new EditorJS({
-            holder: 'editorjs-holder',
-            placeholder: 'Нажмите Tab или выберите блок «+» для добавления шага, фото, видео или кнопки...',
-            data: initialBlocks || { blocks: [] },
-            tools: toolsConfig,
-            onChange: async () => {
-                await syncArticleEditorData();
-                updateArticleReadingTime();
-            },
-            onReady: () => {
-                isEditorJsReady = true;
-                updateArticleReadingTime();
-            }
-        });
-    } catch (err) {
-        console.error("Failed to initialize Editor.js:", err);
-    }
-}
-
-// Select Article item to display in Editor.js Canvas
-async function selectArticle(idx) {
-    // Sync current active editor before switching
-    await syncArticleEditorData();
-
+// Select Article item to display in Quill Editor
+function selectArticle(idx) {
     const articles = portalConfig.articles || [];
     if (idx < 0 || idx >= articles.length) {
         $('#article-editor-panel').hide();
@@ -632,15 +646,11 @@ async function selectArticle(idx) {
         $('#tg-paper-video-badge').hide();
     }
 
-    // Prepare Editor.js blocks
-    let blocksData = { blocks: [] };
-    if (art.blocks && art.blocks.blocks && Array.isArray(art.blocks.blocks) && art.blocks.blocks.length > 0) {
-        blocksData = art.blocks;
-    } else if (art.contentHtml && typeof convertHtmlToEditorBlocks === 'function') {
-        blocksData = { blocks: convertHtmlToEditorBlocks(art.contentHtml) };
+    initQuillEditor();
+    if (quill) {
+        quill.root.innerHTML = art.contentHtml || '<p></p>';
     }
-
-    initEditorJsInstance(blocksData);
+    updateArticleReadingTime();
 
     // Direct article link
     const prodBase = "https://tvshopru.github.io/sup.tvshop";
@@ -696,7 +706,7 @@ async function selectArticle(idx) {
     $('#article-meta-sidebar').css('display', 'flex');
 }
 
-// Editor.js Toolbar Quick Actions and Theme Toggle
+// Quill Toolbar Theme Toggle and Events
 function initTelegramEditorEvents() {
     // Editor Theme Toggle (Light / Dark)
     const savedEditorTheme = localStorage.getItem('tg-editor-theme') || 'light';
@@ -718,61 +728,6 @@ function initTelegramEditorEvents() {
         $('#tg-btn-theme-toggle span:first').text(isDark ? '🌙' : '☀️');
     });
 
-    // Quick Action Buttons on Top Toolbar
-    $('#ed-btn-add-header').on('click', function() {
-        if (articleEditor && articleEditor.blocks) {
-            articleEditor.blocks.insert('header', { text: '', level: 2 });
-        }
-    });
-
-    $('#ed-btn-add-image').on('click', function() {
-        if (articleEditor && articleEditor.blocks) {
-            articleEditor.blocks.insert('image', {});
-        }
-    });
-
-    $('#ed-btn-add-list').on('click', function() {
-        if (articleEditor && articleEditor.blocks) {
-            articleEditor.blocks.insert('list', { style: 'ordered', items: [''] });
-        }
-    });
-
-    $('#ed-btn-add-alert').on('click', function() {
-        if (articleEditor && articleEditor.blocks) {
-            articleEditor.blocks.insert('alert', { title: 'Важно!', message: '' });
-        }
-    });
-
-    $('#ed-btn-add-video').on('click', function() {
-        if (articleEditor && articleEditor.blocks) {
-            articleEditor.blocks.insert('embed', {});
-        }
-    });
-
-    $('#ed-btn-add-button').on('click', function() {
-        if (articleEditor && articleEditor.blocks) {
-            articleEditor.blocks.insert('button', { text: 'Написать в Telegram', url: 'https://t.me/android_tv_shop' });
-        }
-    });
-
-    $('#ed-btn-add-spoiler').on('click', function() {
-        if (articleEditor && articleEditor.blocks) {
-            articleEditor.blocks.insert('spoiler', { title: 'Частый вопрос / Проблема', content: '' });
-        }
-    });
-
-    $('#ed-btn-add-table').on('click', function() {
-        if (articleEditor && articleEditor.blocks) {
-            articleEditor.blocks.insert('table', { content: [['Колонка 1', 'Колонка 2'], ['Данные 1', 'Данные 2']] });
-        }
-    });
-
-    $('#ed-btn-add-checklist').on('click', function() {
-        if (articleEditor && articleEditor.blocks) {
-            articleEditor.blocks.insert('checklist', { items: [{ text: 'Шаг выполнен', checked: false }] });
-        }
-    });
-
     // In-Editor Paste Button in toolbar
     $('#tg-btn-paste-in-editor').on('click', function() {
         pasteArticleFromClipboard(false);
@@ -780,7 +735,6 @@ function initTelegramEditorEvents() {
 }
 
 function createNewBlankArticle() {
-    syncArticleEditorData();
     gatherValues();
     if (!portalConfig.articles) portalConfig.articles = [];
 
@@ -793,14 +747,7 @@ function createNewBlankArticle() {
         title: 'Новая статья',
         date: dateStr,
         videoUrl: '',
-        blocks: {
-            blocks: [
-                {
-                    type: 'paragraph',
-                    data: { text: 'Начните писать текст руководства или выберите нужный инструмент (+)...' }
-                }
-            ]
-        }
+        contentHtml: '<p>Напишите текст руководства или выберите инструменты в панели сверху...</p>'
     };
     portalConfig.articles.unshift(newArt);
     renderArticlesList();
@@ -849,7 +796,6 @@ function openTelegramPasteModal(defaultModeIsNew) {
 }
 
 function createNewArticleFromText(rawText) {
-    syncArticleEditorData();
     gatherValues();
     if (!portalConfig.articles) portalConfig.articles = [];
 
@@ -859,14 +805,12 @@ function createNewArticleFromText(rawText) {
 
     const formattedHtml = parseTelegramBlocks(rawText, true);
     const titleVal = $('#input-art-title').val().trim() || 'Статья Telegram';
-    const blocks = (typeof convertHtmlToEditorBlocks === 'function') ? convertHtmlToEditorBlocks(formattedHtml) : [];
 
     const newArt = {
         id: 'art-' + new Date().getTime(),
         title: titleVal,
         date: dateStr,
         videoUrl: '',
-        blocks: { blocks: blocks },
         contentHtml: formattedHtml
     };
     portalConfig.articles.unshift(newArt);
@@ -877,9 +821,11 @@ function createNewArticleFromText(rawText) {
 
 function insertTextIntoCurrentArticle(rawText) {
     const formattedHtml = parseTelegramBlocks(rawText, false);
-    const blocks = (typeof convertHtmlToEditorBlocks === 'function') ? convertHtmlToEditorBlocks(formattedHtml) : [];
-    initEditorJsInstance({ blocks: blocks });
+    if (quill) {
+        quill.clipboard.dangerouslyPasteHTML(quill.getLength() - 1, formattedHtml);
+    }
     showToast("Пост вставлен в текущую статью!", "success");
+    gatherValues();
 }
 
 // Paste directly from clipboard (button action)

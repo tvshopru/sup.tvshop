@@ -3,13 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TV SHOP Portal Manager</title>
-    <link rel="stylesheet" href="/static/style.css?v=20261009_2">
+    <!-- Quill.js 2.0 Core & Theme -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css">
+    <link rel="stylesheet" href="/static/style.css?v=20261009_3">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-    <!-- Editor.js Core & Custom Tools -->
-    <script src="https://cdn.jsdelivr.net/npm/@editorjs/editorjs@2.29.1/dist/editorjs.umd.min.js"></script>
-    <script src="/static/editor-tools.js?v=20261009_2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
 </head>
 <body>
     <div class="manager-layout">
@@ -165,32 +163,47 @@
                         <!-- Center column: Telegram editor canvas -->
                         <div class="tg-split-center" id="article-editor-panel" style="display:none;">
                             <div class="tg-editor-wrapper">
-                                <div class="tg-editor-toolbar" id="tg-editor-toolbar">
-                                    <div class="tg-tb-group">
-                                        <button type="button" class="tg-tb-btn" id="ed-btn-add-header" title="Добавить заголовок (H2/H3)"><b>H</b> <span>Заголовок</span></button>
-                                        <button type="button" class="tg-tb-btn" id="ed-btn-add-image" title="Загрузить или вставить фото">🖼️ <span>Фото</span></button>
-                                        <button type="button" class="tg-tb-btn" id="ed-btn-add-list" title="Добавить список">📋 <span>Список</span></button>
-                                        <button type="button" class="tg-tb-btn" id="ed-btn-add-alert" title="Важное предупреждение">⚠️ <span>Важно</span></button>
-                                        <button type="button" class="tg-tb-btn" id="ed-btn-add-video" title="Вставить видео (YouTube, Rutube, VK)">🎬 <span>Видео</span></button>
-                                        <button type="button" class="tg-tb-btn" id="ed-btn-add-button" title="Кнопка действия (Telegram / Скачать)">🔘 <span>Кнопка</span></button>
-                                        <button type="button" class="tg-tb-btn" id="ed-btn-add-spoiler" title="Спойлер / FAQ">🔽 <span>Спойлер</span></button>
-                                        <button type="button" class="tg-tb-btn" id="ed-btn-add-table" title="Таблица">📊 <span>Таблица</span></button>
-                                        <button type="button" class="tg-tb-btn" id="ed-btn-add-checklist" title="Чек-лист">☑️ <span>Чек-лист</span></button>
-                                    </div>
-                                    <div class="tg-tb-divider"></div>
-                                    <div class="tg-tb-group">
-                                        <button type="button" class="tg-tb-btn" id="tg-btn-paste-in-editor" title="Импорт поста из Telegram" style="width:auto; padding:0 10px; border-radius:16px; font-size:0.85em; gap:4px; display:inline-flex; color:#2481cc; background:#e8f4fd;">
+                                <!-- Quill Custom Toolbar -->
+                                <div class="tg-editor-toolbar" id="quill-toolbar">
+                                    <span class="ql-formats">
+                                        <select class="ql-header">
+                                            <option value="2">Заголовок H2</option>
+                                            <option value="3">Заголовок H3</option>
+                                            <option selected>Обычный текст</option>
+                                        </select>
+                                    </span>
+                                    <span class="ql-formats">
+                                        <button class="ql-bold" title="Жирный (Ctrl+B)"></button>
+                                        <button class="ql-italic" title="Курсив (Ctrl+I)"></button>
+                                        <button class="ql-underline" title="Подчёркнутый (Ctrl+U)"></button>
+                                        <button class="ql-strike" title="Зачёркнутый"></button>
+                                    </span>
+                                    <span class="ql-formats">
+                                        <select class="ql-color" title="Цвет текста"></select>
+                                        <select class="ql-background" title="Выделение маркером"></select>
+                                    </span>
+                                    <span class="ql-formats">
+                                        <button class="ql-list" value="ordered" title="Нумерованный список (1. 2. 3.)"></button>
+                                        <button class="ql-list" value="bullet" title="Маркированный список (•)"></button>
+                                        <button class="ql-blockquote" title="Цитата / Важная подсказка"></button>
+                                    </span>
+                                    <span class="ql-formats">
+                                        <button class="ql-link" title="Вставить ссылку"></button>
+                                        <button class="ql-image" title="Загрузить изображение или скриншот (Ctrl+V)"></button>
+                                        <button class="ql-video" title="Вставить видео (YouTube/Rutube)"></button>
+                                        <button type="button" class="ql-remote-btn" id="btn-quill-remote-badge" title="Вставить кнопку пульта [OK]"><b>[OK]</b></button>
+                                    </span>
+                                    <span class="ql-formats" style="margin-left: auto; display: flex; align-items: center; gap: 6px;">
+                                        <button type="button" class="tg-tb-btn" id="tg-btn-paste-in-editor" title="Импорт поста из Telegram" style="padding:0 10px; border-radius:16px; font-size:0.85em; gap:4px; display:inline-flex; color:#2481cc; background:#e8f4fd;">
                                             <span>📥</span> <span>Импорт из TG</span>
                                         </button>
-                                    </div>
-                                    <div class="tg-tb-group" style="margin-left: auto;">
-                                        <button type="button" class="tg-tb-btn" id="tg-btn-theme-toggle" title="Переключить тему редактора (Светлая / Тёмная)" style="width:auto; padding:0 10px; border-radius:16px; font-size:0.85em; gap:4px; display:inline-flex;">
+                                        <button type="button" class="tg-tb-btn" id="tg-btn-theme-toggle" title="Переключить тему редактора (Светлая / Тёмная)" style="padding:0 10px; border-radius:16px; font-size:0.85em; gap:4px; display:inline-flex;">
                                             <span>☀️</span> <span id="tg-theme-name" style="font-size:0.9em;">Светлая</span>
                                         </button>
-                                    </div>
+                                    </span>
                                 </div>
 
-                                <!-- Editor.js Article Paper Canvas -->
+                                <!-- Quill Article Paper Canvas -->
                                 <div class="tg-content-canvas-wrapper">
                                     <div class="tg-article-paper" id="tg-article-paper">
                                         <!-- Realtime Header matching article.html -->
@@ -213,8 +226,9 @@
                                             </div>
                                         </div>
 
-                                        <!-- Editor.js Canvas Instance -->
-                                        <div id="editorjs-holder" class="editorjs-canvas-holder"></div>
+                                        <!-- Quill Canvas Instance -->
+                                        <div id="quill-editor" class="quill-editor-body"></div>
+                                        <input type="file" id="quill-file-input" accept="image/*" style="display:none;" />
                                     </div>
                                 </div>
                             </div>
