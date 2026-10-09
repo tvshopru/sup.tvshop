@@ -477,103 +477,583 @@ function renderArticlesList() {
     });
 }
 
-// Quill.js Editor Instance and Management
-let quill = null;
-
-function initQuillEditor() {
-    if (quill) return;
-
-    try {
-        quill = new Quill('#quill-editor', {
-            theme: 'snow',
-            placeholder: 'Напишите текст руководства или вставьте скопированный пост из Telegram (Ctrl+V)...',
-            modules: {
-                toolbar: '#quill-toolbar'
+// ==========================================================================
+// Editor.js Custom Inline Tool: TV Remote Key Badge (<kbd class="tv-remote-key">)
+// ==========================================================================
+class RemoteKeyInlineTool {
+    static get isInline() { return true; }
+    static get title() { return 'Пульт [OK]'; }
+    static get sanitize() {
+        return {
+            kbd: {
+                class: 'tv-remote-key'
             }
-        });
+        };
+    }
 
-        // Custom Toolbar Image Handler: Upload directly to FastAPI /api/upload
-        const toolbar = quill.getModule('toolbar');
-        toolbar.addHandler('image', function() {
-            $('#quill-file-input').click();
-        });
+    constructor({ api }) {
+        this.api = api;
+        this.button = null;
+        this.tag = 'KBD';
+        this.cssClass = 'tv-remote-key';
+        this.iconClasses = {
+            base: this.api.styles.inlineToolButton,
+            active: this.api.styles.inlineToolButtonActive
+        };
+    }
 
-        $('#quill-file-input').off('change').on('change', function() {
-            const file = this.files[0];
-            if (file) {
-                uploadQuillImageFile(file);
-            }
-            $(this).val('');
-        });
+    render() {
+        this.button = document.createElement('button');
+        this.button.type = 'button';
+        this.button.classList.add(this.iconClasses.base);
+        this.button.innerHTML = '<span style="font-weight:800; font-size:11px; padding:1px 5px; background:#1e293b; color:#fff; border-radius:3px; line-height:1; display:inline-block;">[OK]</span>';
+        return this.button;
+    }
 
-        // Remote Key Button [OK] in Toolbar
-        $('#btn-quill-remote-badge').off('click').on('click', function(e) {
-            e.preventDefault();
-            const range = quill.getSelection(true);
-            if (range) {
-                const text = quill.getText(range.index, range.length).trim() || 'OK';
-                quill.deleteText(range.index, range.length);
-                const kbdHtml = `<kbd class="tv-remote-key">${escapeHtml(text)}</kbd>&nbsp;`;
-                quill.clipboard.dangerouslyPasteHTML(range.index, kbdHtml);
-                quill.setSelection(range.index + text.length + 1);
-                updateArticleReadingTime();
-                gatherValues();
-            }
-        });
+    surround(range) {
+        if (!range) return;
+        const parentTag = this.api.selection.findParentTag(this.tag, this.cssClass);
+        if (parentTag) {
+            this.unwrap(parentTag);
+        } else {
+            this.wrap(range);
+        }
+    }
 
-        // Handle Drag & Drop of Image Files onto Quill Canvas
-        quill.root.addEventListener('dragover', function(e) {
-            e.preventDefault();
-        });
+    wrap(range) {
+        const kbd = document.createElement(this.tag);
+        kbd.classList.add(this.cssClass);
+        const fragment = range.extractContents();
+        if (!fragment.textContent.trim()) {
+            kbd.textContent = 'OK';
+        } else {
+            kbd.appendChild(fragment);
+        }
+        range.insertNode(kbd);
+        this.api.selection.expandToTag(kbd);
+    }
 
-        quill.root.addEventListener('drop', function(e) {
-            if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-                const file = e.dataTransfer.files[0];
-                if (file.type.indexOf('image') !== -1) {
-                    e.preventDefault();
-                    uploadQuillImageFile(file);
-                }
-            }
-        });
+    unwrap(tag) {
+        this.api.selection.expandToTag(tag);
+        const sel = window.getSelection();
+        if (!sel || !sel.rangeCount) return;
+        const range = sel.getRangeAt(0);
+        const content = range.extractContents();
+        if (tag.parentNode) {
+            tag.parentNode.removeChild(tag);
+        }
+        range.insertNode(content);
+        sel.removeAllRanges();
+        sel.addRange(range);
+    }
 
-        // Handle Paste (Ctrl+V) of Image Files from Clipboard
-        quill.root.addEventListener('paste', function(e) {
-            const clipboardData = e.clipboardData || window.clipboardData;
-            if (!clipboardData) return;
-            const items = clipboardData.items;
-            if (items) {
-                for (let i = 0; i < items.length; i++) {
-                    if (items[i].type.indexOf('image') !== -1) {
-                        const file = items[i].getAsFile();
-                        if (file) {
-                            e.preventDefault();
-                            uploadQuillImageFile(file);
-                            return;
-                        }
-                    }
-                }
-            }
-        });
-
-        // Dynamic text change update
-        quill.on('text-change', function() {
-            updateArticleReadingTime();
-            if (portalConfig.articles && portalConfig.articles[activeArticleIdx]) {
-                portalConfig.articles[activeArticleIdx].contentHtml = quill.root.innerHTML;
-            }
-        });
-
-    } catch (err) {
-        console.error("Error initializing Quill.js:", err);
+    checkState() {
+        const parentTag = this.api.selection.findParentTag(this.tag, this.cssClass);
+        if (this.button) {
+            this.button.classList.toggle(this.iconClasses.active, !!parentTag);
+        }
     }
 }
 
-function uploadQuillImageFile(file) {
+// ==========================================================================
+// Editor.js Instance and Management
+// ==========================================================================
+let editorInstance = null;
+let isEditorReady = false;
+
+// HTML to Editor.js Blocks Converter
+function htmlToEditorData(html) {
+    if (!html || !html.trim()) {
+        return { time: Date.now(), blocks: [{ type: 'paragraph', data: { text: '' } }] };
+    }
+
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = html.trim();
+    const blocks = [];
+
+    function processNode(node) {
+        if (node.nodeType === Node.TEXT_NODE) {
+            const text = node.textContent.trim();
+            if (text) {
+                blocks.push({ type: 'paragraph', data: { text: escapeHtml(text) } });
+            }
+            return;
+        }
+        if (node.nodeType !== Node.ELEMENT_NODE) return;
+
+        const tag = node.tagName.toLowerCase();
+
+        // Headers
+        if (/^h[1-6]$/.test(tag)) {
+            const level = parseInt(tag.charAt(1), 10);
+            blocks.push({
+                type: 'header',
+                data: {
+                    text: node.innerHTML.trim(),
+                    level: Math.min(Math.max(level, 2), 4)
+                }
+            });
+            return;
+        }
+
+        // Lists
+        if (tag === 'ol' || tag === 'ul') {
+            const style = tag === 'ol' ? 'ordered' : 'unordered';
+            const items = [];
+            Array.from(node.children).forEach(child => {
+                if (child.tagName.toLowerCase() === 'li') {
+                    items.push(child.innerHTML.trim());
+                }
+            });
+            if (items.length > 0) {
+                blocks.push({
+                    type: 'list',
+                    data: {
+                        style: style,
+                        items: items
+                    }
+                });
+            }
+            return;
+        }
+
+        // Image Figures or Direct IMG
+        if (tag === 'img' || node.classList.contains('article-image-figure') || tag === 'figure') {
+            const imgEl = tag === 'img' ? node : node.querySelector('img');
+            if (imgEl && imgEl.getAttribute('src')) {
+                const captionEl = node.querySelector('.article-image-caption') || node.querySelector('figcaption');
+                const captionText = captionEl ? captionEl.innerHTML.trim() : (imgEl.getAttribute('alt') || '');
+                blocks.push({
+                    type: 'image',
+                    data: {
+                        file: { url: imgEl.getAttribute('src') },
+                        caption: captionText,
+                        withBorder: node.classList.contains('img-bordered') || false,
+                        stretched: node.classList.contains('img-stretched') || false,
+                        withBackground: false
+                    }
+                });
+            }
+            return;
+        }
+
+        // Quotes / Blockquotes
+        if (tag === 'blockquote') {
+            const citeEl = node.querySelector('cite');
+            const citeText = citeEl ? citeEl.innerHTML.trim() : '';
+            if (citeEl) citeEl.remove();
+            blocks.push({
+                type: 'quote',
+                data: {
+                    text: node.innerHTML.trim(),
+                    caption: citeText,
+                    alignment: 'left'
+                }
+            });
+            return;
+        }
+
+        // Warnings / Highlights
+        if (node.classList.contains('tg-highlight-box') || node.classList.contains('cdx-warning')) {
+            const titleEl = node.querySelector('b') || node.querySelector('strong') || node.querySelector('.cdx-warning__title');
+            const titleText = titleEl ? titleEl.innerHTML.trim() : 'Важно';
+            if (titleEl) titleEl.remove();
+            blocks.push({
+                type: 'warning',
+                data: {
+                    title: titleText,
+                    message: node.innerHTML.trim()
+                }
+            });
+            return;
+        }
+
+        // Video Embeds
+        if (tag === 'iframe' || node.querySelector('iframe')) {
+            const iframe = tag === 'iframe' ? node : node.querySelector('iframe');
+            if (iframe && iframe.getAttribute('src')) {
+                const src = iframe.getAttribute('src');
+                blocks.push({
+                    type: 'embed',
+                    data: {
+                        service: src.includes('rutube') ? 'rutube' : 'youtube',
+                        source: src,
+                        embed: src,
+                        width: 580,
+                        height: 320,
+                        caption: ''
+                    }
+                });
+            }
+            return;
+        }
+
+        // Tables
+        if (tag === 'table' || node.querySelector('table')) {
+            const tbl = tag === 'table' ? node : node.querySelector('table');
+            const rows = Array.from(tbl.querySelectorAll('tr')).map(tr => {
+                return Array.from(tr.querySelectorAll('th, td')).map(cell => cell.innerHTML.trim());
+            });
+            if (rows.length > 0) {
+                const withHeadings = tbl.querySelector('th') !== null;
+                blocks.push({
+                    type: 'table',
+                    data: {
+                        withHeadings: withHeadings,
+                        content: rows
+                    }
+                });
+            }
+            return;
+        }
+
+        // Delimiter / HR
+        if (tag === 'hr') {
+            blocks.push({ type: 'delimiter', data: {} });
+            return;
+        }
+
+        // Paragraphs or default containers
+        if (tag === 'p') {
+            const pContent = node.innerHTML.trim();
+            if (pContent) {
+                // If it contains only an image, extract as image
+                const innerImg = node.querySelector('img');
+                if (innerImg && node.children.length === 1 && !node.textContent.trim()) {
+                    blocks.push({
+                        type: 'image',
+                        data: {
+                            file: { url: innerImg.getAttribute('src') },
+                            caption: innerImg.getAttribute('alt') || '',
+                            withBorder: false,
+                            stretched: false,
+                            withBackground: false
+                        }
+                    });
+                } else {
+                    blocks.push({ type: 'paragraph', data: { text: pContent } });
+                }
+            }
+            return;
+        }
+
+        // Fallback for divs with children
+        if (node.children.length > 0) {
+            Array.from(node.children).forEach(processNode);
+        } else {
+            const txt = node.innerHTML.trim();
+            if (txt) {
+                blocks.push({ type: 'paragraph', data: { text: txt } });
+            }
+        }
+    }
+
+    Array.from(tempDiv.children).forEach(processNode);
+
+    if (blocks.length === 0) {
+        const fullText = tempDiv.innerHTML.trim();
+        if (fullText) {
+            blocks.push({ type: 'paragraph', data: { text: fullText } });
+        } else {
+            blocks.push({ type: 'paragraph', data: { text: '' } });
+        }
+    }
+
+    return { time: Date.now(), blocks: blocks };
+}
+
+// Editor.js Blocks to Clean HTML Converter
+function editorDataToHtml(data) {
+    if (!data || !data.blocks || !Array.isArray(data.blocks)) return '';
+
+    return data.blocks.map(block => {
+        const type = block.type;
+        const d = block.data || {};
+
+        switch (type) {
+            case 'header': {
+                const lvl = d.level || 2;
+                return `<h${lvl}>${d.text || ''}</h${lvl}>`;
+            }
+            case 'paragraph': {
+                return `<p>${d.text || ''}</p>`;
+            }
+            case 'list': {
+                const tag = d.style === 'ordered' ? 'ol' : 'ul';
+                const itemsHtml = (d.items || []).map(item => {
+                    const content = typeof item === 'object' ? (item.content || item.text || '') : item;
+                    return `<li>${content}</li>`;
+                }).join('');
+                return `<${tag}>${itemsHtml}</${tag}>`;
+            }
+            case 'image': {
+                const url = (d.file && d.file.url) || d.url || '';
+                if (!url) return '';
+                const caption = d.caption ? `<div class="article-image-caption">${d.caption}</div>` : '';
+                const borderCls = d.withBorder ? ' img-bordered' : '';
+                const stretchCls = d.stretched ? ' img-stretched' : '';
+                return `<div class="article-image-figure${borderCls}${stretchCls}"><img src="${url}" alt="${d.caption || ''}" />${caption}</div>`;
+            }
+            case 'quote': {
+                const caption = d.caption ? `<cite>${d.caption}</cite>` : '';
+                return `<blockquote><p>${d.text || ''}</p>${caption}</blockquote>`;
+            }
+            case 'warning': {
+                const title = d.title ? `<b>${d.title}</b><br>` : '';
+                return `<div class="tg-highlight-box">${title}<span>${d.message || ''}</span></div>`;
+            }
+            case 'table': {
+                const withHeadings = d.withHeadings || false;
+                const rows = d.content || [];
+                if (!rows.length) return '';
+                const rowsHtml = rows.map((row, rIdx) => {
+                    const isHeader = withHeadings && rIdx === 0;
+                    const cellTag = isHeader ? 'th' : 'td';
+                    const cellsHtml = row.map(cell => `<${cellTag}>${cell}</${cellTag}>`).join('');
+                    return `<tr>${cellsHtml}</tr>`;
+                }).join('');
+                return `<div class="article-table-responsive"><table class="article-table"><tbody>${rowsHtml}</tbody></table></div>`;
+            }
+            case 'embed': {
+                const embedSrc = d.embed || d.source || '';
+                const caption = d.caption ? `<div class="article-image-caption">${d.caption}</div>` : '';
+                return `<div class="article-embed-wrapper"><div class="article-embed-responsive"><iframe src="${embedSrc}" frameborder="0" allowfullscreen></iframe></div>${caption}</div>`;
+            }
+            case 'delimiter': {
+                return '<hr />';
+            }
+            case 'code':
+            case 'raw': {
+                return `<pre><code>${escapeHtml(d.code || d.html || '')}</code></pre>`;
+            }
+            default: {
+                if (d.text) return `<p>${d.text}</p>`;
+                return '';
+            }
+        }
+    }).filter(Boolean).join('\n');
+}
+
+// Calculate estimated reading time from Editor.js data
+function updateArticleReadingTimeFromData(data) {
+    let wordCount = 0;
+    if (data && data.blocks) {
+        data.blocks.forEach(b => {
+            const d = b.data || {};
+            const text = (d.text || d.message || d.title || d.caption || '') + ' ' + (Array.isArray(d.items) ? d.items.join(' ') : '');
+            const clean = $('<div>').html(text).text().trim();
+            if (clean) {
+                wordCount += clean.split(/\s+/).filter(Boolean).length;
+            }
+        });
+    }
+    const mins = Math.max(1, Math.ceil(wordCount / 150));
+    $('#tg-paper-readtime').text(`${mins} мин чтения`);
+}
+
+// Initialize Editor.js instance
+function initEditorJS(initialData) {
+    if (editorInstance && typeof editorInstance.destroy === 'function') {
+        try {
+            editorInstance.destroy();
+        } catch (e) {
+            console.warn("Editor destroy warning:", e);
+        }
+        editorInstance = null;
+        isEditorReady = false;
+        $('#editorjs-holder').empty();
+    }
+
+    const ListClass = window.EditorjsList || window.List;
+
+    const editorTools = {
+        header: {
+            class: window.Header,
+            inlineToolbar: true,
+            config: {
+                placeholder: 'Введите заголовок...',
+                levels: [2, 3, 4],
+                defaultLevel: 2
+            }
+        },
+        list: {
+            class: ListClass,
+            inlineToolbar: true,
+            config: {
+                defaultStyle: 'unordered'
+            }
+        },
+        image: {
+            class: window.ImageTool,
+            config: {
+                endpoints: {
+                    byFile: '/api/upload',
+                    byUrl: '/api/upload'
+                },
+                additionalRequestHeaders: {
+                    'x-admin-pin': localStorage.getItem('portal_pin') || ''
+                },
+                field: 'file'
+            }
+        },
+        quote: {
+            class: window.Quote,
+            inlineToolbar: true,
+            config: {
+                quotePlaceholder: 'Введите текст подсказки или цитаты...',
+                captionPlaceholder: 'Автор или пояснение (необязательно)'
+            }
+        },
+        warning: {
+            class: window.Warning,
+            inlineToolbar: true,
+            config: {
+                titlePlaceholder: 'Заголовок предупреждения...',
+                messagePlaceholder: 'Важная информация для пользователя...'
+            }
+        },
+        table: {
+            class: window.Table,
+            inlineToolbar: true,
+            config: {
+                rows: 2,
+                cols: 2
+            }
+        },
+        embed: {
+            class: window.Embed,
+            config: {
+                services: {
+                    youtube: true,
+                    rutube: true,
+                    coub: true,
+                    vimeo: true,
+                    imgur: true
+                }
+            }
+        },
+        delimiter: {
+            class: window.Delimiter
+        },
+        marker: {
+            class: window.Marker,
+            shortcut: 'CMD+SHIFT+M'
+        },
+        inlineCode: {
+            class: window.InlineCode,
+            shortcut: 'CMD+SHIFT+C'
+        },
+        underline: {
+            class: window.Underline,
+            shortcut: 'CMD+U'
+        },
+        remoteKey: {
+            class: RemoteKeyInlineTool
+        }
+    };
+
+    try {
+        editorInstance = new EditorJS({
+            holder: 'editorjs-holder',
+            placeholder: 'Нажмите Tab для выбора блока или начните вводить текст (Ctrl+V для вставки фото или постов)...',
+            tools: editorTools,
+            data: initialData || { blocks: [{ type: 'paragraph', data: { text: '' } }] },
+            onReady: () => {
+                isEditorReady = true;
+                updateArticleReadingTimeFromData(initialData);
+            },
+            onChange: async () => {
+                if (!isEditorReady || !editorInstance) return;
+                try {
+                    const savedData = await editorInstance.save();
+                    updateArticleReadingTimeFromData(savedData);
+                    if (portalConfig.articles && portalConfig.articles[activeArticleIdx]) {
+                        portalConfig.articles[activeArticleIdx].contentData = savedData;
+                        portalConfig.articles[activeArticleIdx].contentHtml = editorDataToHtml(savedData);
+                    }
+                } catch (err) {
+                    console.error("Editor.js onChange save error:", err);
+                }
+            }
+        });
+    } catch (err) {
+        console.error("Error creating EditorJS:", err);
+    }
+}
+
+// Quick insertion toolbar button handlers
+function initEditorToolbarActions() {
+    $('#ed-btn-add-header').off('click').on('click', function() {
+        if (editorInstance && isEditorReady) {
+            editorInstance.blocks.insert('header', { text: '', level: 2 });
+        }
+    });
+
+    $('#ed-btn-add-image').off('click').on('click', function() {
+        $('#editorjs-file-input').click();
+    });
+
+    $('#editorjs-file-input').off('change').on('change', function() {
+        const file = this.files[0];
+        if (file) {
+            uploadEditorJsImageFile(file);
+        }
+        $(this).val('');
+    });
+
+    $('#ed-btn-add-list').off('click').on('click', function() {
+        if (editorInstance && isEditorReady) {
+            editorInstance.blocks.insert('list', { style: 'unordered', items: [''] });
+        }
+    });
+
+    $('#ed-btn-add-quote').off('click').on('click', function() {
+        if (editorInstance && isEditorReady) {
+            editorInstance.blocks.insert('quote', { text: '', caption: '', alignment: 'left' });
+        }
+    });
+
+    $('#ed-btn-add-alert').off('click').on('click', function() {
+        if (editorInstance && isEditorReady) {
+            editorInstance.blocks.insert('warning', { title: 'Важно', message: '' });
+        }
+    });
+
+    $('#ed-btn-add-table').off('click').on('click', function() {
+        if (editorInstance && isEditorReady) {
+            editorInstance.blocks.insert('table', { withHeadings: true, content: [['Параметр', 'Значение'], ['', '']] });
+        }
+    });
+
+    $('#ed-btn-add-video').off('click').on('click', function() {
+        if (editorInstance && isEditorReady) {
+            const url = prompt("Введите ссылку на видео (YouTube / Rutube):");
+            if (url && url.trim()) {
+                editorInstance.blocks.insert('embed', { service: 'youtube', source: url.trim(), embed: url.trim() });
+            }
+        }
+    });
+
+    $('#ed-btn-add-remote-key').off('click').on('click', function() {
+        if (editorInstance && isEditorReady) {
+            editorInstance.blocks.insert('paragraph', { text: 'Нажмите кнопку пульта <kbd class="tv-remote-key">OK</kbd>' });
+        }
+    });
+
+    $('#ed-btn-add-delimiter').off('click').on('click', function() {
+        if (editorInstance && isEditorReady) {
+            editorInstance.blocks.insert('delimiter', {});
+        }
+    });
+}
+
+// Upload image file and insert into Editor.js
+function uploadEditorJsImageFile(file) {
     const formData = new FormData();
     formData.append('file', file);
 
     showToast("Загрузка изображения на сервер...", "info");
-    appendLog("Загрузка медиа в статью: " + (file.name || "quill_image.png") + "...");
+    appendLog("Загрузка медиа: " + (file.name || "image.png") + "...");
 
     $.ajax({
         url: '/api/upload',
@@ -590,49 +1070,27 @@ function uploadQuillImageFile(file) {
                 showToast("Ошибка получения пути картинки", "error");
                 return;
             }
-            const range = quill.getSelection(true);
-            const index = range ? range.index : quill.getLength();
-            quill.insertEmbed(index, 'image', imgUrl, 'user');
-            quill.setSelection(index + 1);
+            if (editorInstance && isEditorReady) {
+                editorInstance.blocks.insert('image', {
+                    file: { url: imgUrl },
+                    caption: '',
+                    withBorder: false,
+                    stretched: false,
+                    withBackground: false
+                });
+            }
             showToast("Изображение успешно вставлено!", "success");
             appendLog("Изображение загружено: " + imgUrl);
-            updateArticleReadingTime();
             gatherValues();
         },
         error: function(xhr) {
             showToast("Ошибка при загрузке изображения!", "error");
-            appendLog("Ошибка загрузки изображения: " + xhr.responseText);
+            appendLog("Ошибка загрузки: " + xhr.responseText);
         }
     });
 }
 
-// Helper to calculate and update estimated reading time
-function updateArticleReadingTime() {
-    if (!quill) return;
-    const text = quill.getText().trim();
-    const words = text ? text.split(/\s+/).filter(Boolean).length : 0;
-    const mins = Math.max(1, Math.ceil(words / 150));
-    $('#tg-paper-readtime').text(`${mins} мин чтения`);
-}
-
-// Helper to safely load HTML content into Quill without dropping images or figure blocks
-function setQuillContent(html) {
-    if (!quill) return;
-    if (!html || !html.trim()) {
-        quill.setText('');
-        return;
-    }
-
-    // Pre-process: unwrap image figures / custom divs into paragraphs so Quill's Delta matcher keeps images
-    let clean = html
-        .replace(/<div\s+class="article-image-figure"[^>]*>([\s\S]*?)<\/div>/gi, '<p>$1</p>')
-        .replace(/<figure[^>]*>([\s\S]*?)<\/figure>/gi, '<p>$1</p>');
-
-    quill.setContents([]);
-    quill.clipboard.dangerouslyPasteHTML(0, clean, 'silent');
-}
-
-// Select Article item to display in Quill Editor
+// Select Article item to display in Editor.js
 function selectArticle(idx) {
     const articles = portalConfig.articles || [];
     if (idx < 0 || idx >= articles.length) {
@@ -663,11 +1121,10 @@ function selectArticle(idx) {
         $('#tg-paper-video-badge').hide();
     }
 
-    initQuillEditor();
-    if (quill) {
-        setQuillContent(art.contentHtml || '<p></p>');
-    }
-    updateArticleReadingTime();
+    // Convert existing contentHtml into Editor.js blocks
+    const editorData = art.contentData || htmlToEditorData(art.contentHtml || '');
+    initEditorJS(editorData);
+    initEditorToolbarActions();
 
     // Direct article link
     const prodBase = "https://tvshopru.github.io/sup.tvshop";
@@ -723,7 +1180,7 @@ function selectArticle(idx) {
     $('#article-meta-sidebar').css('display', 'flex');
 }
 
-// Quill Toolbar Theme Toggle and Events
+// Editor Toolbar Theme Toggle and Events
 function initTelegramEditorEvents() {
     // Editor Theme Toggle (Light / Dark)
     const savedEditorTheme = localStorage.getItem('tg-editor-theme') || 'light';
@@ -746,7 +1203,7 @@ function initTelegramEditorEvents() {
     });
 
     // In-Editor Paste Button in toolbar
-    $('#tg-btn-paste-in-editor').on('click', function() {
+    $('#tg-btn-paste-in-editor').off('click').on('click', function() {
         pasteArticleFromClipboard(false);
     });
 }
@@ -764,7 +1221,10 @@ function createNewBlankArticle() {
         title: 'Новая статья',
         date: dateStr,
         videoUrl: '',
-        contentHtml: '<p>Напишите текст руководства или выберите инструменты в панели сверху...</p>'
+        contentHtml: '<p>Начните писать руководство или выберите блок в панели сверху...</p>',
+        contentData: {
+            blocks: [{ type: 'paragraph', data: { text: 'Начните писать руководство или выберите блок в панели сверху...' } }]
+        }
     };
     portalConfig.articles.unshift(newArt);
     renderArticlesList();
@@ -836,10 +1296,27 @@ function createNewArticleFromText(rawText) {
     showToast("Новая статья создана и структурирована!", "success");
 }
 
+async function syncArticleEditorData() {
+    if (editorInstance && isEditorReady) {
+        try {
+            const savedData = await editorInstance.save();
+            if (portalConfig.articles && portalConfig.articles[activeArticleIdx]) {
+                portalConfig.articles[activeArticleIdx].contentData = savedData;
+                portalConfig.articles[activeArticleIdx].contentHtml = editorDataToHtml(savedData);
+            }
+        } catch (err) {
+            console.error("syncArticleEditorData error:", err);
+        }
+    }
+}
+
 function insertTextIntoCurrentArticle(rawText) {
     const formattedHtml = parseTelegramBlocks(rawText, false);
-    if (quill) {
-        quill.clipboard.dangerouslyPasteHTML(quill.getLength() - 1, formattedHtml);
+    const newEditorData = htmlToEditorData(formattedHtml);
+    if (editorInstance && isEditorReady && newEditorData && newEditorData.blocks) {
+        newEditorData.blocks.forEach(b => {
+            editorInstance.blocks.insert(b.type, b.data);
+        });
     }
     showToast("Пост вставлен в текущую статью!", "success");
     gatherValues();
