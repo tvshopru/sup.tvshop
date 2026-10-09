@@ -400,6 +400,201 @@
             opacity: 0.65;
         }
 
+        /* Remote Control Key Badge */
+        .tv-remote-key, kbd.tv-remote-key, .article-body kbd {
+            display: inline-block;
+            background: #1e293b;
+            color: #f8fafc;
+            border: 1px solid #0f172a;
+            border-bottom: 2.5px solid #020617;
+            border-radius: 5px;
+            padding: 2px 7px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-size: 0.82em;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+            vertical-align: baseline;
+            margin: 0 2px;
+        }
+
+        body.dark-theme .tv-remote-key, body.dark-theme kbd.tv-remote-key, body.dark-theme .article-body kbd {
+            background: #334155;
+            color: #38bdf8;
+            border-color: #1e293b;
+            border-bottom-color: #0f172a;
+        }
+
+        /* Call-to-Action Buttons */
+        .article-btn-wrapper {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .article-btn-cta {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--accent-color);
+            color: #ffffff !important;
+            text-decoration: none !important;
+            padding: 13px 28px;
+            border-radius: 26px;
+            font-weight: 700;
+            font-size: 1.02em;
+            transition: all 0.2s;
+            box-shadow: 0 4px 14px rgba(36, 129, 204, 0.35);
+        }
+
+        .article-btn-cta:hover {
+            background: var(--accent-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(36, 129, 204, 0.45);
+        }
+
+        /* Alert / Warning Cards */
+        .article-alert-card {
+            background: #fffbeb;
+            border-left: 4px solid #f59e0b;
+            border-radius: 0 10px 10px 0;
+            padding: 14px 18px;
+            margin: 18px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        body.dark-theme .article-alert-card {
+            background: rgba(245, 158, 11, 0.12);
+            border-left-color: #fbbf24;
+        }
+
+        .article-alert-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 700;
+            color: #b45309;
+        }
+
+        body.dark-theme .article-alert-header {
+            color: #fbbf24;
+        }
+
+        .article-alert-body {
+            font-size: 0.96em;
+            color: #92400e;
+            line-height: 1.55;
+        }
+
+        body.dark-theme .article-alert-body {
+            color: #fde68a;
+        }
+
+        /* Spoiler / Accordion (FAQ) */
+        .article-spoiler-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            margin: 16px 0;
+            overflow: hidden;
+            transition: border-color 0.2s;
+        }
+
+        .article-spoiler-card[open] {
+            border-color: var(--accent-color);
+        }
+
+        .article-spoiler-header {
+            padding: 14px 18px;
+            font-weight: 700;
+            font-size: 1.02em;
+            cursor: pointer;
+            user-select: none;
+            background: rgba(0,0,0,0.02);
+            list-style-position: inside;
+        }
+
+        .article-spoiler-content {
+            padding: 16px 18px;
+            border-top: 1px solid var(--border-color);
+            font-size: 0.98em;
+            line-height: 1.65;
+        }
+
+        /* Video Embeds */
+        .article-embed-wrapper {
+            margin: 22px 0;
+        }
+
+        .article-embed-responsive {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 ratio */
+            height: 0;
+            overflow: hidden;
+            border-radius: 12px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .article-embed-responsive iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        .article-embed-caption, .article-image-caption {
+            font-size: 0.85em;
+            color: var(--text-muted);
+            margin-top: 8px;
+            text-align: center;
+            font-style: italic;
+        }
+
+        /* Tables & Checklists */
+        .article-table-responsive {
+            overflow-x: auto;
+            margin: 18px 0;
+        }
+
+        .article-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95em;
+        }
+
+        .article-table th, .article-table td {
+            border: 1px solid var(--border-color);
+            padding: 10px 14px;
+            text-align: left;
+        }
+
+        .article-table th {
+            background: var(--bg-secondary);
+            font-weight: 700;
+        }
+
+        .article-checklist-list {
+            list-style: none !important;
+            padding-left: 0 !important;
+            margin: 14px 0 !important;
+        }
+
+        .article-checklist-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .article-checklist-item.checked {
+            text-decoration: line-through;
+            opacity: 0.6;
+        }
+
         /* Footer & Channel promo */
         .article-footer {
             margin-top: 36px;
@@ -689,7 +884,12 @@
                     '</a>';
             }
 
-            var cleanBodyHtml = cleanArticleBody(article.contentHtml || '');
+            var cleanBodyHtml = '';
+            if (article.blocks && article.blocks.blocks && article.blocks.blocks.length > 0) {
+                cleanBodyHtml = renderBlocksToHtml(article.blocks);
+            } else {
+                cleanBodyHtml = cleanArticleBody(article.contentHtml || '');
+            }
 
             var html = 
                 '<article>' +
@@ -812,6 +1012,165 @@
                 }
             });
             return temp.innerHTML;
+        }
+
+        function renderBlocksToHtml(blocksData) {
+            if (!blocksData || !blocksData.blocks || !Array.isArray(blocksData.blocks)) {
+                return '';
+            }
+
+            var htmlParts = [];
+            blocksData.blocks.forEach(function(block) {
+                var type = block.type;
+                var data = block.data || {};
+
+                switch (type) {
+                    case 'header': {
+                        var level = data.level || 2;
+                        var text = data.text || '';
+                        htmlParts.push('<h' + level + '>' + text + '</h' + level + '>');
+                        break;
+                    }
+                    case 'paragraph': {
+                        var text = data.text || '';
+                        if (text.trim()) {
+                            htmlParts.push('<p>' + text + '</p>');
+                        }
+                        break;
+                    }
+                    case 'list': {
+                        var isOrdered = data.style === 'ordered';
+                        var tag = isOrdered ? 'ol' : 'ul';
+                        var items = data.items || [];
+                        var lis = items.map(function(item) {
+                            var itemText = typeof item === 'string' ? item : (item.content || '');
+                            return '<li>' + itemText + '</li>';
+                        }).join('');
+                        htmlParts.push('<' + tag + '>' + lis + '</' + tag + '>');
+                        break;
+                    }
+                    case 'image': {
+                        var url = (data.file && data.file.url) ? data.file.url : (data.url || '');
+                        var caption = data.caption || '';
+                        var withBorder = data.withBorder ? ' img-bordered' : '';
+                        var stretched = data.stretched ? ' img-stretched' : '';
+                        var withBg = data.withBackground ? ' img-with-bg' : '';
+                        
+                        var imgHtml = '<div class="article-image-figure' + withBorder + stretched + withBg + '">';
+                        imgHtml += '<img src="' + escapeHtml(url) + '" alt="' + escapeHtml(caption) + '" />';
+                        if (caption && caption.trim()) {
+                            imgHtml += '<figcaption class="article-image-caption">' + escapeHtml(caption) + '</figcaption>';
+                        }
+                        imgHtml += '</div>';
+                        htmlParts.push(imgHtml);
+                        break;
+                    }
+                    case 'alert':
+                    case 'warning': {
+                        var title = data.title || 'Внимание';
+                        var message = data.message || '';
+                        htmlParts.push(
+                            '<div class="article-alert-card">' +
+                                '<div class="article-alert-header">' +
+                                    '<span class="article-alert-icon">⚠️</span>' +
+                                    '<strong>' + escapeHtml(title) + '</strong>' +
+                                '</div>' +
+                                '<div class="article-alert-body">' + message + '</div>' +
+                            '</div>'
+                        );
+                        break;
+                    }
+                    case 'embed': {
+                        var embedUrl = data.embed || data.source || '';
+                        var caption = data.caption || '';
+                        htmlParts.push(
+                            '<div class="article-embed-wrapper">' +
+                                '<div class="article-embed-responsive">' +
+                                    '<iframe src="' + escapeHtml(embedUrl) + '" frameborder="0" allowfullscreen loading="lazy"></iframe>' +
+                                '</div>' +
+                                (caption ? '<div class="article-embed-caption">' + escapeHtml(caption) + '</div>' : '') +
+                            '</div>'
+                        );
+                        break;
+                    }
+                    case 'button': {
+                        var btnText = data.text || 'Перейти';
+                        var btnUrl = data.url || '#';
+                        htmlParts.push(
+                            '<div class="article-btn-wrapper">' +
+                                '<a href="' + escapeHtml(btnUrl) + '" target="_blank" class="article-btn-cta">' + escapeHtml(btnText) + '</a>' +
+                            '</div>'
+                        );
+                        break;
+                    }
+                    case 'spoiler':
+                    case 'accordion': {
+                        var title = data.title || 'Подробнее';
+                        var content = data.content || '';
+                        htmlParts.push(
+                            '<details class="article-spoiler-card">' +
+                                '<summary class="article-spoiler-header">' + escapeHtml(title) + '</summary>' +
+                                '<div class="article-spoiler-content">' + content + '</div>' +
+                            '</details>'
+                        );
+                        break;
+                    }
+                    case 'quote': {
+                        var text = data.text || '';
+                        var caption = data.caption || '';
+                        htmlParts.push(
+                            '<blockquote class="article-quote-block">' +
+                                '<p>' + text + '</p>' +
+                                (caption ? '<cite>' + escapeHtml(caption) + '</cite>' : '') +
+                            '</blockquote>'
+                        );
+                        break;
+                    }
+                    case 'delimiter': {
+                        htmlParts.push('<hr class="article-delimiter" />');
+                        break;
+                    }
+                    case 'table': {
+                        var content = data.content || [];
+                        var withHeadings = data.withHeadings;
+                        var tableHtml = '<div class="article-table-responsive"><table class="article-table">';
+                        content.forEach(function(row, rIdx) {
+                            tableHtml += '<tr>';
+                            row.forEach(function(cell) {
+                                var cellTag = (rIdx === 0 && withHeadings) ? 'th' : 'td';
+                                tableHtml += '<' + cellTag + '>' + cell + '</' + cellTag + '>';
+                            });
+                            tableHtml += '</tr>';
+                        });
+                        tableHtml += '</table></div>';
+                        htmlParts.push(tableHtml);
+                        break;
+                    }
+                    case 'checklist': {
+                        var items = data.items || [];
+                        var clHtml = '<ul class="article-checklist-list">';
+                        items.forEach(function(item) {
+                            var checked = item.checked ? ' checked' : '';
+                            clHtml += '<li class="article-checklist-item' + checked + '"><span class="checklist-box">' + (item.checked ? '☑' : '☐') + '</span> ' + (item.text || '') + '</li>';
+                        });
+                        clHtml += '</ul>';
+                        htmlParts.push(clHtml);
+                        break;
+                    }
+                    case 'raw': {
+                        htmlParts.push(data.html || '');
+                        break;
+                    }
+                    default: {
+                        if (data.text) {
+                            htmlParts.push('<p>' + data.text + '</p>');
+                        }
+                        break;
+                    }
+                }
+            });
+
+            return htmlParts.join('\n');
         }
 
         function escapeHtml(str) {

@@ -150,10 +150,16 @@ async def upload_image(file: UploadFile = File(...), x_admin_pin: str = Header(N
         with open(dest_path, "wb") as f:
             f.write(content)
         log_message(f"Successfully uploaded and saved image to {dest_path}")
-        return {"path": f"img/{filename}"}
+        return {
+            "success": 1,
+            "path": f"img/{filename}",
+            "file": {
+                "url": f"img/{filename}"
+            }
+        }
     except Exception as e:
         log_message(f"Error saving uploaded image: {str(e)}")
-        raise HTTPException(status_code=500, detail=str(e))
+        return {"success": 0, "error": str(e)}
 
 @app.post("/api/git/deploy")
 async def deploy_to_git(x_admin_pin: str = Header(None)):

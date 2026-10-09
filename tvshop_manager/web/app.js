@@ -374,38 +374,9 @@ function gatherValues() {
     // Gather current article settings if visible
     if (portalConfig.articles && portalConfig.articles[activeArticleIdx]) {
         const art = portalConfig.articles[activeArticleIdx];
-        art.title = $('#input-art-title').val();
-        art.date = $('#input-art-date').val();
+        art.title = $('#input-art-title').val() || art.title;
+        art.date = $('#input-art-date').val() || art.date;
         art.videoUrl = $('#input-art-video').val().trim();
-        
-        // Clean un-replaced photo placeholders, default captions, and empty li/p tags
-        const tempDiv = $('<div>').html($('#tg-content-editor').html());
-        tempDiv.find('.tg-photo-placeholder').remove();
-        tempDiv.find('.tg-img-hover-actions').remove();
-        tempDiv.find('.tg-img-wrapper').each(function() {
-            const img = $(this).find('img');
-            $(this).replaceWith(img);
-        });
-        tempDiv.find('img').removeAttr('title');
-        tempDiv.find('.tg-img-caption').each(function() {
-            const text = $(this).text().trim();
-            if (!text || text === 'Подпись' || text === 'Подпись к фото...') {
-                $(this).remove();
-            }
-        });
-        // Remove empty li or empty ol/ul elements
-        tempDiv.find('li').each(function() {
-            const txt = $(this).text().trim();
-            if (!txt && !$(this).children('img, span, strong, b, a').length) {
-                $(this).remove();
-            }
-        });
-        tempDiv.find('ol, ul').each(function() {
-            if (!$(this).children('li').length) {
-                $(this).remove();
-            }
-        });
-        art.contentHtml = tempDiv.html();
     }
 
     // Gather current instruction settings if visible
@@ -506,16 +477,178 @@ function renderArticlesList() {
     });
 }
 
-// Helper to calculate and update estimated reading time
-function updateArticleReadingTime() {
-    const text = $('#tg-content-editor').text().trim();
-    const words = text ? text.split(/\s+/).length : 0;
-    const mins = Math.max(1, Math.ceil(words / 150));
-    $('#tg-paper-readtime').text(`${mins} мин чтения`);
+// Editor.js Instance and State
+let articleEditor = null;
+let isEditorJsReady = false;
+
+// Synchronize Editor.js blocks back into portalConfig
+async function syncArticleEditorData() {
+    if (articleEditor && typeof articleEditor.save === 'function' && portalConfig.articles && portalConfig.articles[activeArticleIdx]) {
+        try {
+            const output = await articleEditor.save();
+            const art = portalConfig.articles[activeArticleIdx];
+            art.blocks = output;
+            if (typeof renderBlocksToHtml === 'function') {
+                art.contentHtml = renderBlocksToHtml(output);
+            }
+        } catch (e) {
+            console.error("Error saving Editor.js data:", e);
+        }
+    }
 }
 
-// Select Article item to display in Telegram Editor
-function selectArticle(idx) {
+// Helper to calculate and update estimated reading time
+function updateArticleReadingTime() {
+    if (!articleEditor || !articleEditor.save) return;
+    articleEditor.save().then(output => {
+        let totalWords = 0;
+        if (output && output.blocks) {
+            output.blocks.forEach(b => {
+                if (b.data && b.data.text) {
+                    totalWords += b.data.text.replace(/<[^>]*>/g, '').trim().split(/\s+/).filter(Boolean).length;
+                } else if (b.data && b.data.items) {
+                    b.data.items.forEach(it => {
+                        const str = typeof it === 'string' ? it : (it.text || it.content || '');
+                        totalWords += str.replace(/<[^>]*>/g, '').trim().split(/\s+/).filter(Boolean).length;
+                    });
+                }
+            });
+        }
+        const mins = Math.max(1, Math.ceil(totalWords / 150));
+        $('#tg-paper-readtime').text(`${mins} мин чтения`);
+    }).catch(() => {});
+}
+
+// Initialize Editor.js instance with tools
+function initEditorJsInstance(initialBlocks) {
+    if (articleEditor && typeof articleEditor.destroy === 'function') {
+        try {
+            articleEditor.destroy();
+        } catch (e) {
+            console.warn("Editor.js destroy warning:", e);
+        }
+        articleEditor = null;
+    }
+
+    $('#editorjs-holder').empty();
+    isEditorJsReady = false;
+
+    const holder = document.getElementById('editorjs-holder');
+    if (!holder) return;
+
+    const adminPin = localStorage.getItem('portal_pin') || '';
+
+    const toolsConfig = {
+        header: {
+            class: (typeof Header !== 'undefined') ? Header : undefined,
+            inlineToolbar: ['link', 'marker', 'remoteKey'],
+            config: {
+                placeholder: 'Введите заголовок шага или раздела...',
+                levels: [2, 3, 4],
+                defaultLevel: 2
+            }
+        },
+        list: {
+            class: (typeof List !== 'undefined') ? List : undefined,
+            inlineToolbar: true,
+            config: {
+                defaultStyle: 'ordered'
+            }
+        },
+        image: {
+            class: (typeof ImageTool !== 'undefined') ? ImageTool : undefined,
+            config: {
+                endpoints: {
+                    byFile: '/api/upload',
+                    byUrl: '/api/upload'
+                },
+                additionalRequestHeaders: {
+                    'x-admin-pin': adminPin
+                },
+                field: 'file',
+                types: 'image/*'
+            }
+        },
+        alert: {
+            class: (typeof ArticleAlertTool !== 'undefined') ? ArticleAlertTool : undefined
+        },
+        button: {
+            class: (typeof ArticleButtonTool !== 'undefined') ? ArticleButtonTool : undefined
+        },
+        spoiler: {
+            class: (typeof ArticleSpoilerTool !== 'undefined') ? ArticleSpoilerTool : undefined
+        },
+        embed: {
+            class: (typeof Embed !== 'undefined') ? Embed : undefined,
+            inlineToolbar: true,
+            config: {
+                services: {
+                    youtube: true,
+                    vimeo: true,
+                    coub: true
+                }
+            }
+        },
+        table: {
+            class: (typeof Table !== 'undefined') ? Table : undefined,
+            inlineToolbar: true,
+            config: {
+                rows: 2,
+                cols: 2
+            }
+        },
+        checklist: {
+            class: (typeof Checklist !== 'undefined') ? Checklist : undefined,
+            inlineToolbar: true
+        },
+        quote: {
+            class: (typeof Quote !== 'undefined') ? Quote : undefined,
+            inlineToolbar: true,
+            config: {
+                quotePlaceholder: 'Введите цитату...',
+                captionPlaceholder: 'Автор / источник'
+            }
+        },
+        delimiter: (typeof Delimiter !== 'undefined') ? Delimiter : undefined,
+        marker: (typeof Marker !== 'undefined') ? Marker : undefined,
+        inlineCode: (typeof InlineCode !== 'undefined') ? InlineCode : undefined,
+        remoteKey: (typeof RemoteKeyInlineTool !== 'undefined') ? RemoteKeyInlineTool : undefined
+    };
+
+    // Clean out unresolvable tools if CDN fails
+    Object.keys(toolsConfig).forEach(k => {
+        if (!toolsConfig[k] || (typeof toolsConfig[k] === 'object' && !toolsConfig[k].class)) {
+            if (typeof toolsConfig[k] !== 'function') {
+                delete toolsConfig[k];
+            }
+        }
+    });
+
+    try {
+        articleEditor = new EditorJS({
+            holder: 'editorjs-holder',
+            placeholder: 'Нажмите Tab или выберите блок «+» для добавления шага, фото, видео или кнопки...',
+            data: initialBlocks || { blocks: [] },
+            tools: toolsConfig,
+            onChange: async () => {
+                await syncArticleEditorData();
+                updateArticleReadingTime();
+            },
+            onReady: () => {
+                isEditorJsReady = true;
+                updateArticleReadingTime();
+            }
+        });
+    } catch (err) {
+        console.error("Failed to initialize Editor.js:", err);
+    }
+}
+
+// Select Article item to display in Editor.js Canvas
+async function selectArticle(idx) {
+    // Sync current active editor before switching
+    await syncArticleEditorData();
+
     const articles = portalConfig.articles || [];
     if (idx < 0 || idx >= articles.length) {
         $('#article-editor-panel').hide();
@@ -545,11 +678,17 @@ function selectArticle(idx) {
         $('#tg-paper-video-badge').hide();
     }
 
-    $('#tg-content-editor').html(art.contentHtml || '');
-    wrapEditorImages($('#tg-content-editor'));
-    updateArticleReadingTime();
+    // Prepare Editor.js blocks
+    let blocksData = { blocks: [] };
+    if (art.blocks && art.blocks.blocks && Array.isArray(art.blocks.blocks) && art.blocks.blocks.length > 0) {
+        blocksData = art.blocks;
+    } else if (art.contentHtml && typeof convertHtmlToEditorBlocks === 'function') {
+        blocksData = { blocks: convertHtmlToEditorBlocks(art.contentHtml) };
+    }
 
-    // Set and calculate direct article link (Telegraph-like standalone reader)
+    initEditorJsInstance(blocksData);
+
+    // Direct article link
     const prodBase = "https://tvshopru.github.io/sup.tvshop";
     const artId = art.id || ('art-' + idx);
     const directUrl = `${prodBase}/article.html?id=${encodeURIComponent(artId)}`;
@@ -566,7 +705,7 @@ function selectArticle(idx) {
         }
     });
 
-    // Dynamic title rename in left sidebar & paper header (Two-way sync)
+    // Two-way sync for title / date / video
     $('#input-art-title').off('input').on('input', function() {
         const val = $(this).val();
         art.title = val;
@@ -581,7 +720,6 @@ function selectArticle(idx) {
         $(`.inst-item-row[data-art-index="${idx}"] .inst-item-row-title`).text(val || 'Без названия');
     });
 
-    // Dynamic date sync
     $('#input-art-date').off('input').on('input', function() {
         const val = $(this).val();
         art.date = val;
@@ -589,7 +727,6 @@ function selectArticle(idx) {
         $(`.inst-item-row[data-art-index="${idx}"] .inst-item-row-sub`).text(`Статья • ${val}`);
     });
 
-    // Dynamic video sync
     $('#input-art-video').off('input').on('input', function() {
         const val = $(this).val().trim();
         art.videoUrl = val;
@@ -601,16 +738,11 @@ function selectArticle(idx) {
         }
     });
 
-    // Reading time calculation on content changes
-    $('#tg-content-editor').off('input.readtime').on('input.readtime', function() {
-        updateArticleReadingTime();
-    });
-
     $('#article-editor-panel').css('display', 'flex');
     $('#article-meta-sidebar').css('display', 'flex');
 }
 
-// Telegram Editor Toolbar and Clipboard / Annotator Events
+// Editor.js Toolbar Quick Actions and Theme Toggle
 function initTelegramEditorEvents() {
     // Editor Theme Toggle (Light / Dark)
     const savedEditorTheme = localStorage.getItem('tg-editor-theme') || 'light';
@@ -632,366 +764,58 @@ function initTelegramEditorEvents() {
         $('#tg-btn-theme-toggle span:first').text(isDark ? '🌙' : '☀️');
     });
 
-    // Toolbar Formatting Buttons: prevent mousedown from losing selection
-    $('.tg-tb-btn').on('mousedown', function(e) {
-        e.preventDefault();
-    });
-
-    // Heading H2 Toggle (Click turns into H2, clicking again turns back to P)
-    $('#tg-btn-heading-toggle').on('click', function(e) {
-        e.preventDefault();
-        const sel = window.getSelection();
-        let isHeading = false;
-        if (sel && sel.anchorNode) {
-            const parent = $(sel.anchorNode).closest('h1, h2, h3, h4, p', '#tg-content-editor');
-            if (parent.is('h1, h2, h3, h4')) {
-                isHeading = true;
-            }
-        }
-        if (isHeading) {
-            document.execCommand('formatBlock', false, 'p');
-        } else {
-            document.execCommand('formatBlock', false, 'h2');
-        }
-        $('#tg-content-editor').focus();
-        gatherValues();
-    });
-
-    // Font Size Controls (A+ and A-)
-    $('#tg-btn-font-grow').on('click', function(e) {
-        e.preventDefault();
-        adjustFontSize(1);
-    });
-
-    $('#tg-btn-font-shrink').on('click', function(e) {
-        e.preventDefault();
-        adjustFontSize(-1);
-    });
-
-    function adjustFontSize(dir) {
-        const sel = window.getSelection();
-        if (!sel || !sel.rangeCount) return;
-
-        if (!sel.isCollapsed) {
-            const range = sel.getRangeAt(0);
-            const parentSpan = $(sel.anchorNode).closest('span[data-scale]');
-            let scale = parentSpan.length ? parseFloat(parentSpan.attr('data-scale')) : 1.0;
-            scale = Math.max(0.75, Math.min(2.2, scale + (dir * 0.15)));
-            scale = Math.round(scale * 100) / 100;
-
-            const span = document.createElement('span');
-            span.setAttribute('data-scale', scale);
-            span.style.fontSize = scale + 'em';
-            span.appendChild(range.extractContents());
-            range.insertNode(span);
-        } else if (sel.anchorNode) {
-            const block = $(sel.anchorNode).closest('p, h2, h3, li', '#tg-content-editor');
-            if (block.length) {
-                let cur = parseFloat(block.css('font-size')) || 16;
-                let next = Math.max(12, Math.min(36, cur + (dir * 2)));
-                block.css('font-size', next + 'px');
-            }
-        }
-        $('#tg-content-editor').focus();
-        gatherValues();
-    }
-
-    $('.tg-tb-btn[data-command]').on('click', function(e) {
-        e.preventDefault();
-        const cmd = $(this).attr('data-command');
-        const val = $(this).attr('data-value') || null;
-        document.execCommand(cmd, false, val);
-        $('#tg-content-editor').focus();
-        gatherValues();
-    });
-
-    $('#tg-btn-undo').on('click', function() {
-        document.execCommand('undo', false, null);
-    });
-
-    $('#tg-btn-redo').on('click', function() {
-        document.execCommand('redo', false, null);
-    });
-
-    // Highlight marker button: toggle highlight on selection
-    $('#tg-btn-highlight').on('click', function(e) {
-        e.preventDefault();
-        const sel = window.getSelection();
-        if (sel && sel.rangeCount > 0 && !sel.isCollapsed) {
-            const range = sel.getRangeAt(0);
-            const selectedText = range.extractContents();
-            const span = document.createElement('span');
-            span.className = 'tg-text-highlight';
-            span.style.backgroundColor = '#dbeafe';
-            span.style.color = '#0369a1';
-            span.style.padding = '2px 6px';
-            span.style.borderRadius = '4px';
-            span.style.fontWeight = '600';
-            span.appendChild(selectedText);
-            range.insertNode(span);
-        } else {
-            try {
-                document.execCommand('hiliteColor', false, '#dbeafe');
-            } catch(err) {
-                document.execCommand('backColor', false, '#dbeafe');
-            }
-        }
-        $('#tg-content-editor').focus();
-        gatherValues();
-    });
-
-    // Link insert
-    $('#tg-btn-link').on('click', function() {
-        const url = prompt('Введите URL ссылки:', 'https://');
-        if (url) {
-            document.execCommand('createLink', false, url);
+    // Quick Action Buttons on Top Toolbar
+    $('#ed-btn-add-header').on('click', function() {
+        if (articleEditor && articleEditor.blocks) {
+            articleEditor.blocks.insert('header', { text: '', level: 2 });
         }
     });
 
-    // Image file button
-    $('#tg-btn-image').on('click', function() {
-        $('#tg-file-input').click();
-    });
-
-    $('#tg-file-input').on('change', function() {
-        const file = this.files[0];
-        if (file) {
-            uploadArticleImageFile(file, activePhotoPlaceholder);
-            activePhotoPlaceholder = null;
-        }
-        $(this).val('');
-    });
-
-    // Delete Article Button
-    $('#btn-delete-article').on('click', function() {
-        if (confirm('Удалить текущую статью?')) {
-            portalConfig.articles.splice(activeArticleIdx, 1);
-            activeArticleIdx = 0;
-            renderArticlesList();
-            if (portalConfig.articles && portalConfig.articles.length > 0) {
-                selectArticle(0);
-            } else {
-                $('#article-editor-panel').hide();
-                $('#article-meta-sidebar').hide();
-            }
+    $('#ed-btn-add-image').on('click', function() {
+        if (articleEditor && articleEditor.blocks) {
+            articleEditor.blocks.insert('image', {});
         }
     });
 
-    // Active placeholder reference for image replacement
-    let activePhotoPlaceholder = null;
-
-    // Delete photo placeholder on ✕
-    $('#tg-content-editor').on('click', '.tg-photo-badge-delete', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        $(this).closest('.tg-photo-placeholder').remove();
-        gatherValues();
-    });
-
-    // Click on photo placeholder to upload
-    $('#tg-content-editor').on('click', '.tg-photo-placeholder', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        activePhotoPlaceholder = $(this);
-        $('#tg-file-input').click();
-    });
-
-    // Helper to merge adjacent lists of the same type without items between them
-    function mergeConsecutiveLists($container) {
-        if (!$container || !$container.length) $container = $('#tg-content-editor');
-        $container.find('ol, ul').each(function() {
-            const list = $(this);
-            const tag = list.prop('tagName').toLowerCase();
-            const next = list.next();
-            if (next.length && next.is(tag)) {
-                list.append(next.children('li'));
-                next.remove();
-            }
-        });
-    }
-
-    // Move Image Up (Supports stepping inside numbered/bulleted lists item by item)
-    $('#tg-content-editor').on('click', '.tg-img-btn-move-up', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        const wrapper = $(this).closest('.tg-img-wrapper');
-        const prev = wrapper.prev();
-        if (!prev.length) {
-            showToast("Фото уже в самом верху", "info");
-            return;
-        }
-
-        // If previous element is a list (ol or ul)
-        if (prev.is('ol, ul')) {
-            const items = prev.children('li');
-            const tag = prev.prop('tagName').toLowerCase();
-            const startNum = parseInt(prev.attr('start')) || 1;
-
-            if (items.length > 1) {
-                // Split off the last item into a new following list
-                const lastItem = items.last().detach();
-                const newFollowingList = $(`<${tag}>`).attr('start', startNum + items.length - 1);
-                newFollowingList.append(lastItem);
-
-                wrapper.insertAfter(prev);
-                newFollowingList.insertAfter(wrapper);
-                gatherValues();
-                showToast("Фото перемещено между шагами", "success");
-                return;
-            } else {
-                // List has only 1 item, move above the list
-                wrapper.insertBefore(prev);
-                gatherValues();
-                showToast("Фото перемещено выше шага", "info");
-                return;
-            }
-        }
-
-        wrapper.insertBefore(prev);
-        gatherValues();
-        showToast("Фото перемещено выше", "info");
-    });
-
-    // Move Image Down (Supports stepping inside numbered/bulleted lists item by item)
-    $('#tg-content-editor').on('click', '.tg-img-btn-move-down', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        const wrapper = $(this).closest('.tg-img-wrapper');
-        const next = wrapper.next();
-        if (!next.length) {
-            showToast("Фото уже в самом низу", "info");
-            return;
-        }
-
-        // If next element is a list (ol or ul)
-        if (next.is('ol, ul')) {
-            const items = next.children('li');
-            const tag = next.prop('tagName').toLowerCase();
-            const startNum = parseInt(next.attr('start')) || 1;
-
-            if (items.length > 1) {
-                // Split off the first item into a preceding list
-                const firstItem = items.first().detach();
-                const newPrecedingList = $(`<${tag}>`).attr('start', startNum);
-                newPrecedingList.append(firstItem);
-
-                // Update start number of the remaining next list
-                next.attr('start', startNum + 1);
-
-                newPrecedingList.insertBefore(wrapper);
-                gatherValues();
-                showToast("Фото перемещено между шагами", "success");
-                return;
-            } else {
-                // List has only 1 item, move below the list
-                wrapper.insertAfter(next);
-                gatherValues();
-                showToast("Фото перемещено ниже шага", "info");
-                return;
-            }
-        }
-
-        wrapper.insertAfter(next);
-        gatherValues();
-        showToast("Фото перемещено ниже", "info");
-    });
-
-    // Click Replace Image button on hover
-    $('#tg-content-editor').on('click', '.tg-img-btn-replace', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        activePhotoPlaceholder = $(this).closest('.tg-img-wrapper');
-        $('#tg-file-input').click();
-    });
-
-    // Click Delete Image button on hover
-    $('#tg-content-editor').on('click', '.tg-img-btn-del', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        if (confirm('Удалить это изображение из статьи?')) {
-            $(this).closest('.tg-img-wrapper').remove();
-            gatherValues();
+    $('#ed-btn-add-list').on('click', function() {
+        if (articleEditor && articleEditor.blocks) {
+            articleEditor.blocks.insert('list', { style: 'ordered', items: [''] });
         }
     });
 
-    // Clean Drag and Drop for images (Supports dropping between list items)
-    let draggedImgWrapper = null;
-
-    $('#tg-content-editor').on('dragstart', '.tg-img-wrapper', function(e) {
-        draggedImgWrapper = $(this);
-        if (e.originalEvent.dataTransfer) {
-            e.originalEvent.dataTransfer.setData('text/plain', 'tvshop_img_drag');
-            e.originalEvent.dataTransfer.effectAllowed = 'move';
+    $('#ed-btn-add-alert').on('click', function() {
+        if (articleEditor && articleEditor.blocks) {
+            articleEditor.blocks.insert('alert', { title: 'Важно!', message: '' });
         }
     });
 
-    $('#tg-content-editor').on('dragstart', 'img', function(e) {
-        const wrapper = $(this).closest('.tg-img-wrapper');
-        if (wrapper.length) {
-            draggedImgWrapper = wrapper;
-            if (e.originalEvent.dataTransfer) {
-                e.originalEvent.dataTransfer.setData('text/plain', 'tvshop_img_drag');
-                e.originalEvent.dataTransfer.effectAllowed = 'move';
-            }
+    $('#ed-btn-add-video').on('click', function() {
+        if (articleEditor && articleEditor.blocks) {
+            articleEditor.blocks.insert('embed', {});
         }
     });
 
-    $('#tg-content-editor').on('dragover', function(e) {
-        if (draggedImgWrapper && draggedImgWrapper.length) {
-            e.preventDefault();
-            if (e.originalEvent.dataTransfer) {
-                e.originalEvent.dataTransfer.dropEffect = 'move';
-            }
+    $('#ed-btn-add-button').on('click', function() {
+        if (articleEditor && articleEditor.blocks) {
+            articleEditor.blocks.insert('button', { text: 'Написать в Telegram', url: 'https://t.me/android_tv_shop' });
         }
     });
 
-    $('#tg-content-editor').on('drop', function(e) {
-        if (draggedImgWrapper && draggedImgWrapper.length) {
-            e.preventDefault();
-            e.stopPropagation();
+    $('#ed-btn-add-spoiler').on('click', function() {
+        if (articleEditor && articleEditor.blocks) {
+            articleEditor.blocks.insert('spoiler', { title: 'Частый вопрос / Проблема', content: '' });
+        }
+    });
 
-            const rawTarget = document.elementFromPoint(e.clientX, e.clientY);
-            if (!rawTarget) {
-                draggedImgWrapper = null;
-                return;
-            }
+    $('#ed-btn-add-table').on('click', function() {
+        if (articleEditor && articleEditor.blocks) {
+            articleEditor.blocks.insert('table', { content: [['Колонка 1', 'Колонка 2'], ['Данные 1', 'Данные 2']] });
+        }
+    });
 
-            const targetLi = $(rawTarget).closest('li');
-            if (targetLi.length && targetLi.closest('#tg-content-editor').length) {
-                const parentList = targetLi.closest('ol, ul');
-                const tag = parentList.prop('tagName').toLowerCase();
-                const startNum = parseInt(parentList.attr('start')) || 1;
-                const allItems = parentList.children('li');
-                const liIndex = targetLi.index();
-
-                const precedingItems = allItems.slice(0, liIndex + 1);
-                const followingItems = allItems.slice(liIndex + 1);
-
-                if (followingItems.length > 0) {
-                    const followingList = $(`<${tag}>`).attr('start', startNum + liIndex + 1);
-                    followingList.append(followingItems.detach());
-                    
-                    draggedImgWrapper.insertAfter(parentList);
-                    followingList.insertAfter(draggedImgWrapper);
-                } else {
-                    draggedImgWrapper.insertAfter(parentList);
-                }
-
-                wrapEditorImages();
-                gatherValues();
-                showToast("Фото успешно перемещено между шагами!", "success");
-                draggedImgWrapper = null;
-                return;
-            }
-
-            const targetBlock = $(rawTarget).closest('#tg-content-editor > *');
-            if (targetBlock.length && !targetBlock.is(draggedImgWrapper)) {
-                draggedImgWrapper.insertBefore(targetBlock);
-                wrapEditorImages();
-                gatherValues();
-                showToast("Фото успешно перемещено!", "success");
-            }
-            draggedImgWrapper = null;
+    $('#ed-btn-add-checklist').on('click', function() {
+        if (articleEditor && articleEditor.blocks) {
+            articleEditor.blocks.insert('checklist', { items: [{ text: 'Шаг выполнен', checked: false }] });
         }
     });
 
@@ -999,125 +823,10 @@ function initTelegramEditorEvents() {
     $('#tg-btn-paste-in-editor').on('click', function() {
         pasteArticleFromClipboard(false);
     });
-
-    // Magic Auto-Format Button
-    $('#tg-btn-magic-format').on('click', function() {
-        const rawHtml = $('#tg-content-editor').html();
-        const rawText = $('#tg-content-editor').text();
-        if (rawHtml && rawHtml.trim()) {
-            const formattedHtml = formatTelegramClipboard(rawHtml, rawText, false);
-            $('#tg-content-editor').html(formattedHtml);
-            wrapEditorImages();
-            showToast("Пост отформатирован в стиль Telegram!", "success");
-            gatherValues();
-        } else {
-            showToast("Вставьте текст поста в редактор", "info");
-        }
-    });
-
-    // Intelligent Paste Handler (Ctrl+V) for Telegram Post Content & Images
-    $('#tg-content-editor').on('paste', function(e) {
-        const clipboardData = e.originalEvent.clipboardData || window.clipboardData;
-        if (!clipboardData) return;
-
-        // Check if pasting an image file directly from clipboard
-        const items = clipboardData.items;
-        if (items) {
-            for (let i = 0; i < items.length; i++) {
-                if (items[i].type.indexOf('image') !== -1) {
-                    const file = items[i].getAsFile();
-                    if (file) {
-                        e.preventDefault();
-                        uploadArticleImageFile(file, activePhotoPlaceholder);
-                        activePhotoPlaceholder = null;
-                        return;
-                    }
-                }
-            }
-        }
-
-        // If target is inside an existing photo placeholder, paste replaces it
-        const sel = window.getSelection();
-        if (sel && sel.anchorNode) {
-            const node = $(sel.anchorNode);
-            const placeholder = node.closest('.tg-photo-placeholder');
-            if (placeholder.length) {
-                activePhotoPlaceholder = placeholder;
-            }
-        }
-
-        const htmlData = clipboardData.getData('text/html');
-        const plainText = clipboardData.getData('text/plain');
-
-        if ((htmlData && htmlData.trim().length > 0) || (plainText && plainText.trim().length > 0)) {
-            e.preventDefault();
-            const formattedHtml = formatTelegramClipboard(htmlData, plainText, false);
-            
-            const currentEditorText = $('#tg-content-editor').text().trim();
-            const isPlaceholderText = currentEditorText === 'Напишите текст или нажмите кнопку «Вставить из буфера» (Ctrl+V)...' || !currentEditorText;
-
-            if (isPlaceholderText) {
-                $('#tg-content-editor').html(formattedHtml);
-            } else {
-                let inserted = false;
-                try {
-                    inserted = document.execCommand('insertHTML', false, formattedHtml);
-                } catch (cmdErr) {
-                    inserted = false;
-                }
-                if (!inserted) {
-                    const sel = window.getSelection();
-                    if (sel && sel.rangeCount > 0) {
-                        const range = sel.getRangeAt(0);
-                        range.deleteContents();
-                        const el = document.createElement("div");
-                        el.innerHTML = formattedHtml;
-                        const frag = document.createDocumentFragment();
-                        let node, lastNode;
-                        while ((node = el.firstChild)) {
-                            lastNode = frag.appendChild(node);
-                        }
-                        range.insertNode(frag);
-                        if (lastNode) {
-                            range.setStartAfter(lastNode);
-                            range.collapse(true);
-                            sel.removeAllRanges();
-                            sel.addRange(range);
-                        }
-                    } else {
-                        $('#tg-content-editor').append(formattedHtml);
-                    }
-                }
-            }
-
-            updateArticleReadingTime();
-            showToast("Пост Telegram успешно вставлен и структурирован!", "success");
-            gatherValues();
-            return;
-        }
-    });
-
-    // Click on image inside Telegram editor to open Annotator Editor
-    $('#tg-content-editor').on('click', 'img', function() {
-        const img = $(this);
-        const src = img.attr('src');
-        if (!src) return;
-
-        // Create a dummy input proxy for annotator
-        const proxyInput = {
-            val: function(newSrc) {
-                if (newSrc !== undefined) {
-                    img.attr('src', newSrc);
-                    gatherValues();
-                }
-                return src;
-            }
-        };
-        openAnnotatorModal(src, proxyInput);
-    });
 }
 
 function createNewBlankArticle() {
+    syncArticleEditorData();
     gatherValues();
     if (!portalConfig.articles) portalConfig.articles = [];
 
@@ -1125,13 +834,21 @@ function createNewBlankArticle() {
     const months = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
     const dateStr = today.getDate() + ' ' + months[today.getMonth()] + ' ' + today.getFullYear();
 
-    portalConfig.articles.unshift({
+    const newArt = {
         id: 'art-' + new Date().getTime(),
         title: 'Новая статья',
         date: dateStr,
         videoUrl: '',
-        contentHtml: '<p>Напишите текст или нажмите кнопку «Вставить из буфера» (Ctrl+V)...</p>'
-    });
+        blocks: {
+            blocks: [
+                {
+                    type: 'paragraph',
+                    data: { text: 'Начните писать текст руководства или выберите нужный инструмент (+)...' }
+                }
+            ]
+        }
+    };
+    portalConfig.articles.unshift(newArt);
     renderArticlesList();
     selectArticle(0);
 }
@@ -1178,6 +895,7 @@ function openTelegramPasteModal(defaultModeIsNew) {
 }
 
 function createNewArticleFromText(rawText) {
+    syncArticleEditorData();
     gatherValues();
     if (!portalConfig.articles) portalConfig.articles = [];
 
@@ -1187,12 +905,14 @@ function createNewArticleFromText(rawText) {
 
     const formattedHtml = parseTelegramBlocks(rawText, true);
     const titleVal = $('#input-art-title').val().trim() || 'Статья Telegram';
+    const blocks = (typeof convertHtmlToEditorBlocks === 'function') ? convertHtmlToEditorBlocks(formattedHtml) : [];
 
     const newArt = {
         id: 'art-' + new Date().getTime(),
         title: titleVal,
         date: dateStr,
         videoUrl: '',
+        blocks: { blocks: blocks },
         contentHtml: formattedHtml
     };
     portalConfig.articles.unshift(newArt);
@@ -1203,10 +923,9 @@ function createNewArticleFromText(rawText) {
 
 function insertTextIntoCurrentArticle(rawText) {
     const formattedHtml = parseTelegramBlocks(rawText, false);
-    $('#tg-content-editor').html(formattedHtml);
-    updateArticleReadingTime();
-    showToast("Пост вставлен и структурирован в текущую статью!", "success");
-    gatherValues();
+    const blocks = (typeof convertHtmlToEditorBlocks === 'function') ? convertHtmlToEditorBlocks(formattedHtml) : [];
+    initEditorJsInstance({ blocks: blocks });
+    showToast("Пост вставлен в текущую статью!", "success");
 }
 
 // Paste directly from clipboard (button action)
@@ -1214,57 +933,10 @@ function pasteArticleFromClipboard(isNewArticle) {
     openTelegramPasteModal(isNewArticle);
 }
 
-// Comprehensive Telegram Post Parser (Preserves <u>, <b>, <i>, <ul><li> bullets, <blockquote>, <h2>)
-function formatTelegramClipboard(htmlData, plainText, isNewArticle) {
-    let sourceContent = '';
-
-    if (htmlData && htmlData.trim().length > 0) {
-        try {
-            const temp = $('<div>').html(htmlData);
-            temp.find('script, style, meta, link, iframe').remove();
-
-            // Normalize inline styles into semantic tags
-            temp.find('*').each(function() {
-                const el = $(this);
-                const style = (el.attr('style') || '').toLowerCase();
-
-                if (style.indexOf('text-decoration: underline') !== -1 || style.indexOf('text-decoration-line: underline') !== -1 || el.is('ins')) {
-                    el.wrapInner('<u></u>');
-                }
-                if (style.indexOf('font-weight: bold') !== -1 || style.indexOf('font-weight: 700') !== -1 || el.is('strong')) {
-                    el.wrapInner('<b></b>');
-                }
-                if (style.indexOf('font-style: italic') !== -1 || el.is('em')) {
-                    el.wrapInner('<i></i>');
-                }
-                if (style.indexOf('line-through') !== -1 || el.is('del') || el.is('strike')) {
-                    el.wrapInner('<s></s>');
-                }
-            });
-
-            // Convert breaks and block elements into newline-separated chunks
-            temp.find('br').replaceWith('\n');
-
-            // Strip block element containers so clean lines remain
-            let rawHtml = temp.html()
-                .replace(/<\/?(p|div|li|ul|ol|h1|h2|h3|h4|h5|h6|table|tbody|tr|td)[^>]*>/gi, '\n');
-
-            sourceContent = rawHtml;
-        } catch (err) {
-            console.error('Error in HTML clipboard parsing:', err);
-            sourceContent = plainText || '';
-        }
-    } else {
-        sourceContent = plainText || '';
-    }
-
-    return parseTelegramBlocks(sourceContent, !!isNewArticle);
-}
-
+// Helper to parse pasted Telegram plain text
 function parseTelegramBlocks(content, isNewArticle) {
     if (!content || !content.trim()) return '';
 
-    // Split by newlines, decode and clean lines
     const rawLines = content.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0);
     let htmlOutput = [];
     let inList = false;
@@ -1279,8 +951,6 @@ function parseTelegramBlocks(content, isNewArticle) {
     }
 
     let i = 0;
-
-    // 1. Title detection only if creating new article or current title is default
     const currentTitle = $('#input-art-title').val().trim();
     const shouldExtractTitle = isNewArticle || (!currentTitle || currentTitle === 'Без названия' || currentTitle === 'Новая статья' || currentTitle === 'Заголовок статьи');
 
@@ -1288,20 +958,18 @@ function parseTelegramBlocks(content, isNewArticle) {
         const firstLine = rawLines[0];
         const plainFirst = $('<div>').html(firstLine).text().trim();
         
-        // Only treat first line as title if it's not a bullet/photo and is short
         if (!isPhotoMarker(firstLine) && !isBulletLine(firstLine) && plainFirst.length <= 110) {
             let combinedTitle = plainFirst;
             i = 1;
 
-            // Check if line 1 ended with preposition (e.g., "в", "на", "для", "с") or line 2 is short continuation
             if (rawLines.length > 1) {
                 const secondLine = rawLines[1];
                 const plainSecond = $('<div>').html(secondLine).text().trim();
                 const endsWithPrep = /\b(в|на|с|со|для|по|к|ко|из|изо|о|об|обо|от|ото|при|через|под|над|без|про|до)$/i.test(plainFirst.replace(/[.,:!?\s]+$/, ''));
                 
-                if (endsWithPrep || (plainFirst.length + plainSecond.length < 80 && !isPhotoMarker(secondLine) && !isStepOrBulletLine(secondLine) && !plainSecond.includes('.') && !isHeadingLine(secondLine))) {
+                if (endsWithPrep || (plainFirst.length + plainSecond.length < 80 && !isPhotoMarker(secondLine) && !isBulletLine(secondLine) && !plainSecond.includes('.') && !isHeadingLine(secondLine))) {
                     combinedTitle = (plainFirst + ' ' + plainSecond).replace(/\s+/g, ' ').trim();
-                    i = 2; // consume both line 1 and line 2 as title!
+                    i = 2;
                 }
             }
 
@@ -1310,7 +978,6 @@ function parseTelegramBlocks(content, isNewArticle) {
         }
     }
 
-    // 2. Process all content lines
     for (; i < rawLines.length; i++) {
         let line = rawLines[i];
         if (!line) {
@@ -1318,20 +985,11 @@ function parseTelegramBlocks(content, isNewArticle) {
             continue;
         }
 
-        // Photo marker from Telegram copy (compact badge)
         if (isPhotoMarker(line)) {
             closeList();
-            htmlOutput.push(`
-                <div class="tg-photo-placeholder" data-placeholder="true" contenteditable="false">
-                    <span class="tg-photo-badge-icon">📷</span>
-                    <span class="tg-photo-badge-text">Вставить фото</span>
-                    <button type="button" class="tg-photo-badge-delete" title="Удалить метку фото">✕</button>
-                </div>
-            `);
             continue;
         }
 
-        // Bullet list item: checks for •, \u2022, ●, ▪, ▫, ◦, ✦, ★, -, —, –, *, &bull;, &#8226;
         const bulletMatch = line.match(/^[\s\u00A0\u200B\t]*(?:[•\u2022\u2023\u2043\u25E6\u25AA\u25AB\u25CF\u25CB\-\*\—\–]|&bull;|&#8226;|&middot;)\s*(.+)$/i);
         if (bulletMatch) {
             if (!inList || listType !== 'ul') {
@@ -1344,19 +1002,6 @@ function parseTelegramBlocks(content, isNewArticle) {
             continue;
         }
 
-        // Step action sentence (e.g. Открываем..., Нажимаем..., Сканируем...)
-        if (isStepOrBulletLine(line)) {
-            if (!inList || listType !== 'ul') {
-                closeList();
-                htmlOutput.push('<ul>');
-                inList = true;
-                listType = 'ul';
-            }
-            htmlOutput.push(`<li>${formatInlineMarkup(line)}</li>`);
-            continue;
-        }
-
-        // Numbered list item (1. or 2))
         const numMatch = line.match(/^[\s\u00A0\u200B\t]*(\d+)[\.\)]\s*(.+)$/);
         if (numMatch) {
             if (!inList || listType !== 'ol') {
@@ -1371,34 +1016,29 @@ function parseTelegramBlocks(content, isNewArticle) {
 
         closeList();
 
-        // Highlight Detection (Telegram Highlight Block / Callout)
         if (isHighlightLine(line)) {
             const cleanText = line.replace(/^(&gt;|>)\s*/, '').replace(/<\/?(blockquote|mark|p)>/gi, '').trim();
-            htmlOutput.push(`<p><span class="tg-text-highlight" style="background-color: #dbeafe; color: #0369a1; padding: 4px 10px; border-radius: 6px; font-weight: 600; display: inline-block;">${formatInlineMarkup(cleanText)}</span></p>`);
+            htmlOutput.push(`<div class="article-alert-card"><div class="article-alert-header">⚠️ <strong>Важно</strong></div><div class="article-alert-body">${formatInlineMarkup(cleanText)}</div></div>`);
             continue;
         }
 
-        // Quote / Callout Banner (only if explicit blockquote)
         if (line.startsWith('<blockquote>')) {
             const cleanQuote = line.replace(/<\/?blockquote>/gi, '');
             htmlOutput.push(`<blockquote>${formatInlineMarkup(cleanQuote)}</blockquote>`);
             continue;
         }
 
-        // Section Subheading (h2) detection:
         if (isHeadingLine(line)) {
             const cleanHead = line.replace(/^#+\s*/, '').trim();
             htmlOutput.push(`<h2>${formatInlineMarkup(cleanHead)}</h2>`);
             continue;
         }
 
-        // Existing image tag
         if (line.startsWith('<img') || line.indexOf('<img') !== -1) {
             htmlOutput.push(line);
             continue;
         }
 
-        // Regular paragraph
         htmlOutput.push(`<p>${formatInlineMarkup(line)}</p>`);
     }
 
@@ -1409,25 +1049,14 @@ function parseTelegramBlocks(content, isNewArticle) {
 function formatInlineMarkup(text) {
     if (!text) return '';
     let result = text;
-
-    // Convert markdown underlines: __text__ -> <u>text</u>
     result = result.replace(/__([^_]+)__/g, '<u>$1</u>');
-
-    // Convert markdown bold: **text** -> <b>text</b>
     result = result.replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>');
-
-    // Convert markdown italic: *text* -> <i>text</i>
     result = result.replace(/(^|[^\*])\*([^\*]+)\*([^\*]|$)/g, '$1<i>$2</i>$3');
-
-    // Convert markdown strike: ~~text~~ -> <s>text</s>
     result = result.replace(/~~([^~]+)~~/g, '<s>$1</s>');
-
-    // Autolink standalone URLs not already inside <a> or href
     const urlRegex = /(?<!href=["'])(https?:\/\/[^\s<"']+)/g;
     result = result.replace(urlRegex, function(url) {
         return `<a href="${url}" target="_blank">${url}</a>`;
     });
-
     return result;
 }
 
@@ -1441,147 +1070,20 @@ function isBulletLine(line) {
     return /^[\s\u00A0\u200B\t]*(?:[•\u2022\u2023\u2043\u25E6\u25AA\u25AB\u25CF\u25CB\-\*\—\–]|&bull;|&#8226;|&middot;)/.test(line);
 }
 
-function isStepOrBulletLine(line) {
-    if (!line) return false;
-    if (isBulletLine(line)) return true;
-    const plain = $('<div>').html(line).text().trim();
-    if (plain.length < 150 && /^(Открыва[ею]м|Нажима[ею]м|Заход[ия]м|Сканиру[ею]м|Регистриру[ею]мся|Переход[ия]м|Выбира[ею]м|Ввод[ия]м|Включа[ею]м|Выключа[ею]м|Скачива[ею]м|Устанавлива[ею]м|Жм[её]м|Клика[ею]м|Авторизу[ею]мся|Вставля[ею]м|Копиру[ею]м|Подключа[ею]м|Запуска[ею]м|Перезагружа[ею]м|Добавля[ею]м|Ищ[ею]м|Проверя[ею]м|Подтвержда[ею]м|Жд[её]м|Выполня[ею]м|Откройте|Нажмите|Зайдите|Сканируйте|Зарегистрируйтесь|Перейдите|Выберите|Введите|Включите|Выключите|Скачайте|Установите|Кликните|Авторизуйтесь|Вставьте|Скопируйте|Подключите|Запустите|Перезагрузите|Добавьте|Найдите|Проверьте|Подтвердите|Подождите|Выполните)\b/i.test(plain)) {
-        return true;
-    }
-    return false;
-}
-
 function isHighlightLine(line) {
     if (!line) return false;
     const plain = $('<div>').html(line).text().trim();
     if (/^(И все после|Важно|Внимание|Примечание|Обратите внимание|Лайфхак|Совет)\b/i.test(plain)) {
         return true;
     }
-    if (line.startsWith('&gt;') || line.startsWith('>') || line.includes('tg-text-highlight') || line.includes('<mark>') || line.includes('background-color')) {
-        return true;
-    }
-    return false;
+    return line.startsWith('&gt;') || line.startsWith('>') || line.includes('tg-text-highlight') || line.includes('<mark>');
 }
 
 function isHeadingLine(line) {
     const plain = $('<div>').html(line).text().trim();
     if (plain.startsWith('## ') || plain.startsWith('### ')) return true;
     if (plain.length > 90) return false;
-
-    // Headings starting with emojis or specific section title keywords
-    if (/^(👉|⚙️|📱|📢|✨|Так же в|Также в|Не забывайте|Как настроить|Настройка|Шаг \d+|Инструкция:)/i.test(plain)) {
-        return true;
-    }
-
-    return false;
-}
-
-function wrapEditorImages($container) {
-    if (!$container || !$container.length) $container = $('#tg-content-editor');
-    $container.find('img').each(function() {
-        const img = $(this);
-        let src = img.attr('src') || '';
-        src = src.replace(/^https?:\/\/[^\/]+\/(img\/[^\s"']+)/i, '$1');
-        src = src.replace(/^https?:\/\/[^\/]+:?\d*\/(img\/[^\s"']+)/i, '$1');
-        img.attr('src', src);
-        img.removeAttr('title');
-
-        if (!img.parent().hasClass('tg-img-wrapper')) {
-            img.wrap('<div class="tg-img-wrapper" contenteditable="false" draggable="true"></div>');
-            img.after(`
-                <div class="tg-img-hover-actions">
-                    <button type="button" class="tg-img-btn tg-img-btn-move tg-img-btn-move-up" title="Переместить фото выше">⬆️ Выше</button>
-                    <button type="button" class="tg-img-btn tg-img-btn-move tg-img-btn-move-down" title="Переместить фото ниже">⬇️ Ниже</button>
-                    <button type="button" class="tg-img-btn tg-img-btn-replace" title="Заменить изображение">🔄 Заменить</button>
-                    <button type="button" class="tg-img-btn tg-img-btn-del" title="Удалить фото">❌</button>
-                </div>
-            `);
-        }
-    });
-}
-
-function uploadArticleImageFile(file, targetPlaceholder) {
-    const formData = new FormData();
-    formData.append('file', file);
-
-    showToast("Загрузка изображения статьи...", "info");
-    appendLog("Загрузка медиа статьи: " + (file.name || "telegram_image.png") + "...");
-
-    $.ajax({
-        url: '/api/upload',
-        type: 'POST',
-        data: formData,
-        processData: false,
-        contentType: false,
-        success: function(response) {
-            const imgHtml = `
-                <div class="tg-img-wrapper" contenteditable="false" draggable="true">
-                    <img src="${response.path}" />
-                    <div class="tg-img-hover-actions">
-                        <button type="button" class="tg-img-btn tg-img-btn-move tg-img-btn-move-up" title="Переместить фото выше">⬆️ Выше</button>
-                        <button type="button" class="tg-img-btn tg-img-btn-move tg-img-btn-move-down" title="Переместить фото ниже">⬇️ Ниже</button>
-                        <button type="button" class="tg-img-btn tg-img-btn-replace" title="Заменить изображение">🔄 Заменить</button>
-                        <button type="button" class="tg-img-btn tg-img-btn-del" title="Удалить фото">❌</button>
-                    </div>
-                </div>
-            `;
-            
-            if (targetPlaceholder && targetPlaceholder.length) {
-                targetPlaceholder.replaceWith(imgHtml);
-            } else {
-                const sel = window.getSelection();
-                let inserted = false;
-
-                if (sel && sel.anchorNode) {
-                    const node = $(sel.anchorNode);
-                    const targetLi = node.closest('li');
-                    
-                    if (targetLi.length && targetLi.closest('#tg-content-editor').length) {
-                        const parentList = targetLi.closest('ol, ul');
-                        const tag = parentList.prop('tagName').toLowerCase();
-                        const startNum = parseInt(parentList.attr('start')) || 1;
-                        const allItems = parentList.children('li');
-                        const liIndex = targetLi.index();
-
-                        const followingItems = allItems.slice(liIndex + 1);
-                        const $imgNode = $(imgHtml);
-
-                        if (followingItems.length > 0) {
-                            const followingList = $(`<${tag}>`).attr('start', startNum + liIndex + 1);
-                            followingList.append(followingItems.detach());
-                            
-                            $imgNode.insertAfter(parentList);
-                            followingList.insertAfter($imgNode);
-                        } else {
-                            $imgNode.insertAfter(parentList);
-                        }
-                        inserted = true;
-                    }
-                }
-
-                if (!inserted) {
-                    $('#tg-content-editor').focus();
-                    try {
-                        inserted = document.execCommand('insertHTML', false, imgHtml);
-                    } catch (e) {
-                        inserted = false;
-                    }
-                    if (!inserted) {
-                        $('#tg-content-editor').append(imgHtml);
-                    }
-                }
-            }
-
-            wrapEditorImages();
-            showToast("Изображение вставлено в статью!", "success");
-            appendLog("Изображение добавлено в статью: " + response.path);
-            gatherValues();
-        },
-        error: function(xhr) {
-            showToast("Ошибка при загрузке изображения!", "error");
-            appendLog("Ошибка загрузки изображения в статью: " + xhr.responseText);
-        }
-    });
+    return /^(👉|⚙️|📱|📢|✨|Так же в|Также в|Не забывайте|Как настроить|Настройка|Шаг \d+|Инструкция:)/i.test(plain);
 }
 
 // Render News tab
@@ -1964,7 +1466,8 @@ function renderStepsList(inst) {
 }
 
 // Gather, Save to disk, and Push to remote Git
-function saveAndDeploy() {
+async function saveAndDeploy() {
+    await syncArticleEditorData();
     gatherValues();
     appendLog("Сохранение настроек в config.json локально...");
     
