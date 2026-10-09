@@ -300,56 +300,1425 @@
       "title": "🔥 Подключаем топовое телевидение",
       "date": "8 октября 2026",
       "videoUrl": "",
-      "contentHtml": "<p><!--StartFragment--></p>\n                <img src=\"img/upload_1791473152985.jpg\">\n            <p></p><p>Что внутри подписки:</p><p><!--EndFragment--></p><p>\n\n📺 Более 1500 каналов на любой вкус;</p>\n<p>🎬 Топовые фильмы и сериалы;</p>\n<p>⚽️ Спорт;</p>\n<p>🧸 Детские и познавательные передачи;</p>\n<p>🔞 Контент 18+</p>\n<p>E<b>сть два варианта подключения</b>.</p>\n<p><b>🥇 Вариант 1: Самый простой (готовое решение)</b></p>\n<p>Вы оплачиваете <b>900 рублей за год</b> (одно устройство), и вам выдают уже готовый плейлист.</p>\n<p>Вам только вставить ссылку в приставку.</p>\n<p>Для продления просто пишите в поддержку.</p>\n<p>👨‍💻 <b>Написать в поддержку:</b> @VladOpl</p>\n<p><b>🛠 Вариант 2: Самостоятельная регистрация</b></p>\n<p>После регистрации тест 24 часа.</p>\n<p>Главное преимущество — цена. Выйдет всего <b>50 рублей в месяц</b> (то есть <b>600 рублей в год</b>).</p>\n<p>В дальнейшем продлевать подписку можно будет в личном кабинете.</p>\n<p>🔗 <b>Ссылка для регистрации:</b> <a href=\"https://clck.ru/3UPTFy\">НАЖИМАЙ</a></p>\n<p>📖 <b>Полная инструкция по настройке:</b>&nbsp;<a href=\"https://tvshopru.github.io/sup.tvshop/article.html?id=inst-yosso-tv\">НАЖИМАЙ&nbsp;</a></p>\n<p>💡 <b>Через что смотреть?</b></p>\n<p>Рекомендую использовать плееры <b>Tivimate</b> или <b>Televizo</b> (премиум-версии этих приложений уже установлены на приставках).</p>\n<p>Просто вставляете ссылку в приложение, и готово — можно смотреть! 🚀<!--EndFragment--></p>"
+      "contentHtml": "<div class=\"article-image-figure\"><img src=\"img/upload_1791473152985.jpg\" alt=\"\" /></div>\n<p>Что внутри подписки:</p>\n<p>📺 Более 1500 каналов на любой вкус;</p>\n<p>🎬 Топовые фильмы и сериалы;</p>\n<p>⚽️ Спорт;</p>\n<p>🧸 Детские и познавательные передачи;</p>\n<p>🔞 Контент 18+</p>\n<p>E<b>сть два варианта подключения</b>.</p>\n<p><b>🥇 Вариант 1: Самый простой (готовое решение)</b></p>\n<p>Вы оплачиваете <b>900 рублей за год</b> (одно устройство), и вам выдают уже готовый плейлист.</p>\n<p>Вам только вставить ссылку в приставку.</p>\n<p>Для продления просто пишите в поддержку.</p>\n<p>👨‍💻 <b>Написать в поддержку:</b> @VladOpl</p>\n<p><b>🛠 Вариант 2: Самостоятельная регистрация</b></p>\n<p>После регистрации тест 24 часа.</p>\n<p>Главное преимущество — цена. Выйдет всего <b>50 рублей в месяц</b> (то есть <b>600 рублей в год</b>).</p>\n<p>В дальнейшем продлевать подписку можно будет в личном кабинете.</p>\n<p>🔗 <b>Ссылка для регистрации:</b> <a href=\"https://clck.ru/3UPTFy\">НАЖИМАЙ</a></p>\n<p>📖 <b>Полная инструкция по настройке:</b>&nbsp;<a href=\"https://tvshopru.github.io/sup.tvshop/article.html?id=inst-yosso-tv\">НАЖИМАЙ&nbsp;</a></p>\n<p>💡 <b>Через что смотреть?</b></p>\n<p>Рекомендую использовать плееры <b>Tivimate</b> или <b>Televizo</b> (премиум-версии этих приложений уже установлены на приставках).</p>\n<p>Просто вставляете ссылку в приложение, и готово — можно смотреть! 🚀</p>",
+      "blocks": {
+        "time": 1791549253110,
+        "blocks": [
+          {
+            "id": "koUFsTu7ts",
+            "type": "paragraph",
+            "data": {
+              "text": ""
+            }
+          },
+          {
+            "id": "ighSRgsKN4",
+            "type": "image",
+            "data": {
+              "url": "img/upload_1791473152985.jpg",
+              "file": {
+                "url": "img/upload_1791473152985.jpg"
+              },
+              "caption": "",
+              "withBorder": false,
+              "stretched": false,
+              "withBackground": false
+            }
+          },
+          {
+            "id": "-C9rmSstR4",
+            "type": "paragraph",
+            "data": {
+              "text": "Что внутри подписки:"
+            }
+          },
+          {
+            "id": "JIPqXOnv_o",
+            "type": "paragraph",
+            "data": {
+              "text": ""
+            }
+          },
+          {
+            "id": "MfBUuKD6sa",
+            "type": "paragraph",
+            "data": {
+              "text": "📺 Более 1500 каналов на любой вкус;"
+            }
+          },
+          {
+            "id": "2N2-l1pHi3",
+            "type": "paragraph",
+            "data": {
+              "text": "🎬 Топовые фильмы и сериалы;"
+            }
+          },
+          {
+            "id": "S2GLoQzMJZ",
+            "type": "paragraph",
+            "data": {
+              "text": "⚽️ Спорт;"
+            }
+          },
+          {
+            "id": "GbxEZCqeRz",
+            "type": "paragraph",
+            "data": {
+              "text": "🧸 Детские и познавательные передачи;"
+            }
+          },
+          {
+            "id": "H61IrGHlNA",
+            "type": "paragraph",
+            "data": {
+              "text": "🔞 Контент 18+"
+            }
+          },
+          {
+            "id": "p13ESARxXZ",
+            "type": "paragraph",
+            "data": {
+              "text": "E<b>сть два варианта подключения</b>."
+            }
+          },
+          {
+            "id": "sR6ul-y7TN",
+            "type": "paragraph",
+            "data": {
+              "text": "<b>🥇 Вариант 1: Самый простой (готовое решение)</b>"
+            }
+          },
+          {
+            "id": "eey4sAVe6e",
+            "type": "paragraph",
+            "data": {
+              "text": "Вы оплачиваете <b>900 рублей за год</b> (одно устройство), и вам выдают уже готовый плейлист."
+            }
+          },
+          {
+            "id": "rSb80zN9Ht",
+            "type": "paragraph",
+            "data": {
+              "text": "Вам только вставить ссылку в приставку."
+            }
+          },
+          {
+            "id": "_yr8XjyZag",
+            "type": "paragraph",
+            "data": {
+              "text": "Для продления просто пишите в поддержку."
+            }
+          },
+          {
+            "id": "mvp8p7T_it",
+            "type": "paragraph",
+            "data": {
+              "text": "👨‍💻 <b>Написать в поддержку:</b> @VladOpl"
+            }
+          },
+          {
+            "id": "g7jdO04oD4",
+            "type": "paragraph",
+            "data": {
+              "text": "<b>🛠 Вариант 2: Самостоятельная регистрация</b>"
+            }
+          },
+          {
+            "id": "pvzgKzTokt",
+            "type": "paragraph",
+            "data": {
+              "text": "После регистрации тест 24 часа."
+            }
+          },
+          {
+            "id": "A5UjW2Rg22",
+            "type": "paragraph",
+            "data": {
+              "text": "Главное преимущество — цена. Выйдет всего <b>50 рублей в месяц</b> (то есть <b>600 рублей в год</b>)."
+            }
+          },
+          {
+            "id": "bVL_I6vJ1Q",
+            "type": "paragraph",
+            "data": {
+              "text": "В дальнейшем продлевать подписку можно будет в личном кабинете."
+            }
+          },
+          {
+            "id": "N8uGn2v8AJ",
+            "type": "paragraph",
+            "data": {
+              "text": "🔗 <b>Ссылка для регистрации:</b> <a href=\"https://clck.ru/3UPTFy\">НАЖИМАЙ</a>"
+            }
+          },
+          {
+            "id": "GwMvsXvIOL",
+            "type": "paragraph",
+            "data": {
+              "text": "📖 <b>Полная инструкция по настройке:</b>&nbsp;<a href=\"https://tvshopru.github.io/sup.tvshop/article.html?id=inst-yosso-tv\">НАЖИМАЙ&nbsp;</a>"
+            }
+          },
+          {
+            "id": "4dKRVbtJ3w",
+            "type": "paragraph",
+            "data": {
+              "text": "💡 <b>Через что смотреть?</b>"
+            }
+          },
+          {
+            "id": "rEfKR-Qjb2",
+            "type": "paragraph",
+            "data": {
+              "text": "Рекомендую использовать плееры <b>Tivimate</b> или <b>Televizo</b> (премиум-версии этих приложений уже установлены на приставках)."
+            }
+          },
+          {
+            "id": "441e9x7-Xo",
+            "type": "paragraph",
+            "data": {
+              "text": "Просто вставляете ссылку в приложение, и готово — можно смотреть! 🚀"
+            }
+          }
+        ],
+        "version": "2.29.1"
+      }
     },
     {
       "id": "art-1791467512920",
       "title": "Обновление TorrServe",
       "date": "8 октября 2026",
       "videoUrl": "",
-      "contentHtml": "<p></p><ol><li>Открываем приложение <b data-path-to-node=\"3,0,0\" data-index-in-node=\"21\" style=\"background-color: transparent; font-size: 1.1em;\">TorrServe</b><span style=\"background-color: transparent; font-size: 1.1em;\">.</span></li><li>Нажимаем кнопку <b data-path-to-node=\"3,1,0\" data-index-in-node=\"16\" style=\"background-color: transparent; font-size: 1.1em;\">«Обновление»</b><span style=\"background-color: transparent; font-size: 1.1em;\">.</span></li></ol><img src=\"img/upload_1791467854047.png\"><ol start=\"3\"><li>Еще раз нажимаем <b data-path-to-node=\"3,2,0\" data-index-in-node=\"17\" style=\"background-color: transparent; font-size: 1.1em;\">«Обновление»</b><span style=\"background-color: transparent; font-size: 1.1em;\">.</span></li></ol><img src=\"img/upload_1791467860456.png\"><ol start=\"4\"><li>Дожидаемся загрузки. Если приложение запросит разрешения — обязательно выдаем все, что оно требует.</li></ol><img src=\"img/upload_1791467864736.png\"><ol start=\"5\"><li>Нажимаем <b data-path-to-node=\"3,4,0\" data-index-in-node=\"9\" style=\"background-color: transparent; font-size: 1.1em;\">«Установить»</b><span style=\"background-color: transparent; font-size: 1.1em;\">, ждем окончания установки и снова открываем TorrServe.</span></li></ol><img src=\"img/upload_1791467974431.png\"><ol start=\"6\"><li>Нажимаем <b data-path-to-node=\"3,5,0\" data-index-in-node=\"9\" style=\"background-color: transparent; font-size: 1.1em;\">«Установить / Обновить сервер»</b><span style=\"background-color: transparent; font-size: 1.1em;\">.</span></li></ol><img src=\"img/upload_1791467942998.png\"><ol start=\"7\"><li>Дожидаемся завершения установки (ориентир — скриншот ниже). Готово!</li></ol><img src=\"img/upload_1791467966104.png\"><p></p><p>\n\n\n\n\n\n</p>"
+      "contentHtml": "<ol><li>Открываем приложение <b>TorrServe</b>.</li><li>Нажимаем кнопку <b>«Обновление»</b>.</li></ol>\n<div class=\"article-image-figure\"><img src=\"img/upload_1791467854047.png\" alt=\"\" /></div>\n<ol><li>Еще раз нажимаем <b>«Обновление»</b>.</li></ol>\n<div class=\"article-image-figure\"><img src=\"img/upload_1791467860456.png\" alt=\"\" /></div>\n<ol><li>Дожидаемся загрузки. Если приложение запросит разрешения — обязательно выдаем все, что оно требует.</li></ol>\n<div class=\"article-image-figure\"><img src=\"img/upload_1791467864736.png\" alt=\"\" /></div>\n<ol><li>Нажимаем <b>«Установить»</b>, ждем окончания установки и снова открываем TorrServe.</li></ol>\n<div class=\"article-image-figure\"><img src=\"img/upload_1791467974431.png\" alt=\"\" /></div>\n<ol><li>Нажимаем <b>«Установить / Обновить сервер»</b>.</li></ol>\n<div class=\"article-image-figure\"><img src=\"img/upload_1791467942998.png\" alt=\"\" /></div>\n<ol><li>Дожидаемся завершения установки (ориентир — скриншот ниже). Готово!</li></ol>\n<div class=\"article-image-figure\"><img src=\"img/upload_1791467966104.png\" alt=\"\" /></div>",
+      "blocks": {
+        "time": 1791549256877,
+        "blocks": [
+          {
+            "id": "BD3XJJb_UR",
+            "type": "list",
+            "data": {
+              "style": "ordered",
+              "items": [
+                "Открываем приложение <b>TorrServe</b>.",
+                "Нажимаем кнопку <b>«Обновление»</b>."
+              ]
+            }
+          },
+          {
+            "id": "BtiCZ3xhuZ",
+            "type": "image",
+            "data": {
+              "url": "img/upload_1791467854047.png",
+              "file": {
+                "url": "img/upload_1791467854047.png"
+              },
+              "caption": "",
+              "withBorder": false,
+              "stretched": false,
+              "withBackground": false
+            }
+          },
+          {
+            "id": "hS9dfqJ54n",
+            "type": "list",
+            "data": {
+              "style": "ordered",
+              "items": [
+                "Еще раз нажимаем <b>«Обновление»</b>."
+              ]
+            }
+          },
+          {
+            "id": "8is7QrqvZu",
+            "type": "image",
+            "data": {
+              "url": "img/upload_1791467860456.png",
+              "file": {
+                "url": "img/upload_1791467860456.png"
+              },
+              "caption": "",
+              "withBorder": false,
+              "stretched": false,
+              "withBackground": false
+            }
+          },
+          {
+            "id": "W7s2udhSXT",
+            "type": "list",
+            "data": {
+              "style": "ordered",
+              "items": [
+                "Дожидаемся загрузки. Если приложение запросит разрешения — обязательно выдаем все, что оно требует."
+              ]
+            }
+          },
+          {
+            "id": "wYtDv2v6Ki",
+            "type": "image",
+            "data": {
+              "url": "img/upload_1791467864736.png",
+              "file": {
+                "url": "img/upload_1791467864736.png"
+              },
+              "caption": "",
+              "withBorder": false,
+              "stretched": false,
+              "withBackground": false
+            }
+          },
+          {
+            "id": "UfZDv0cM99",
+            "type": "list",
+            "data": {
+              "style": "ordered",
+              "items": [
+                "Нажимаем <b>«Установить»</b>, ждем окончания установки и снова открываем TorrServe."
+              ]
+            }
+          },
+          {
+            "id": "dJPvwo5G9S",
+            "type": "image",
+            "data": {
+              "url": "img/upload_1791467974431.png",
+              "file": {
+                "url": "img/upload_1791467974431.png"
+              },
+              "caption": "",
+              "withBorder": false,
+              "stretched": false,
+              "withBackground": false
+            }
+          },
+          {
+            "id": "nSpRQZ24Hp",
+            "type": "list",
+            "data": {
+              "style": "ordered",
+              "items": [
+                "Нажимаем <b>«Установить / Обновить сервер»</b>."
+              ]
+            }
+          },
+          {
+            "id": "SLtl3iUMla",
+            "type": "image",
+            "data": {
+              "url": "img/upload_1791467942998.png",
+              "file": {
+                "url": "img/upload_1791467942998.png"
+              },
+              "caption": "",
+              "withBorder": false,
+              "stretched": false,
+              "withBackground": false
+            }
+          },
+          {
+            "id": "5VoOamCSPR",
+            "type": "list",
+            "data": {
+              "style": "ordered",
+              "items": [
+                "Дожидаемся завершения установки (ориентир — скриншот ниже). Готово!"
+              ]
+            }
+          },
+          {
+            "id": "HVz90Y9_Bh",
+            "type": "image",
+            "data": {
+              "url": "img/upload_1791467966104.png",
+              "file": {
+                "url": "img/upload_1791467966104.png"
+              },
+              "caption": "",
+              "withBorder": false,
+              "stretched": false,
+              "withBackground": false
+            }
+          }
+        ],
+        "version": "2.29.1"
+      }
     },
     {
       "id": "art-1791463602377",
       "title": "Открываем все бесплатные источники в 🍿 Prisma!",
       "date": "8 октября 2026",
       "videoUrl": "",
-      "contentHtml": "<img src=\"img/upload_1791463686115.png\" style=\"max-width:100%; border-radius:10px; margin:14px 0 6px 0;\">\n\n<p>Чтобы открыть все источники, необходимо пройти регистрацию. <u>Она полностью бесплатная, но откроет вам доступ ко всем бесплатным источникам.</u></p>\n\n<ol><li>Открываем приложение, заходим в настройки.</li><li>Нажимаем кнопку «Выполнить вход».</li><li>Сканируем QR-код.</li></ol><img src=\"img/upload_1791463715224.png\" style=\"max-width:100%; border-radius:10px; margin:14px 0 6px 0;\"><ol start=\"5\"><li>Регистрируемся и добавляем устройство с помощью телефона</li><li>Открываем карточку фильма и меняем источник на любой бесплатный (нажимаем на кнопку как на скрине)</li></ol><img src=\"img/upload_1791463727510.png\" style=\"max-width:100%; border-radius:10px; margin:14px 0 6px 0;\">\n\n\n\n\n\n\n\n\n<p><span class=\"tg-text-highlight\" style=\"background-color: #dbeafe; color: #0369a1; padding: 4px 10px; border-radius: 6px; font-weight: 600; display: inline-block;\">И все после этого вам доступны почти все бесплатные источники для просмотра онлайн</span></p>\n\n<img src=\"img/upload_1791463742643.png\" style=\"max-width:100%; border-radius:10px; margin:14px 0 6px 0;\">\n\n<h2>Так же в 🍿 Prisma доступен просмотр торрентов.</h2>\n<p>Для этого в карточке фильма нужно нажать кнопку \"Торрент\"</p><img src=\"img/upload_1791463752243.png\" style=\"max-width:100%; border-radius:10px; margin:14px 0 6px 0;\">\n\n\n\n<h2>👉Не забывайте обновить приложение</h2>\n<p>можно это сделать через Rustore или TVSHOP Installer</p>"
+      "contentHtml": "<div class=\"article-image-figure\"><img src=\"img/upload_1791463686115.png\" alt=\"\" /></div>\n<p>Чтобы открыть все источники, необходимо пройти регистрацию. Она полностью бесплатная, но откроет вам доступ ко всем бесплатным источникам.</p>\n<ol><li>Открываем приложение, заходим в настройки.</li><li>Нажимаем кнопку «Выполнить вход».</li><li>Сканируем QR-код.</li></ol>\n<div class=\"article-image-figure\"><img src=\"img/upload_1791463715224.png\" alt=\"\" /></div>\n<ol><li>Регистрируемся и добавляем устройство с помощью телефона</li><li>Открываем карточку фильма и меняем источник на любой бесплатный (нажимаем на кнопку как на скрине)</li></ol>\n<div class=\"article-image-figure\"><img src=\"img/upload_1791463727510.png\" alt=\"\" /></div>\n<p>И все после этого вам доступны почти все бесплатные источники для просмотра онлайн</p>\n<div class=\"article-image-figure\"><img src=\"img/upload_1791463742643.png\" alt=\"\" /></div>\n<h2>Так же в 🍿 Prisma доступен просмотр торрентов.</h2>\n<p>Для этого в карточке фильма нужно нажать кнопку \"Торрент\"</p>\n<div class=\"article-image-figure\"><img src=\"img/upload_1791463752243.png\" alt=\"\" /></div>\n<h2>👉Не забывайте обновить приложение</h2>\n<p>можно это сделать через Rustore или TVSHOP Installer</p>",
+      "blocks": {
+        "time": 1791549257772,
+        "blocks": [
+          {
+            "id": "wNXkt7UFKv",
+            "type": "image",
+            "data": {
+              "url": "img/upload_1791463686115.png",
+              "file": {
+                "url": "img/upload_1791463686115.png"
+              },
+              "caption": "",
+              "withBorder": false,
+              "stretched": false,
+              "withBackground": false
+            }
+          },
+          {
+            "id": "pNewWcsiPf",
+            "type": "paragraph",
+            "data": {
+              "text": "Чтобы открыть все источники, необходимо пройти регистрацию. Она полностью бесплатная, но откроет вам доступ ко всем бесплатным источникам."
+            }
+          },
+          {
+            "id": "DdqR-_MG15",
+            "type": "list",
+            "data": {
+              "style": "ordered",
+              "items": [
+                "Открываем приложение, заходим в настройки.",
+                "Нажимаем кнопку «Выполнить вход».",
+                "Сканируем QR-код."
+              ]
+            }
+          },
+          {
+            "id": "86QEjwGfll",
+            "type": "image",
+            "data": {
+              "url": "img/upload_1791463715224.png",
+              "file": {
+                "url": "img/upload_1791463715224.png"
+              },
+              "caption": "",
+              "withBorder": false,
+              "stretched": false,
+              "withBackground": false
+            }
+          },
+          {
+            "id": "i9S6dc46li",
+            "type": "list",
+            "data": {
+              "style": "ordered",
+              "items": [
+                "Регистрируемся и добавляем устройство с помощью телефона",
+                "Открываем карточку фильма и меняем источник на любой бесплатный (нажимаем на кнопку как на скрине)"
+              ]
+            }
+          },
+          {
+            "id": "Y0Ln6mlVjW",
+            "type": "image",
+            "data": {
+              "url": "img/upload_1791463727510.png",
+              "file": {
+                "url": "img/upload_1791463727510.png"
+              },
+              "caption": "",
+              "withBorder": false,
+              "stretched": false,
+              "withBackground": false
+            }
+          },
+          {
+            "id": "88hnOsn3bx",
+            "type": "paragraph",
+            "data": {
+              "text": "И все после этого вам доступны почти все бесплатные источники для просмотра онлайн"
+            }
+          },
+          {
+            "id": "9Ghb6j4wu3",
+            "type": "image",
+            "data": {
+              "url": "img/upload_1791463742643.png",
+              "file": {
+                "url": "img/upload_1791463742643.png"
+              },
+              "caption": "",
+              "withBorder": false,
+              "stretched": false,
+              "withBackground": false
+            }
+          },
+          {
+            "id": "dbU7K4hql1",
+            "type": "header",
+            "data": {
+              "text": "Так же в 🍿 Prisma доступен просмотр торрентов.",
+              "level": 2
+            }
+          },
+          {
+            "id": "7xKgQsYurk",
+            "type": "paragraph",
+            "data": {
+              "text": "Для этого в карточке фильма нужно нажать кнопку \"Торрент\""
+            }
+          },
+          {
+            "id": "55eJ40rUvD",
+            "type": "image",
+            "data": {
+              "url": "img/upload_1791463752243.png",
+              "file": {
+                "url": "img/upload_1791463752243.png"
+              },
+              "caption": "",
+              "withBorder": false,
+              "stretched": false,
+              "withBackground": false
+            }
+          },
+          {
+            "id": "urNw0-s8KL",
+            "type": "header",
+            "data": {
+              "text": "👉Не забывайте обновить приложение",
+              "level": 2
+            }
+          },
+          {
+            "id": "QfQWUCCD_c",
+            "type": "paragraph",
+            "data": {
+              "text": "можно это сделать через Rustore или TVSHOP Installer"
+            }
+          }
+        ],
+        "version": "2.29.1"
+      }
     },
     {
       "id": "inst-byebyedpi",
       "title": "Настройка Ютуб ByeByeDPI",
       "date": "8 октября 2026",
       "videoUrl": "",
-      "contentHtml": "<p>Подробное руководство по настройке и подбору стратегий в приложении <b>ByeByeDPI</b> для стабильной работы YouTube на ТВ-приставках.</p><p><span class=\"tg-text-highlight\" style=\"background-color: #dbeafe; color: #0369a1; padding: 4px 10px; border-radius: 6px; font-weight: 600; display: inline-block;\">Прежде чем начать настройку, обязательно обновите ByeByeDPI до последней версии через TV SHOP Installer.</span></p><ol><li>Открываем программу <b>ByeByeDPI</b>. Если программа запросит разрешения — обязательно выдаем все запрашиваемые разрешения.</li></ol><img src=\"img/byebyedpi_step1.png\"><ol start=\"2\"><li>Заходим в <b>настройки</b> приложения (иконка шестерёнки).</li></ol><img src=\"img/byebyedpi_step2.png\"><ol start=\"3\"><li>Листаем вниз до пункта <b>«Использовать командную строку»</b> и включаем этот переключатель.</li></ol><img src=\"img/byebyedpi_step3.png\"><ol start=\"4\"><li>Листаем ниже и нажимаем кнопку <b>«Подбор стратегий»</b>.</li></ol><img src=\"img/byebyedpi_step4.png\"><ol start=\"5\"><li>Нажимаем кнопку <b>«Начать проверку»</b> и дожидаемся окончания теста.<br><u>Важно:</u> Если во время проверки приставка зависла или тест остановился — перезагружаем приставку, снова запускаем ByeByeDPI и повторяем проверку.</li></ol><img src=\"img/byebyedpi_step5.png\"><ol start=\"6\"><li>После окончания проверки появится список стратегий. Сверху будут самые эффективные и быстрые. Начинаем выбор с самой первой стратегии.</li></ol><img src=\"img/byebyedpi_step6.png\"><ol start=\"7\"><li>Выбираем нужную стратегию из списка, нажимаем на нее и выбираем кнопку <b>«Применить»</b>.</li></ol><img src=\"img/byebyedpi_step7.png\"><ol start=\"8\"><li>Возвращаемся на главный экран приложения ByeByeDPI и нажимаем кнопку <b>«Запустить» / «Включить»</b>.</li></ol><img src=\"img/byebyedpi_step8.png\"><ol start=\"9\"><li>Если снова появится системный запрос разрешений — обязательно нажимаем <b>«Разрешить»</b>.</li></ol><img src=\"img/byebyedpi_step9.png\"><ol start=\"10\"><li>Открываем и проверяем работу <b>YouTube</b>.</li></ol><img src=\"img/byebyedpi_step10.png\"><h2>Что делать, если YouTube не заработал?</h2><p><b>1. Войдите в свой аккаунт Google</b> — в 90% случаев это решает проблему воспроизведения.</p><p><b>2. Попробуйте следующую стратегию:</b><br><u>ВАЖНО:</u> Перед сменой стратегии обязательно полностью остановите YouTube (<i>Главный экран приставки → Настройки → Приложения → YouTube → Остановить</i>).</p><p>Затем в ByeByeDPI нажмите <b>«Отключить»</b>, зайдите в подбор стратегий, выберите вторую стратегию, нажмите <b>«Применить»</b> и снова включите ByeByeDPI.</p><p><span class=\"tg-text-highlight\" style=\"background-color: rgb(219, 234, 254); color: rgb(3, 105, 161); padding: 2px 6px; border-radius: 4px; font-weight: 600;\">3. Поменять в про<span data-scale=\"0.85\" style=\"font-size: 0.85em;\">грамме&nbsp;<span style=\"font-size: 1.1em;\">ByeByeDPI&nbsp;</span><span style=\"background-color: transparent; font-size: 1.1em;\">&nbsp;ДНС на 9.9.9.9</span></span></span><span data-scale=\"0.85\" style=\"font-size: 0.85em;\"><span style=\"background-color: transparent; font-size: 1.1em;\"></span></span><span style=\"background-color: transparent; font-size: 1.1em;\"></span></p>"
+      "contentHtml": "<p>Подробное руководство по настройке и подбору стратегий в приложении <b>ByeByeDPI</b> для стабильной работы YouTube на ТВ-приставках.</p>\n<p>Прежде чем начать настройку, обязательно обновите ByeByeDPI до последней версии через TV SHOP Installer.</p>\n<ol><li>Открываем программу <b>ByeByeDPI</b>. Если программа запросит разрешения — обязательно выдаем все запрашиваемые разрешения.</li></ol>\n<div class=\"article-image-figure\"><img src=\"img/byebyedpi_step1.png\" alt=\"\" /></div>\n<ol><li>Заходим в <b>настройки</b> приложения (иконка шестерёнки).</li></ol>\n<div class=\"article-image-figure\"><img src=\"img/byebyedpi_step2.png\" alt=\"\" /></div>\n<ol><li>Листаем вниз до пункта <b>«Использовать командную строку»</b> и включаем этот переключатель.</li></ol>\n<div class=\"article-image-figure\"><img src=\"img/byebyedpi_step3.png\" alt=\"\" /></div>\n<ol><li>Листаем ниже и нажимаем кнопку <b>«Подбор стратегий»</b>.</li></ol>\n<div class=\"article-image-figure\"><img src=\"img/byebyedpi_step4.png\" alt=\"\" /></div>\n<ol><li>Нажимаем кнопку <b>«Начать проверку»</b> и дожидаемся окончания теста.Важно: Если во время проверки приставка зависла или тест остановился — перезагружаем приставку, снова запускаем ByeByeDPI и повторяем проверку.</li></ol>\n<div class=\"article-image-figure\"><img src=\"img/byebyedpi_step5.png\" alt=\"\" /></div>\n<ol><li>После окончания проверки появится список стратегий. Сверху будут самые эффективные и быстрые. Начинаем выбор с самой первой стратегии.</li></ol>\n<div class=\"article-image-figure\"><img src=\"img/byebyedpi_step6.png\" alt=\"\" /></div>\n<ol><li>Выбираем нужную стратегию из списка, нажимаем на нее и выбираем кнопку <b>«Применить»</b>.</li></ol>\n<div class=\"article-image-figure\"><img src=\"img/byebyedpi_step7.png\" alt=\"\" /></div>\n<ol><li>Возвращаемся на главный экран приложения ByeByeDPI и нажимаем кнопку <b>«Запустить» / «Включить»</b>.</li></ol>\n<div class=\"article-image-figure\"><img src=\"img/byebyedpi_step8.png\" alt=\"\" /></div>\n<ol><li>Если снова появится системный запрос разрешений — обязательно нажимаем <b>«Разрешить»</b>.</li></ol>\n<div class=\"article-image-figure\"><img src=\"img/byebyedpi_step9.png\" alt=\"\" /></div>\n<ol><li>Открываем и проверяем работу <b>YouTube</b>.</li></ol>\n<div class=\"article-image-figure\"><img src=\"img/byebyedpi_step10.png\" alt=\"\" /></div>\n<h2>Что делать, если YouTube не заработал?</h2>\n<p><b>1. Войдите в свой аккаунт Google</b> — в 90% случаев это решает проблему воспроизведения.</p>\n<p><b>2. Попробуйте следующую стратегию:</b><br>ВАЖНО: Перед сменой стратегии обязательно полностью остановите YouTube (<i>Главный экран приставки → Настройки → Приложения → YouTube → Остановить</i>).</p>\n<p>Затем в ByeByeDPI нажмите <b>«Отключить»</b>, зайдите в подбор стратегий, выберите вторую стратегию, нажмите <b>«Применить»</b> и снова включите ByeByeDPI.</p>\n<p>3. Поменять в программе&nbsp;ByeByeDPI&nbsp;&nbsp;ДНС на 9.9.9.9</p>",
+      "blocks": {
+        "time": 1791549258412,
+        "blocks": [
+          {
+            "id": "DWR0v2bGd5",
+            "type": "paragraph",
+            "data": {
+              "text": "Подробное руководство по настройке и подбору стратегий в приложении <b>ByeByeDPI</b> для стабильной работы YouTube на ТВ-приставках."
+            }
+          },
+          {
+            "id": "L_wlU0JL6s",
+            "type": "paragraph",
+            "data": {
+              "text": "Прежде чем начать настройку, обязательно обновите ByeByeDPI до последней версии через TV SHOP Installer."
+            }
+          },
+          {
+            "id": "O-oAAcD5Wa",
+            "type": "list",
+            "data": {
+              "style": "ordered",
+              "items": [
+                "Открываем программу <b>ByeByeDPI</b>. Если программа запросит разрешения — обязательно выдаем все запрашиваемые разрешения."
+              ]
+            }
+          },
+          {
+            "id": "04lbfr1_v4",
+            "type": "image",
+            "data": {
+              "url": "img/byebyedpi_step1.png",
+              "file": {
+                "url": "img/byebyedpi_step1.png"
+              },
+              "caption": "",
+              "withBorder": false,
+              "stretched": false,
+              "withBackground": false
+            }
+          },
+          {
+            "id": "c7JXZ4Zh8F",
+            "type": "list",
+            "data": {
+              "style": "ordered",
+              "items": [
+                "Заходим в <b>настройки</b> приложения (иконка шестерёнки)."
+              ]
+            }
+          },
+          {
+            "id": "7E1f5RqdSA",
+            "type": "image",
+            "data": {
+              "url": "img/byebyedpi_step2.png",
+              "file": {
+                "url": "img/byebyedpi_step2.png"
+              },
+              "caption": "",
+              "withBorder": false,
+              "stretched": false,
+              "withBackground": false
+            }
+          },
+          {
+            "id": "VqbFnq3RHz",
+            "type": "list",
+            "data": {
+              "style": "ordered",
+              "items": [
+                "Листаем вниз до пункта <b>«Использовать командную строку»</b> и включаем этот переключатель."
+              ]
+            }
+          },
+          {
+            "id": "a6H2iveLJB",
+            "type": "image",
+            "data": {
+              "url": "img/byebyedpi_step3.png",
+              "file": {
+                "url": "img/byebyedpi_step3.png"
+              },
+              "caption": "",
+              "withBorder": false,
+              "stretched": false,
+              "withBackground": false
+            }
+          },
+          {
+            "id": "nVKCIKqXJ7",
+            "type": "list",
+            "data": {
+              "style": "ordered",
+              "items": [
+                "Листаем ниже и нажимаем кнопку <b>«Подбор стратегий»</b>."
+              ]
+            }
+          },
+          {
+            "id": "25AlCBo7FL",
+            "type": "image",
+            "data": {
+              "url": "img/byebyedpi_step4.png",
+              "file": {
+                "url": "img/byebyedpi_step4.png"
+              },
+              "caption": "",
+              "withBorder": false,
+              "stretched": false,
+              "withBackground": false
+            }
+          },
+          {
+            "id": "eXSD4FXJGu",
+            "type": "list",
+            "data": {
+              "style": "ordered",
+              "items": [
+                "Нажимаем кнопку <b>«Начать проверку»</b> и дожидаемся окончания теста.Важно: Если во время проверки приставка зависла или тест остановился — перезагружаем приставку, снова запускаем ByeByeDPI и повторяем проверку."
+              ]
+            }
+          },
+          {
+            "id": "VI4hsJ4ihn",
+            "type": "image",
+            "data": {
+              "url": "img/byebyedpi_step5.png",
+              "file": {
+                "url": "img/byebyedpi_step5.png"
+              },
+              "caption": "",
+              "withBorder": false,
+              "stretched": false,
+              "withBackground": false
+            }
+          },
+          {
+            "id": "9eKLZya8kt",
+            "type": "list",
+            "data": {
+              "style": "ordered",
+              "items": [
+                "После окончания проверки появится список стратегий. Сверху будут самые эффективные и быстрые. Начинаем выбор с самой первой стратегии."
+              ]
+            }
+          },
+          {
+            "id": "XVWQRRCb5W",
+            "type": "image",
+            "data": {
+              "url": "img/byebyedpi_step6.png",
+              "file": {
+                "url": "img/byebyedpi_step6.png"
+              },
+              "caption": "",
+              "withBorder": false,
+              "stretched": false,
+              "withBackground": false
+            }
+          },
+          {
+            "id": "RtivawHHCE",
+            "type": "list",
+            "data": {
+              "style": "ordered",
+              "items": [
+                "Выбираем нужную стратегию из списка, нажимаем на нее и выбираем кнопку <b>«Применить»</b>."
+              ]
+            }
+          },
+          {
+            "id": "yA4mKHeIrj",
+            "type": "image",
+            "data": {
+              "url": "img/byebyedpi_step7.png",
+              "file": {
+                "url": "img/byebyedpi_step7.png"
+              },
+              "caption": "",
+              "withBorder": false,
+              "stretched": false,
+              "withBackground": false
+            }
+          },
+          {
+            "id": "_E4G1qsjdE",
+            "type": "list",
+            "data": {
+              "style": "ordered",
+              "items": [
+                "Возвращаемся на главный экран приложения ByeByeDPI и нажимаем кнопку <b>«Запустить» / «Включить»</b>."
+              ]
+            }
+          },
+          {
+            "id": "_NhzSzonLA",
+            "type": "image",
+            "data": {
+              "url": "img/byebyedpi_step8.png",
+              "file": {
+                "url": "img/byebyedpi_step8.png"
+              },
+              "caption": "",
+              "withBorder": false,
+              "stretched": false,
+              "withBackground": false
+            }
+          },
+          {
+            "id": "ewMJ1U22Mq",
+            "type": "list",
+            "data": {
+              "style": "ordered",
+              "items": [
+                "Если снова появится системный запрос разрешений — обязательно нажимаем <b>«Разрешить»</b>."
+              ]
+            }
+          },
+          {
+            "id": "u5R4WqZxnT",
+            "type": "image",
+            "data": {
+              "url": "img/byebyedpi_step9.png",
+              "file": {
+                "url": "img/byebyedpi_step9.png"
+              },
+              "caption": "",
+              "withBorder": false,
+              "stretched": false,
+              "withBackground": false
+            }
+          },
+          {
+            "id": "35eXlpILvf",
+            "type": "list",
+            "data": {
+              "style": "ordered",
+              "items": [
+                "Открываем и проверяем работу <b>YouTube</b>."
+              ]
+            }
+          },
+          {
+            "id": "NehqzJ_Niz",
+            "type": "image",
+            "data": {
+              "url": "img/byebyedpi_step10.png",
+              "file": {
+                "url": "img/byebyedpi_step10.png"
+              },
+              "caption": "",
+              "withBorder": false,
+              "stretched": false,
+              "withBackground": false
+            }
+          },
+          {
+            "id": "W-DERdOper",
+            "type": "header",
+            "data": {
+              "text": "Что делать, если YouTube не заработал?",
+              "level": 2
+            }
+          },
+          {
+            "id": "-hUUTw1P4S",
+            "type": "paragraph",
+            "data": {
+              "text": "<b>1. Войдите в свой аккаунт Google</b> — в 90% случаев это решает проблему воспроизведения."
+            }
+          },
+          {
+            "id": "E4UdfATa3Q",
+            "type": "paragraph",
+            "data": {
+              "text": "<b>2. Попробуйте следующую стратегию:</b><br>ВАЖНО: Перед сменой стратегии обязательно полностью остановите YouTube (<i>Главный экран приставки → Настройки → Приложения → YouTube → Остановить</i>)."
+            }
+          },
+          {
+            "id": "dGZ2OMCSSs",
+            "type": "paragraph",
+            "data": {
+              "text": "Затем в ByeByeDPI нажмите <b>«Отключить»</b>, зайдите в подбор стратегий, выберите вторую стратегию, нажмите <b>«Применить»</b> и снова включите ByeByeDPI."
+            }
+          },
+          {
+            "id": "LCs49Q2g5B",
+            "type": "paragraph",
+            "data": {
+              "text": "3. Поменять в программе&nbsp;ByeByeDPI&nbsp;&nbsp;ДНС на 9.9.9.9"
+            }
+          }
+        ],
+        "version": "2.29.1"
+      }
     },
     {
       "id": "inst-yosso-tv",
       "title": "Подключение телевидения YOSSO TV (50 рублей в месяц)",
       "date": "8 октября 2026",
       "videoUrl": "",
-      "contentHtml": "<p>Инструкция по регистрации и настройке более 1500 телеканалов в отличном качестве всего за 50 рублей в месяц.</p><ol><li>Переходим по ссылке регистрации или по QR-коду на телефоне. Вводим свои данные для создания аккаунта (если письмо подтверждения не приходит — проверьте папку «Спам»). После регистрации вам сразу доступен бесплатный тест на 24 часа.</li></ol><img src=\"img/yosso_step1.png\"><ol start=\"2\"><li>После входа в личный кабинет переходим в раздел <b>«Дашборд»</b>.</li></ol><img src=\"img/yosso_step2.png\"><ol start=\"3\"><li>Спускаемся до раздела <b>«Плейлисты»</b> и нажимаем кнопку копирования ссылки на ваш персональный плейлист. Вставляем эту ссылку в плеер на ТВ-приставке (<b>TiviMate</b> или <b>Televizo</b>).</li></ol><img src=\"img/yosso_step3.png\"><ol start=\"4\"><li>Для продления подписки переходим в раздел <b>«Пополнение баланса»</b>.</li></ol><img src=\"img/yosso_step4.png\"><ol start=\"5\"><li>Вводим сумму пополнения, выбираем удобный способ оплаты (карта, СБП и др.) и следуем подсказкам платежной системы.</li></ol><img src=\"img/yosso_step5.png\"><ol start=\"6\"><li>После зачисления средств переходим в раздел <b>«Подписка»</b> для активации тарифа на нужный срок (можно сразу на год).</li></ol><img src=\"img/yosso_step6.png\"><ol start=\"7\"><li><b>ВАЖНО:</b> Выберите нужное количество подключений (устройств) и нажмите кнопку <b>«Оформить и продлить»</b>.</li></ol><img src=\"img/yosso_step7.png\">"
+      "contentHtml": "<p>Инструкция по регистрации и настройке более 1500 телеканалов в отличном качестве всего за 50 рублей в месяц.</p>\n<ol><li>Переходим по ссылке регистрации или по QR-коду на телефоне. Вводим свои данные для создания аккаунта (если письмо подтверждения не приходит — проверьте папку «Спам»). После регистрации вам сразу доступен бесплатный тест на 24 часа.</li></ol>\n<div class=\"article-image-figure\"><img src=\"img/yosso_step1.png\" alt=\"\" /></div>\n<ol><li>После входа в личный кабинет переходим в раздел <b>«Дашборд»</b>.</li></ol>\n<div class=\"article-image-figure\"><img src=\"img/yosso_step2.png\" alt=\"\" /></div>\n<ol><li>Спускаемся до раздела <b>«Плейлисты»</b> и нажимаем кнопку копирования ссылки на ваш персональный плейлист. Вставляем эту ссылку в плеер на ТВ-приставке (<b>TiviMate</b> или <b>Televizo</b>).</li></ol>\n<div class=\"article-image-figure\"><img src=\"img/yosso_step3.png\" alt=\"\" /></div>\n<ol><li>Для продления подписки переходим в раздел <b>«Пополнение баланса»</b>.</li></ol>\n<div class=\"article-image-figure\"><img src=\"img/yosso_step4.png\" alt=\"\" /></div>\n<ol><li>Вводим сумму пополнения, выбираем удобный способ оплаты (карта, СБП и др.) и следуем подсказкам платежной системы.</li></ol>\n<div class=\"article-image-figure\"><img src=\"img/yosso_step5.png\" alt=\"\" /></div>\n<ol><li>После зачисления средств переходим в раздел <b>«Подписка»</b> для активации тарифа на нужный срок (можно сразу на год).</li></ol>\n<div class=\"article-image-figure\"><img src=\"img/yosso_step6.png\" alt=\"\" /></div>\n<ol><li><b>ВАЖНО:</b> Выберите нужное количество подключений (устройств) и нажмите кнопку <b>«Оформить и продлить»</b>.</li></ol>\n<div class=\"article-image-figure\"><img src=\"img/yosso_step7.png\" alt=\"\" /></div>",
+      "blocks": {
+        "time": 1791549259300,
+        "blocks": [
+          {
+            "id": "6urznOWDIA",
+            "type": "paragraph",
+            "data": {
+              "text": "Инструкция по регистрации и настройке более 1500 телеканалов в отличном качестве всего за 50 рублей в месяц."
+            }
+          },
+          {
+            "id": "Y7J2Di_flw",
+            "type": "list",
+            "data": {
+              "style": "ordered",
+              "items": [
+                "Переходим по ссылке регистрации или по QR-коду на телефоне. Вводим свои данные для создания аккаунта (если письмо подтверждения не приходит — проверьте папку «Спам»). После регистрации вам сразу доступен бесплатный тест на 24 часа."
+              ]
+            }
+          },
+          {
+            "id": "anmvfHyd7o",
+            "type": "image",
+            "data": {
+              "url": "img/yosso_step1.png",
+              "file": {
+                "url": "img/yosso_step1.png"
+              },
+              "caption": "",
+              "withBorder": false,
+              "stretched": false,
+              "withBackground": false
+            }
+          },
+          {
+            "id": "zOeA8I-vnP",
+            "type": "list",
+            "data": {
+              "style": "ordered",
+              "items": [
+                "После входа в личный кабинет переходим в раздел <b>«Дашборд»</b>."
+              ]
+            }
+          },
+          {
+            "id": "rUooouVJv1",
+            "type": "image",
+            "data": {
+              "url": "img/yosso_step2.png",
+              "file": {
+                "url": "img/yosso_step2.png"
+              },
+              "caption": "",
+              "withBorder": false,
+              "stretched": false,
+              "withBackground": false
+            }
+          },
+          {
+            "id": "C1ouwOy17Z",
+            "type": "list",
+            "data": {
+              "style": "ordered",
+              "items": [
+                "Спускаемся до раздела <b>«Плейлисты»</b> и нажимаем кнопку копирования ссылки на ваш персональный плейлист. Вставляем эту ссылку в плеер на ТВ-приставке (<b>TiviMate</b> или <b>Televizo</b>)."
+              ]
+            }
+          },
+          {
+            "id": "Qw9BjJGTwK",
+            "type": "image",
+            "data": {
+              "url": "img/yosso_step3.png",
+              "file": {
+                "url": "img/yosso_step3.png"
+              },
+              "caption": "",
+              "withBorder": false,
+              "stretched": false,
+              "withBackground": false
+            }
+          },
+          {
+            "id": "Qrs2p6fV0m",
+            "type": "list",
+            "data": {
+              "style": "ordered",
+              "items": [
+                "Для продления подписки переходим в раздел <b>«Пополнение баланса»</b>."
+              ]
+            }
+          },
+          {
+            "id": "H_Atqid88S",
+            "type": "image",
+            "data": {
+              "url": "img/yosso_step4.png",
+              "file": {
+                "url": "img/yosso_step4.png"
+              },
+              "caption": "",
+              "withBorder": false,
+              "stretched": false,
+              "withBackground": false
+            }
+          },
+          {
+            "id": "RVsSBZcCXt",
+            "type": "list",
+            "data": {
+              "style": "ordered",
+              "items": [
+                "Вводим сумму пополнения, выбираем удобный способ оплаты (карта, СБП и др.) и следуем подсказкам платежной системы."
+              ]
+            }
+          },
+          {
+            "id": "Slzb3MAyQ8",
+            "type": "image",
+            "data": {
+              "url": "img/yosso_step5.png",
+              "file": {
+                "url": "img/yosso_step5.png"
+              },
+              "caption": "",
+              "withBorder": false,
+              "stretched": false,
+              "withBackground": false
+            }
+          },
+          {
+            "id": "IRVvFnzGFG",
+            "type": "list",
+            "data": {
+              "style": "ordered",
+              "items": [
+                "После зачисления средств переходим в раздел <b>«Подписка»</b> для активации тарифа на нужный срок (можно сразу на год)."
+              ]
+            }
+          },
+          {
+            "id": "NT_av8A7Yk",
+            "type": "image",
+            "data": {
+              "url": "img/yosso_step6.png",
+              "file": {
+                "url": "img/yosso_step6.png"
+              },
+              "caption": "",
+              "withBorder": false,
+              "stretched": false,
+              "withBackground": false
+            }
+          },
+          {
+            "id": "l1R4F3mfiD",
+            "type": "list",
+            "data": {
+              "style": "ordered",
+              "items": [
+                "<b>ВАЖНО:</b> Выберите нужное количество подключений (устройств) и нажмите кнопку <b>«Оформить и продлить»</b>."
+              ]
+            }
+          },
+          {
+            "id": "WRbyVyIedF",
+            "type": "image",
+            "data": {
+              "url": "img/yosso_step7.png",
+              "file": {
+                "url": "img/yosso_step7.png"
+              },
+              "caption": "",
+              "withBorder": false,
+              "stretched": false,
+              "withBackground": false
+            }
+          }
+        ],
+        "version": "2.29.1"
+      }
     },
     {
       "id": "art-televizo-backup",
       "title": "Восстановление бэкапа Televizo",
       "date": "8 октября 2026",
       "videoUrl": "",
-      "contentHtml": "<p>Пошаговая инструкция по быстрому восстановлению настроек и плейлистов в приложении <b>Televizo</b> через готовый файл резервной копии.</p><ol><li>Открываем программу <b>TV SHOP Installer</b>, в боковом меню переходим в раздел <b>«Бэкапы»</b> и нажимаем кнопку <b>«СКАЧАТЬ БЭКАП»</b> напротив Televizo. Файл автоматически сохранится в папку <u>«Загрузки»</u>.</li></ol><img src=\"img/upload_1784748775157.png\"><ol start=\"2\"><li>Запускаем приложение <b>Televizo</b>. В правом верхнем углу нажимаем на иконку <b>«Настройки»</b> (значок шестерёнки ⚙️).</li></ol><img src=\"img/upload_1784748801873.png\"><ol start=\"3\"><li>В открывшемся меню выбираем пункт <b>«Резервное копирование и восстановление»</b>.</li></ol><img src=\"img/upload_1784748820875.png\"><ol start=\"4\"><li>Нажимаем на кнопку <b>«Загрузить данные приложения»</b>.</li></ol><img src=\"img/upload_1784748828482.png\"><ol start=\"5\"><li>В появившемся проводнике переходим в папку <b>«Загрузки»</b> (Download), выбираем скачанный файл бэкапа и подтверждаем действие.</li></ol><img src=\"img/upload_1784748841865.png\"><ol start=\"6\"><li>Возвращаемся на главный экран <b>Televizo</b>, нажимаем кнопку смены плейлиста и выбираем нужный плейлист из списка. Приятного просмотра!</li></ol><img src=\"img/upload_1784748865712.png\">"
+      "contentHtml": "<p>Пошаговая инструкция по быстрому восстановлению настроек и плейлистов в приложении <b>Televizo</b> через готовый файл резервной копии.</p>\n<ol><li>Открываем программу <b>TV SHOP Installer</b>, в боковом меню переходим в раздел <b>«Бэкапы»</b> и нажимаем кнопку <b>«СКАЧАТЬ БЭКАП»</b> напротив Televizo. Файл автоматически сохранится в папку «Загрузки».</li></ol>\n<div class=\"article-image-figure\"><img src=\"img/upload_1784748775157.png\" alt=\"\" /></div>\n<ol><li>Запускаем приложение <b>Televizo</b>. В правом верхнем углу нажимаем на иконку <b>«Настройки»</b> (значок шестерёнки ⚙️).</li></ol>\n<div class=\"article-image-figure\"><img src=\"img/upload_1784748801873.png\" alt=\"\" /></div>\n<ol><li>В открывшемся меню выбираем пункт <b>«Резервное копирование и восстановление»</b>.</li></ol>\n<div class=\"article-image-figure\"><img src=\"img/upload_1784748820875.png\" alt=\"\" /></div>\n<ol><li>Нажимаем на кнопку <b>«Загрузить данные приложения»</b>.</li></ol>\n<div class=\"article-image-figure\"><img src=\"img/upload_1784748828482.png\" alt=\"\" /></div>\n<ol><li>В появившемся проводнике переходим в папку <b>«Загрузки»</b> (Download), выбираем скачанный файл бэкапа и подтверждаем действие.</li></ol>\n<div class=\"article-image-figure\"><img src=\"img/upload_1784748841865.png\" alt=\"\" /></div>\n<ol><li>Возвращаемся на главный экран <b>Televizo</b>, нажимаем кнопку смены плейлиста и выбираем нужный плейлист из списка. Приятного просмотра!</li></ol>\n<div class=\"article-image-figure\"><img src=\"img/upload_1784748865712.png\" alt=\"\" /></div>",
+      "blocks": {
+        "time": 1791549260380,
+        "blocks": [
+          {
+            "id": "73Rej6Nc3y",
+            "type": "paragraph",
+            "data": {
+              "text": "Пошаговая инструкция по быстрому восстановлению настроек и плейлистов в приложении <b>Televizo</b> через готовый файл резервной копии."
+            }
+          },
+          {
+            "id": "1G6PlxSrpA",
+            "type": "list",
+            "data": {
+              "style": "ordered",
+              "items": [
+                "Открываем программу <b>TV SHOP Installer</b>, в боковом меню переходим в раздел <b>«Бэкапы»</b> и нажимаем кнопку <b>«СКАЧАТЬ БЭКАП»</b> напротив Televizo. Файл автоматически сохранится в папку «Загрузки»."
+              ]
+            }
+          },
+          {
+            "id": "mo3cqDT5EP",
+            "type": "image",
+            "data": {
+              "url": "img/upload_1784748775157.png",
+              "file": {
+                "url": "img/upload_1784748775157.png"
+              },
+              "caption": "",
+              "withBorder": false,
+              "stretched": false,
+              "withBackground": false
+            }
+          },
+          {
+            "id": "meBYW8c2zw",
+            "type": "list",
+            "data": {
+              "style": "ordered",
+              "items": [
+                "Запускаем приложение <b>Televizo</b>. В правом верхнем углу нажимаем на иконку <b>«Настройки»</b> (значок шестерёнки ⚙️)."
+              ]
+            }
+          },
+          {
+            "id": "sZDX_XgzH6",
+            "type": "image",
+            "data": {
+              "url": "img/upload_1784748801873.png",
+              "file": {
+                "url": "img/upload_1784748801873.png"
+              },
+              "caption": "",
+              "withBorder": false,
+              "stretched": false,
+              "withBackground": false
+            }
+          },
+          {
+            "id": "zcHBiqZshZ",
+            "type": "list",
+            "data": {
+              "style": "ordered",
+              "items": [
+                "В открывшемся меню выбираем пункт <b>«Резервное копирование и восстановление»</b>."
+              ]
+            }
+          },
+          {
+            "id": "kbKYqPiJ_D",
+            "type": "image",
+            "data": {
+              "url": "img/upload_1784748820875.png",
+              "file": {
+                "url": "img/upload_1784748820875.png"
+              },
+              "caption": "",
+              "withBorder": false,
+              "stretched": false,
+              "withBackground": false
+            }
+          },
+          {
+            "id": "CquJYtv0Hv",
+            "type": "list",
+            "data": {
+              "style": "ordered",
+              "items": [
+                "Нажимаем на кнопку <b>«Загрузить данные приложения»</b>."
+              ]
+            }
+          },
+          {
+            "id": "VEAvYOSlrQ",
+            "type": "image",
+            "data": {
+              "url": "img/upload_1784748828482.png",
+              "file": {
+                "url": "img/upload_1784748828482.png"
+              },
+              "caption": "",
+              "withBorder": false,
+              "stretched": false,
+              "withBackground": false
+            }
+          },
+          {
+            "id": "hNE9KvVqw9",
+            "type": "list",
+            "data": {
+              "style": "ordered",
+              "items": [
+                "В появившемся проводнике переходим в папку <b>«Загрузки»</b> (Download), выбираем скачанный файл бэкапа и подтверждаем действие."
+              ]
+            }
+          },
+          {
+            "id": "iWmK44DIzm",
+            "type": "image",
+            "data": {
+              "url": "img/upload_1784748841865.png",
+              "file": {
+                "url": "img/upload_1784748841865.png"
+              },
+              "caption": "",
+              "withBorder": false,
+              "stretched": false,
+              "withBackground": false
+            }
+          },
+          {
+            "id": "Ba9LYyfDwt",
+            "type": "list",
+            "data": {
+              "style": "ordered",
+              "items": [
+                "Возвращаемся на главный экран <b>Televizo</b>, нажимаем кнопку смены плейлиста и выбираем нужный плейлист из списка. Приятного просмотра!"
+              ]
+            }
+          },
+          {
+            "id": "62CMRDH3f2",
+            "type": "image",
+            "data": {
+              "url": "img/upload_1784748865712.png",
+              "file": {
+                "url": "img/upload_1784748865712.png"
+              },
+              "caption": "",
+              "withBorder": false,
+              "stretched": false,
+              "withBackground": false
+            }
+          }
+        ],
+        "version": "2.29.1"
+      }
     },
     {
       "id": "inst-power-settings",
       "title": "Настройка электропитания (режим сна) на приставке",
       "date": "8 октября 2026",
       "videoUrl": "",
-      "contentHtml": "<p>Пошаговая настройка таймера автоотключения и режима энергосбережения для долгой и стабильной службы вашей ТВ-приставки.</p><ol><li>Заходим в настройки приставки и выбираем пункт <b>«Настройки устройства»</b>.</li></ol><img src=\"img/upload_1785427761110.png\"><ol start=\"2\"><li>В меню настроек устройства нажимаем раздел <b>«Питание»</b>.</li></ol><img src=\"img/upload_1785427770851.png\"><ol start=\"3\"><li>Отключаем тумблер <b>«Не выключать экран»</b>.</li></ol><img src=\"img/upload_1785427786172.png\"><ol start=\"4\"><li>Спускаемся до пункта <b>«Режим энергосбережения»</b>.</li></ol><img src=\"img/upload_1785427876031.png\"><ol start=\"5\"><li>Устанавливаем оптимальное время отключения (рекомендуется <b>3 часа</b>) и возвращаемся назад.</li></ol><img src=\"img/upload_1785427797533.png\"><ol start=\"6\"><li>По желанию настраиваем экранную заставку: нажимаем <b>«Заставка»</b>.</li></ol><img src=\"img/upload_1785427828092.png\"><ol start=\"7\"><li>Нажимаем <b>«Запуск»</b> и выбираем желаемый интервал до старта заставки.</li></ol><img src=\"img/upload_1785427833971.png\"><ol start=\"8\"><li>Возвращаемся в главное меню и проверяем, что параметр «Не выключать экран» выключен. Готово!</li></ol><img src=\"img/upload_1785427937879.png\">"
+      "contentHtml": "<p>Пошаговая настройка таймера автоотключения и режима энергосбережения для долгой и стабильной службы вашей ТВ-приставки.</p>\n<ol><li>Заходим в настройки приставки и выбираем пункт <b>«Настройки устройства»</b>.</li></ol>\n<div class=\"article-image-figure\"><img src=\"img/upload_1785427761110.png\" alt=\"\" /></div>\n<ol><li>В меню настроек устройства нажимаем раздел <b>«Питание»</b>.</li></ol>\n<div class=\"article-image-figure\"><img src=\"img/upload_1785427770851.png\" alt=\"\" /></div>\n<ol><li>Отключаем тумблер <b>«Не выключать экран»</b>.</li></ol>\n<div class=\"article-image-figure\"><img src=\"img/upload_1785427786172.png\" alt=\"\" /></div>\n<ol><li>Спускаемся до пункта <b>«Режим энергосбережения»</b>.</li></ol>\n<div class=\"article-image-figure\"><img src=\"img/upload_1785427876031.png\" alt=\"\" /></div>\n<ol><li>Устанавливаем оптимальное время отключения (рекомендуется <b>3 часа</b>) и возвращаемся назад.</li></ol>\n<div class=\"article-image-figure\"><img src=\"img/upload_1785427797533.png\" alt=\"\" /></div>\n<ol><li>По желанию настраиваем экранную заставку: нажимаем <b>«Заставка»</b>.</li></ol>\n<div class=\"article-image-figure\"><img src=\"img/upload_1785427828092.png\" alt=\"\" /></div>\n<ol><li>Нажимаем <b>«Запуск»</b> и выбираем желаемый интервал до старта заставки.</li></ol>\n<div class=\"article-image-figure\"><img src=\"img/upload_1785427833971.png\" alt=\"\" /></div>\n<ol><li>Возвращаемся в главное меню и проверяем, что параметр «Не выключать экран» выключен. Готово!</li></ol>\n<div class=\"article-image-figure\"><img src=\"img/upload_1785427937879.png\" alt=\"\" /></div>",
+      "blocks": {
+        "time": 1791549260916,
+        "blocks": [
+          {
+            "id": "SkYYZ_Xysf",
+            "type": "paragraph",
+            "data": {
+              "text": "Пошаговая настройка таймера автоотключения и режима энергосбережения для долгой и стабильной службы вашей ТВ-приставки."
+            }
+          },
+          {
+            "id": "UKuFqBXUNX",
+            "type": "list",
+            "data": {
+              "style": "ordered",
+              "items": [
+                "Заходим в настройки приставки и выбираем пункт <b>«Настройки устройства»</b>."
+              ]
+            }
+          },
+          {
+            "id": "xZ8b-F0Fj8",
+            "type": "image",
+            "data": {
+              "url": "img/upload_1785427761110.png",
+              "file": {
+                "url": "img/upload_1785427761110.png"
+              },
+              "caption": "",
+              "withBorder": false,
+              "stretched": false,
+              "withBackground": false
+            }
+          },
+          {
+            "id": "sk1qNf6wU1",
+            "type": "list",
+            "data": {
+              "style": "ordered",
+              "items": [
+                "В меню настроек устройства нажимаем раздел <b>«Питание»</b>."
+              ]
+            }
+          },
+          {
+            "id": "L0GbUoBLpO",
+            "type": "image",
+            "data": {
+              "url": "img/upload_1785427770851.png",
+              "file": {
+                "url": "img/upload_1785427770851.png"
+              },
+              "caption": "",
+              "withBorder": false,
+              "stretched": false,
+              "withBackground": false
+            }
+          },
+          {
+            "id": "S7_jBcrzFo",
+            "type": "list",
+            "data": {
+              "style": "ordered",
+              "items": [
+                "Отключаем тумблер <b>«Не выключать экран»</b>."
+              ]
+            }
+          },
+          {
+            "id": "BSSuLTFH5O",
+            "type": "image",
+            "data": {
+              "url": "img/upload_1785427786172.png",
+              "file": {
+                "url": "img/upload_1785427786172.png"
+              },
+              "caption": "",
+              "withBorder": false,
+              "stretched": false,
+              "withBackground": false
+            }
+          },
+          {
+            "id": "0SzHBBvHnD",
+            "type": "list",
+            "data": {
+              "style": "ordered",
+              "items": [
+                "Спускаемся до пункта <b>«Режим энергосбережения»</b>."
+              ]
+            }
+          },
+          {
+            "id": "bM1uD8a0kA",
+            "type": "image",
+            "data": {
+              "url": "img/upload_1785427876031.png",
+              "file": {
+                "url": "img/upload_1785427876031.png"
+              },
+              "caption": "",
+              "withBorder": false,
+              "stretched": false,
+              "withBackground": false
+            }
+          },
+          {
+            "id": "Mf2V41z0Jh",
+            "type": "list",
+            "data": {
+              "style": "ordered",
+              "items": [
+                "Устанавливаем оптимальное время отключения (рекомендуется <b>3 часа</b>) и возвращаемся назад."
+              ]
+            }
+          },
+          {
+            "id": "CFAP9iPJoj",
+            "type": "image",
+            "data": {
+              "url": "img/upload_1785427797533.png",
+              "file": {
+                "url": "img/upload_1785427797533.png"
+              },
+              "caption": "",
+              "withBorder": false,
+              "stretched": false,
+              "withBackground": false
+            }
+          },
+          {
+            "id": "-K94WKeWXD",
+            "type": "list",
+            "data": {
+              "style": "ordered",
+              "items": [
+                "По желанию настраиваем экранную заставку: нажимаем <b>«Заставка»</b>."
+              ]
+            }
+          },
+          {
+            "id": "atiZ8XmXg4",
+            "type": "image",
+            "data": {
+              "url": "img/upload_1785427828092.png",
+              "file": {
+                "url": "img/upload_1785427828092.png"
+              },
+              "caption": "",
+              "withBorder": false,
+              "stretched": false,
+              "withBackground": false
+            }
+          },
+          {
+            "id": "qXAiN-6X6R",
+            "type": "list",
+            "data": {
+              "style": "ordered",
+              "items": [
+                "Нажимаем <b>«Запуск»</b> и выбираем желаемый интервал до старта заставки."
+              ]
+            }
+          },
+          {
+            "id": "fmoVGuQh-1",
+            "type": "image",
+            "data": {
+              "url": "img/upload_1785427833971.png",
+              "file": {
+                "url": "img/upload_1785427833971.png"
+              },
+              "caption": "",
+              "withBorder": false,
+              "stretched": false,
+              "withBackground": false
+            }
+          },
+          {
+            "id": "o5oKdiA4J4",
+            "type": "list",
+            "data": {
+              "style": "ordered",
+              "items": [
+                "Возвращаемся в главное меню и проверяем, что параметр «Не выключать экран» выключен. Готово!"
+              ]
+            }
+          },
+          {
+            "id": "Ki_BkEtpvl",
+            "type": "image",
+            "data": {
+              "url": "img/upload_1785427937879.png",
+              "file": {
+                "url": "img/upload_1785427937879.png"
+              },
+              "caption": "",
+              "withBorder": false,
+              "stretched": false,
+              "withBackground": false
+            }
+          }
+        ],
+        "version": "2.29.1"
+      }
     },
     {
       "id": "inst-clear-cache",
       "title": "Как удалить приложение с приставки или очистить кэш и данные",
       "date": "8 октября 2026",
       "videoUrl": "",
-      "contentHtml": "<p>Инструкция по освобождению памяти приставки, сбросу настроек зависших программ и полному удалению ненужных приложений.</p><ol><li>Заходим в <b>Настройки</b> приставки.</li><li>Открываем раздел <b>Приложения</b>.</li><li>Выбираем пункт <b>Все приложения</b>.</li><li>Находим нужное приложение в списке и нажимаем на него.</li></ol><h2>Возможные действия:</h2><p>🔹 <b>Очистка кэша</b> — нажмите <b>«Очистить кэш»</b> (освобождает временную память, не удаляя ваши настройки).</p><p>🔹 <b>Очистка данных</b> — нажмите <b>«Очистить данные»</b> (полный сброс приложения к начальному состоянию).</p><p>🔹 <b>Полное удаление приложения</b> — нажмите <b>«Удалить»</b> (используйте только если приложение больше не требуется).</p>"
+      "contentHtml": "<p>Инструкция по освобождению памяти приставки, сбросу настроек зависших программ и полному удалению ненужных приложений.</p>\n<ol><li>Заходим в <b>Настройки</b> приставки.</li><li>Открываем раздел <b>Приложения</b>.</li><li>Выбираем пункт <b>Все приложения</b>.</li><li>Находим нужное приложение в списке и нажимаем на него.</li></ol>\n<h2>Возможные действия:</h2>\n<p>🔹 <b>Очистка кэша</b> — нажмите <b>«Очистить кэш»</b> (освобождает временную память, не удаляя ваши настройки).</p>\n<p>🔹 <b>Очистка данных</b> — нажмите <b>«Очистить данные»</b> (полный сброс приложения к начальному состоянию).</p>\n<p>🔹 <b>Полное удаление приложения</b> — нажмите <b>«Удалить»</b> (используйте только если приложение больше не требуется).</p>",
+      "blocks": {
+        "time": 1791549262043,
+        "blocks": [
+          {
+            "id": "3xhOnrOWck",
+            "type": "paragraph",
+            "data": {
+              "text": "Инструкция по освобождению памяти приставки, сбросу настроек зависших программ и полному удалению ненужных приложений."
+            }
+          },
+          {
+            "id": "QmzjiQH0ve",
+            "type": "list",
+            "data": {
+              "style": "ordered",
+              "items": [
+                "Заходим в <b>Настройки</b> приставки.",
+                "Открываем раздел <b>Приложения</b>.",
+                "Выбираем пункт <b>Все приложения</b>.",
+                "Находим нужное приложение в списке и нажимаем на него."
+              ]
+            }
+          },
+          {
+            "id": "Iht462z3YD",
+            "type": "header",
+            "data": {
+              "text": "Возможные действия:",
+              "level": 2
+            }
+          },
+          {
+            "id": "LKi4G6EKCn",
+            "type": "paragraph",
+            "data": {
+              "text": "🔹 <b>Очистка кэша</b> — нажмите <b>«Очистить кэш»</b> (освобождает временную память, не удаляя ваши настройки)."
+            }
+          },
+          {
+            "id": "VxZvb0Rf0g",
+            "type": "paragraph",
+            "data": {
+              "text": "🔹 <b>Очистка данных</b> — нажмите <b>«Очистить данные»</b> (полный сброс приложения к начальному состоянию)."
+            }
+          },
+          {
+            "id": "KmuQrQWRzT",
+            "type": "paragraph",
+            "data": {
+              "text": "🔹 <b>Полное удаление приложения</b> — нажмите <b>«Удалить»</b> (используйте только если приложение больше не требуется)."
+            }
+          }
+        ],
+        "version": "2.29.1"
+      }
     }
   ]
 }
