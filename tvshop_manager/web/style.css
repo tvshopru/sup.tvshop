@@ -2170,33 +2170,35 @@ h3.ce-header {
 .editorjs-canvas-holder,
 .codex-editor,
 .codex-editor__redactor {
-    counter-reset: article-ordered-counter 0;
+    counter-reset: article-ordered-counter 0 !important;
 }
 
-/* Continuous sequential numbering for ordered lists across blocks & images */
+/* Continuous sequential numbering for ordered lists across blocks & images (@editorjs/list 2.x & 1.x) */
 .editorjs-canvas-holder .cdx-list,
+.editorjs-canvas-holder .cdx-list-ordered,
 .editorjs-canvas-holder .cdx-list--ordered,
 .editorjs-canvas-holder div.cdx-list,
 .editorjs-canvas-holder ol.cdx-list,
 .editorjs-canvas-holder .cdx-nested-list,
+.editorjs-canvas-holder .cdx-nested-list-ordered,
 .editorjs-canvas-holder .cdx-nested-list--ordered,
+.editorjs-canvas-holder [class*="cdx-list-ordered"],
+.editorjs-canvas-holder [class*="cdx-list--ordered"],
 .editorjs-canvas-holder [data-style="ordered"] {
     counter-reset: none !important;
 }
 
-.editorjs-canvas-holder .cdx-list--ordered .cdx-list__item,
-.editorjs-canvas-holder .cdx-nested-list--ordered .cdx-nested-list__item,
-.editorjs-canvas-holder .cdx-list--ordered > div,
-.editorjs-canvas-holder .cdx-list--ordered > li,
-.editorjs-canvas-holder [data-style="ordered"] .cdx-list__item {
-    counter-increment: article-ordered-counter 1 !important;
-}
-
+.editorjs-canvas-holder .cdx-list-ordered .cdx-list__item:before,
+.editorjs-canvas-holder .cdx-list-ordered .cdx-list__item::before,
+.editorjs-canvas-holder .cdx-list--ordered .cdx-list__item:before,
 .editorjs-canvas-holder .cdx-list--ordered .cdx-list__item::before,
-.editorjs-canvas-holder .cdx-nested-list--ordered .cdx-nested-list__item::before,
-.editorjs-canvas-holder .cdx-list--ordered > div::before,
-.editorjs-canvas-holder .cdx-list--ordered > li::before,
+.editorjs-canvas-holder [class*="cdx-list-ordered"] .cdx-list__item:before,
+.editorjs-canvas-holder [class*="cdx-list-ordered"] .cdx-list__item::before,
+.editorjs-canvas-holder [class*="cdx-list--ordered"] .cdx-list__item:before,
+.editorjs-canvas-holder [class*="cdx-list--ordered"] .cdx-list__item::before,
+.editorjs-canvas-holder [data-style="ordered"] .cdx-list__item:before,
 .editorjs-canvas-holder [data-style="ordered"] .cdx-list__item::before {
+    counter-increment: article-ordered-counter 1 !important;
     content: counter(article-ordered-counter) ". " !important;
 }
 
