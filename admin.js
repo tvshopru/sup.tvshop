@@ -181,6 +181,37 @@ async function savePortalConfigToGitHub() {
 
     const result = await githubApiRequest(`/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${CONFIG_PATH}`, 'PUT', commitPayload);
     currentConfigSha = result.content.sha;
+
+    // Generate and upload standalone static article page for active article with Open Graph tags
+    try {
+        if (portalConfig && portalConfig.articles && activeArticleIdx >= 0 && portalConfig.articles[activeArticleIdx]) {
+            const art = portalConfig.articles[activeArticleIdx];
+            if (art.id && window.ArticleRenderer && typeof window.ArticleRenderer.generateArticleHtml === 'function') {
+                const artHtml = window.ArticleRenderer.generateArticleHtml(art);
+                const artPath = `articles/${encodeURIComponent(art.id)}.html`;
+                
+                let artSha = null;
+                try {
+                    const artInfo = await githubApiRequest(`/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${artPath}?ref=main&t=${Date.now()}`);
+                    artSha = artInfo.sha;
+                } catch(err) {
+                    // file doesn't exist yet
+                }
+
+                const artPayload = {
+                    message: `Publish static article: ${art.title || art.id} with OpenGraph tags [skip ci]`,
+                    content: encodeBase64Utf8(artHtml),
+                    branch: 'main'
+                };
+                if (artSha) artPayload.sha = artSha;
+
+                await githubApiRequest(`/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${artPath}`, 'PUT', artPayload);
+            }
+        }
+    } catch(err) {
+        console.warn("Could not publish static article page:", err);
+    }
+
     showToast("🎉 Успешно сохранено и опубликовано на GitHub!", "success");
 }
 
@@ -616,7 +647,7 @@ function selectArticle(idx) {
 
     const prodBase = "https://tvshopru.github.io/sup.tvshop";
     const artId = art.id || ('art-' + idx);
-    const directUrl = `${prodBase}/article.html?id=${encodeURIComponent(artId)}`;
+    const directUrl = `${prodBase}/articles/${encodeURIComponent(artId)}.html`;
     $('#art-direct-link-text').text(directUrl);
     $('#btn-open-art-link').attr('href', directUrl);
 
@@ -1430,7 +1461,7 @@ function openArticleLivePreview() {
     const prodBase = "https://tvshopru.github.io/sup.tvshop";
     const artId = art.id || ('art-' + activeArticleIdx);
     $('#btn-prev-open-tab').off('click').on('click', function() {
-        window.open(`${prodBase}/article.html?id=${encodeURIComponent(artId)}`, '_blank');
+        window.open(`${prodBase}/articles/${encodeURIComponent(artId)}.html`, '_blank');
     });
 
     if (editorInstance && isEditorReady) {

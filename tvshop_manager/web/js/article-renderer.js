@@ -477,6 +477,231 @@
                 });
             }
             return Math.max(1, Math.ceil(wordCount / 150));
+        },
+
+        /**
+         * Generates complete standalone HTML file with Open Graph tags for Telegram previews
+         */
+        generateArticleHtml: function (article, options) {
+            options = options || {};
+            var baseUrl = options.baseUrl || 'https://tvshopru.github.io/sup.tvshop';
+            var title = (article && article.title) ? article.title.trim() : 'Статья TV SHOP';
+            var author = (article && article.author) ? article.author.trim() : 'TV SHOP';
+            var date = (article && article.date) ? article.date.trim() : 'Сегодня';
+            var artId = (article && article.id) ? article.id : 'article';
+            var videoUrl = (article && article.videoUrl) ? article.videoUrl.trim() : '';
+
+            // Render body HTML
+            var bodyHtml = this.render(article) || '<p>' + (article.description || '') + '</p>';
+
+            // Extract plain text for description (max 180 chars)
+            var plainText = (bodyHtml || '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+            var description = plainText.length > 180 ? plainText.substring(0, 177) + '...' : (plainText || 'Инструкции и руководства от TV SHOP');
+
+            // Extract first image for Open Graph
+            var imgMatch = (bodyHtml || '').match(/<img[^>]+src=["']([^"']+)["']/i);
+            var ogImage = 'https://tvshopru.github.io/sup.tvshop/app_logo.png';
+            if (imgMatch && imgMatch[1]) {
+                var imgSrc = imgMatch[1];
+                if (imgSrc.startsWith('http://') || imgSrc.startsWith('https://')) {
+                    ogImage = imgSrc;
+                } else {
+                    ogImage = baseUrl + '/' + imgSrc.replace(/^\//, '');
+                }
+            } else if (article.coverImage) {
+                ogImage = article.coverImage.startsWith('http') ? article.coverImage : (baseUrl + '/' + article.coverImage.replace(/^\//, ''));
+            }
+
+            var canonicalUrl = baseUrl + '/articles/' + encodeURIComponent(artId) + '.html';
+            var readTime = this.calculateReadTime(article.contentData || article.blocks) || 1;
+
+            var videoBtnHtml = videoUrl ? 
+                '<a href="' + this.escapeHtml(videoUrl) + '" target="_blank" class="video-banner-btn">' +
+                    '<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>' +
+                    '<span>Смотреть видеоверсию инструкции</span>' +
+                '</a>' : '';
+
+            return '<!DOCTYPE html>\n' +
+'<html lang="ru">\n' +
+'<head>\n' +
+'    <meta charset="UTF-8">\n' +
+'    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">\n' +
+'    <title>' + this.escapeHtml(title) + ' • TV SHOP</title>\n' +
+'    <meta name="description" content="' + this.escapeHtml(description) + '">\n' +
+'    <link rel="icon" type="image/png" href="../app_logo.png?v=2">\n' +
+'    <link rel="canonical" href="' + canonicalUrl + '">\n\n' +
+'    <!-- Open Graph for Telegram & Social Previews -->\n' +
+'    <meta property="og:site_name" content="TV SHOP">\n' +
+'    <meta property="og:type" content="article">\n' +
+'    <meta property="og:title" content="' + this.escapeHtml(title) + '">\n' +
+'    <meta property="og:description" content="' + this.escapeHtml(description) + '">\n' +
+'    <meta property="og:image" content="' + this.escapeHtml(ogImage) + '">\n' +
+'    <meta property="og:url" content="' + canonicalUrl + '">\n\n' +
+'    <!-- Twitter Card -->\n' +
+'    <meta name="twitter:card" content="summary_large_image">\n' +
+'    <meta name="twitter:title" content="' + this.escapeHtml(title) + '">\n' +
+'    <meta name="twitter:description" content="' + this.escapeHtml(description) + '">\n' +
+'    <meta name="twitter:image" content="' + this.escapeHtml(ogImage) + '">\n\n' +
+'    <!-- Unified Stylesheet -->\n' +
+'    <link rel="stylesheet" href="../css/article.css?v=20261010_02">\n' +
+'    <style>\n' +
+'        :root {\n' +
+'            --bg-color: #ffffff;\n' +
+'            --bg-secondary: #f8fafc;\n' +
+'            --card-bg: #ffffff;\n' +
+'            --text-primary: #111827;\n' +
+'            --text-secondary: #4b5563;\n' +
+'            --text-muted: #9ca3af;\n' +
+'            --accent-color: #2481cc;\n' +
+'            --accent-hover: #1b66a3;\n' +
+'            --accent-light: #e8f4fd;\n' +
+'            --border-color: #e5e7eb;\n' +
+'            --header-bg: rgba(255, 255, 255, 0.85);\n' +
+'        }\n' +
+'        body.dark-theme {\n' +
+'            --bg-color: #0f141c;\n' +
+'            --bg-secondary: #171f2b;\n' +
+'            --card-bg: #171f2b;\n' +
+'            --text-primary: #f3f4f6;\n' +
+'            --text-secondary: #cbd5e1;\n' +
+'            --text-muted: #64748b;\n' +
+'            --accent-color: #00b4d8;\n' +
+'            --accent-hover: #0096c7;\n' +
+'            --accent-light: rgba(0, 180, 216, 0.12);\n' +
+'            --border-color: #243042;\n' +
+'            --header-bg: rgba(15, 20, 28, 0.85);\n' +
+'        }\n' +
+'        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }\n' +
+'        body {\n' +
+'            background-color: var(--bg-color);\n' +
+'            color: var(--text-primary);\n' +
+'            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;\n' +
+'            font-size: 17px;\n' +
+'            line-height: 1.7;\n' +
+'            min-height: 100vh;\n' +
+'            display: flex;\n' +
+'            flex-direction: column;\n' +
+'            transition: background-color 0.2s ease, color 0.2s ease;\n' +
+'        }\n' +
+'        .top-navbar {\n' +
+'            position: sticky;\n' +
+'            top: 0;\n' +
+'            z-index: 100;\n' +
+'            backdrop-filter: blur(12px);\n' +
+'            -webkit-backdrop-filter: blur(12px);\n' +
+'            background: var(--header-bg);\n' +
+'            border-bottom: 1px solid var(--border-color);\n' +
+'            padding: 10px 20px;\n' +
+'            display: flex;\n' +
+'            align-items: center;\n' +
+'            justify-content: space-between;\n' +
+'        }\n' +
+'        .brand-link { display: flex; align-items: center; text-decoration: none; flex-shrink: 0; }\n' +
+'        .brand-link img { width: 30px; height: 30px; border-radius: 6px; object-fit: contain; }\n' +
+'        .nav-actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }\n' +
+'        .nav-btn {\n' +
+'            background: transparent;\n' +
+'            border: 1px solid var(--border-color);\n' +
+'            color: var(--text-secondary);\n' +
+'            border-radius: 16px;\n' +
+'            padding: 4px 9px;\n' +
+'            font-size: 0.8em;\n' +
+'            font-weight: 600;\n' +
+'            cursor: pointer;\n' +
+'            display: inline-flex;\n' +
+'            align-items: center;\n' +
+'            gap: 4px;\n' +
+'            text-decoration: none;\n' +
+'            white-space: nowrap;\n' +
+'            transition: all 0.2s;\n' +
+'            line-height: 1.2;\n' +
+'        }\n' +
+'        .nav-btn:hover { background: var(--accent-light); color: var(--accent-color); border-color: var(--accent-color); }\n' +
+'        .nav-btn-icon { width: 30px; height: 30px; padding: 0; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; }\n' +
+'        .article-container { width: 100%; max-width: 740px; margin: 0 auto; padding: 36px 20px 80px 20px; flex: 1; }\n' +
+'        .article-header { margin-bottom: 30px; padding-bottom: 22px; border-bottom: 1px solid var(--border-color); }\n' +
+'        .article-title { font-size: 2.2em; font-weight: 800; line-height: 1.25; color: var(--text-primary); margin-bottom: 16px; letter-spacing: -0.5px; }\n' +
+'        @media (max-width: 600px) { .article-title { font-size: 1.75em; } .article-container { padding: 20px 16px 60px 16px; } }\n' +
+'        .article-meta-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 0.9em; color: var(--text-secondary); }\n' +
+'        .author-badge { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; color: var(--accent-color); text-decoration: none; }\n' +
+'        .author-badge:hover { text-decoration: underline; }\n' +
+'        .meta-dot { opacity: 0.5; }\n' +
+'        .video-banner-btn {\n' +
+'            display: flex; align-items: center; justify-content: center; gap: 10px;\n' +
+'            background: var(--accent-light); color: var(--accent-color); border: 1px solid var(--accent-color);\n' +
+'            border-radius: 12px; padding: 14px 20px; text-decoration: none; font-weight: 700; font-size: 1em;\n' +
+'            margin-bottom: 28px; transition: all 0.2s;\n' +
+'        }\n' +
+'        .video-banner-btn:hover { background: var(--accent-color); color: #ffffff; box-shadow: 0 4px 14px rgba(36, 129, 204, 0.3); }\n' +
+'        .share-toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(100px); background: #1e293b; color: #fff; padding: 10px 20px; border-radius: 30px; font-size: 0.88em; font-weight: 600; opacity: 0; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); z-index: 1000; box-shadow: 0 4px 20px rgba(0,0,0,0.25); pointer-events: none; }\n' +
+'        .share-toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }\n' +
+'    </style>\n' +
+'</head>\n' +
+'<body>\n' +
+'    <header class="top-navbar">\n' +
+'        <a href="../articles.html" class="brand-link" title="Все статьи TV SHOP">\n' +
+'            <img src="../app_logo.png" alt="TV SHOP Logo">\n' +
+'        </a>\n' +
+'        <div class="nav-actions">\n' +
+'            <a href="../articles.html" class="nav-btn" title="Вернуться к списку статей">\n' +
+'                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>\n' +
+'                <span>Все статьи</span>\n' +
+'            </a>\n' +
+'            <button type="button" class="nav-btn nav-btn-icon" id="btn-theme-toggle" title="Переключить тему">\n' +
+'                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/></svg>\n' +
+'            </button>\n' +
+'            <button type="button" class="nav-btn nav-btn-icon" id="btn-share-article" title="Поделиться статьей">\n' +
+'                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>\n' +
+'            </button>\n' +
+'        </div>\n' +
+'    </header>\n\n' +
+'    <main class="article-container">\n' +
+'        <article>\n' +
+'            <header class="article-header">\n' +
+'                <h1 class="article-title">' + this.escapeHtml(title) + '</h1>\n' +
+'                <div class="article-meta-row">\n' +
+'                    <a href="https://t.me/android_tv_shop" target="_blank" class="author-badge">\n' +
+'                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.75z"/></svg>\n' +
+'                        <span>' + this.escapeHtml(author) + '</span>\n' +
+'                    </a>\n' +
+'                    <span class="meta-dot">•</span>\n' +
+'                    <time datetime="' + this.escapeHtml(date) + '">' + this.escapeHtml(date) + '</time>\n' +
+'                    <span class="meta-dot">•</span>\n' +
+'                    <span>' + readTime + ' мин чтения</span>\n' +
+'                </div>\n' +
+'            </header>\n\n' +
+'            ' + videoBtnHtml + '\n\n' +
+'            <div class="article-body">\n' +
+'                ' + bodyHtml + '\n' +
+'            </div>\n' +
+'        </article>\n' +
+'    </main>\n\n' +
+'    <div class="share-toast" id="share-toast">✓ Ссылка скопирована в буфер обмена!</div>\n\n' +
+'    <script>\n' +
+'        (function() {\n' +
+'            var savedTheme = localStorage.getItem("tvshop_theme") || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");\n' +
+'            if (savedTheme === "dark") document.body.classList.add("dark-theme");\n' +
+'            document.getElementById("btn-theme-toggle").addEventListener("click", function() {\n' +
+'                document.body.classList.toggle("dark-theme");\n' +
+'                localStorage.setItem("tvshop_theme", document.body.classList.contains("dark-theme") ? "dark" : "light");\n' +
+'            });\n' +
+'            document.getElementById("btn-share-article").addEventListener("click", function() {\n' +
+'                var url = window.location.href;\n' +
+'                if (navigator.clipboard) {\n' +
+'                    navigator.clipboard.writeText(url).then(showToast);\n' +
+'                } else {\n' +
+'                    prompt("Скопируйте ссылку:", url);\n' +
+'                }\n' +
+'            });\n' +
+'            function showToast() {\n' +
+'                var toast = document.getElementById("share-toast");\n' +
+'                toast.classList.add("show");\n' +
+'                setTimeout(function() { toast.classList.remove("show"); }, 2500);\n' +
+'            }\n' +
+'        })();\n' +
+'    </script>\n' +
+'</body>\n' +
+'</html>';
         }
     };
 
