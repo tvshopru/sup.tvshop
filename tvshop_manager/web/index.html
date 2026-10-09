@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Quill.js 2.0 Core & Theme -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css">
-    <link rel="stylesheet" href="/static/style.css?v=20261009_3">
+    <link rel="stylesheet" href="/static/style.css?v=20261009_5">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
 </head>
@@ -55,8 +55,8 @@
 
             <!-- Sidebar Sync Actions -->
             <div class="sidebar-sync-box" style="margin-top:auto; padding:8px 0; display:flex; flex-direction:column; gap:6px;">
-                <button class="btn btn-primary w-100 btn-save-deploy" style="justify-content:center; font-weight:700; font-size:0.85em; padding:8px 10px;">
-                    💾 Опубликовать на GitHub
+                <button class="btn btn-primary w-100 btn-save-deploy" title="Опубликовать изменения на GitHub" style="justify-content:center; font-weight:700; font-size:0.85em; padding:8px 10px;">
+                    <span>💾</span> <span class="sync-btn-text">Опубликовать на GitHub</span>
                 </button>
             </div>
 
@@ -437,6 +437,6 @@
     <!-- Notification Toast Alerts -->
     <div class="toast-container" id="toast-container"></div>
 
-    <script src="/static/app.js?v=20261009_2"></script>
+    <script src="/static/app.js?v=20261009_5"></script>
 </body>
 </html>

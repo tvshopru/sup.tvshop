@@ -82,8 +82,26 @@ body {
 
 .manager-sidebar.collapsed .brand-text,
 .manager-sidebar.collapsed .brand-subtitle,
-.manager-sidebar.collapsed .menu-text {
+.manager-sidebar.collapsed .menu-text,
+.manager-sidebar.collapsed .sync-btn-text {
     display: none !important;
+}
+
+.manager-sidebar.collapsed .sidebar-sync-box {
+    padding: 8px 0;
+    display: flex;
+    justify-content: center;
+}
+
+.manager-sidebar.collapsed .btn-save-deploy {
+    width: 44px !important;
+    height: 42px !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 1.25em !important;
+    border-radius: 8px !important;
 }
 
 .manager-sidebar.collapsed .brand-title {
@@ -1368,45 +1386,33 @@ select.form-control {
     text-underline-offset: 3px !important;
 }
 
-.tg-content-editor ul, .tg-article-paper ul, .article-body ul, #tg-content-editor ul {
-    margin: 0.8em 0 !important;
-    padding-left: 8px !important;
-    list-style: disc inside !important;
-    list-style-type: disc !important;
-    list-style-position: inside !important;
-    display: block !important;
+.tg-content-editor ul, .article-body ul, #tg-content-editor ul {
+    margin: 0.8em 0;
+    padding-left: 1.2em;
+    list-style: disc;
+    display: block;
 }
 
-.tg-content-editor ol, .tg-article-paper ol, .article-body ol, #tg-content-editor ol {
-    margin: 0.8em 0 !important;
-    padding-left: 8px !important;
-    list-style: decimal inside !important;
-    list-style-type: decimal !important;
-    list-style-position: inside !important;
-    display: block !important;
+.tg-content-editor ol, .article-body ol, #tg-content-editor ol {
+    margin: 0.8em 0;
+    padding-left: 1.2em;
+    list-style: decimal;
+    display: block;
 }
 
-.tg-content-editor ul > li, .tg-article-paper ul > li, .article-body ul > li, #tg-content-editor ul > li {
-    display: list-item !important;
-    list-style: disc inside !important;
-    list-style-type: disc !important;
-    list-style-position: inside !important;
-    margin-bottom: 0.35em !important;
-    line-height: 1.5 !important;
+.tg-content-editor ul > li, .article-body ul > li, #tg-content-editor ul > li {
+    margin-bottom: 0.35em;
+    line-height: 1.6;
 }
 
-.tg-content-editor ol > li, .tg-article-paper ol > li, .article-body ol > li, #tg-content-editor ol > li {
-    display: list-item !important;
-    list-style: decimal inside !important;
-    list-style-type: decimal !important;
-    list-style-position: inside !important;
-    margin-bottom: 0.35em !important;
-    line-height: 1.5 !important;
+.tg-content-editor ol > li, .article-body ol > li, #tg-content-editor ol > li {
+    margin-bottom: 0.35em;
+    line-height: 1.6;
 }
 
-.tg-content-editor ul > li::marker, .tg-article-paper ul > li::marker, .article-body ul > li::marker {
-    color: #2481cc !important;
-    font-size: 1.1em !important;
+.tg-content-editor ul > li::marker, .article-body ul > li::marker {
+    color: #2481cc;
+    font-size: 1.1em;
 }
 
 .tg-content-editor pre, .tg-content-editor code {
@@ -2108,11 +2114,11 @@ h3.ce-header {
 #quill-toolbar {
     border: none !important;
     border-bottom: 1px solid var(--border-color) !important;
-    padding: 8px 14px !important;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 4px;
+    padding: 8px 16px !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    gap: 6px !important;
     background: #f8fafc;
     border-radius: 12px 12px 0 0;
 }
@@ -2123,57 +2129,143 @@ h3.ce-header {
 }
 
 #quill-toolbar .ql-formats {
-    margin-right: 8px !important;
-    display: inline-flex;
-    align-items: center;
+    margin-right: 6px !important;
+    margin-bottom: 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 3px !important;
 }
 
+/* Fix dropdown width & wrap in toolbar */
+.ql-toolbar.ql-snow .ql-picker.ql-header {
+    width: 142px !important;
+}
+
+.ql-toolbar.ql-snow .ql-picker.ql-header .ql-picker-label {
+    padding-left: 8px !important;
+    padding-right: 2px !important;
+    white-space: nowrap !important;
+    font-size: 0.88em !important;
+    font-weight: 600 !important;
+}
+
+.ql-toolbar.ql-snow .ql-picker.ql-header .ql-picker-item {
+    font-size: 0.9em !important;
+    padding: 6px 10px !important;
+}
+
+/* Custom Remote [OK] Badge Button */
 #quill-toolbar button.ql-remote-btn {
-    width: auto;
-    padding: 2px 8px;
-    font-size: 0.82em;
+    width: auto !important;
+    height: 26px !important;
+    padding: 2px 10px !important;
+    font-size: 0.82em !important;
     font-family: inherit;
-    font-weight: 700;
-    color: #4f46e5;
-    background: #eef2ff;
-    border: 1px solid #c7d2fe;
-    border-radius: 6px;
+    font-weight: 700 !important;
+    color: #4f46e5 !important;
+    background: #eef2ff !important;
+    border: 1px solid #c7d2fe !important;
+    border-radius: 6px !important;
     cursor: pointer;
-    line-height: 1.4;
+    line-height: 1.4 !important;
     transition: all 0.15s;
-    height: 24px;
-    margin-top: 1px;
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
 }
 
 #quill-toolbar button.ql-remote-btn:hover {
-    background: #4f46e5;
-    color: #fff;
-    border-color: #4f46e5;
+    background: #4f46e5 !important;
+    color: #ffffff !important;
+    border-color: #4f46e5 !important;
 }
 
 .dark-theme #quill-toolbar button.ql-remote-btn {
-    background: #312e81;
-    color: #e0e7ff;
-    border-color: #4338ca;
+    background: #312e81 !important;
+    color: #e0e7ff !important;
+    border-color: #4338ca !important;
 }
 
 .dark-theme #quill-toolbar button.ql-remote-btn:hover {
-    background: #6366f1;
-    color: #fff;
+    background: #6366f1 !important;
+    color: #ffffff !important;
 }
 
+/* Custom TG Import & Theme Toggle buttons inside Quill Toolbar */
+#quill-toolbar button.tg-tb-btn {
+    width: auto !important;
+    height: 30px !important;
+    padding: 0 12px !important;
+    font-size: 0.84em !important;
+    font-weight: 600 !important;
+    border-radius: 16px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 5px !important;
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    line-height: 1 !important;
+}
+
+#tg-btn-paste-in-editor {
+    color: #2481cc !important;
+    background: #e8f4fd !important;
+    border: 1px solid #bfdbfe !important;
+}
+
+#tg-btn-paste-in-editor:hover {
+    background: #2481cc !important;
+    color: #ffffff !important;
+}
+
+#tg-btn-theme-toggle {
+    color: var(--text-color) !important;
+    background: #ffffff !important;
+    border: 1px solid #cbd5e1 !important;
+}
+
+#tg-btn-theme-toggle:hover {
+    background: #f1f5f9 !important;
+    border-color: #94a3b8 !important;
+}
+
+.dark-theme #tg-btn-paste-in-editor {
+    background: rgba(56, 189, 248, 0.15) !important;
+    color: #38bdf8 !important;
+    border-color: #0284c7 !important;
+}
+
+.dark-theme #tg-btn-paste-in-editor:hover {
+    background: #0284c7 !important;
+    color: #ffffff !important;
+}
+
+.dark-theme #tg-btn-theme-toggle {
+    background: #334155 !important;
+    color: #f8fafc !important;
+    border-color: #475569 !important;
+}
+
+.dark-theme #tg-btn-theme-toggle:hover {
+    background: #475569 !important;
+}
+
+/* Quill Editor Body Paper */
 .quill-editor-body {
-    min-height: 420px;
-    font-size: 1.05rem;
-    line-height: 1.7;
+    min-height: 440px;
+    font-size: 1.06rem;
+    line-height: 1.75;
     font-family: inherit;
     border: none !important;
-    padding: 20px 24px !important;
+    padding: 24px 28px !important;
 }
 
 .quill-editor-body .ql-editor {
     padding: 0;
-    min-height: 380px;
+    min-height: 400px;
+    outline: none;
 }
 
 .quill-editor-body .ql-editor.ql-blank::before {
@@ -2227,9 +2319,18 @@ h3.ce-header {
 /* Embedded Quill image styles inside editor & public page */
 .ql-editor img {
     max-width: 100%;
+    height: auto;
     border-radius: 8px;
-    box-shadow: 0 4px 14px rgba(0,0,0,0.06);
-    margin: 12px 0;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    margin: 14px 0;
+    display: inline-block;
+    cursor: zoom-in;
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+.dark-theme .ql-editor img {
+    border-color: #334155;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
 }
 
 .ql-editor iframe.ql-video {
@@ -2237,6 +2338,7 @@ h3.ce-header {
     height: 360px;
     border-radius: 8px;
     margin: 14px 0;
+    border: 0;
 }
 
 .ql-editor blockquote {

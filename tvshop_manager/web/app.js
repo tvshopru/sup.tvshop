@@ -615,6 +615,23 @@ function updateArticleReadingTime() {
     $('#tg-paper-readtime').text(`${mins} мин чтения`);
 }
 
+// Helper to safely load HTML content into Quill without dropping images or figure blocks
+function setQuillContent(html) {
+    if (!quill) return;
+    if (!html || !html.trim()) {
+        quill.setText('');
+        return;
+    }
+
+    // Pre-process: unwrap image figures / custom divs into paragraphs so Quill's Delta matcher keeps images
+    let clean = html
+        .replace(/<div\s+class="article-image-figure"[^>]*>([\s\S]*?)<\/div>/gi, '<p>$1</p>')
+        .replace(/<figure[^>]*>([\s\S]*?)<\/figure>/gi, '<p>$1</p>');
+
+    quill.setContents([]);
+    quill.clipboard.dangerouslyPasteHTML(0, clean, 'silent');
+}
+
 // Select Article item to display in Quill Editor
 function selectArticle(idx) {
     const articles = portalConfig.articles || [];
@@ -648,7 +665,7 @@ function selectArticle(idx) {
 
     initQuillEditor();
     if (quill) {
-        quill.root.innerHTML = art.contentHtml || '<p></p>';
+        setQuillContent(art.contentHtml || '<p></p>');
     }
     updateArticleReadingTime();
 
