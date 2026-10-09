@@ -70,13 +70,11 @@
             <div class="sidebar-cloud-box">
                 <div class="cloud-status-indicator">
                     <div class="status-dot-pulse"></div>
-                    <span class="sidebar-cloud-info">Прямое подключение к GitHub</span>
+                    <span class="sidebar-cloud-info">Подключено к GitHub</span>
                 </div>
-                <button class="btn btn-primary w-100 btn-save-deploy" title="Опубликовать изменения на GitHub" style="justify-content:center; font-weight:700; font-size:0.85em; padding:8px 10px;">
-                    <span>💾</span> <span class="sync-btn-text">Опубликовать на GitHub</span>
-                </button>
-                <button type="button" class="btn btn-secondary w-100" id="btn-logout-token" style="justify-content:center; font-size:0.78em; padding:5px 8px; color:#ef4444; border-color:rgba(239,68,68,0.2);">
-                    🔒 <span class="sync-btn-text">Заблокировать вход</span>
+                <button type="button" class="btn btn-secondary w-100" id="btn-logout-token" style="justify-content:center; font-size:0.78em; padding:6px 8px; color:var(--text-muted); border-color:var(--border-color);">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                    <span class="sync-btn-text">Выйти из студии</span>
                 </button>
             </div>
         </div>
@@ -222,14 +220,16 @@
                         <!-- Right column: Metadata & Save -->
                         <div class="tg-split-right" id="article-meta-sidebar" style="display:none;">
                             <div class="card" style="padding:14px; margin-bottom:10px; display:flex; flex-direction:column; gap:8px;">
-                                <button class="btn btn-primary w-100 btn-save-deploy" style="justify-content:center; font-weight:800; padding:10px 14px; font-size:0.92em;">
-                                    💾 Сохранить и опубликовать
+                                <button class="btn btn-primary w-100 btn-save-deploy" style="justify-content:center; font-weight:800; padding:11px 14px; font-size:0.95em; gap:8px;">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                                    <span>Опубликовать на сайт</span>
                                 </button>
-                                <button type="button" class="btn btn-secondary w-100" id="btn-sidebar-preview" style="justify-content:center; font-weight:700; font-size:0.86em; padding:8px 10px; background:#e0f2fe; color:#0369a1; border-color:#bae6fd;">
-                                    👁️ Предпросмотр статьи
+                                <button type="button" class="btn btn-secondary w-100" id="btn-sidebar-preview" style="justify-content:center; font-weight:700; font-size:0.86em; padding:8px 10px; background:#eff6ff; color:#2563eb; border-color:#bfdbfe; gap:6px;">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                                    <span>Предпросмотр статьи</span>
                                 </button>
                                 <button class="btn btn-secondary w-100 btn-reset" style="justify-content:center; font-size:0.82em; padding:6px 10px;">
-                                    🔄 Сбросить изменения
+                                    <span>Сбросить изменения</span>
                                 </button>
                             </div>
 
@@ -295,7 +295,13 @@
                 <div class="pane" id="pane-news">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
                         <h2 class="pane-title" style="margin:0;">📰 Новости и важные анонсы</h2>
-                        <button class="btn btn-add" id="btn-add-news">+ Добавить новость</button>
+                        <div style="display:flex; gap:10px;">
+                            <button class="btn btn-add" id="btn-add-news">+ Добавить новость</button>
+                            <button class="btn btn-primary btn-save-deploy" style="gap:6px; font-weight:700;">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                                <span>Опубликовать на сайт</span>
+                            </button>
+                        </div>
                     </div>
                     <div id="news-list-container"></div>
                 </div>
@@ -304,14 +310,26 @@
                 <div class="pane" id="pane-products">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
                         <h2 class="pane-title" style="margin:0;">🛒 Товары магазина</h2>
-                        <button class="btn btn-add" id="btn-add-product">+ Добавить товар</button>
+                        <div style="display:flex; gap:10px;">
+                            <button class="btn btn-add" id="btn-add-product">+ Добавить товар</button>
+                            <button class="btn btn-primary btn-save-deploy" style="gap:6px; font-weight:700;">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                                <span>Опубликовать на сайт</span>
+                            </button>
+                        </div>
                     </div>
                     <div id="products-list-container"></div>
                 </div>
 
                 <!-- Pane: Promo -->
                 <div class="pane" id="pane-promo">
-                    <h2 class="pane-title">📺 Премиум ТВ (Промо-карточка)</h2>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; max-width:700px;">
+                        <h2 class="pane-title" style="margin:0;">📺 Премиум ТВ (Промо-карточка)</h2>
+                        <button class="btn btn-primary btn-save-deploy" style="gap:6px; font-weight:700;">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                            <span>Опубликовать на сайт</span>
+                        </button>
+                    </div>
                     <div class="card" style="max-width:700px;">
                         <div class="form-group">
                             <label for="input-promo-badge">Бейдж акции</label>
@@ -338,7 +356,13 @@
 
                 <!-- Pane: Support -->
                 <div class="pane" id="pane-support">
-                    <h2 class="pane-title">📞 Контакты поддержки</h2>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; max-width:700px;">
+                        <h2 class="pane-title" style="margin:0;">📞 Контакты поддержки</h2>
+                        <button class="btn btn-primary btn-save-deploy" style="gap:6px; font-weight:700;">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                            <span>Опубликовать на сайт</span>
+                        </button>
+                    </div>
                     <div class="card" style="max-width:700px;">
                         <div class="form-group">
                             <label for="input-support-text">Приветственный текст поддержки</label>
