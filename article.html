@@ -1044,6 +1044,8 @@
             }
 
             var htmlParts = [];
+            var runningOrderedIndex = 1;
+
             blocksData.blocks.forEach(function(block) {
                 var type = block.type;
                 var data = block.data || {};
@@ -1065,12 +1067,16 @@
                     case 'list': {
                         var isOrdered = data.style === 'ordered';
                         var tag = isOrdered ? 'ol' : 'ul';
+                        var startAttr = isOrdered ? ' start="' + runningOrderedIndex + '"' : '';
                         var items = data.items || [];
                         var lis = items.map(function(item) {
-                            var itemText = typeof item === 'string' ? item : (item.content || '');
+                            var itemText = typeof item === 'string' ? item : (item.content || item.text || '');
+                            if (isOrdered) {
+                                runningOrderedIndex++;
+                            }
                             return '<li>' + itemText + '</li>';
                         }).join('');
-                        htmlParts.push('<' + tag + '>' + lis + '</' + tag + '>');
+                        htmlParts.push('<' + tag + startAttr + '>' + lis + '</' + tag + '>');
                         break;
                     }
                     case 'image': {
