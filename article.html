@@ -15,7 +15,7 @@
     <meta property="og:image" content="app_logo.png">
 
     <!-- Unified Article Engine -->
-    <link rel="stylesheet" href="css/article.css">
+    <link rel="stylesheet" href="css/article.css?v=20261010_02">
     <script src="js/article-renderer.js"></script>
 
     <style>
@@ -360,14 +360,10 @@
             line-height: 1.5 !important;
         }
 
-        .article-body ul > li::marker {
-            color: var(--accent-color) !important;
-            font-size: 1.1em !important;
-        }
-
-        .article-body ul > li::marker {
-            color: var(--accent-color) !important;
-            font-size: 1.2em !important;
+        .article-body ul > li::marker,
+        .article-body ol > li::marker {
+            color: inherit !important;
+            font-weight: 700 !important;
         }
 
         .article-body pre, .article-body code {

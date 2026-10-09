@@ -102,7 +102,7 @@ body.dark-theme .article-body h3,
 
 .article-body ul:not(.article-checklist-list) > li::marker,
 .article-body ol > li::marker {
-    color: var(--accent-color, #2481cc) !important;
+    color: inherit !important;
     font-weight: 700 !important;
 }
 
