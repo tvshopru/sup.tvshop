@@ -610,7 +610,7 @@ function selectArticle(idx) {
         $('#tg-paper-video-badge').hide();
     }
 
-    const editorData = art.contentData || htmlToEditorData(art.contentHtml || '');
+    const editorData = art.contentData || (art.blocks && art.blocks.blocks ? art.blocks : null) || (window.ArticleRenderer ? ArticleRenderer.htmlToEditorData(art.contentHtml || '') : htmlToEditorData(art.contentHtml || ''));
     initEditorJS(editorData);
     initEditorToolbarActions();
 
@@ -1351,23 +1351,14 @@ async function syncArticleEditorData() {
             if (portalConfig.articles && portalConfig.articles[activeArticleIdx]) {
                 portalConfig.articles[activeArticleIdx].contentData = savedData;
                 portalConfig.articles[activeArticleIdx].blocks = savedData;
-                portalConfig.articles[activeArticleIdx].contentHtml = editorDataToHtml(savedData);
+                portalConfig.articles[activeArticleIdx].contentHtml = window.ArticleRenderer ? ArticleRenderer.render(savedData) : editorDataToHtml(savedData);
             }
         } catch (err) {}
     }
 }
 
 function updateArticleReadingTimeFromData(data) {
-    let wordCount = 0;
-    if (data && data.blocks) {
-        data.blocks.forEach(b => {
-            const d = b.data || {};
-            const text = (d.text || d.message || d.title || d.caption || '') + ' ' + (Array.isArray(d.items) ? d.items.join(' ') : '');
-            const clean = $('<div>').html(text).text().trim();
-            if (clean) wordCount += clean.split(/\s+/).filter(Boolean).length;
-        });
-    }
-    const mins = Math.max(1, Math.ceil(wordCount / 150));
+    const mins = window.ArticleRenderer ? ArticleRenderer.calculateReadTime(data) : 1;
     $('#tg-paper-readtime').text(`${mins} мин чтения`);
 }
 
@@ -1445,15 +1436,18 @@ function openArticleLivePreview() {
     if (editorInstance && isEditorReady) {
         editorInstance.save().then(savedData => {
             art.contentData = savedData;
-            art.contentHtml = editorDataToHtml(savedData);
+            art.blocks = savedData;
+            art.contentHtml = window.ArticleRenderer ? ArticleRenderer.render(savedData) : editorDataToHtml(savedData);
             $('#prev-art-body').html(art.contentHtml || '<p style="color:#94a3b8; font-style:italic;">Текст статьи пока пуст...</p>');
             $('#modal-article-preview').css('display', 'flex').hide().fadeIn(150);
         }).catch(() => {
-            $('#prev-art-body').html(art.contentHtml || '<p style="color:#94a3b8; font-style:italic;">Текст статьи пока пуст...</p>');
+            const html = window.ArticleRenderer ? ArticleRenderer.render(art) : (art.contentHtml || '');
+            $('#prev-art-body').html(html || '<p style="color:#94a3b8; font-style:italic;">Текст статьи пока пуст...</p>');
             $('#modal-article-preview').css('display', 'flex').hide().fadeIn(150);
         });
     } else {
-        $('#prev-art-body').html(art.contentHtml || '<p style="color:#94a3b8; font-style:italic;">Текст статьи пока пуст...</p>');
+        const html = window.ArticleRenderer ? ArticleRenderer.render(art) : (art.contentHtml || '');
+        $('#prev-art-body').html(html || '<p style="color:#94a3b8; font-style:italic;">Текст статьи пока пуст...</p>');
         $('#modal-article-preview').css('display', 'flex').hide().fadeIn(150);
     }
 }
@@ -1512,6 +1506,7 @@ function createNewArticleFromText(rawText) {
 
     const formattedHtml = parseTelegramBlocks(rawText, true);
     const titleVal = $('#input-art-title').val().trim() || 'Статья Telegram';
+    const editorData = window.ArticleRenderer ? ArticleRenderer.htmlToEditorData(formattedHtml) : htmlToEditorData(formattedHtml);
 
     const newArt = {
         id: 'art-' + new Date().getTime(),
@@ -1520,7 +1515,9 @@ function createNewArticleFromText(rawText) {
         status: 'published',
         category: '',
         videoUrl: '',
-        contentHtml: formattedHtml
+        contentHtml: formattedHtml,
+        contentData: editorData,
+        blocks: editorData
     };
     portalConfig.articles.unshift(newArt);
     renderArticlesList();
@@ -1530,7 +1527,7 @@ function createNewArticleFromText(rawText) {
 
 function insertTextIntoCurrentArticle(rawText) {
     const formattedHtml = parseTelegramBlocks(rawText, false);
-    const newEditorData = htmlToEditorData(formattedHtml);
+    const newEditorData = window.ArticleRenderer ? ArticleRenderer.htmlToEditorData(formattedHtml) : htmlToEditorData(formattedHtml);
     if (editorInstance && isEditorReady && newEditorData && newEditorData.blocks) {
         newEditorData.blocks.forEach(b => {
             editorInstance.blocks.insert(b.type, b.data);

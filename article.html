@@ -14,6 +14,10 @@
     <meta property="og:description" id="og-desc" content="Полезное руководство и настройка">
     <meta property="og:image" content="app_logo.png">
 
+    <!-- Unified Article Engine -->
+    <link rel="stylesheet" href="css/article.css">
+    <script src="js/article-renderer.js"></script>
+
     <style>
         :root {
             --bg-color: #ffffff;
@@ -901,13 +905,7 @@
                     '</a>';
             }
 
-            var cleanBodyHtml = '';
-            var blocksObj = article.contentData || article.blocks;
-            if (blocksObj && blocksObj.blocks && blocksObj.blocks.length > 0) {
-                cleanBodyHtml = renderBlocksToHtml(blocksObj);
-            } else {
-                cleanBodyHtml = cleanArticleBody(article.contentHtml || '');
-            }
+            var cleanBodyHtml = window.ArticleRenderer ? ArticleRenderer.render(article) : (article.contentHtml || '');
 
             var isDraft = article.status === 'draft' || article.isDraft === true || article.draft === true;
             var draftBanner = isDraft ? '<div style="background:#fef3c7; border:1px solid #fde68a; color:#92400e; padding:10px 14px; border-radius:10px; margin-bottom:18px; font-weight:700; font-size:0.9em; display:flex; align-items:center; gap:8px;"><span>🟡</span><span>Черновик статьи (в разработке)</span></div>' : '';
