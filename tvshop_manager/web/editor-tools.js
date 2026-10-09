@@ -1,11 +1,442 @@
 /**
- * Editor.js Tool Suite & Custom Plugins for TV SHOP Portal Manager
- * Supports: Headers, Paragraphs, Images (with upload & resize/align), Lists,
- * Warnings/Alerts, Video Embeds (YouTube, Rutube, VK), Tables, Checklists, Quotes,
- * Delimiters, Call-to-Action Buttons, Accordions/Spoilers, Markers & Remote Keys.
+ * Self-contained, robust Editor.js Custom Tools Suite for TV SHOP Portal Manager.
+ * Guaranteed 100% offline & local compatibility without external CDN dependencies.
  */
 
-// Custom Button (Call-to-Action) Tool
+// 1. Header Block Tool
+class ArticleHeaderTool {
+    static get toolbox() {
+        return {
+            title: 'Заголовок',
+            icon: '<svg width="18" height="18" viewBox="0 0 24 24"><path d="M5 4v3h5.5v12h3V7H19V4z"/></svg>'
+        };
+    }
+
+    constructor({ data, config }) {
+        this.data = {
+            text: data.text || '',
+            level: data.level || (config && config.defaultLevel) || 2
+        };
+        this.element = null;
+    }
+
+    render() {
+        const tag = 'h' + this.data.level;
+        this.element = document.createElement(tag);
+        this.element.classList.add('ce-header');
+        this.element.contentEditable = 'true';
+        this.element.innerHTML = this.data.text;
+        this.element.dataset.placeholder = 'Заголовок...';
+
+        this.element.addEventListener('input', () => {
+            this.data.text = this.element.innerHTML;
+        });
+
+        return this.element;
+    }
+
+    renderSettings() {
+        const wrapper = document.createElement('div');
+        wrapper.classList.add('cdx-settings-wrapper');
+        [2, 3, 4].forEach(level => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.classList.add('cdx-settings-btn');
+            if (this.data.level === level) btn.classList.add('active');
+            btn.innerHTML = `<b>H${level}</b>`;
+            btn.addEventListener('click', () => {
+                this.setLevel(level);
+                wrapper.querySelectorAll('.cdx-settings-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+            });
+            wrapper.appendChild(btn);
+        });
+        return wrapper;
+    }
+
+    setLevel(level) {
+        this.data.level = level;
+        if (this.element) {
+            const newEl = document.createElement('h' + level);
+            newEl.classList.add('ce-header');
+            newEl.contentEditable = 'true';
+            newEl.innerHTML = this.element.innerHTML;
+            newEl.dataset.placeholder = 'Заголовок...';
+            newEl.addEventListener('input', () => {
+                this.data.text = newEl.innerHTML;
+            });
+            this.element.replaceWith(newEl);
+            this.element = newEl;
+        }
+    }
+
+    save(blockContent) {
+        return {
+            text: blockContent.innerHTML,
+            level: this.data.level
+        };
+    }
+}
+
+// 2. List Block Tool (Ordered & Unordered, 100% resilient to legacy and nested format)
+class ArticleListTool {
+    static get toolbox() {
+        return {
+            title: 'Список',
+            icon: '<svg width="18" height="18" viewBox="0 0 24 24"><path d="M4 6h2v2H4zm0 5h2v2H4zm0 5h2v2H4zm4-10h12v2H8zm0 5h12v2H8zm0 5h12v2H8z"/></svg>'
+        };
+    }
+
+    constructor({ data }) {
+        this.data = {
+            style: data.style === 'unordered' ? 'unordered' : 'ordered',
+            items: Array.isArray(data.items) ? data.items.map(it => {
+                if (typeof it === 'string') return it;
+                return (it && it.content) ? it.content : (it && it.text) ? it.text : '';
+            }) : []
+        };
+        if (!this.data.items.length) {
+            this.data.items = [''];
+        }
+        this.listEl = null;
+    }
+
+    render() {
+        const tag = this.data.style === 'ordered' ? 'ol' : 'ul';
+        this.listEl = document.createElement(tag);
+        this.listEl.classList.add('cdx-list-block', 'ce-list--' + this.data.style);
+
+        this.data.items.forEach(itemText => {
+            const li = this._createLi(itemText);
+            this.listEl.appendChild(li);
+        });
+
+        return this.listEl;
+    }
+
+    _createLi(text) {
+        const li = document.createElement('li');
+        li.classList.add('cdx-list-item');
+        li.contentEditable = 'true';
+        li.innerHTML = text || '';
+
+        li.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const newLi = this._createLi('');
+                if (li.nextSibling) {
+                    this.listEl.insertBefore(newLi, li.nextSibling);
+                } else {
+                    this.listEl.appendChild(newLi);
+                }
+                newLi.focus();
+            } else if (e.key === 'Backspace' && !li.innerHTML.trim()) {
+                if (this.listEl.children.length > 1) {
+                    e.preventDefault();
+                    const prev = li.previousSibling || li.nextSibling;
+                    li.remove();
+                    if (prev) prev.focus();
+                }
+            }
+        });
+
+        return li;
+    }
+
+    renderSettings() {
+        const wrapper = document.createElement('div');
+        wrapper.classList.add('cdx-settings-wrapper');
+
+        const orderedBtn = document.createElement('button');
+        orderedBtn.type = 'button';
+        orderedBtn.classList.add('cdx-settings-btn');
+        if (this.data.style === 'ordered') orderedBtn.classList.add('active');
+        orderedBtn.innerHTML = '1. Нумерованный';
+        orderedBtn.addEventListener('click', () => {
+            this.data.style = 'ordered';
+            this._toggleStyle();
+            orderedBtn.classList.add('active');
+            unorderedBtn.classList.remove('active');
+        });
+
+        const unorderedBtn = document.createElement('button');
+        unorderedBtn.type = 'button';
+        unorderedBtn.classList.add('cdx-settings-btn');
+        if (this.data.style === 'unordered') unorderedBtn.classList.add('active');
+        unorderedBtn.innerHTML = '• Маркированный';
+        unorderedBtn.addEventListener('click', () => {
+            this.data.style = 'unordered';
+            this._toggleStyle();
+            unorderedBtn.classList.add('active');
+            orderedBtn.classList.remove('active');
+        });
+
+        wrapper.appendChild(orderedBtn);
+        wrapper.appendChild(unorderedBtn);
+        return wrapper;
+    }
+
+    _toggleStyle() {
+        if (!this.listEl) return;
+        const tag = this.data.style === 'ordered' ? 'ol' : 'ul';
+        const newList = document.createElement(tag);
+        newList.classList.add('cdx-list-block', 'ce-list--' + this.data.style);
+        while (this.listEl.firstChild) {
+            newList.appendChild(this.listEl.firstChild);
+        }
+        this.listEl.replaceWith(newList);
+        this.listEl = newList;
+    }
+
+    save(blockContent) {
+        const items = [];
+        blockContent.querySelectorAll('li').forEach(li => {
+            const html = li.innerHTML.trim();
+            if (html) items.push(html);
+        });
+        return {
+            style: this.data.style,
+            items: items.length ? items : ['']
+        };
+    }
+}
+
+// 3. Image Block Tool (With instant upload, paste, caption & resize borders)
+class ArticleImageTool {
+    static get toolbox() {
+        return {
+            title: 'Изображение',
+            icon: '<svg width="18" height="18" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zm-5.04-6.71l-2.75 3.54-1.96-2.36L6.5 17h11l-3.54-4.71z"/></svg>'
+        };
+    }
+
+    constructor({ data }) {
+        this.data = {
+            url: (data.file && data.file.url) ? data.file.url : (data.url || ''),
+            caption: data.caption || '',
+            withBorder: !!data.withBorder,
+            stretched: !!data.stretched,
+            withBackground: !!data.withBackground
+        };
+        this.wrapper = null;
+    }
+
+    render() {
+        this.wrapper = document.createElement('div');
+        this.wrapper.classList.add('cdx-image-tool-wrapper');
+
+        if (this.data.url) {
+            this._renderImage();
+        } else {
+            this._renderUploader();
+        }
+
+        return this.wrapper;
+    }
+
+    _renderUploader() {
+        this.wrapper.innerHTML = '';
+        const box = document.createElement('div');
+        box.classList.add('cdx-image-upload-box');
+        box.innerHTML = `
+            <div class="cdx-image-upload-icon">🖼️</div>
+            <div class="cdx-image-upload-text">Нажмите для выбора фото или вставьте скриншот (Ctrl+V)</div>
+            <input type="file" accept="image/*" style="display:none;" />
+        `;
+
+        const fileInput = box.querySelector('input[type="file"]');
+        box.addEventListener('click', () => fileInput.click());
+
+        fileInput.addEventListener('change', () => {
+            const file = fileInput.files[0];
+            if (file) this._uploadFile(file);
+        });
+
+        box.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            box.classList.add('dragover');
+        });
+        box.addEventListener('dragleave', () => box.classList.remove('dragover'));
+        box.addEventListener('drop', (e) => {
+            e.preventDefault();
+            box.classList.remove('dragover');
+            if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]) {
+                this._uploadFile(e.dataTransfer.files[0]);
+            }
+        });
+
+        this.wrapper.appendChild(box);
+    }
+
+    _renderImage() {
+        this.wrapper.innerHTML = '';
+        const figure = document.createElement('div');
+        figure.classList.add('article-image-figure');
+        if (this.data.withBorder) figure.classList.add('img-bordered');
+        if (this.data.stretched) figure.classList.add('img-stretched');
+
+        const img = document.createElement('img');
+        img.src = this.data.url;
+        img.alt = this.data.caption;
+
+        const captionIn = document.createElement('input');
+        captionIn.type = 'text';
+        captionIn.classList.add('cdx-input', 'cdx-image-caption-input');
+        captionIn.placeholder = 'Подпись к фото (необязательно)...';
+        captionIn.value = this.data.caption;
+        captionIn.addEventListener('input', () => {
+            this.data.caption = captionIn.value;
+        });
+
+        const actionsBar = document.createElement('div');
+        actionsBar.classList.add('cdx-image-actions-bar');
+        actionsBar.innerHTML = `
+            <button type="button" class="cdx-img-act-btn btn-change" title="Заменить фото">🔄 Заменить</button>
+            <button type="button" class="cdx-img-act-btn btn-del" title="Удалить">🗑️ Удалить</button>
+            <input type="file" accept="image/*" style="display:none;" />
+        `;
+
+        const replaceFileInput = actionsBar.querySelector('input');
+        actionsBar.querySelector('.btn-change').addEventListener('click', () => replaceFileInput.click());
+        replaceFileInput.addEventListener('change', () => {
+            if (replaceFileInput.files[0]) this._uploadFile(replaceFileInput.files[0]);
+        });
+
+        actionsBar.querySelector('.btn-del').addEventListener('click', () => {
+            this.data.url = '';
+            this.data.caption = '';
+            this._renderUploader();
+        });
+
+        figure.appendChild(img);
+        figure.appendChild(actionsBar);
+        figure.appendChild(captionIn);
+        this.wrapper.appendChild(figure);
+    }
+
+    _uploadFile(file) {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        this.wrapper.innerHTML = '<div class="cdx-image-loading">⏳ Загрузка изображения...</div>';
+
+        fetch('/api/upload', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'x-admin-pin': localStorage.getItem('portal_pin') || ''
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.path || (data.file && data.file.url)) {
+                this.data.url = data.path || data.file.url;
+                this._renderImage();
+            } else {
+                alert('Ошибка загрузки фото: ' + (data.error || 'неизвестная ошибка'));
+                this._renderUploader();
+            }
+        })
+        .catch(err => {
+            alert('Ошибка отправки файла на сервер');
+            this._renderUploader();
+        });
+    }
+
+    renderSettings() {
+        const wrapper = document.createElement('div');
+        wrapper.classList.add('cdx-settings-wrapper');
+
+        const borderBtn = document.createElement('button');
+        borderBtn.type = 'button';
+        borderBtn.classList.add('cdx-settings-btn');
+        if (this.data.withBorder) borderBtn.classList.add('active');
+        borderBtn.innerHTML = '🔲 Рамка';
+        borderBtn.addEventListener('click', () => {
+            this.data.withBorder = !this.data.withBorder;
+            borderBtn.classList.toggle('active', this.data.withBorder);
+            if (this.data.url) this._renderImage();
+        });
+
+        const stretchBtn = document.createElement('button');
+        stretchBtn.type = 'button';
+        stretchBtn.classList.add('cdx-settings-btn');
+        if (this.data.stretched) stretchBtn.classList.add('active');
+        stretchBtn.innerHTML = '↔ Во всю ширину';
+        stretchBtn.addEventListener('click', () => {
+            this.data.stretched = !this.data.stretched;
+            stretchBtn.classList.toggle('active', this.data.stretched);
+            if (this.data.url) this._renderImage();
+        });
+
+        wrapper.appendChild(borderBtn);
+        wrapper.appendChild(stretchBtn);
+        return wrapper;
+    }
+
+    save(blockContent) {
+        const captionIn = blockContent.querySelector('.cdx-image-caption-input');
+        return {
+            url: this.data.url,
+            file: { url: this.data.url },
+            caption: captionIn ? captionIn.value.trim() : this.data.caption,
+            withBorder: this.data.withBorder,
+            stretched: this.data.stretched,
+            withBackground: this.data.withBackground
+        };
+    }
+}
+
+// 4. Alert / Warning Card Tool
+class ArticleAlertTool {
+    static get toolbox() {
+        return {
+            title: 'Важное предупреждение',
+            icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>'
+        };
+    }
+
+    constructor({ data }) {
+        this.data = {
+            title: data.title || 'Внимание!',
+            message: data.message || 'Не отключайте приставку из розетки во время настройки.'
+        };
+    }
+
+    render() {
+        const wrapper = document.createElement('div');
+        wrapper.classList.add('editor-alert-box');
+
+        const titleIn = document.createElement('input');
+        titleIn.type = 'text';
+        titleIn.placeholder = 'Заголовок (например: «Важно!»)...';
+        titleIn.value = this.data.title;
+        titleIn.classList.add('cdx-input', 'editor-alert-title');
+
+        const messageIn = document.createElement('textarea');
+        messageIn.placeholder = 'Текст предупреждения или подсказки...';
+        messageIn.value = this.data.message;
+        messageIn.classList.add('cdx-input', 'editor-alert-message');
+
+        titleIn.addEventListener('input', () => { this.data.title = titleIn.value; });
+        messageIn.addEventListener('input', () => { this.data.message = messageIn.value; });
+
+        wrapper.appendChild(titleIn);
+        wrapper.appendChild(messageIn);
+        return wrapper;
+    }
+
+    save(blockContent) {
+        const titleIn = blockContent.querySelector('.editor-alert-title');
+        const messageIn = blockContent.querySelector('.editor-alert-message');
+        return {
+            title: titleIn ? titleIn.value.trim() : '',
+            message: messageIn ? messageIn.value.trim() : ''
+        };
+    }
+}
+
+// 5. Action Button Tool
 class ArticleButtonTool {
     static get toolbox() {
         return {
@@ -14,13 +445,11 @@ class ArticleButtonTool {
         };
     }
 
-    constructor({ data, api }) {
+    constructor({ data }) {
         this.data = {
             text: data.text || 'Написать в Telegram',
-            url: data.url || 'https://t.me/android_tv_shop',
-            style: data.style || 'primary'
+            url: data.url || 'https://t.me/android_tv_shop'
         };
-        this.api = api;
     }
 
     render() {
@@ -29,7 +458,7 @@ class ArticleButtonTool {
 
         const textInput = document.createElement('input');
         textInput.type = 'text';
-        textInput.placeholder = 'Текст кнопки (например, «Скачать приложение»)...';
+        textInput.placeholder = 'Текст кнопки...';
         textInput.value = this.data.text;
         textInput.classList.add('cdx-input', 'editor-btn-text-input');
 
@@ -39,25 +468,11 @@ class ArticleButtonTool {
         urlInput.value = this.data.url;
         urlInput.classList.add('cdx-input', 'editor-btn-url-input');
 
-        const previewBtn = document.createElement('a');
-        previewBtn.classList.add('article-btn-cta', 'btn-preview');
-        previewBtn.textContent = this.data.text || 'Кнопка';
-        previewBtn.href = '#';
-        previewBtn.onclick = (e) => e.preventDefault();
-
-        textInput.addEventListener('input', () => {
-            this.data.text = textInput.value;
-            previewBtn.textContent = this.data.text || 'Кнопка';
-        });
-
-        urlInput.addEventListener('input', () => {
-            this.data.url = urlInput.value;
-        });
+        textInput.addEventListener('input', () => { this.data.text = textInput.value; });
+        urlInput.addEventListener('input', () => { this.data.url = urlInput.value; });
 
         container.appendChild(textInput);
         container.appendChild(urlInput);
-        container.appendChild(previewBtn);
-
         return container;
     }
 
@@ -66,13 +481,12 @@ class ArticleButtonTool {
         const urlIn = blockContent.querySelector('.editor-btn-url-input');
         return {
             text: textIn ? textIn.value.trim() : '',
-            url: urlIn ? urlIn.value.trim() : '',
-            style: this.data.style || 'primary'
+            url: urlIn ? urlIn.value.trim() : ''
         };
     }
 }
 
-// Custom Accordion / Spoiler Tool for FAQ
+// 6. Spoiler / FAQ Tool
 class ArticleSpoilerTool {
     static get toolbox() {
         return {
@@ -81,12 +495,11 @@ class ArticleSpoilerTool {
         };
     }
 
-    constructor({ data, api }) {
+    constructor({ data }) {
         this.data = {
             title: data.title || 'Частый вопрос / Проблема',
             content: data.content || 'Подробное решение или ответ...'
         };
-        this.api = api;
     }
 
     render() {
@@ -100,17 +513,12 @@ class ArticleSpoilerTool {
         titleIn.classList.add('cdx-input', 'editor-spoiler-title');
 
         const contentIn = document.createElement('textarea');
-        contentIn.placeholder = 'Подробный текст решения или инструкции...';
+        contentIn.placeholder = 'Текст решения или ответа...';
         contentIn.value = this.data.content;
         contentIn.classList.add('cdx-input', 'editor-spoiler-content');
 
-        titleIn.addEventListener('input', () => {
-            this.data.title = titleIn.value;
-        });
-
-        contentIn.addEventListener('input', () => {
-            this.data.content = contentIn.value;
-        });
+        titleIn.addEventListener('input', () => { this.data.title = titleIn.value; });
+        contentIn.addEventListener('input', () => { this.data.content = contentIn.value; });
 
         wrapper.appendChild(titleIn);
         wrapper.appendChild(contentIn);
@@ -127,64 +535,67 @@ class ArticleSpoilerTool {
     }
 }
 
-// Custom Warning / Alert Notice Tool
-class ArticleAlertTool {
+// 7. Video Embed Tool
+class ArticleEmbedTool {
     static get toolbox() {
         return {
-            title: 'Важное предупреждение',
-            icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>'
+            title: 'Видео (YouTube/Rutube/VK)',
+            icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>'
         };
     }
 
-    constructor({ data, api }) {
+    constructor({ data }) {
         this.data = {
-            title: data.title || 'Внимание!',
-            message: data.message || 'Не отключайте приставку из розетки во время настройки.',
-            type: data.type || 'warning'
+            embed: data.embed || data.source || '',
+            caption: data.caption || ''
         };
-        this.api = api;
     }
 
     render() {
         const wrapper = document.createElement('div');
-        wrapper.classList.add('editor-alert-box', 'editor-alert-' + this.data.type);
+        wrapper.classList.add('editor-embed-box');
 
-        const titleIn = document.createElement('input');
-        titleIn.type = 'text';
-        titleIn.placeholder = 'Заголовок предупреждения (например: «Важно!»)...';
-        titleIn.value = this.data.title;
-        titleIn.classList.add('cdx-input', 'editor-alert-title');
+        const urlIn = document.createElement('input');
+        urlIn.type = 'text';
+        urlIn.placeholder = 'Ссылка на видео YouTube, Rutube или VK...';
+        urlIn.value = this.data.embed;
+        urlIn.classList.add('cdx-input', 'editor-embed-url');
 
-        const messageIn = document.createElement('textarea');
-        messageIn.placeholder = 'Текст предупреждения или подсказки...';
-        messageIn.value = this.data.message;
-        messageIn.classList.add('cdx-input', 'editor-alert-message');
+        const captionIn = document.createElement('input');
+        captionIn.type = 'text';
+        captionIn.placeholder = 'Подпись к видео (необязательно)...';
+        captionIn.value = this.data.caption;
+        captionIn.classList.add('cdx-input', 'editor-embed-caption');
 
-        titleIn.addEventListener('input', () => {
-            this.data.title = titleIn.value;
+        urlIn.addEventListener('input', () => {
+            let val = urlIn.value.trim();
+            // Auto convert standard YouTube links to embed format
+            if (val.includes('youtube.com/watch?v=')) {
+                val = val.replace('watch?v=', 'embed/');
+            } else if (val.includes('youtu.be/')) {
+                val = val.replace('youtu.be/', 'youtube.com/embed/');
+            }
+            this.data.embed = val;
         });
 
-        messageIn.addEventListener('input', () => {
-            this.data.message = messageIn.value;
-        });
+        captionIn.addEventListener('input', () => { this.data.caption = captionIn.value; });
 
-        wrapper.appendChild(titleIn);
-        wrapper.appendChild(messageIn);
+        wrapper.appendChild(urlIn);
+        wrapper.appendChild(captionIn);
         return wrapper;
     }
 
     save(blockContent) {
-        const titleIn = blockContent.querySelector('.editor-alert-title');
-        const messageIn = blockContent.querySelector('.editor-alert-message');
+        const urlIn = blockContent.querySelector('.editor-embed-url');
+        const captionIn = blockContent.querySelector('.editor-embed-caption');
         return {
-            title: titleIn ? titleIn.value.trim() : '',
-            message: messageIn ? messageIn.value.trim() : '',
-            type: this.data.type || 'warning'
+            embed: urlIn ? urlIn.value.trim() : '',
+            caption: captionIn ? captionIn.value.trim() : ''
         };
     }
 }
 
-// Remote Key Badge Inline Tool (Turns text into 3D TV Remote button like [OK], [HOME], [MENU])
+// 8. Remote Control Key Badge Inline Tool (Press [OK], [HOME])
 class RemoteKeyInlineTool {
     static get isInline() {
         return true;
@@ -194,29 +605,17 @@ class RemoteKeyInlineTool {
         return 'Кнопка пульта';
     }
 
-    static get sanitize() {
-        return {
-            kbd: {
-                class: true
-            }
-        };
-    }
-
     constructor({ api }) {
         this.api = api;
         this.button = null;
         this.tag = 'KBD';
-        this.iconClasses = {
-            base: this.api.styles.inlineToolButton,
-            active: this.api.styles.inlineToolButtonActive
-        };
     }
 
     render() {
         this.button = document.createElement('button');
         this.button.type = 'button';
-        this.button.classList.add(this.iconClasses.base);
-        this.button.innerHTML = '<span style="font-weight:900; font-size:11px; border:1px solid currentColor; border-radius:3px; padding:1px 3px;">OK</span>';
+        this.button.classList.add('ce-inline-tool');
+        this.button.innerHTML = '<span style="font-weight:900; font-size:10px; border:1px solid currentColor; border-radius:3px; padding:1px 3px;">OK</span>';
         this.button.title = 'Оформить как кнопку пульта (Кнопка)';
         return this.button;
     }
@@ -225,33 +624,25 @@ class RemoteKeyInlineTool {
         if (!range) return;
         const termWrapper = this.api.selection.findParentTag(this.tag, 'tv-remote-key');
         if (termWrapper) {
-            this.unwrap(termWrapper);
+            this.api.selection.expandToTag(termWrapper);
+            const sel = window.getSelection();
+            const r = sel.getRangeAt(0);
+            const content = r.extractContents();
+            termWrapper.parentNode.removeChild(termWrapper);
+            r.insertNode(content);
         } else {
-            this.wrap(range);
+            const selected = range.extractContents();
+            const kbd = document.createElement(this.tag);
+            kbd.classList.add('tv-remote-key');
+            kbd.appendChild(selected);
+            range.insertNode(kbd);
+            this.api.selection.expandToTag(kbd);
         }
-    }
-
-    wrap(range) {
-        const selected = range.extractContents();
-        const kbd = document.createElement(this.tag);
-        kbd.classList.add('tv-remote-key');
-        kbd.appendChild(selected);
-        range.insertNode(kbd);
-        this.api.selection.expandToTag(kbd);
-    }
-
-    unwrap(termWrapper) {
-        this.api.selection.expandToTag(termWrapper);
-        const sel = window.getSelection();
-        const range = sel.getRangeAt(0);
-        const unwrappedContent = range.extractContents();
-        termWrapper.parentNode.removeChild(termWrapper);
-        range.insertNode(unwrappedContent);
     }
 
     checkState() {
         const termWrapper = this.api.selection.findParentTag(this.tag, 'tv-remote-key');
-        this.button.classList.toggle(this.iconClasses.active, !!termWrapper);
+        this.button.classList.toggle('ce-inline-tool--active', !!termWrapper);
     }
 }
 
@@ -286,7 +677,7 @@ function renderBlocksToHtml(blocksData) {
                 const tag = isOrdered ? 'ol' : 'ul';
                 const items = data.items || [];
                 const lis = items.map(item => {
-                    const itemText = typeof item === 'string' ? item : (item.content || '');
+                    const itemText = typeof item === 'string' ? item : (item.content || item.text || '');
                     return `<li>${itemText}</li>`;
                 }).join('');
                 htmlParts.push(`<${tag}>${lis}</${tag}>`);
@@ -294,12 +685,12 @@ function renderBlocksToHtml(blocksData) {
             }
             case 'image': {
                 const url = (data.file && data.file.url) ? data.file.url : (data.url || '');
+                if (!url) break;
                 const caption = data.caption || '';
                 const withBorder = data.withBorder ? ' img-bordered' : '';
                 const stretched = data.stretched ? ' img-stretched' : '';
-                const withBg = data.withBackground ? ' img-with-bg' : '';
                 
-                let imgHtml = `<div class="article-image-figure${withBorder}${stretched}${withBg}">`;
+                let imgHtml = `<div class="article-image-figure${withBorder}${stretched}">`;
                 imgHtml += `<img src="${url}" alt="${escapeHtmlAttr(caption)}" />`;
                 if (caption && caption.trim()) {
                     imgHtml += `<figcaption class="article-image-caption">${caption}</figcaption>`;
@@ -325,6 +716,7 @@ function renderBlocksToHtml(blocksData) {
             }
             case 'embed': {
                 const embedUrl = data.embed || data.source || '';
+                if (!embedUrl) break;
                 const caption = data.caption || '';
                 htmlParts.push(`
                     <div class="article-embed-wrapper">
@@ -400,10 +792,6 @@ function renderBlocksToHtml(blocksData) {
                 htmlParts.push(clHtml);
                 break;
             }
-            case 'raw': {
-                htmlParts.push(data.html || '');
-                break;
-            }
             default: {
                 if (data.text) {
                     htmlParts.push(`<p>${data.text}</p>`);
@@ -416,7 +804,7 @@ function renderBlocksToHtml(blocksData) {
     return htmlParts.join('\n');
 }
 
-// Helper to convert legacy HTML to Editor.js Blocks
+// Convert legacy HTML to Editor.js Blocks
 function convertHtmlToEditorBlocks(htmlString) {
     if (!htmlString || !htmlString.trim()) {
         return [];
@@ -458,6 +846,7 @@ function convertHtmlToEditorBlocks(htmlString) {
                 blocks.push({
                     type: 'image',
                     data: {
+                        url: imgs[0].getAttribute('src') || '',
                         file: { url: imgs[0].getAttribute('src') || '' },
                         caption: imgs[0].getAttribute('alt') || '',
                         withBorder: false,
@@ -488,6 +877,7 @@ function convertHtmlToEditorBlocks(htmlString) {
             blocks.push({
                 type: 'image',
                 data: {
+                    url: node.getAttribute('src') || '',
                     file: { url: node.getAttribute('src') || '' },
                     caption: node.getAttribute('alt') || '',
                     withBorder: false,
@@ -523,8 +913,7 @@ function convertHtmlToEditorBlocks(htmlString) {
                 type: 'alert',
                 data: {
                     title: title,
-                    message: body,
-                    type: 'warning'
+                    message: body
                 }
             });
         } else {

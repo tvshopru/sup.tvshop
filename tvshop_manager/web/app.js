@@ -540,34 +540,19 @@ function initEditorJsInstance(initialBlocks) {
 
     const toolsConfig = {
         header: {
-            class: (typeof Header !== 'undefined') ? Header : undefined,
-            inlineToolbar: ['link', 'marker', 'remoteKey'],
+            class: (typeof ArticleHeaderTool !== 'undefined') ? ArticleHeaderTool : (typeof Header !== 'undefined' ? Header : undefined),
+            inlineToolbar: true,
             config: {
                 placeholder: 'Введите заголовок шага или раздела...',
-                levels: [2, 3, 4],
                 defaultLevel: 2
             }
         },
         list: {
-            class: (typeof List !== 'undefined') ? List : undefined,
-            inlineToolbar: true,
-            config: {
-                defaultStyle: 'ordered'
-            }
+            class: (typeof ArticleListTool !== 'undefined') ? ArticleListTool : (typeof List !== 'undefined' ? List : undefined),
+            inlineToolbar: true
         },
         image: {
-            class: (typeof ImageTool !== 'undefined') ? ImageTool : undefined,
-            config: {
-                endpoints: {
-                    byFile: '/api/upload',
-                    byUrl: '/api/upload'
-                },
-                additionalRequestHeaders: {
-                    'x-admin-pin': adminPin
-                },
-                field: 'file',
-                types: 'image/*'
-            }
+            class: (typeof ArticleImageTool !== 'undefined') ? ArticleImageTool : (typeof ImageTool !== 'undefined' ? ImageTool : undefined)
         },
         alert: {
             class: (typeof ArticleAlertTool !== 'undefined') ? ArticleAlertTool : undefined
@@ -579,43 +564,12 @@ function initEditorJsInstance(initialBlocks) {
             class: (typeof ArticleSpoilerTool !== 'undefined') ? ArticleSpoilerTool : undefined
         },
         embed: {
-            class: (typeof Embed !== 'undefined') ? Embed : undefined,
-            inlineToolbar: true,
-            config: {
-                services: {
-                    youtube: true,
-                    vimeo: true,
-                    coub: true
-                }
-            }
+            class: (typeof ArticleEmbedTool !== 'undefined') ? ArticleEmbedTool : (typeof Embed !== 'undefined' ? Embed : undefined)
         },
-        table: {
-            class: (typeof Table !== 'undefined') ? Table : undefined,
-            inlineToolbar: true,
-            config: {
-                rows: 2,
-                cols: 2
-            }
-        },
-        checklist: {
-            class: (typeof Checklist !== 'undefined') ? Checklist : undefined,
-            inlineToolbar: true
-        },
-        quote: {
-            class: (typeof Quote !== 'undefined') ? Quote : undefined,
-            inlineToolbar: true,
-            config: {
-                quotePlaceholder: 'Введите цитату...',
-                captionPlaceholder: 'Автор / источник'
-            }
-        },
-        delimiter: (typeof Delimiter !== 'undefined') ? Delimiter : undefined,
-        marker: (typeof Marker !== 'undefined') ? Marker : undefined,
-        inlineCode: (typeof InlineCode !== 'undefined') ? InlineCode : undefined,
         remoteKey: (typeof RemoteKeyInlineTool !== 'undefined') ? RemoteKeyInlineTool : undefined
     };
 
-    // Clean out unresolvable tools if CDN fails
+    // Clean out unresolvable tools
     Object.keys(toolsConfig).forEach(k => {
         if (!toolsConfig[k] || (typeof toolsConfig[k] === 'object' && !toolsConfig[k].class)) {
             if (typeof toolsConfig[k] !== 'function') {

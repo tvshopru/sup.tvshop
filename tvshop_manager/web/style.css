@@ -973,31 +973,163 @@ select.form-control {
 }
 
 .tg-tb-btn {
-    background: transparent;
-    border: none;
+    background: #f8fafc;
+    border: 1px solid var(--border-color);
     color: #4b5563;
-    width: 34px;
-    height: 34px;
-    border-radius: 50%;
-    display: flex;
+    height: 32px;
+    padding: 0 12px;
+    border-radius: 16px;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    font-size: 1.05em;
-    font-weight: 700;
+    font-size: 0.88em;
+    font-weight: 600;
+    gap: 6px;
     transition: all 0.18s ease;
     outline: none;
+    white-space: nowrap;
 }
 
 .tg-tb-btn:hover {
-    background: #f3f4f6;
+    background: #eef2f6;
     color: #111827;
-    transform: scale(1.06);
+    border-color: #cbd5e1;
 }
 
 .tg-tb-btn.active {
     background: #2481cc;
     color: #ffffff;
+    border-color: #2481cc;
+}
+
+/* Tool Settings popup */
+.cdx-settings-wrapper {
+    display: flex;
+    gap: 6px;
+    padding: 6px;
+}
+
+.cdx-settings-btn {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 0.85em;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.15s;
+}
+
+.cdx-settings-btn:hover, .cdx-settings-btn.active {
+    background: #2481cc;
+    color: #fff;
+    border-color: #2481cc;
+}
+
+/* Image Tool Uploader & Actions */
+.cdx-image-upload-box {
+    background: #f8fafc;
+    border: 2px dashed #cbd5e1;
+    border-radius: 12px;
+    padding: 30px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin: 12px 0;
+}
+
+.cdx-image-upload-box:hover, .cdx-image-upload-box.dragover {
+    background: #eff6ff;
+    border-color: #2481cc;
+}
+
+.cdx-image-upload-icon {
+    font-size: 2.2em;
+    margin-bottom: 8px;
+}
+
+.cdx-image-upload-text {
+    font-size: 0.95em;
+    color: #4b5563;
+    font-weight: 600;
+}
+
+.cdx-image-actions-bar {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin-top: 8px;
+}
+
+.cdx-img-act-btn {
+    background: #f1f5f9;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 0.82em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.cdx-img-act-btn:hover {
+    background: #e2e8f0;
+}
+
+.cdx-img-act-btn.btn-del:hover {
+    background: #fee2e2;
+    border-color: #ef4444;
+    color: #dc2626;
+}
+
+.cdx-image-caption-input {
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 6px 10px;
+    font-size: 0.9em;
+    text-align: center;
+    font-style: italic;
+    background: transparent;
+    outline: none;
+    margin-top: 6px;
+}
+
+.cdx-image-caption-input:focus {
+    border-bottom-color: #2481cc;
+}
+
+/* Custom List Block */
+.cdx-list-block {
+    margin: 0.8em 0;
+    padding-left: 24px;
+}
+
+.cdx-list-item {
+    padding: 3px 0;
+    line-height: 1.6;
+    outline: none;
+}
+
+/* Video Embed Tool */
+.editor-embed-box {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 14px 0;
+}
+
+.editor-embed-url, .editor-embed-caption {
+    width: 100%;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 0.9em;
 }
 
 .tg-meta-sidebar-card {
