@@ -952,11 +952,112 @@ function initEditorJS(initialData) {
         }
     };
 
+    // Full Russian Localization Dictionary for Editor.js UI, Tools, Popovers, and Tunes
+    const editorI18n = {
+        messages: {
+            ui: {
+                blockTunes: {
+                    toggler: {
+                        "Click to tune": "Нажмите для настроек блока",
+                        "or drag to move": "или перетащите для перемещения"
+                    },
+                },
+                inlineToolbar: {
+                    converter: {
+                        "Convert to": "Преобразовать в"
+                    }
+                },
+                toolbar: {
+                    toolbox: {
+                        "Add": "Добавить блок",
+                        "Filter": "Поиск блока...",
+                        "Nothing found": "Ничего не найдено"
+                    }
+                },
+                popover: {
+                    "Filter": "Поиск...",
+                    "Nothing found": "Ничего не найдено",
+                    "Convert to": "Преобразовать в"
+                }
+            },
+            toolNames: {
+                "Text": "Обычный текст",
+                "Heading": "Заголовок H2/H3",
+                "List": "Список",
+                "Ordered List": "Нумерованный список",
+                "Unordered List": "Маркированный список",
+                "Checklist": "Чек-лист с галочками",
+                "Warning": "Важное предупреждение",
+                "Quote": "Цитата / Выноска",
+                "Code": "Фрагмент кода",
+                "Delimiter": "Разделитель",
+                "Raw HTML": "HTML код",
+                "Table": "Таблица",
+                "Link": "Ссылка",
+                "Marker": "Выделитель",
+                "Bold": "Жирный",
+                "Italic": "Курсив",
+                "Underline": "Подчёркнутый",
+                "InlineCode": "Код",
+                "Image": "Изображение / Фото",
+                "Embed": "Видео (YouTube / Rutube)",
+                "Remote Key": "Кнопка пульта [OK]"
+            },
+            tools: {
+                warning: {
+                    "Title": "Заголовок",
+                    "Message": "Сообщение",
+                },
+                link: {
+                    "Add a link": "Вставить ссылку"
+                },
+                table: {
+                    "Add row above": "Вставить строку выше",
+                    "Add row below": "Вставить строку ниже",
+                    "Delete row": "Удалить строку",
+                    "Add column to left": "Вставить столбец слева",
+                    "Add column to right": "Вставить столбец справа",
+                    "Delete column": "Удалить столбец",
+                    "With headings": "С заголовками",
+                    "Without headings": "Без заголовков"
+                },
+                image: {
+                    "Caption": "Подпись к фото...",
+                    "Select an Image": "Выберите изображение",
+                    "With border": "С рамкой",
+                    "Stretch image": "Растянуть на всю ширину",
+                    "With background": "С фоном",
+                },
+                quote: {
+                    "Align Left": "По левому краю",
+                    "Align Center": "По центру"
+                },
+                list: {
+                    "Ordered": "Нумерованный",
+                    "Unordered": "Маркированный",
+                    "Checklist": "Чек-лист"
+                }
+            },
+            blockTunes: {
+                delete: {
+                    "Delete": "Удалить блок"
+                },
+                moveUp: {
+                    "Move up": "Переместить вверх"
+                },
+                moveDown: {
+                    "Move down": "Переместить вниз"
+                }
+            }
+        }
+    };
+
     try {
         editorInstance = new EditorJS({
             holder: 'editorjs-holder',
             placeholder: 'Нажмите Tab для выбора блока или начните вводить текст (Ctrl+V для вставки фото или постов)...',
             tools: editorTools,
+            i18n: editorI18n,
             data: initialData || { blocks: [{ type: 'paragraph', data: { text: '' } }] },
             onReady: () => {
                 isEditorReady = true;
