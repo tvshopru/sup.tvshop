@@ -570,7 +570,9 @@
           }
         ],
         "version": "2.29.1"
-      }
+      },
+      "status": "published",
+      "category": ""
     },
     {
       "id": "art-1791467512920",
@@ -919,7 +921,9 @@
           }
         ],
         "version": "2.30.5"
-      }
+      },
+      "status": "published",
+      "category": ""
     },
     {
       "id": "art-1791463602377",
@@ -1069,14 +1073,16 @@
           }
         ],
         "version": "2.29.1"
-      }
+      },
+      "status": "published",
+      "category": ""
     },
     {
       "id": "inst-byebyedpi",
       "title": "Настройка Ютуб ByeByeDPI",
       "date": "8 октября 2026",
       "videoUrl": "",
-      "contentHtml": "<p>Подробное руководство по настройке и подбору стратегий в приложении <b>ByeByeDPI</b> для стабильной работы YouTube на ТВ-приставках.</p>\n<p>Прежде чем начать настройку, обязательно обновите ByeByeDPI до последней версии через TV SHOP Installer.</p>\n<ol><li>Открываем программу <b>ByeByeDPI</b>. Если программа запросит разрешения — обязательно выдаем все запрашиваемые разрешения.</li></ol>\n<div class=\"article-image-figure\"><img src=\"img/byebyedpi_step1.png\" alt=\"\" /></div>\n<ol><li>Заходим в <b>настройки</b> приложения (иконка шестерёнки).</li></ol>\n<div class=\"article-image-figure\"><img src=\"img/byebyedpi_step2.png\" alt=\"\" /></div>\n<ol><li>Листаем вниз до пункта <b>«Использовать командную строку»</b> и включаем этот переключатель.</li></ol>\n<div class=\"article-image-figure\"><img src=\"img/byebyedpi_step3.png\" alt=\"\" /></div>\n<ol><li>Листаем ниже и нажимаем кнопку <b>«Подбор стратегий»</b>.</li></ol>\n<div class=\"article-image-figure\"><img src=\"img/byebyedpi_step4.png\" alt=\"\" /></div>\n<ol><li>Нажимаем кнопку <b>«Начать проверку»</b> и дожидаемся окончания теста.Важно: Если во время проверки приставка зависла или тест остановился — перезагружаем приставку, снова запускаем ByeByeDPI и повторяем проверку.</li></ol>\n<div class=\"article-image-figure\"><img src=\"img/byebyedpi_step5.png\" alt=\"\" /></div>\n<ol><li>После окончания проверки появится список стратегий. Сверху будут самые эффективные и быстрые. Начинаем выбор с самой первой стратегии.</li></ol>\n<div class=\"article-image-figure\"><img src=\"img/byebyedpi_step6.png\" alt=\"\" /></div>\n<ol><li>Выбираем нужную стратегию из списка, нажимаем на нее и выбираем кнопку <b>«Применить»</b>.</li></ol>\n<div class=\"article-image-figure\"><img src=\"img/byebyedpi_step7.png\" alt=\"\" /></div>\n<ol><li>Возвращаемся на главный экран приложения ByeByeDPI и нажимаем кнопку <b>«Запустить» / «Включить»</b>.</li></ol>\n<div class=\"article-image-figure\"><img src=\"img/byebyedpi_step8.png\" alt=\"\" /></div>\n<ol><li>Если снова появится системный запрос разрешений — обязательно нажимаем <b>«Разрешить»</b>.</li></ol>\n<div class=\"article-image-figure\"><img src=\"img/byebyedpi_step9.png\" alt=\"\" /></div>\n<ol><li>Открываем и проверяем работу <b>YouTube</b>.</li></ol>\n<div class=\"article-image-figure\"><img src=\"img/byebyedpi_step10.png\" alt=\"\" /></div>\n<h2>Что делать, если YouTube не заработал?</h2>\n<p><b>1. Войдите в свой аккаунт Google</b> — в 90% случаев это решает проблему воспроизведения.</p>\n<p><b>2. Попробуйте следующую стратегию:</b><br>ВАЖНО: Перед сменой стратегии обязательно полностью остановите YouTube (<i>Главный экран приставки → Настройки → Приложения → YouTube → Остановить</i>).</p>\n<p>Затем в ByeByeDPI нажмите <b>«Отключить»</b>, зайдите в подбор стратегий, выберите вторую стратегию, нажмите <b>«Применить»</b> и снова включите ByeByeDPI.</p>\n<p>3. Поменять в программе&nbsp;ByeByeDPI&nbsp;&nbsp;ДНС на 9.9.9.9</p>",
+      "contentHtml": "<blockquote><p>Подробное руководство по настройке и подбору стратегий в приложении ByeByeDPI для стабильной работы YouTube на ТВ-приставках.</p></blockquote>\n<p>Прежде чем начать настройку, обязательно обновите ByeByeDPI до последней версии через TV SHOP Installer.</p>\n<ol start=\"1\"><li>Открываем программу <b>ByeByeDPI</b>. Если программа запросит разрешения — обязательно выдаем все запрашиваемые разрешения.</li></ol>\n<div class=\"article-image-figure\"><img src=\"img/byebyedpi_step1.png\" alt=\"\" /></div>\n<ol start=\"2\"><li>Заходим в <b>настройки</b> приложения (иконка шестерёнки).</li></ol>\n<div class=\"article-image-figure\"><img src=\"img/byebyedpi_step2.png\" alt=\"\" /></div>\n<ol start=\"3\"><li>Листаем вниз до пункта <b>«Использовать командную строку»</b> и включаем этот переключатель.</li></ol>\n<div class=\"article-image-figure\"><img src=\"img/byebyedpi_step3.png\" alt=\"\" /></div>\n<ol start=\"4\"><li>Листаем ниже и нажимаем кнопку <b>«Подбор стратегий»</b>.</li></ol>\n<div class=\"article-image-figure\"><img src=\"img/byebyedpi_step4.png\" alt=\"\" /></div>\n<ol start=\"5\"><li>Нажимаем кнопку <b>«Начать проверку»</b> и дожидаемся окончания теста.Важно: Если во время проверки приставка зависла или тест остановился — перезагружаем приставку, снова запускаем ByeByeDPI и повторяем проверку.</li></ol>\n<div class=\"article-image-figure\"><img src=\"img/byebyedpi_step5.png\" alt=\"\" /></div>\n<ol start=\"6\"><li>После окончания проверки появится список стратегий. Сверху будут самые эффективные и быстрые. Начинаем выбор с самой первой стратегии.</li></ol>\n<div class=\"article-image-figure\"><img src=\"img/byebyedpi_step6.png\" alt=\"\" /></div>\n<ol start=\"7\"><li>Выбираем нужную стратегию из списка, нажимаем на нее и выбираем кнопку <b>«Применить»</b>.</li></ol>\n<div class=\"article-image-figure\"><img src=\"img/byebyedpi_step7.png\" alt=\"\" /></div>\n<ol start=\"8\"><li>Возвращаемся на главный экран приложения ByeByeDPI и нажимаем кнопку <b>«Запустить» / «Включить»</b>.</li></ol>\n<div class=\"article-image-figure\"><img src=\"img/byebyedpi_step8.png\" alt=\"\" /></div>\n<ol start=\"9\"><li>Если снова появится системный запрос разрешений — обязательно нажимаем <b>«Разрешить»</b>.</li></ol>\n<div class=\"article-image-figure\"><img src=\"img/byebyedpi_step9.png\" alt=\"\" /></div>\n<ol start=\"10\"><li>Открываем и проверяем работу <b>YouTube</b>.</li></ol>\n<div class=\"article-image-figure\"><img src=\"img/byebyedpi_step10.png\" alt=\"\" /></div>\n<h2>Что делать, если YouTube не заработал?</h2>\n<p><b>1. Войдите в свой аккаунт Google</b> — в 90% случаев это решает проблему воспроизведения.</p>\n<p><b>2. Попробуйте следующую стратегию:</b><br>ВАЖНО: Перед сменой стратегии обязательно полностью остановите YouTube (<i>Главный экран приставки → Настройки → Приложения → YouTube → Остановить</i>).</p>\n<p>Затем в ByeByeDPI нажмите <b>«Отключить»</b>, зайдите в подбор стратегий, выберите вторую стратегию, нажмите <b>«Применить»</b> и снова включите ByeByeDPI.</p>\n<p>3. Поменять в программе&nbsp;ByeByeDPI&nbsp;&nbsp;ДНС на 9.9.9.9</p>",
       "blocks": {
         "time": 1791549258412,
         "blocks": [
@@ -1372,7 +1378,367 @@
           }
         ],
         "version": "2.29.1"
-      }
+      },
+      "contentData": {
+        "time": 1791572780458,
+        "blocks": [
+          {
+            "id": "iudeCpzgiZ",
+            "type": "quote",
+            "data": {
+              "text": "Подробное руководство по настройке и подбору стратегий в приложении ByeByeDPI для стабильной работы YouTube на ТВ-приставках.",
+              "caption": "",
+              "alignment": "left"
+            }
+          },
+          {
+            "id": "y8SmdrR-Uy",
+            "type": "paragraph",
+            "data": {
+              "text": "Прежде чем начать настройку, обязательно обновите ByeByeDPI до последней версии через TV SHOP Installer."
+            }
+          },
+          {
+            "id": "dFSP3D2eAl",
+            "type": "list",
+            "data": {
+              "style": "ordered",
+              "meta": {
+                "counterType": "numeric"
+              },
+              "items": [
+                {
+                  "content": "Открываем программу <b>ByeByeDPI</b>. Если программа запросит разрешения — обязательно выдаем все запрашиваемые разрешения.",
+                  "meta": {},
+                  "items": []
+                }
+              ]
+            }
+          },
+          {
+            "id": "DV4fXdnfTU",
+            "type": "image",
+            "data": {
+              "caption": "",
+              "withBorder": false,
+              "withBackground": false,
+              "stretched": false,
+              "file": {
+                "url": "img/byebyedpi_step1.png"
+              }
+            }
+          },
+          {
+            "id": "0KZQxdyIA0",
+            "type": "list",
+            "data": {
+              "style": "ordered",
+              "meta": {
+                "counterType": "numeric"
+              },
+              "items": [
+                {
+                  "content": "Заходим в <b>настройки</b> приложения (иконка шестерёнки).",
+                  "meta": {},
+                  "items": []
+                }
+              ]
+            }
+          },
+          {
+            "id": "FZX58TsjID",
+            "type": "image",
+            "data": {
+              "caption": "",
+              "withBorder": false,
+              "withBackground": false,
+              "stretched": false,
+              "file": {
+                "url": "img/byebyedpi_step2.png"
+              }
+            }
+          },
+          {
+            "id": "O8tljlOdnn",
+            "type": "list",
+            "data": {
+              "style": "ordered",
+              "meta": {
+                "counterType": "numeric"
+              },
+              "items": [
+                {
+                  "content": "Листаем вниз до пункта <b>«Использовать командную строку»</b> и включаем этот переключатель.",
+                  "meta": {},
+                  "items": []
+                }
+              ]
+            }
+          },
+          {
+            "id": "H1cP_ULT4w",
+            "type": "image",
+            "data": {
+              "caption": "",
+              "withBorder": false,
+              "withBackground": false,
+              "stretched": false,
+              "file": {
+                "url": "img/byebyedpi_step3.png"
+              }
+            }
+          },
+          {
+            "id": "c026tL3aY2",
+            "type": "list",
+            "data": {
+              "style": "ordered",
+              "meta": {
+                "counterType": "numeric"
+              },
+              "items": [
+                {
+                  "content": "Листаем ниже и нажимаем кнопку <b>«Подбор стратегий»</b>.",
+                  "meta": {},
+                  "items": []
+                }
+              ]
+            }
+          },
+          {
+            "id": "gSGSdb_HGE",
+            "type": "image",
+            "data": {
+              "caption": "",
+              "withBorder": false,
+              "withBackground": false,
+              "stretched": false,
+              "file": {
+                "url": "img/byebyedpi_step4.png"
+              }
+            }
+          },
+          {
+            "id": "6CgVRz6t2n",
+            "type": "list",
+            "data": {
+              "style": "ordered",
+              "meta": {
+                "counterType": "numeric"
+              },
+              "items": [
+                {
+                  "content": "Нажимаем кнопку <b>«Начать проверку»</b> и дожидаемся окончания теста.Важно: Если во время проверки приставка зависла или тест остановился — перезагружаем приставку, снова запускаем ByeByeDPI и повторяем проверку.",
+                  "meta": {},
+                  "items": []
+                }
+              ]
+            }
+          },
+          {
+            "id": "eL8cfpNL2V",
+            "type": "image",
+            "data": {
+              "caption": "",
+              "withBorder": false,
+              "withBackground": false,
+              "stretched": false,
+              "file": {
+                "url": "img/byebyedpi_step5.png"
+              }
+            }
+          },
+          {
+            "id": "6aReGUauFB",
+            "type": "list",
+            "data": {
+              "style": "ordered",
+              "meta": {
+                "counterType": "numeric"
+              },
+              "items": [
+                {
+                  "content": "После окончания проверки появится список стратегий. Сверху будут самые эффективные и быстрые. Начинаем выбор с самой первой стратегии.",
+                  "meta": {},
+                  "items": []
+                }
+              ]
+            }
+          },
+          {
+            "id": "OQlRTXkSTL",
+            "type": "image",
+            "data": {
+              "caption": "",
+              "withBorder": false,
+              "withBackground": false,
+              "stretched": false,
+              "file": {
+                "url": "img/byebyedpi_step6.png"
+              }
+            }
+          },
+          {
+            "id": "ZwlnG6eGxO",
+            "type": "list",
+            "data": {
+              "style": "ordered",
+              "meta": {
+                "counterType": "numeric"
+              },
+              "items": [
+                {
+                  "content": "Выбираем нужную стратегию из списка, нажимаем на нее и выбираем кнопку <b>«Применить»</b>.",
+                  "meta": {},
+                  "items": []
+                }
+              ]
+            }
+          },
+          {
+            "id": "63v4U4pwpH",
+            "type": "image",
+            "data": {
+              "caption": "",
+              "withBorder": false,
+              "withBackground": false,
+              "stretched": false,
+              "file": {
+                "url": "img/byebyedpi_step7.png"
+              }
+            }
+          },
+          {
+            "id": "iWMKidtD9d",
+            "type": "list",
+            "data": {
+              "style": "ordered",
+              "meta": {
+                "counterType": "numeric"
+              },
+              "items": [
+                {
+                  "content": "Возвращаемся на главный экран приложения ByeByeDPI и нажимаем кнопку <b>«Запустить» / «Включить»</b>.",
+                  "meta": {},
+                  "items": []
+                }
+              ]
+            }
+          },
+          {
+            "id": "f2xPbx_0b-",
+            "type": "image",
+            "data": {
+              "caption": "",
+              "withBorder": false,
+              "withBackground": false,
+              "stretched": false,
+              "file": {
+                "url": "img/byebyedpi_step8.png"
+              }
+            }
+          },
+          {
+            "id": "sSQEoVPRCJ",
+            "type": "list",
+            "data": {
+              "style": "ordered",
+              "meta": {
+                "counterType": "numeric"
+              },
+              "items": [
+                {
+                  "content": "Если снова появится системный запрос разрешений — обязательно нажимаем <b>«Разрешить»</b>.",
+                  "meta": {},
+                  "items": []
+                }
+              ]
+            }
+          },
+          {
+            "id": "x5zcH0VgwN",
+            "type": "image",
+            "data": {
+              "caption": "",
+              "withBorder": false,
+              "withBackground": false,
+              "stretched": false,
+              "file": {
+                "url": "img/byebyedpi_step9.png"
+              }
+            }
+          },
+          {
+            "id": "YLrsATxwBo",
+            "type": "list",
+            "data": {
+              "style": "ordered",
+              "meta": {
+                "counterType": "numeric"
+              },
+              "items": [
+                {
+                  "content": "Открываем и проверяем работу <b>YouTube</b>.",
+                  "meta": {},
+                  "items": []
+                }
+              ]
+            }
+          },
+          {
+            "id": "z-nT17xy3a",
+            "type": "image",
+            "data": {
+              "caption": "",
+              "withBorder": false,
+              "withBackground": false,
+              "stretched": false,
+              "file": {
+                "url": "img/byebyedpi_step10.png"
+              }
+            }
+          },
+          {
+            "id": "IgMY9D_56D",
+            "type": "header",
+            "data": {
+              "text": "Что делать, если YouTube не заработал?",
+              "level": 2
+            }
+          },
+          {
+            "id": "YDYIlA6fuM",
+            "type": "paragraph",
+            "data": {
+              "text": "<b>1. Войдите в свой аккаунт Google</b> — в 90% случаев это решает проблему воспроизведения."
+            }
+          },
+          {
+            "id": "nft46I-cKI",
+            "type": "paragraph",
+            "data": {
+              "text": "<b>2. Попробуйте следующую стратегию:</b><br>ВАЖНО: Перед сменой стратегии обязательно полностью остановите YouTube (<i>Главный экран приставки → Настройки → Приложения → YouTube → Остановить</i>)."
+            }
+          },
+          {
+            "id": "X3ZjhFyzXu",
+            "type": "paragraph",
+            "data": {
+              "text": "Затем в ByeByeDPI нажмите <b>«Отключить»</b>, зайдите в подбор стратегий, выберите вторую стратегию, нажмите <b>«Применить»</b> и снова включите ByeByeDPI."
+            }
+          },
+          {
+            "id": "R0mhjcJZk-",
+            "type": "paragraph",
+            "data": {
+              "text": "3. Поменять в программе&nbsp;ByeByeDPI&nbsp;&nbsp;ДНС на 9.9.9.9"
+            }
+          }
+        ],
+        "version": "2.30.5"
+      },
+      "status": "published",
+      "category": ""
     },
     {
       "id": "inst-yosso-tv",
