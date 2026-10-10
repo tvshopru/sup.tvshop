@@ -74,7 +74,6 @@ foreach ($art in $articles) {
     }
 
     $safeTitle = Escape-Html $title
-    $safeDesc = Escape-Html $desc
 
     $pageHtml = @"
 <!DOCTYPE html>
@@ -83,15 +82,13 @@ foreach ($art in $articles) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <title>$safeTitle - TV SHOP</title>
-    <meta name="description" content="$safeDesc">
     <link rel="icon" type="image/png" href="../app_logo.png?v=2">
     <link rel="canonical" href="$canonical">
 
-    <!-- Open Graph for Telegram & Social Previews (Compact Card) -->
+    <!-- Open Graph for Telegram & Social Previews (Compact Title-Only Card) -->
     <meta property="og:site_name" content="TV SHOP">
     <meta property="og:type" content="article">
     <meta property="og:title" content="$safeTitle">
-    <meta property="og:description" content="$safeDesc">
     <meta property="og:image" content="https://tvshopru.github.io/sup.tvshop/app_logo.png">
     <meta property="og:image:width" content="300">
     <meta property="og:image:height" content="300">
@@ -100,7 +97,6 @@ foreach ($art in $articles) {
     <!-- Twitter Card (Compact summary) -->
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="$safeTitle">
-    <meta name="twitter:description" content="$safeDesc">
     <meta name="twitter:image" content="https://tvshopru.github.io/sup.tvshop/app_logo.png">
 
     <!-- Unified Stylesheet -->

@@ -516,14 +516,12 @@
 '    <meta charset="UTF-8">\n' +
 '    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">\n' +
 '    <title>' + this.escapeHtml(title) + ' - TV SHOP</title>\n' +
-'    <meta name="description" content="' + this.escapeHtml(description) + '">\n' +
 '    <link rel="icon" type="image/png" href="../app_logo.png?v=2">\n' +
 '    <link rel="canonical" href="' + canonicalUrl + '">\n\n' +
-'    <!-- Open Graph for Telegram & Social Previews (Compact Card) -->\n' +
+'    <!-- Open Graph for Telegram & Social Previews (Compact Title-Only Card) -->\n' +
 '    <meta property="og:site_name" content="TV SHOP">\n' +
 '    <meta property="og:type" content="article">\n' +
 '    <meta property="og:title" content="' + this.escapeHtml(title) + '">\n' +
-'    <meta property="og:description" content="' + this.escapeHtml(description) + '">\n' +
 '    <meta property="og:image" content="' + this.escapeHtml(ogImage) + '">\n' +
 '    <meta property="og:image:width" content="300">\n' +
 '    <meta property="og:image:height" content="300">\n' +
@@ -531,7 +529,6 @@
 '    <!-- Twitter Card (Compact summary) -->\n' +
 '    <meta name="twitter:card" content="summary">\n' +
 '    <meta name="twitter:title" content="' + this.escapeHtml(title) + '">\n' +
-'    <meta name="twitter:description" content="' + this.escapeHtml(description) + '">\n' +
 '    <meta name="twitter:image" content="' + this.escapeHtml(ogImage) + '">\n\n' +
 '    <!-- Unified Stylesheet -->\n' +
 '    <link rel="stylesheet" href="../css/article.css?v=20261010_02">\n' +
