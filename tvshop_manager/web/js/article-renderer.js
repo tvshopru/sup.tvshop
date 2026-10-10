@@ -491,8 +491,9 @@
             var artId = (article && article.id) ? article.id : 'article';
             var videoUrl = (article && article.videoUrl) ? article.videoUrl.trim() : '';
 
-            // Render body HTML
+            // Render body HTML and fix image paths for articles in /articles/ folder
             var bodyHtml = this.render(article) || '<p>' + (article.description || '') + '</p>';
+            bodyHtml = bodyHtml.replace(/src=["'](\.?\/)?img\//gi, 'src="../img/');
 
             // Extract plain text for description (max 180 chars)
             var plainText = (bodyHtml || '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
@@ -502,7 +503,6 @@
             var ogImage = 'https://tvshopru.github.io/sup.tvshop/app_logo.png';
 
             var canonicalUrl = baseUrl + '/articles/' + encodeURIComponent(artId) + '.html';
-            var readTime = this.calculateReadTime(article.contentData || article.blocks) || 1;
 
             var videoBtnHtml = videoUrl ? 
                 '<a href="' + this.escapeHtml(videoUrl) + '" target="_blank" class="video-banner-btn">' +
@@ -611,12 +611,8 @@
 '        .nav-btn-icon { width: 30px; height: 30px; padding: 0; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; }\n' +
 '        .article-container { width: 100%; max-width: 740px; margin: 0 auto; padding: 36px 20px 80px 20px; flex: 1; }\n' +
 '        .article-header { margin-bottom: 30px; padding-bottom: 22px; border-bottom: 1px solid var(--border-color); }\n' +
-'        .article-title { font-size: 2.2em; font-weight: 800; line-height: 1.25; color: var(--text-primary); margin-bottom: 16px; letter-spacing: -0.5px; }\n' +
+'        .article-title { font-size: 2.2em; font-weight: 800; line-height: 1.25; color: var(--text-primary); margin-bottom: 0; letter-spacing: -0.5px; }\n' +
 '        @media (max-width: 600px) { .article-title { font-size: 1.75em; } .article-container { padding: 20px 16px 60px 16px; } }\n' +
-'        .article-meta-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 0.9em; color: var(--text-secondary); }\n' +
-'        .author-badge { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; color: var(--accent-color); text-decoration: none; }\n' +
-'        .author-badge:hover { text-decoration: underline; }\n' +
-'        .meta-dot { opacity: 0.5; }\n' +
 '        .video-banner-btn {\n' +
 '            display: flex; align-items: center; justify-content: center; gap: 10px;\n' +
 '            background: var(--accent-light); color: var(--accent-color); border: 1px solid var(--accent-color);\n' +
@@ -650,16 +646,6 @@
 '        <article>\n' +
 '            <header class="article-header">\n' +
 '                <h1 class="article-title">' + this.escapeHtml(title) + '</h1>\n' +
-'                <div class="article-meta-row">\n' +
-'                    <a href="https://t.me/android_tv_shop" target="_blank" class="author-badge">\n' +
-'                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.75z"/></svg>\n' +
-'                        <span>' + this.escapeHtml(author) + '</span>\n' +
-'                    </a>\n' +
-'                    <span class="meta-dot">•</span>\n' +
-'                    <time datetime="' + this.escapeHtml(date) + '">' + this.escapeHtml(date) + '</time>\n' +
-'                    <span class="meta-dot">•</span>\n' +
-'                    <span>' + readTime + ' мин чтения</span>\n' +
-'                </div>\n' +
 '            </header>\n\n' +
 '            ' + videoBtnHtml + '\n\n' +
 '            <div class="article-body">\n' +
@@ -670,7 +656,7 @@
 '    <div class="share-toast" id="share-toast">✓ Ссылка скопирована в буфер обмена!</div>\n\n' +
 '    <script>\n' +
 '        (function() {\n' +
-'            var savedTheme = localStorage.getItem("tvshop_theme") || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");\n' +
+'            var savedTheme = localStorage.getItem("tvshop_theme") || "light";\n' +
 '            if (savedTheme === "dark") document.body.classList.add("dark-theme");\n' +
 '            document.getElementById("btn-theme-toggle").addEventListener("click", function() {\n' +
 '                document.body.classList.toggle("dark-theme");\n' +
