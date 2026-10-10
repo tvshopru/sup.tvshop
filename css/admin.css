@@ -633,10 +633,11 @@ body {
 /* Slim Sleek Modern Toolbar */
 .tg-editor-toolbar {
     border-bottom: 1px solid var(--border-subtle);
-    padding: 8px 14px;
+    padding: 6px 12px;
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    gap: 4px;
+    gap: 6px 6px;
     background: var(--bg-toolbar);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
@@ -647,14 +648,15 @@ body {
 .tg-tb-group {
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
     gap: 3px;
 }
 
 .tg-tb-divider {
     width: 1px;
-    height: 20px;
+    height: 18px;
     background: var(--border-subtle);
-    margin: 0 4px;
+    margin: 0 3px;
 }
 
 .tg-tb-btn {
@@ -662,15 +664,16 @@ body {
     border: 1px solid transparent;
     color: var(--text-secondary);
     border-radius: var(--radius-sm);
-    padding: 6px 9px;
-    font-size: 0.82em;
+    padding: 5px 8px;
+    font-size: 0.8em;
     font-weight: 600;
     cursor: pointer;
     display: inline-flex;
     align-items: center;
-    gap: 5px;
+    gap: 4px;
     transition: all 0.15s;
     line-height: 1;
+    white-space: nowrap;
 }
 
 .tg-tb-btn svg {
