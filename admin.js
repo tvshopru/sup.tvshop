@@ -834,6 +834,236 @@ class RemoteKeyInlineTool {
     }
 }
 
+class LinkButtonBlockTool {
+    static get toolbox() {
+        return {
+            title: 'Кнопка-ссылка (CTA)',
+            icon: '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="12" rx="3"/><path d="M9 12h6"/><path d="M12 9l3 3-3 3"/></svg>'
+        };
+    }
+
+    static get isReadOnlySupported() {
+        return true;
+    }
+
+    constructor({ data, api, readOnly }) {
+        this.data = {
+            text: data.text || data.title || data.label || '',
+            link: data.link || data.url || '',
+            style: data.style || 'primary'
+        };
+        this.api = api;
+        this.readOnly = readOnly;
+        this.wrapper = null;
+        this.styleButtons = [];
+    }
+
+    render() {
+        this.wrapper = document.createElement('div');
+        this.wrapper.classList.add('ed-link-btn-block');
+        this.wrapper.style.cssText = 'background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:14px 16px; margin:12px 0; font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; box-shadow:0 1px 3px rgba(0,0,0,0.03);';
+
+        const header = document.createElement('div');
+        header.style.cssText = 'display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; font-size:12px; font-weight:700; color:#64748b; text-transform:uppercase; letter-spacing:0.5px;';
+        header.innerHTML = '<span style="display:flex; align-items:center; gap:6px;">🔘 Кнопка действия (CTA / Ссылка)</span>';
+        this.wrapper.appendChild(header);
+
+        // Inputs grid
+        const grid = document.createElement('div');
+        grid.style.cssText = 'display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px;';
+
+        // Label input
+        const textGroup = document.createElement('div');
+        const textLabel = document.createElement('label');
+        textLabel.style.cssText = 'display:block; font-size:12px; font-weight:700; color:#334155; margin-bottom:5px;';
+        textLabel.textContent = 'Текст на кнопке';
+        const textInput = document.createElement('input');
+        textInput.type = 'text';
+        textInput.placeholder = 'Например: Скачать APK или Открыть инструкцию...';
+        textInput.value = this.data.text;
+        textInput.style.cssText = 'width:100%; box-sizing:border-box; padding:9px 12px; border:1px solid #cbd5e1; border-radius:8px; font-size:13px; font-weight:600; outline:none; background:#ffffff; color:#0f172a;';
+        textInput.addEventListener('input', (e) => {
+            this.data.text = e.target.value;
+            this.updatePreview();
+        });
+        textGroup.appendChild(textLabel);
+        textGroup.appendChild(textInput);
+        grid.appendChild(textGroup);
+
+        // Link input
+        const linkGroup = document.createElement('div');
+        const linkLabel = document.createElement('label');
+        linkLabel.style.cssText = 'display:block; font-size:12px; font-weight:700; color:#334155; margin-bottom:5px;';
+        linkLabel.textContent = 'Ссылка (URL или статья)';
+        const linkInput = document.createElement('input');
+        linkInput.type = 'text';
+        linkInput.placeholder = 'https://..., @username или выберите из списка...';
+        linkInput.value = this.data.link;
+        linkInput.style.cssText = 'width:100%; box-sizing:border-box; padding:9px 12px; border:1px solid #cbd5e1; border-radius:8px; font-size:13px; outline:none; background:#ffffff; color:#0f172a;';
+        linkInput.addEventListener('input', (e) => {
+            this.data.link = e.target.value;
+            this.updatePreview();
+        });
+        linkGroup.appendChild(linkLabel);
+        linkGroup.appendChild(linkInput);
+        grid.appendChild(linkGroup);
+
+        this.wrapper.appendChild(grid);
+
+        // Helper Article Picker & Fast Presets
+        const helperRow = document.createElement('div');
+        helperRow.style.cssText = 'display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin-bottom:12px; font-size:12px;';
+
+        const selectArticle = document.createElement('select');
+        selectArticle.style.cssText = 'padding:6px 10px; border:1px solid #cbd5e1; border-radius:6px; background:#ffffff; color:#334155; font-size:12px; font-weight:600; cursor:pointer; outline:none; max-width:260px;';
+        selectArticle.innerHTML = '<option value="">📑 Быстрая ссылка на статью портала...</option>';
+        if (portalConfig && Array.isArray(portalConfig.articles)) {
+            portalConfig.articles.forEach(art => {
+                if (art && art.id) {
+                    const opt = document.createElement('option');
+                    opt.value = `articles/${encodeURIComponent(art.id)}.html`;
+                    opt.textContent = `📄 ${art.title || art.id}`;
+                    selectArticle.appendChild(opt);
+                }
+            });
+        }
+        selectArticle.addEventListener('change', (e) => {
+            if (e.target.value) {
+                this.data.link = e.target.value;
+                linkInput.value = e.target.value;
+                if (!this.data.text || this.data.text === 'Текст кнопки') {
+                    const selectedArt = portalConfig.articles.find(a => `articles/${encodeURIComponent(a.id)}.html` === e.target.value);
+                    if (selectedArt && selectedArt.title) {
+                        this.data.text = `Инструкция: ${selectedArt.title}`;
+                        textInput.value = this.data.text;
+                    }
+                }
+                this.updatePreview();
+            }
+        });
+        helperRow.appendChild(selectArticle);
+
+        // Fast TG Channel Preset
+        const tgBtn = document.createElement('button');
+        tgBtn.type = 'button';
+        tgBtn.style.cssText = 'background:#e0f2fe; color:#0284c7; border:1px solid #bae6fd; border-radius:6px; padding:5px 10px; font-size:11px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:4px;';
+        tgBtn.innerHTML = '✈️ @android_tv_shop';
+        tgBtn.addEventListener('click', () => {
+            this.data.link = 'https://t.me/android_tv_shop';
+            linkInput.value = this.data.link;
+            if (!this.data.text || this.data.text === 'Текст кнопки') {
+                this.data.text = 'Канал TV SHOP в Telegram';
+                textInput.value = this.data.text;
+            }
+            this.setStyle('telegram');
+        });
+        helperRow.appendChild(tgBtn);
+
+        // Fast TG Support Preset
+        const tgSupBtn = document.createElement('button');
+        tgSupBtn.type = 'button';
+        tgSupBtn.style.cssText = 'background:#f1f5f9; color:#475569; border:1px solid #cbd5e1; border-radius:6px; padding:5px 10px; font-size:11px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:4px;';
+        tgSupBtn.innerHTML = '💬 Поддержка @VladOpl';
+        tgSupBtn.addEventListener('click', () => {
+            this.data.link = 'https://t.me/VladOpl';
+            linkInput.value = this.data.link;
+            if (!this.data.text || this.data.text === 'Текст кнопки') {
+                this.data.text = 'Написать в техподдержку';
+                textInput.value = this.data.text;
+            }
+            this.setStyle('telegram');
+        });
+        helperRow.appendChild(tgSupBtn);
+
+        this.wrapper.appendChild(helperRow);
+
+        // Style selector pills
+        const styleRow = document.createElement('div');
+        styleRow.style.cssText = 'display:flex; align-items:center; gap:6px; margin-bottom:12px; flex-wrap:wrap;';
+        
+        const styles = [
+            { key: 'primary', label: '🔵 Синяя (Основная)', color: '#2563eb' },
+            { key: 'success', label: '🟢 Зелёная (Скачать)', color: '#16a34a' },
+            { key: 'telegram', label: '✈️ Telegram', color: '#0284c7' },
+            { key: 'amber', label: '🟠 Янтарная', color: '#d97706' },
+            { key: 'outline', label: '⚪ Контурная', color: '#475569' }
+        ];
+
+        this.styleButtons = [];
+        styles.forEach(st => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.dataset.style = st.key;
+            const isSel = this.data.style === st.key;
+            btn.style.cssText = `padding:5px 11px; font-size:11px; font-weight:700; border-radius:20px; border:1px solid ${isSel ? '#0f172a' : '#cbd5e1'}; background:${isSel ? '#0f172a' : '#ffffff'}; color:${isSel ? '#ffffff' : '#475569'}; cursor:pointer; transition:all 0.15s;`;
+            btn.textContent = st.label;
+            btn.addEventListener('click', () => {
+                this.setStyle(st.key);
+            });
+            this.styleButtons.push(btn);
+            styleRow.appendChild(btn);
+        });
+        this.wrapper.appendChild(styleRow);
+
+        // Live preview inside editor block
+        const previewBox = document.createElement('div');
+        previewBox.classList.add('ed-btn-preview-container');
+        previewBox.style.cssText = 'padding:14px; background:#ffffff; border:1px dashed #cbd5e1; border-radius:8px; text-align:center;';
+        this.previewBox = previewBox;
+        this.wrapper.appendChild(previewBox);
+
+        this.updatePreview();
+        return this.wrapper;
+    }
+
+    setStyle(styleKey) {
+        this.data.style = styleKey;
+        this.styleButtons.forEach(btn => {
+            const isSel = btn.dataset.style === styleKey;
+            btn.style.border = isSel ? '1px solid #0f172a' : '1px solid #cbd5e1';
+            btn.style.background = isSel ? '#0f172a' : '#ffffff';
+            btn.style.color = isSel ? '#ffffff' : '#475569';
+        });
+        this.updatePreview();
+    }
+
+    updatePreview() {
+        if (!this.previewBox) return;
+        const text = this.data.text.trim() || 'Текст кнопки';
+        const url = this.data.link.trim() || '#';
+        const style = this.data.style || 'primary';
+
+        let iconSvg = '';
+        if (url.includes('t.me') || url.includes('telegram') || style === 'telegram') {
+            iconSvg = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;margin-right:6px;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .37z"/></svg>';
+        } else if (url.match(/\.(apk|zip|rar|m3u|m3u8|pdf)$/i) || style === 'success') {
+            iconSvg = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:6px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';
+        } else if (url.includes('article')) {
+            iconSvg = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:6px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>';
+        } else {
+            iconSvg = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:6px;"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>';
+        }
+
+        const safeText = escapeHtml(text);
+        this.previewBox.innerHTML = `
+            <div style="font-size:11px; color:#94a3b8; font-weight:600; margin-bottom:8px;">Предпросмотр кнопки на сайте:</div>
+            <div class="article-btn-wrapper" style="margin:0;">
+                <span class="article-btn-cta btn-${style}">
+                    ${iconSvg}<span>${safeText}</span>
+                </span>
+            </div>
+        `;
+    }
+
+    save() {
+        return {
+            text: (this.data.text || '').trim(),
+            link: (this.data.link || '').trim(),
+            style: this.data.style || 'primary'
+        };
+    }
+}
+
 function initEditorJS(initialData) {
     if (editorInstance && typeof editorInstance.destroy === 'function') {
         try {
@@ -864,6 +1094,9 @@ function initEditorJS(initialData) {
             config: {
                 defaultStyle: 'unordered'
             }
+        },
+        linkButton: {
+            class: LinkButtonBlockTool
         },
         image: {
             class: window.ImageTool,
@@ -976,6 +1209,8 @@ function initEditorJS(initialData) {
                 "Raw HTML": "HTML код",
                 "Table": "Таблица",
                 "Link": "Ссылка",
+                "Link Button": "Кнопка-ссылка (CTA)",
+                "LinkButton": "Кнопка-ссылка (CTA)",
                 "Marker": "Выделитель",
                 "Bold": "Жирный",
                 "Italic": "Курсив",
@@ -1120,6 +1355,12 @@ function initEditorToolbarActions() {
         }
     });
 
+    $('#ed-btn-add-link-btn').off('click').on('click', function() {
+        if (editorInstance && isEditorReady) {
+            editorInstance.blocks.insert('linkButton', { text: '', link: '', style: 'primary' });
+        }
+    });
+
     $('#ed-btn-add-table').off('click').on('click', function() {
         if (editorInstance && isEditorReady) {
             editorInstance.blocks.insert('table', { withHeadings: true, content: [['Параметр', 'Значение'], ['', '']] });
@@ -1247,6 +1488,23 @@ function htmlToEditorData(html) {
             return;
         }
 
+        if (node.classList.contains('article-btn-wrapper') || node.classList.contains('article-btn-cta') || (tag === 'a' && node.classList.contains('btn'))) {
+            const aEl = tag === 'a' ? node : (node.querySelector('a') || node);
+            const textSpan = aEl.querySelector('span');
+            const text = textSpan ? textSpan.textContent.trim() : aEl.textContent.trim();
+            const link = aEl.getAttribute('href') || '';
+            let style = 'primary';
+            if (aEl.classList.contains('btn-success')) style = 'success';
+            else if (aEl.classList.contains('btn-telegram')) style = 'telegram';
+            else if (aEl.classList.contains('btn-amber')) style = 'amber';
+            else if (aEl.classList.contains('btn-outline')) style = 'outline';
+            blocks.push({
+                type: 'linkButton',
+                data: { text: text, link: link, style: style }
+            });
+            return;
+        }
+
         if (tag === 'iframe' || node.querySelector('iframe')) {
             const iframe = tag === 'iframe' ? node : node.querySelector('iframe');
             if (iframe && iframe.getAttribute('src')) {
@@ -1366,6 +1624,25 @@ function editorDataToHtml(data) {
                 const embedSrc = d.embed || d.source || '';
                 const caption = d.caption ? `<div class="article-image-caption">${d.caption}</div>` : '';
                 return `<div class="article-embed-wrapper"><div class="article-embed-responsive"><iframe src="${embedSrc}" frameborder="0" allowfullscreen></iframe></div>${caption}</div>`;
+            }
+            case 'button':
+            case 'linkButton':
+            case 'link': {
+                const text = d.text || d.title || d.label || 'Перейти';
+                const url = d.link || d.url || '#';
+                const style = d.style || 'primary';
+                let iconSvg = '';
+                if (url.includes('t.me') || url.includes('telegram') || style === 'telegram') {
+                    iconSvg = '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .37z"/></svg>';
+                } else if (url.match(/\.(apk|zip|rar|m3u|m3u8|pdf)$/i) || style === 'success') {
+                    iconSvg = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';
+                } else if (url.includes('article')) {
+                    iconSvg = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>';
+                } else {
+                    iconSvg = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>';
+                }
+                const targetAttr = !url.startsWith('#') ? ' target="_blank" rel="noopener noreferrer"' : '';
+                return `<div class="article-btn-wrapper"><a href="${escapeHtml(url)}" class="article-btn-cta btn-${style}"${targetAttr}>${iconSvg}<span>${escapeHtml(text)}</span></a></div>`;
             }
             case 'delimiter': return '<hr />';
             case 'code':

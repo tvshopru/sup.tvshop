@@ -27,6 +27,29 @@
         },
 
         /**
+         * Enhances text with auto-linking and telegram mention badges
+         */
+        formatLinksAndMentions: function (html) {
+            if (!html || typeof html !== 'string') return '';
+            
+            // 1. Ensure existing <a> tags have target="_blank" if external
+            html = html.replace(/<a\s+(?:(?!(?:target|rel)=)[^>])*href=["']([^"']+)["']/gi, function(match, href) {
+                if (href.startsWith('http://') || href.startsWith('https://') || href.startsWith('tg://')) {
+                    return match + ' target="_blank" rel="noopener noreferrer"';
+                }
+                return match;
+            });
+
+            // 2. Format @username mentions outside existing <a> tags
+            html = html.replace(/(^|[\s>])@([a-zA-Z0-9_]{4,32})(?=[<\s.,!?:;]|$)/g, function(match, prefix, user) {
+                return prefix + '<a href="https://t.me/' + user + '" target="_blank" rel="noopener noreferrer" class="article-tg-mention">' +
+                    '<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;margin-right:2px;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .37z"/></svg>@' + user + '</a>';
+            });
+
+            return html;
+        },
+
+        /**
          * Converts Editor.js JSON data (blocks) into clean, modern semantic HTML
          * @param {Object} data - { time: number, blocks: Array, version?: string }
          * @returns {string} HTML string
@@ -49,7 +72,7 @@
                         var level = Math.min(Math.max(parseInt(d.level || 2, 10), 1), 6);
                         var text = d.text || '';
                         if (text.trim()) {
-                            htmlParts.push('<h' + level + '>' + text + '</h' + level + '>');
+                            htmlParts.push('<h' + level + '>' + ArticleRenderer.formatLinksAndMentions(text) + '</h' + level + '>');
                         }
                         break;
                     }
@@ -57,8 +80,40 @@
                     case 'paragraph': {
                         var pText = d.text || '';
                         if (pText.trim()) {
-                            htmlParts.push('<p>' + pText + '</p>');
+                            htmlParts.push('<p>' + ArticleRenderer.formatLinksAndMentions(pText) + '</p>');
                         }
+                        break;
+                    }
+
+                    case 'button':
+                    case 'linkButton':
+                    case 'link': {
+                        var btnText = d.text || d.title || d.label || 'Перейти';
+                        var btnUrl = d.link || d.url || '#';
+                        var btnStyle = d.style || 'primary';
+                        
+                        var iconSvg = '';
+                        if (btnUrl.includes('t.me') || btnUrl.includes('telegram') || btnStyle === 'telegram') {
+                            iconSvg = '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .37z"/></svg>';
+                        } else if (btnUrl.match(/\.(apk|zip|rar|m3u|m3u8|pdf)$/i) || btnStyle === 'success') {
+                            iconSvg = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';
+                        } else if (btnUrl.includes('article')) {
+                            iconSvg = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>';
+                        } else {
+                            iconSvg = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>';
+                        }
+
+                        var isExternal = !btnUrl.startsWith('#');
+                        var targetAttr = isExternal ? ' target="_blank" rel="noopener noreferrer"' : '';
+
+                        htmlParts.push(
+                            '<div class="article-btn-wrapper">' +
+                                '<a href="' + ArticleRenderer.escapeHtml(btnUrl) + '" class="article-btn-cta btn-' + btnStyle + '"' + targetAttr + '>' +
+                                    iconSvg +
+                                    '<span>' + ArticleRenderer.escapeHtml(btnText) + '</span>' +
+                                '</a>' +
+                            '</div>'
+                        );
                         break;
                     }
 
