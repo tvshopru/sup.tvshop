@@ -543,8 +543,12 @@
             var title = (article && article.title) ? article.title.trim() : 'Статья TV SHOP';
             var author = (article && article.author) ? article.author.trim() : 'TV SHOP';
             var date = (article && article.date) ? article.date.trim() : 'Сегодня';
+            var category = (article && article.category) ? article.category.trim() : '';
             var artId = (article && article.id) ? article.id : 'article';
             var videoUrl = (article && article.videoUrl) ? article.videoUrl.trim() : '';
+            var supportTg = options.supportTg || (global.portalConfig && global.portalConfig.supportTg) || '@android_tv_shop';
+            var supportMax = options.supportMax || (global.portalConfig && global.portalConfig.supportMax) || 'https://max.ru/join/K8fJHylVHjrJMeqV36SWe8wsdHSTUjl3t8iWhAfHFyk';
+            var tgUrl = 'https://t.me/' + supportTg.replace('@', '');
 
             // Render body HTML and fix image paths for articles in /articles/ folder
             var bodyHtml = this.render(article) || '<p>' + (article.description || '') + '</p>';
@@ -564,6 +568,8 @@
                     '<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>' +
                     '<span>Смотреть видеоверсию инструкции</span>' +
                 '</a>' : '';
+
+            var catHtml = category ? '<span class="meta-dot">•</span><span style="background:var(--accent-light); color:var(--accent-color); font-weight:700; padding:2px 8px; border-radius:10px; font-size:0.85em;">' + this.escapeHtml(category) + '</span>' : '';
 
             return '<!DOCTYPE html>\n' +
 '<html lang="ru">\n' +
@@ -586,7 +592,7 @@
 '    <meta name="twitter:title" content="' + this.escapeHtml(title) + '">\n' +
 '    <meta name="twitter:image" content="' + this.escapeHtml(ogImage) + '">\n\n' +
 '    <!-- Unified Stylesheet -->\n' +
-'    <link rel="stylesheet" href="../css/article.css?v=20261010_02">\n' +
+'    <link rel="stylesheet" href="../css/article.css?v=20261013_01">\n' +
 '    <style>\n' +
 '        :root {\n' +
 '            --bg-color: #ffffff;\n' +
@@ -594,7 +600,7 @@
 '            --card-bg: #ffffff;\n' +
 '            --text-primary: #111827;\n' +
 '            --text-secondary: #4b5563;\n' +
-'            --text-muted: #9ca3af;\n' +
+'            --text-muted: #64748b;\n' +
 '            --accent-color: #2481cc;\n' +
 '            --accent-hover: #1b66a3;\n' +
 '            --accent-light: #e8f4fd;\n' +
@@ -698,11 +704,41 @@
 '        <article>\n' +
 '            <header class="article-header">\n' +
 '                <h1 class="article-title">' + this.escapeHtml(title) + '</h1>\n' +
+'                <div class="article-meta-row">\n' +
+'                    <a href="' + this.escapeHtml(tgUrl) + '" target="_blank" rel="noopener noreferrer" class="author-badge">\n' +
+'                        <svg viewBox="0 0 24 24" fill="#2481cc" style="width:16px;height:16px;"><circle cx="12" cy="12" r="12" fill="#2481cc"/><path d="M5.4 11.9l11.7-4.5c.5-.2 1.1.1 1 .7l-2 9.4c-.1.6-.7.8-1.2.5l-3.3-2.4-1.6 1.5c-.2.2-.4.3-.7.3l.2-3.4 6.2-5.6c.3-.2-.1-.4-.4-.2l-7.7 4.9-3.3-1c-.7-.2-.7-.7.1-1z" fill="#fff"/></svg>\n' +
+'                        <span>' + this.escapeHtml(author) + '</span>\n' +
+'                    </a>\n' +
+'                    <span class="meta-dot">•</span>\n' +
+'                    <span class="article-meta-date">' + this.escapeHtml(date) + '</span>\n' +
+'                    ' + catHtml + '\n' +
+'                </div>\n' +
 '            </header>\n\n' +
 '            ' + videoBtnHtml + '\n\n' +
 '            <div class="article-body">\n' +
 '                ' + bodyHtml + '\n' +
-'            </div>\n' +
+'            </div>\n\n' +
+'            <footer class="article-footer">\n' +
+'                <div class="footer-channel-card">\n' +
+'                    <div class="footer-channel-info">\n' +
+'                        <img src="../app_logo.png" alt="TV SHOP Logo">\n' +
+'                        <div class="footer-channel-text">\n' +
+'                            <div class="footer-channel-title">TV SHOP — Каналы и поддержка</div>\n' +
+'                            <div class="footer-channel-desc">Новости, обновления инструкций и связь с поддержкой</div>\n' +
+'                        </div>\n' +
+'                    </div>\n' +
+'                    <div class="footer-channel-actions">\n' +
+'                        <a href="' + this.escapeHtml(tgUrl) + '" target="_blank" rel="noopener noreferrer" class="channel-btn-tg" title="Канал TV SHOP в Telegram">\n' +
+'                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .37z"/></svg>\n' +
+'                            <span>Telegram</span>\n' +
+'                        </a>\n' +
+'                        <a href="' + this.escapeHtml(supportMax) + '" target="_blank" rel="noopener noreferrer" class="channel-btn-max" title="Канал TV SHOP в MAX">\n' +
+'                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3C6.477 3 2 6.94 2 11.8c0 2.76 1.45 5.23 3.73 6.86-.16.92-.61 2.45-1.78 3.52 0 0 2.42.12 4.75-1.45.98.27 2.02.42 3.3.42 5.523 0 10-3.94 10-8.8S17.523 3 12 3z"/></svg>\n' +
+'                            <span>Канал MAX</span>\n' +
+'                        </a>\n' +
+'                    </div>\n' +
+'                </div>\n' +
+'            </footer>\n' +
 '        </article>\n' +
 '    </main>\n\n' +
 '    <div class="share-toast" id="share-toast">✓ Ссылка скопирована в буфер обмена!</div>\n\n' +

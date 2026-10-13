@@ -14,6 +14,9 @@
     <meta property="og:description" content="База знаний, пошаговые инструкции и полезные статьи для пользователей TV SHOP">
     <meta property="og:image" content="app_logo.png">
 
+    <!-- Unified Stylesheet -->
+    <link rel="stylesheet" href="css/article.css?v=20261013_01">
+
     <style>
         :root {
             --bg-color: #f8fafc;
@@ -310,65 +313,15 @@
             opacity: 0.4;
         }
 
-        /* Channel Promo Banner */
-        .channel-banner {
-            margin-top: 36px;
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            padding: 10px 14px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-            flex-wrap: nowrap;
-        }
-
-        .channel-info {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            min-width: 0;
-        }
-
-        .channel-info img {
-            width: 32px;
-            height: 32px;
-            border-radius: 6px;
-            object-fit: contain;
-            background: #fff;
-            padding: 2px;
-            border: 1px solid var(--border-color);
-            flex-shrink: 0;
-        }
-
-        .tg-join-btn {
-            background: #2481cc;
-            color: #ffffff !important;
-            padding: 6px 14px;
-            border-radius: 16px;
-            font-weight: 700;
-            font-size: 0.82em;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            white-space: nowrap;
-            flex-shrink: 0;
-            transition: background 0.2s;
-        }
-
-        .tg-join-btn:hover {
-            background: #1b66a3;
-        }
     </style>
 </head>
 <body>
 
     <!-- Top Navigation Bar -->
     <header class="top-navbar">
-        <a href="index.html" class="brand-link" title="На главную TV SHOP">
+        <a href="articles.html" class="brand-link" title="Инструкции и статьи TV SHOP">
             <img src="app_logo.png?v=2" alt="TV SHOP Logo">
+            <span>TV SHOP</span>
         </a>
         <div class="nav-actions">
             <button class="nav-btn nav-btn-icon" id="theme-toggle-btn" title="Сменить тему (День/Ночь)">
@@ -417,15 +370,21 @@
         <div class="channel-banner">
             <div class="channel-info">
                 <img src="app_logo.png?v=2" alt="TV SHOP Logo">
-                <div>
-                    <div style="font-weight: 800; font-size: 1.1em; color: var(--text-primary);">TV SHOP — Поддержка и инструкции</div>
-                    <div style="font-size: 0.9em; color: var(--text-muted);">Задавайте вопросы и читайте свежие новости в Telegram</div>
+                <div class="footer-channel-text">
+                    <div class="footer-channel-title">TV SHOP — Официальные каналы</div>
+                    <div class="footer-channel-desc">Свежие новости, обновления инструкций и связь с поддержкой</div>
                 </div>
             </div>
-            <a id="channel-tg-link" href="https://t.me/android_tv_shop" target="_blank" class="tg-join-btn">
-                <svg viewBox="0 0 24 24" fill="currentColor" style="width:18px;height:18px;"><path d="M5.4 11.9l11.7-4.5c.5-.2 1.1.1 1 .7l-2 9.4c-.1.6-.7.8-1.2.5l-3.3-2.4-1.6 1.5c-.2.2-.4.3-.7.3l.2-3.4 6.2-5.6c.3-.2-.1-.4-.4-.2l-7.7 4.9-3.3-1c-.7-.2-.7-.7.1-1z"/></svg>
-                Наш Telegram
-            </a>
+            <div class="channel-actions">
+                <a id="channel-tg-link" href="https://t.me/android_tv_shop" target="_blank" rel="noopener noreferrer" class="channel-btn-tg" title="Канал TV SHOP в Telegram">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .37z"/></svg>
+                    <span>Telegram</span>
+                </a>
+                <a id="channel-max-link" href="https://max.ru/join/K8fJHylVHjrJMeqV36SWe8wsdHSTUjl3t8iWhAfHFyk" target="_blank" rel="noopener noreferrer" class="channel-btn-max" title="Канал TV SHOP в MAX">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3C6.477 3 2 6.94 2 11.8c0 2.76 1.45 5.23 3.73 6.86-.16.92-.61 2.45-1.78 3.52 0 0 2.42.12 4.75-1.45.98.27 2.02.42 3.3.42 5.523 0 10-3.94 10-8.8S17.523 3 12 3z"/></svg>
+                    <span>Канал MAX</span>
+                </a>
+            </div>
         </div>
 
     </main>
@@ -433,7 +392,7 @@
     <script>
         // Theme Management
         (function initTheme() {
-            var savedTheme = localStorage.getItem('article-theme') || 'light';
+            var savedTheme = localStorage.getItem('tvshop_theme') || localStorage.getItem('article-theme') || 'light';
             if (savedTheme === 'dark') {
                 document.body.classList.add('dark-theme');
                 updateThemeIcons(true);
@@ -454,11 +413,11 @@
 
         document.getElementById('theme-toggle-btn').addEventListener('click', function() {
             var isDark = document.body.classList.toggle('dark-theme');
+            localStorage.setItem('tvshop_theme', isDark ? 'dark' : 'light');
             localStorage.setItem('article-theme', isDark ? 'dark' : 'light');
             updateThemeIcons(isDark);
         });
 
-        // Load and Render Articles
         // Load and Render Articles
         var allArticles = [];
 
@@ -469,8 +428,12 @@
                 
                 var tgContact = config.supportTg || '@android_tv_shop';
                 var tgUrl = 'https://t.me/' + tgContact.replace('@', '');
+                var maxUrl = config.supportMax || 'https://max.ru/join/K8fJHylVHjrJMeqV36SWe8wsdHSTUjl3t8iWhAfHFyk';
+
                 var tgBtn = document.getElementById('channel-tg-link');
                 if (tgBtn) tgBtn.setAttribute('href', tgUrl);
+                var maxBtn = document.getElementById('channel-max-link');
+                if (maxBtn) maxBtn.setAttribute('href', maxUrl);
 
                 renderGrid();
             })
@@ -509,7 +472,7 @@
 
             var html = '';
             filtered.forEach(function(art) {
-                var artUrl = 'article.html?id=' + encodeURIComponent(art.id);
+                var artUrl = 'articles/' + encodeURIComponent(art.id) + '.html';
                 var catBadge = art.category ? '<span style="background:var(--accent-light); color:var(--accent-color); font-size:0.75em; font-weight:700; padding:2px 8px; border-radius:10px;">' + escapeHtml(art.category) + '</span>' : '';
 
                 html += 
