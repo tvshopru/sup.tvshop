@@ -587,6 +587,50 @@ class LinkButtonBlockTool {
 // ==========================================================================
 // 5. Editor.js Initialization
 // ==========================================================================
+// ==========================================================================
+// Continuous Ordered List Numbering Across Blocks (Through Photos & Embeds)
+// ==========================================================================
+function prepareContinuousOrderedData(data) {
+    if (!data || !Array.isArray(data.blocks)) return data;
+    let runningIndex = 1;
+    data.blocks.forEach(block => {
+        if (block && block.type === 'list' && block.data && block.data.style === 'ordered') {
+            block.data.meta = block.data.meta || {};
+            block.data.meta.start = runningIndex;
+            const items = block.data.items || [];
+            runningIndex += Math.max(1, items.length);
+        }
+    });
+    return data;
+}
+
+let isUpdatingCounters = false;
+function updateEditorOrderedListCounters() {
+    if (isUpdatingCounters) return;
+    const holder = document.getElementById('editorjs-holder');
+    if (!holder) return;
+
+    isUpdatingCounters = true;
+    try {
+        const blocks = holder.querySelectorAll('.ce-block');
+        let runningIndex = 1;
+
+        blocks.forEach(block => {
+            const listEl = block.querySelector('.cdx-list-ordered, .cdx-list--ordered, ol.cdx-list');
+            if (listEl) {
+                const startVal = runningIndex;
+                listEl.style.setProperty('counter-reset', `item ${startVal - 1}`, 'important');
+
+                const items = listEl.querySelectorAll(':scope > .cdx-list__item, :scope > li');
+                const count = items.length > 0 ? items.length : 1;
+                runningIndex += count;
+            }
+        });
+    } finally {
+        isUpdatingCounters = false;
+    }
+}
+
 function initEditorJS(initialData) {
     if (editorInstance && typeof editorInstance.destroy === 'function') {
         try {
@@ -799,11 +843,11 @@ function initEditorJS(initialData) {
 
     let dataToLoad = {};
     if (initialData && Array.isArray(initialData.blocks) && initialData.blocks.length > 0) {
-        dataToLoad = initialData;
+        dataToLoad = prepareContinuousOrderedData(initialData);
     } else if (typeof initialData === 'string' && initialData.trim()) {
         const converter = window.ArticleRenderer && (window.ArticleRenderer.htmlToEditorData || window.ArticleRenderer.parseHtmlToBlocks);
         if (typeof converter === 'function') {
-            dataToLoad = converter(initialData);
+            dataToLoad = prepareContinuousOrderedData(converter(initialData));
         }
     }
 
@@ -814,11 +858,17 @@ function initEditorJS(initialData) {
             i18n: editorI18n,
             placeholder: 'Нажмите Tab или начните писать текст здесь...',
             data: dataToLoad,
+            onChange: () => {
+                updateEditorOrderedListCounters();
+            },
             onReady: () => {
                 isEditorReady = true;
                 if (window.Undo) {
                     new window.Undo({ editor: editorInstance });
                 }
+                updateEditorOrderedListCounters();
+                setTimeout(updateEditorOrderedListCounters, 50);
+                setTimeout(updateEditorOrderedListCounters, 200);
             }
         });
     } catch (e) {
@@ -904,6 +954,7 @@ async function syncArticleEditorData() {
     if (editorInstance && isEditorReady) {
         try {
             const outputData = await editorInstance.save();
+            prepareContinuousOrderedData(outputData);
             art.contentData = outputData;
             if (window.ArticleRenderer && typeof window.ArticleRenderer.renderBlocks === 'function') {
                 art.contentHtml = window.ArticleRenderer.renderBlocks(outputData);
@@ -1552,13 +1603,27 @@ function initPopoverLocalizationWatcher() {
         if (pop) translateElement(pop);
     }, { passive: true });
 
+    let listDebounceTimer = null;
     const observer = new MutationObserver((mutations) => {
+        let hasNewBlocksOrList = false;
         for (const mutation of mutations) {
             for (const node of mutation.addedNodes) {
                 if (node.nodeType === Node.ELEMENT_NODE) {
                     translateElement(node);
+                    if (node.classList && (node.classList.contains('ce-block') || node.classList.contains('cdx-list') || node.classList.contains('cdx-list__item'))) {
+                        hasNewBlocksOrList = true;
+                    } else if (node.querySelector && node.querySelector('.ce-block, .cdx-list')) {
+                        hasNewBlocksOrList = true;
+                    }
                 }
             }
+            if (mutation.removedNodes && mutation.removedNodes.length > 0) {
+                hasNewBlocksOrList = true;
+            }
+        }
+        if (hasNewBlocksOrList) {
+            clearTimeout(listDebounceTimer);
+            listDebounceTimer = setTimeout(updateEditorOrderedListCounters, 40);
         }
     });
 

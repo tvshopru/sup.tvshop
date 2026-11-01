@@ -1139,6 +1139,34 @@ body.dark-theme .badge-status.pinned {
    WYSIWYG 1:1 Live Canvas Overrides (Telegraph-like rendering)
    ========================================================================== */
 
+/* Universal Canvas Input Reset: NO rectangular borders, NO inset shadows, NO background boxes */
+#editorjs-holder .cdx-input,
+#editorjs-holder .cdx-quote__text,
+#editorjs-holder .cdx-quote__caption,
+#editorjs-holder .cdx-warning__title,
+#editorjs-holder .cdx-warning__message,
+#editorjs-holder .image-tool__caption,
+#editorjs-holder [contenteditable="true"] {
+    border: none !important;
+    border-color: transparent !important;
+    outline: none !important;
+    box-shadow: none !important;
+    -webkit-box-shadow: none !important;
+    background: transparent !important;
+}
+
+#editorjs-holder .cdx-input:focus,
+#editorjs-holder .cdx-input:hover,
+#editorjs-holder [contenteditable="true"]:focus,
+#editorjs-holder [contenteditable="true"]:hover {
+    border: none !important;
+    border-color: transparent !important;
+    outline: none !important;
+    box-shadow: none !important;
+    -webkit-box-shadow: none !important;
+    background: transparent !important;
+}
+
 /* 1. List: Double numbering fix & grid layout preservation */
 #editorjs-holder ol.cdx-list,
 #editorjs-holder ul.cdx-list,
@@ -1176,12 +1204,26 @@ body.dark-theme .badge-status.pinned {
 
 /* 2. Quotes (1:1 with site .article-quote-block) */
 #editorjs-holder .cdx-quote {
+    border: none !important;
     border-left: 4px solid var(--accent-color, #2481cc) !important;
     background: rgba(36, 129, 204, 0.08) !important;
     padding: 14px 20px !important;
     margin: 18px 0 !important;
     border-radius: 0 10px 10px 0 !important;
     box-shadow: none !important;
+}
+
+#editorjs-holder .cdx-quote .cdx-input,
+#editorjs-holder .cdx-quote__text,
+#editorjs-holder .cdx-quote__caption {
+    border: none !important;
+    border-color: transparent !important;
+    outline: none !important;
+    box-shadow: none !important;
+    -webkit-box-shadow: none !important;
+    background: transparent !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
 }
 
 #editorjs-holder .cdx-quote__text {
@@ -1192,17 +1234,15 @@ body.dark-theme .badge-status.pinned {
     font-size: 1.02em !important;
     min-height: 24px !important;
     margin-bottom: 6px !important;
-    padding: 0 !important;
-    outline: none !important;
 }
 
 #editorjs-holder .cdx-quote__caption {
+    display: block !important;
     font-style: normal !important;
     font-size: 0.86em !important;
     color: var(--text-muted, #64748b) !important;
     min-height: 18px !important;
-    padding: 0 !important;
-    outline: none !important;
+    margin-top: 8px !important;
 }
 
 body.dark-theme #editorjs-holder .cdx-quote {
@@ -1234,14 +1274,25 @@ body.dark-theme #editorjs-holder .cdx-quote__caption {
     display: none !important;
 }
 
+#editorjs-holder .cdx-warning .cdx-input,
+#editorjs-holder .cdx-warning__title,
+#editorjs-holder .cdx-warning__message {
+    border: none !important;
+    border-color: transparent !important;
+    outline: none !important;
+    box-shadow: none !important;
+    -webkit-box-shadow: none !important;
+    background: transparent !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+}
+
 #editorjs-holder .cdx-warning__title {
     font-weight: 700 !important;
     font-size: 1.02em !important;
     color: #b45309 !important;
     min-height: 22px !important;
     margin-bottom: 2px !important;
-    padding: 0 !important;
-    outline: none !important;
     display: flex !important;
     align-items: center !important;
     gap: 8px !important;
@@ -1258,8 +1309,6 @@ body.dark-theme #editorjs-holder .cdx-quote__caption {
     color: #92400e !important;
     line-height: 1.6 !important;
     min-height: 22px !important;
-    padding: 0 !important;
-    outline: none !important;
 }
 
 body.dark-theme #editorjs-holder .cdx-warning {
@@ -1272,6 +1321,24 @@ body.dark-theme #editorjs-holder .cdx-warning__title {
 }
 body.dark-theme #editorjs-holder .cdx-warning__message {
     color: #fde68a !important;
+}
+
+/* 4. Image Caption (1:1 with site .article-image-caption) */
+#editorjs-holder .image-tool__caption,
+#editorjs-holder .cdx-input.image-tool__caption {
+    border: none !important;
+    border-color: transparent !important;
+    outline: none !important;
+    box-shadow: none !important;
+    -webkit-box-shadow: none !important;
+    background: transparent !important;
+    border-radius: 0 !important;
+    padding: 6px 0 !important;
+    text-align: center !important;
+    font-size: 0.88em !important;
+    color: var(--text-muted, #64748b) !important;
+    font-style: italic !important;
+    min-height: 20px !important;
 }
 
 /* 4. Action Button (CTA) with Floating Popover */
