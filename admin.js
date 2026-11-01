@@ -621,17 +621,45 @@ function initEditorJS(initialData) {
         messages: {
             ui: {
                 blockTunes: {
-                    toggler: { "Click to tune": "Настройки блока", "or drag to move": "Перетащить" }
+                    toggler: {
+                        "Click to tune": "Настройки блока",
+                        "or drag to move": "или перетащите для перемещения"
+                    },
+                    actions: {
+                        "Filter": "Поиск...",
+                        "Nothing found": "Ничего не найдено",
+                        "Convert to": "Преобразовать в",
+                        "Move up": "Переместить вверх",
+                        "Move down": "Переместить вниз",
+                        "Delete": "Удалить",
+                        "Click to delete": "Нажмите для удаления"
+                    }
                 },
-                inlineToolbar: { converter: { "Convert to": "Преобразовать в" } },
+                inlineToolbar: {
+                    converter: {
+                        "Convert to": "Преобразовать в"
+                    }
+                },
                 toolbar: {
-                    toolbox: { "Add": "Добавить блок", "Filter": "Поиск...", "Nothing found": "Ничего не найдено" }
+                    toolbox: {
+                        "Add": "Добавить блок",
+                        "Filter": "Поиск...",
+                        "Nothing found": "Ничего не найдено"
+                    }
+                },
+                popover: {
+                    "Filter": "Поиск...",
+                    "Nothing found": "Ничего не найдено",
+                    "Convert to": "Преобразовать в"
                 }
             },
             toolNames: {
                 "Text": "Обычный текст",
                 "Heading": "Заголовок",
                 "List": "Список",
+                "Unordered List": "Маркированный список",
+                "Ordered List": "Нумерованный список",
+                "Checklist": "Чек-лист",
                 "Warning": "Важно",
                 "Quote": "Цитата",
                 "Delimiter": "Разделитель",
@@ -639,7 +667,64 @@ function initEditorJS(initialData) {
                 "Image": "Изображение",
                 "Link": "Ссылка",
                 "Bold": "Жирный",
-                "Italic": "Курсив"
+                "Italic": "Курсив",
+                "Underline": "Подчёркнутый",
+                "Marker": "Маркер",
+                "Code": "Код",
+                "InlineCode": "Код"
+            },
+            tools: {
+                list: {
+                    "Ordered": "Нумерованный список",
+                    "Unordered": "Маркированный список",
+                    "Checklist": "Чек-лист",
+                    "Unordered List": "Маркированный список",
+                    "Ordered List": "Нумерованный список"
+                },
+                warning: {
+                    "Title": "Заголовок",
+                    "Message": "Сообщение"
+                },
+                link: {
+                    "Add a link": "Вставьте ссылку"
+                },
+                stub: {
+                    "The block can not be displayed correctly.": "Блок не может быть отображен"
+                },
+                image: {
+                    "Caption": "Подпись к фото",
+                    "Select an Image": "Выберите изображение",
+                    "With border": "С рамкой",
+                    "Stretch image": "Растянуть",
+                    "With background": "С фоном"
+                },
+                table: {
+                    "Add row above": "Вставить строку выше",
+                    "Add row below": "Вставить строку ниже",
+                    "Delete row": "Удалить строку",
+                    "Add column to left": "Вставить столбец слева",
+                    "Add column to right": "Вставить столбец справа",
+                    "Delete column": "Удалить столбец",
+                    "With headings": "С заголовками",
+                    "Without headings": "Без заголовков"
+                },
+                quote: {
+                    "Quote": "Цитата",
+                    "Enter a quote": "Введите текст цитаты",
+                    "Enter a caption": "Автор или источник"
+                }
+            },
+            blockTunes: {
+                delete: {
+                    "Delete": "Удалить",
+                    "Click to delete": "Нажмите для подтверждения"
+                },
+                moveUp: {
+                    "Move up": "Переместить вверх"
+                },
+                moveDown: {
+                    "Move down": "Переместить вниз"
+                }
             }
         }
     };
@@ -1234,10 +1319,71 @@ function closeLivePreview() {
     if (modal) modal.style.display = 'none';
 }
 
+// Active DOM Localization Watcher for Editor.js Popovers & Submenus
+function initPopoverLocalizationWatcher() {
+    const translations = {
+        'Filter': 'Поиск...',
+        'Convert to': 'Преобразовать в',
+        'Move up': 'Переместить вверх',
+        'Move down': 'Переместить вниз',
+        'Delete': 'Удалить',
+        'Click to delete': 'Нажмите для удаления',
+        'Unordered List': 'Маркированный список',
+        'Ordered List': 'Нумерованный список',
+        'Checklist': 'Чек-лист',
+        'Heading': 'Заголовок',
+        'Text': 'Текст',
+        'Quote': 'Цитата',
+        'Warning': 'Важно',
+        'Table': 'Таблица',
+        'Image': 'Фото',
+        'Delimiter': 'Разделитель',
+        'Link': 'Ссылка',
+        'Nothing found': 'Ничего не найдено'
+    };
+
+    const translateElement = (el) => {
+        if (!el) return;
+        if (el.tagName === 'INPUT' && el.placeholder && translations[el.placeholder.trim()]) {
+            el.placeholder = translations[el.placeholder.trim()];
+        }
+        if (el.querySelectorAll) {
+            el.querySelectorAll('.ce-popover-item__title, .ce-popover-item__secondary-title, .ce-popover__search input, .tc-popover__item-label, .cdx-settings-button').forEach(target => {
+                if (target.tagName === 'INPUT' && target.placeholder && translations[target.placeholder.trim()]) {
+                    target.placeholder = translations[target.placeholder.trim()];
+                } else if (target.childNodes && target.childNodes.length === 1 && target.childNodes[0].nodeType === Node.TEXT_NODE) {
+                    const trimmed = target.textContent.trim();
+                    if (translations[trimmed]) {
+                        target.textContent = translations[trimmed];
+                    }
+                } else if (target.textContent) {
+                    const trimmed = target.textContent.trim();
+                    if (translations[trimmed]) {
+                        target.textContent = translations[trimmed];
+                    }
+                }
+            });
+        }
+    };
+
+    const observer = new MutationObserver((mutations) => {
+        for (const mutation of mutations) {
+            for (const node of mutation.addedNodes) {
+                if (node.nodeType === Node.ELEMENT_NODE) {
+                    translateElement(node);
+                }
+            }
+        }
+    });
+
+    observer.observe(document.body, { childList: true, subtree: true });
+}
+
 // ==========================================================================
 // 9. Auth & Initialization
 // ==========================================================================
 document.addEventListener('DOMContentLoaded', () => {
+    initPopoverLocalizationWatcher();
     // 1. Theme Management
     const themeBtn = document.getElementById('btn-theme-toggle');
     const savedTheme = localStorage.getItem('tvshop_theme') || 'light';
