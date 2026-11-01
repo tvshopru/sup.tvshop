@@ -198,6 +198,12 @@ async function savePortalConfigToGitHub() {
     }
     gatherGeneralForms();
 
+    if (Array.isArray(portalConfig.articles)) {
+        portalConfig.articles.forEach((a, i) => {
+            a.pinned = (i < 3);
+        });
+    }
+
     showToast("Сохранение и коммит на GitHub...", "info");
     const jsonString = JSON.stringify(portalConfig, null, 2);
     const base64Content = encodeBase64Utf8(jsonString);
@@ -913,6 +919,9 @@ function selectArticle(idx) {
     }
 }
 
+let draggedItemIndex = null;
+let isDraggingActive = false;
+
 function renderArticlesList() {
     const listEl = document.getElementById('articles-list');
     if (!listEl) return;
@@ -949,37 +958,139 @@ function renderArticlesList() {
         return;
     }
 
-    listEl.innerHTML = filtered.map(({ art, idx }) => {
+    const isDefaultView = (articleFilterStatus === 'all' && !articleSearchQuery);
+    let htmlParts = [];
+
+    filtered.forEach(({ art, idx }, pos) => {
         const isAct = idx === activeArticleIdx;
         const isDraft = art.status === 'draft';
+        const isPinned = isDefaultView && (pos < 3);
+
         const statusBadge = isDraft 
             ? `<span class="badge-status draft">🟡 Черновик</span>`
             : `<span class="badge-status published">🟢 Опубл.</span>`;
+        const pinBadge = isPinned 
+            ? `<span class="badge-status pinned" title="Закреплено на сайте (топ-3)">📌 Закреп</span>` 
+            : '';
         const catBadge = art.category ? `<span class="item-category">${escapeHtml(art.category)}</span>` : '';
         const title = escapeHtml(art.title || 'Без названия');
         const date = escapeHtml(art.date || '');
 
-        return `
-            <div class="article-item ${isAct ? 'active' : ''}" data-idx="${idx}">
+        htmlParts.push(`
+            <div class="article-item ${isAct ? 'active' : ''}" data-idx="${idx}" draggable="${isDefaultView ? 'true' : 'false'}" title="${isDefaultView ? 'Перетащите мышкой, чтобы изменить порядок статей' : ''}">
                 <div class="item-title">${title}</div>
                 <div class="item-meta">
+                    ${pinBadge}
                     ${statusBadge}
                     ${catBadge}
                     <span>${date}</span>
                 </div>
             </div>
-        `;
-    }).join('');
+        `);
+
+        if (isDefaultView && pos === 2 && filtered.length > 3) {
+            htmlParts.push(`
+                <div class="articles-pinned-divider">
+                    <span>Остальные статьи</span>
+                </div>
+            `);
+        }
+    });
+
+    listEl.innerHTML = htmlParts.join('');
 
     // Click handler on cards
     listEl.querySelectorAll('.article-item').forEach(el => {
         el.addEventListener('click', async () => {
+            if (isDraggingActive) return;
             const idx = parseInt(el.dataset.idx, 10);
             if (idx === activeArticleIdx) return;
             await syncArticleEditorData();
             selectArticle(idx);
         });
     });
+
+    // Native Drag and Drop Reordering (Active in Default View)
+    if (isDefaultView) {
+        const items = listEl.querySelectorAll('.article-item');
+        items.forEach(item => {
+            item.addEventListener('dragstart', (e) => {
+                isDraggingActive = true;
+                draggedItemIndex = parseInt(item.dataset.idx, 10);
+                item.classList.add('dragging');
+                e.dataTransfer.effectAllowed = 'move';
+                e.dataTransfer.setData('text/plain', String(draggedItemIndex));
+            });
+
+            item.addEventListener('dragend', () => {
+                item.classList.remove('dragging');
+                listEl.querySelectorAll('.article-item').forEach(el => el.classList.remove('drag-over-top', 'drag-over-bottom'));
+                draggedItemIndex = null;
+                setTimeout(() => { isDraggingActive = false; }, 60);
+            });
+
+            item.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                e.dataTransfer.dropEffect = 'move';
+                const targetIdx = parseInt(item.dataset.idx, 10);
+                if (draggedItemIndex === null || draggedItemIndex === targetIdx) return;
+
+                const rect = item.getBoundingClientRect();
+                const relY = e.clientY - rect.top;
+                if (relY < rect.height / 2) {
+                    item.classList.add('drag-over-top');
+                    item.classList.remove('drag-over-bottom');
+                } else {
+                    item.classList.add('drag-over-bottom');
+                    item.classList.remove('drag-over-top');
+                }
+            });
+
+            item.addEventListener('dragleave', () => {
+                item.classList.remove('drag-over-top', 'drag-over-bottom');
+            });
+
+            item.addEventListener('drop', async (e) => {
+                e.preventDefault();
+                const fromIdx = draggedItemIndex;
+                const toIdx = parseInt(item.dataset.idx, 10);
+                if (fromIdx === null || fromIdx === toIdx) return;
+
+                const isBottom = item.classList.contains('drag-over-bottom');
+                item.classList.remove('drag-over-top', 'drag-over-bottom', 'dragging');
+
+                let insertIdx = toIdx;
+                if (isBottom) {
+                    insertIdx = toIdx + 1;
+                }
+                if (fromIdx < insertIdx) {
+                    insertIdx--;
+                }
+                if (fromIdx === insertIdx) return;
+
+                await syncArticleEditorData();
+
+                const activeArtId = (portalConfig.articles && portalConfig.articles[activeArticleIdx])
+                    ? portalConfig.articles[activeArticleIdx].id
+                    : null;
+
+                const [moved] = portalConfig.articles.splice(fromIdx, 1);
+                portalConfig.articles.splice(insertIdx, 0, moved);
+
+                portalConfig.articles.forEach((a, i) => {
+                    a.pinned = (i < 3);
+                });
+
+                if (activeArtId) {
+                    activeArticleIdx = portalConfig.articles.findIndex(a => a.id === activeArtId);
+                    if (activeArticleIdx < 0) activeArticleIdx = 0;
+                }
+
+                renderArticlesList();
+                showToast("Порядок статей обновлен! Первые 3 в закрепе 📌", "success");
+            });
+        });
+    }
 }
 
 function createNewArticle() {

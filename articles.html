@@ -261,6 +261,38 @@
             border-color: var(--accent-color);
         }
 
+        .article-card.is-pinned {
+            border-color: rgba(36, 129, 204, 0.45);
+            background: linear-gradient(180deg, rgba(36, 129, 204, 0.05) 0%, var(--card-bg) 100%);
+            box-shadow: 0 4px 16px rgba(36, 129, 204, 0.08);
+        }
+
+        body.dark-theme .article-card.is-pinned {
+            border-color: rgba(0, 180, 216, 0.5);
+            background: linear-gradient(180deg, rgba(0, 180, 216, 0.1) 0%, var(--card-bg) 100%);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .card-pinned-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: #e0f2fe;
+            color: #0284c7;
+            border: 1px solid #bae6fd;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.74em;
+            font-weight: 800;
+            line-height: 1.2;
+        }
+
+        body.dark-theme .card-pinned-tag {
+            background: rgba(56, 189, 248, 0.15);
+            color: #38bdf8;
+            border-color: rgba(56, 189, 248, 0.35);
+        }
+
         .card-top-meta {
             display: flex;
             align-items: center;
@@ -471,15 +503,20 @@
             }
 
             var html = '';
-            filtered.forEach(function(art) {
+            filtered.forEach(function(art, pos) {
                 var artUrl = 'articles/' + encodeURIComponent(art.id) + '.html';
+                var isPinned = (art.pinned === true || (!searchVal && pos < 3));
+                var pinBadge = isPinned ? '<span class="card-pinned-tag">📌 Закреплено</span>' : '';
                 var catBadge = art.category ? '<span style="background:var(--accent-light); color:var(--accent-color); font-size:0.75em; font-weight:700; padding:2px 8px; border-radius:10px;">' + escapeHtml(art.category) + '</span>' : '';
 
                 html += 
-                    '<a href="' + artUrl + '" class="article-card">' +
+                    '<a href="' + artUrl + '" class="article-card' + (isPinned ? ' is-pinned' : '') + '">' +
                         '<div>' +
-                            '<div class="card-top-meta" style="display:flex; justify-content:space-between; align-items:center;">' +
-                                '<span>' + (art.date || 'Сегодня') + '</span>' +
+                            '<div class="card-top-meta" style="display:flex; justify-content:space-between; align-items:center; gap:6px;">' +
+                                '<div style="display:flex; align-items:center; gap:6px;">' +
+                                    pinBadge +
+                                    '<span>' + (art.date || 'Сегодня') + '</span>' +
+                                '</div>' +
                                 catBadge +
                             '</div>' +
                             '<h3 class="card-title">' + escapeHtml(art.title) + '</h3>' +

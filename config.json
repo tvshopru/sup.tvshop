@@ -522,7 +522,8 @@
           }
         ],
         "version": "2.30.5"
-      }
+      },
+      "pinned": true
     },
     {
       "id": "art-1791620625215",
@@ -781,7 +782,8 @@
           }
         ],
         "version": "2.30.5"
-      }
+      },
+      "pinned": true
     },
     {
       "id": "art-1791570514393",
@@ -1047,7 +1049,8 @@
           }
         ],
         "version": "2.30.5"
-      }
+      },
+      "pinned": true
     },
     {
       "id": "art-1791472919275",
@@ -1403,7 +1406,8 @@
           }
         ],
         "version": "2.30.5"
-      }
+      },
+      "pinned": false
     },
     {
       "id": "art-1791467512920",
@@ -1754,7 +1758,8 @@
         "version": "2.30.5"
       },
       "status": "published",
-      "category": ""
+      "category": "",
+      "pinned": false
     },
     {
       "id": "art-1791463602377",
@@ -2043,7 +2048,8 @@
             }
           }
         ]
-      }
+      },
+      "pinned": false
     },
     {
       "id": "inst-byebyedpi",
@@ -2706,7 +2712,8 @@
         "version": "2.30.5"
       },
       "status": "published",
-      "category": ""
+      "category": "",
+      "pinned": false
     },
     {
       "id": "inst-yosso-tv",
@@ -3069,7 +3076,8 @@
             }
           }
         ]
-      }
+      },
+      "pinned": false
     },
     {
       "id": "art-televizo-backup",
@@ -3428,7 +3436,8 @@
         "version": "2.30.5"
       },
       "status": "published",
-      "category": ""
+      "category": "",
+      "pinned": false
     },
     {
       "id": "inst-power-settings",
@@ -3895,7 +3904,8 @@
         "version": "2.30.5"
       },
       "status": "published",
-      "category": ""
+      "category": "",
+      "pinned": false
     },
     {
       "id": "inst-clear-cache",
@@ -4013,7 +4023,8 @@
             }
           }
         ]
-      }
+      },
+      "pinned": false
     }
   ]
 }
