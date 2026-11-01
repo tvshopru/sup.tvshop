@@ -876,6 +876,111 @@ function initEditorJS(initialData) {
     }
 }
 
+// Context tracking for smart block insertion & list splitting
+let pendingInsertContext = null;
+
+function captureInsertContext() {
+    const sel = window.getSelection();
+    const holder = document.getElementById('editorjs-holder');
+    
+    let context = {
+        targetIndex: null,
+        isInsideList: false,
+        isOrdered: false,
+        listBlockIndex: -1,
+        listItemIndex: -1,
+        itemsToRemove: [],
+        remainingItemContents: []
+    };
+
+    if (!sel || !sel.anchorNode || !holder || !holder.contains(sel.anchorNode)) {
+        if (editorInstance && isEditorReady) {
+            try {
+                const cur = editorInstance.blocks.getCurrentBlockIndex();
+                if (typeof cur === 'number' && cur >= 0) {
+                    context.targetIndex = cur + 1;
+                }
+            } catch (e) {}
+        }
+        return context;
+    }
+
+    const blockEl = sel.anchorNode.parentElement?.closest('.ce-block');
+    if (!blockEl) return context;
+
+    const allBlocks = Array.from(holder.querySelectorAll('.ce-block'));
+    const bIdx = allBlocks.indexOf(blockEl);
+    if (bIdx < 0) return context;
+
+    context.targetIndex = bIdx + 1;
+
+    // Check if user is inside a list item
+    const listEl = blockEl.querySelector('.cdx-list');
+    const itemEl = sel.anchorNode.parentElement?.closest('.cdx-list__item, li');
+
+    if (listEl && itemEl) {
+        const isOrdered = listEl.classList.contains('cdx-list-ordered') || 
+                          listEl.classList.contains('cdx-list--ordered') || 
+                          listEl.tagName === 'OL';
+        const allItems = Array.from(listEl.querySelectorAll(':scope > .cdx-list__item, :scope > li'));
+        const itemIdx = allItems.indexOf(itemEl);
+
+        if (itemIdx >= 0 && itemIdx < allItems.length - 1) {
+            // Cursor is on a list item that is NOT the last item -> split list!
+            context.isInsideList = true;
+            context.isOrdered = isOrdered;
+            context.listBlockIndex = bIdx;
+            context.listItemIndex = itemIdx;
+            context.itemsToRemove = allItems.slice(itemIdx + 1);
+            context.remainingItemContents = allItems.slice(itemIdx + 1).map(it => {
+                const contentEl = it.querySelector('.cdx-list__item-content') || it;
+                return contentEl.innerHTML;
+            });
+        }
+    }
+
+    return context;
+}
+
+async function executeSmartInsert(tool, data) {
+    if (!editorInstance || !isEditorReady) return;
+    const ctx = pendingInsertContext || captureInsertContext();
+    pendingInsertContext = null;
+
+    try {
+        let insertAt = typeof ctx.targetIndex === 'number' ? ctx.targetIndex : (await editorInstance.blocks.getBlocksCount());
+
+        if (ctx.isInsideList && ctx.remainingItemContents && ctx.remainingItemContents.length > 0) {
+            // 1. Remove sliced items from the first list in DOM
+            if (ctx.itemsToRemove && ctx.itemsToRemove.length > 0) {
+                ctx.itemsToRemove.forEach(it => it.remove());
+            }
+
+            // 2. Insert the new block (photo, warning, etc.) right below item
+            await editorInstance.blocks.insert(tool, data, {}, ctx.listBlockIndex + 1, true);
+
+            // 3. Insert continuation list below the new block
+            const continuationStyle = ctx.isOrdered ? 'ordered' : 'unordered';
+            await editorInstance.blocks.insert('list', {
+                style: continuationStyle,
+                items: ctx.remainingItemContents
+            }, {}, ctx.listBlockIndex + 2, false);
+
+            // 4. Update numbering dynamically
+            updateEditorOrderedListCounters();
+            setTimeout(updateEditorOrderedListCounters, 50);
+            return;
+        }
+
+        // Standard smart insert after current block
+        await editorInstance.blocks.insert(tool, data, {}, insertAt, true);
+        updateEditorOrderedListCounters();
+        setTimeout(updateEditorOrderedListCounters, 50);
+    } catch (err) {
+        console.warn("Smart insert error:", err);
+    }
+}
+
 // Quick Toolbar Block Insertion
 function initQuickToolbar() {
     const bar = document.getElementById('editor-quick-toolbar');
@@ -885,6 +990,8 @@ function initQuickToolbar() {
         const btn = e.target.closest('.q-btn');
         if (!btn || !editorInstance || !isEditorReady) return;
 
+        // Capture cursor/selection position before any focus loss
+        pendingInsertContext = captureInsertContext();
         const tool = btn.dataset.tool;
 
         if (tool === 'image') {
@@ -893,40 +1000,40 @@ function initQuickToolbar() {
             return;
         }
 
-        try {
-            const count = await editorInstance.blocks.getBlocksCount();
-            let data = {};
-            if (tool === 'header') data = { text: '', level: 2 };
-            if (tool === 'list') data = { style: 'unordered', items: [''] };
-            if (tool === 'warning') data = { title: 'Важно', message: '' };
-            if (tool === 'linkButton') data = { text: 'Кнопка действия', link: 'https://', style: 'primary' };
-            if (tool === 'quote') data = { text: '', caption: '' };
-            if (tool === 'table') data = { withHeadings: false, content: [['', ''], ['', '']] };
-            if (tool === 'embed') data = { service: 'youtube', source: '', embed: '' };
-            if (tool === 'delimiter') data = {};
+        let data = {};
+        if (tool === 'header') data = { text: '', level: 2 };
+        if (tool === 'list') data = { style: 'unordered', items: [''] };
+        if (tool === 'warning') data = { title: 'Важно', message: '' };
+        if (tool === 'linkButton') data = { text: 'Кнопка действия', link: 'https://', style: 'primary' };
+        if (tool === 'quote') data = { text: '', caption: '' };
+        if (tool === 'table') data = { withHeadings: false, content: [['', ''], ['', '']] };
+        if (tool === 'embed') data = { service: 'youtube', source: '', embed: '' };
+        if (tool === 'delimiter') data = {};
 
-            await editorInstance.blocks.insert(tool, data, {}, count, true);
-        } catch (err) {
-            console.warn("Quick insert error:", err);
-        }
+        await executeSmartInsert(tool, data);
     });
 
     const fileInput = document.getElementById('image-upload-file-input');
     if (fileInput) {
         fileInput.addEventListener('change', async (e) => {
             const file = e.target.files[0];
-            if (!file) return;
+            if (!file) {
+                pendingInsertContext = null;
+                return;
+            }
             try {
+                showToast("Загрузка фото...", "info");
                 const imgPath = await uploadMediaFileToGitHub(file);
-                const count = await editorInstance.blocks.getBlocksCount();
-                await editorInstance.blocks.insert('image', {
+                await executeSmartInsert('image', {
                     file: { url: imgPath },
                     caption: ''
-                }, {}, count, true);
+                });
+                showToast("Фото успешно вставлено!", "success");
             } catch (err) {
                 showToast("Ошибка загрузки фото: " + err.message, "error");
             } finally {
                 fileInput.value = '';
+                pendingInsertContext = null;
             }
         });
     }
