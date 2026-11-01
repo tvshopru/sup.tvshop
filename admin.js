@@ -761,6 +761,19 @@ async function syncArticleEditorData() {
     }
 }
 
+function updateVideoBannerPreview(url) {
+    const banner = document.getElementById('live-video-banner-preview');
+    const link = document.getElementById('live-video-banner-link');
+    if (banner && link) {
+        if (url && url.trim()) {
+            banner.style.display = 'block';
+            link.href = url.trim();
+        } else {
+            banner.style.display = 'none';
+        }
+    }
+}
+
 function selectArticle(idx) {
     if (!portalConfig.articles || !portalConfig.articles[idx]) return;
     activeArticleIdx = idx;
@@ -775,10 +788,17 @@ function selectArticle(idx) {
     const linkText = document.getElementById('link-preview-text');
     const openTabBtn = document.getElementById('btn-open-article-tab');
 
-    if (titleEl) titleEl.value = art.title || '';
+    if (titleEl) {
+        titleEl.value = art.title || '';
+        titleEl.style.height = 'auto';
+        titleEl.style.height = (titleEl.scrollHeight) + 'px';
+    }
     if (dateEl) dateEl.value = art.date || '';
     if (catEl) catEl.value = art.category || '';
-    if (vidEl) vidEl.value = art.videoUrl || '';
+    if (vidEl) {
+        vidEl.value = art.videoUrl || '';
+        updateVideoBannerPreview(art.videoUrl);
+    }
     if (statusEl) statusEl.value = art.status || 'published';
 
     const artUrl = `articles/${encodeURIComponent(art.id)}.html`;
@@ -1338,15 +1358,24 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Real-time Title & Status change sync
+    // Real-time Title, Video & Status change sync
     const titleInput = document.getElementById('article-title-input');
     if (titleInput) {
         titleInput.addEventListener('input', () => {
+            titleInput.style.height = 'auto';
+            titleInput.style.height = (titleInput.scrollHeight) + 'px';
             if (portalConfig.articles && portalConfig.articles[activeArticleIdx]) {
                 portalConfig.articles[activeArticleIdx].title = titleInput.value.trim();
                 const activeCard = document.querySelector(`.article-item[data-idx="${activeArticleIdx}"] .item-title`);
                 if (activeCard) activeCard.textContent = titleInput.value.trim() || 'Без названия';
             }
+        });
+    }
+
+    const vidInput = document.getElementById('article-video-input');
+    if (vidInput) {
+        vidInput.addEventListener('input', () => {
+            updateVideoBannerPreview(vidInput.value.trim());
         });
     }
 

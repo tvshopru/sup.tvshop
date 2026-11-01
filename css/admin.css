@@ -718,120 +718,316 @@ button {
     transform: translateY(-1px);
 }
 
-/* Document Sheet Canvas */
+/* ==========================================================================
+   Editor Main Workspace: 1:1 Live Article Sheet + Narrow Tools Sidebar
+   ========================================================================== */
+.editor-workspace-layout {
+    display: flex;
+    flex: 1;
+    height: calc(100vh - 64px);
+    overflow: hidden;
+    position: relative;
+}
+
+/* Center Scrollable Article View (1:1 with site) */
 .editor-scroll-container {
     flex: 1;
     overflow-y: auto;
-    padding: 32px 24px 80px 24px;
+    padding: 36px 24px 100px 24px;
     display: flex;
     justify-content: center;
 }
 
-.editor-paper-sheet {
+.editor-paper-sheet.live-article-container {
     width: 100%;
-    max-width: 860px;
+    max-width: 740px;
     background: var(--bg-card);
     border-radius: var(--radius-lg);
     border: 1px solid var(--border-subtle);
-    box-shadow: var(--shadow-sm);
-    padding: 48px 48px 64px 48px;
-    min-height: 700px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+    padding: 44px 44px 60px 44px;
+    min-height: 800px;
     display: flex;
     flex-direction: column;
 }
 
-/* Paper Meta Header */
-.paper-meta-header {
+/* 1:1 Live Article Header */
+.live-article-header {
     border-bottom: 1px solid var(--border-subtle);
-    padding-bottom: 20px;
-    margin-bottom: 24px;
+    padding-bottom: 22px;
+    margin-bottom: 28px;
 }
 
-.paper-title-input {
+.live-article-title-input {
     width: 100%;
-    font-size: 2.1em;
+    font-size: 2.2em;
     font-weight: 800;
     line-height: 1.25;
     border: none;
     outline: none;
     background: transparent;
     color: var(--text-main);
-    margin-bottom: 16px;
     letter-spacing: -0.5px;
+    resize: none;
+    overflow: hidden;
+    font-family: inherit;
+    margin-bottom: 14px;
 }
 
-.paper-title-input::placeholder {
+.live-article-title-input::placeholder {
     color: var(--text-muted);
 }
 
-.paper-meta-bar {
+.live-article-byline {
     display: flex;
     align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    font-size: 0.9em;
+    color: var(--text-muted);
+}
+
+.byline-author {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--brand-primary);
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.byline-author:hover {
+    text-decoration: underline;
+}
+
+.byline-sep {
+    opacity: 0.5;
+}
+
+.byline-editable-text {
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: inherit;
+    color: var(--text-muted);
+    font-weight: 500;
+    min-width: 110px;
+    border-bottom: 1px dashed transparent;
+    transition: all 0.15s ease;
+}
+
+.byline-editable-text:hover,
+.byline-editable-text:focus {
+    border-bottom-color: var(--brand-primary);
+    color: var(--text-main);
+}
+
+.byline-editable-cat {
+    border: 1px solid var(--border-subtle);
+    background: var(--bg-app);
+    border-radius: 20px;
+    padding: 2px 10px;
+    font-size: 0.82em;
+    font-weight: 700;
+    color: var(--brand-primary);
+    outline: none;
+    min-width: 80px;
+    transition: all 0.15s ease;
+}
+
+.byline-editable-cat:focus {
+    border-color: var(--brand-primary);
+    background: var(--bg-card);
+}
+
+/* Video Banner Button */
+.live-video-banner {
+    margin-top: 16px;
+}
+
+.video-banner-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: var(--brand-soft);
+    color: var(--brand-primary);
+    border: 1px solid var(--brand-primary);
+    border-radius: 12px;
+    padding: 12px 18px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.95em;
+    transition: all 0.2s ease;
+}
+
+.video-banner-btn:hover {
+    background: var(--brand-primary);
+    color: #ffffff;
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
+}
+
+/* ==========================================================================
+   Narrow Right Tools Sidebar (Floating Rail)
+   ========================================================================== */
+.editor-tools-sidebar {
+    width: 76px;
+    background: var(--bg-card);
+    border-left: 1px solid var(--border-subtle);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 16px 4px;
+    gap: 6px;
+    flex-shrink: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    z-index: 10;
+}
+
+.tools-sidebar-title {
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.8px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+}
+
+.tool-rail-btn {
+    width: 62px;
+    height: 52px;
+    border-radius: 10px;
+    border: 1px solid var(--border-subtle);
+    background: var(--bg-app);
+    color: var(--text-secondary);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    cursor: pointer;
+    transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.tool-rail-btn:hover {
+    background: var(--brand-soft);
+    color: var(--brand-primary);
+    border-color: var(--brand-primary);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-xs);
+}
+
+.tool-rail-icon {
+    font-size: 16px;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.tool-rail-label {
+    font-size: 9px;
+    font-weight: 700;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.tools-sidebar-divider {
+    width: 44px;
+    height: 1px;
+    background: var(--border-subtle);
+    margin: 6px 0;
+}
+
+.tool-rail-video-box {
+    width: 66px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 2px;
+}
+
+.tool-rail-video-label {
+    font-size: 9px;
+    font-weight: 800;
+    color: var(--text-muted);
+    letter-spacing: 0.5px;
+}
+
+.tool-rail-video-input {
+    width: 100%;
+    padding: 4px 5px;
+    font-size: 9.5px;
+    border-radius: 6px;
+    border: 1px solid var(--border-subtle);
+    background: var(--bg-app);
+    color: var(--text-main);
+    outline: none;
+    text-align: center;
+}
+
+.tool-rail-video-input:focus {
+    border-color: var(--brand-primary);
+    background: var(--bg-card);
+}
+
+/* 1:1 Live Article Footer with Channels */
+.live-article-footer {
+    margin-top: 50px;
+    padding-top: 28px;
+    border-top: 1px solid var(--border-subtle);
+}
+
+.footer-channels-box {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.footer-channels-title {
+    font-size: 0.9em;
+    font-weight: 700;
+    color: var(--text-muted);
+}
+
+.footer-channels-btns {
+    display: flex;
     gap: 12px;
     flex-wrap: wrap;
 }
 
-.meta-field {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    background: var(--bg-app);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-sm);
-    padding: 6px 10px;
-}
-
-.meta-icon {
-    font-size: 0.95em;
-    line-height: 1;
-}
-
-.meta-input {
-    border: none;
-    outline: none;
-    background: transparent;
-    font-size: 0.84em;
-    font-weight: 600;
-    color: var(--text-main);
-    min-width: 140px;
-}
-
-.meta-video-field {
+.channel-btn-tg, .channel-btn-max {
     flex: 1;
-    min-width: 220px;
-}
-.meta-video-field .meta-input {
-    width: 100%;
-}
-
-/* Quick Insertion Block Bar */
-.editor-quick-toolbar {
-    display: flex;
+    min-width: 140px;
+    display: inline-flex;
     align-items: center;
-    gap: 6px;
-    flex-wrap: wrap;
-    background: var(--bg-app);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-md);
-    padding: 8px 10px;
-    margin-bottom: 24px;
-}
-
-.q-btn {
-    padding: 6px 11px;
-    border-radius: var(--radius-sm);
-    background: var(--bg-card);
-    border: 1px solid var(--border-subtle);
-    color: var(--text-secondary);
-    font-size: 0.78em;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 18px;
+    border-radius: 12px;
     font-weight: 700;
-    transition: all 0.15s ease;
+    font-size: 0.95em;
+    text-decoration: none;
+    transition: all 0.2s ease;
 }
 
-.q-btn:hover {
-    background: var(--brand-soft);
-    color: var(--brand-primary);
-    border-color: var(--brand-primary);
+.channel-btn-tg {
+    background: #0284c7;
+    color: #ffffff;
+}
+.channel-btn-tg:hover {
+    background: #0369a1;
+}
+
+.channel-btn-max {
+    background: #4f46e5;
+    color: #ffffff;
+}
+.channel-btn-max:hover {
+    background: #4338ca;
 }
 
 /* Editor.js Canvas Overrides */
