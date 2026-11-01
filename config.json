@@ -1327,233 +1327,479 @@
       "pinned": true
     },
     {
-      "id": "art-1791621760529",
-      "title": "Настройка пульта ZTE B866 ДЛИННЫЙ",
-      "date": "10 октября 2026",
+      "id": "inst-power-settings",
+      "title": "Режим сна (электропитание)",
+      "date": "8 октября 2026",
+      "videoUrl": "",
+      "contentHtml": "<p>Пошаговая настройка таймера автоотключения и режима энергосбережения для долгой и стабильной службы вашей ТВ-приставки.</p>\n<ol start=\"1\"><li>Заходим в настройки приставки и выбираем пункт <b>«Настройки устройства»</b>.</li></ol>\n<figure class=\"article-image-figure\"><img src=\"img/upload_1785427761110.png\" alt=\"\" loading=\"lazy\" /></figure>\n<ol start=\"2\"><li>В меню настроек устройства нажимаем раздел <b>«Питание»</b>.</li></ol>\n<figure class=\"article-image-figure\"><img src=\"img/upload_1785427770851.png\" alt=\"\" loading=\"lazy\" /></figure>\n<ol start=\"3\"><li>Отключаем тумблер <b>«Не выключать экран»</b>.</li></ol>\n<figure class=\"article-image-figure\"><img src=\"img/upload_1785427786172.png\" alt=\"\" loading=\"lazy\" /></figure>\n<ol start=\"4\"><li>Спускаемся до пункта <b>«Режим энергосбережения»</b>.</li></ol>\n<figure class=\"article-image-figure\"><img src=\"img/upload_1785427876031.png\" alt=\"\" loading=\"lazy\" /></figure>\n<ol start=\"5\"><li>Устанавливаем оптимальное время отключения (рекомендуется <b>3 часа</b>) и возвращаемся назад.</li></ol>\n<figure class=\"article-image-figure\"><img src=\"img/upload_1785427797533.png\" alt=\"\" loading=\"lazy\" /></figure>\n<ol start=\"6\"><li>По желанию настраиваем экранную заставку: нажимаем <b>«Заставка»</b>.</li></ol>\n<figure class=\"article-image-figure\"><img src=\"img/upload_1785427828092.png\" alt=\"\" loading=\"lazy\" /></figure>\n<ol start=\"7\"><li>Нажимаем <b>«Запуск»</b> и выбираем желаемый интервал до старта заставки.</li></ol>\n<figure class=\"article-image-figure\"><img src=\"img/upload_1785427833971.png\" alt=\"\" loading=\"lazy\" /></figure>\n<ol start=\"8\"><li>Возвращаемся в главное меню и проверяем, что параметр «Не выключать экран» выключен. Готово!</li></ol>\n<figure class=\"article-image-figure\"><img src=\"img/upload_1785427937879.png\" alt=\"\" loading=\"lazy\" /></figure>",
+      "blocks": {
+        "time": 1791549260916,
+        "blocks": [
+          {
+            "id": "SkYYZ_Xysf",
+            "type": "paragraph",
+            "data": {
+              "text": "Пошаговая настройка таймера автоотключения и режима энергосбережения для долгой и стабильной службы вашей ТВ-приставки."
+            }
+          },
+          {
+            "id": "UKuFqBXUNX",
+            "type": "list",
+            "data": {
+              "style": "ordered",
+              "items": [
+                "Заходим в настройки приставки и выбираем пункт <b>«Настройки устройства»</b>."
+              ]
+            }
+          },
+          {
+            "id": "xZ8b-F0Fj8",
+            "type": "image",
+            "data": {
+              "url": "img/upload_1785427761110.png",
+              "file": {
+                "url": "img/upload_1785427761110.png"
+              },
+              "caption": "",
+              "withBorder": false,
+              "stretched": false,
+              "withBackground": false
+            }
+          },
+          {
+            "id": "sk1qNf6wU1",
+            "type": "list",
+            "data": {
+              "style": "ordered",
+              "items": [
+                "В меню настроек устройства нажимаем раздел <b>«Питание»</b>."
+              ]
+            }
+          },
+          {
+            "id": "L0GbUoBLpO",
+            "type": "image",
+            "data": {
+              "url": "img/upload_1785427770851.png",
+              "file": {
+                "url": "img/upload_1785427770851.png"
+              },
+              "caption": "",
+              "withBorder": false,
+              "stretched": false,
+              "withBackground": false
+            }
+          },
+          {
+            "id": "S7_jBcrzFo",
+            "type": "list",
+            "data": {
+              "style": "ordered",
+              "items": [
+                "Отключаем тумблер <b>«Не выключать экран»</b>."
+              ]
+            }
+          },
+          {
+            "id": "BSSuLTFH5O",
+            "type": "image",
+            "data": {
+              "url": "img/upload_1785427786172.png",
+              "file": {
+                "url": "img/upload_1785427786172.png"
+              },
+              "caption": "",
+              "withBorder": false,
+              "stretched": false,
+              "withBackground": false
+            }
+          },
+          {
+            "id": "0SzHBBvHnD",
+            "type": "list",
+            "data": {
+              "style": "ordered",
+              "items": [
+                "Спускаемся до пункта <b>«Режим энергосбережения»</b>."
+              ]
+            }
+          },
+          {
+            "id": "bM1uD8a0kA",
+            "type": "image",
+            "data": {
+              "url": "img/upload_1785427876031.png",
+              "file": {
+                "url": "img/upload_1785427876031.png"
+              },
+              "caption": "",
+              "withBorder": false,
+              "stretched": false,
+              "withBackground": false
+            }
+          },
+          {
+            "id": "Mf2V41z0Jh",
+            "type": "list",
+            "data": {
+              "style": "ordered",
+              "items": [
+                "Устанавливаем оптимальное время отключения (рекомендуется <b>3 часа</b>) и возвращаемся назад."
+              ]
+            }
+          },
+          {
+            "id": "CFAP9iPJoj",
+            "type": "image",
+            "data": {
+              "url": "img/upload_1785427797533.png",
+              "file": {
+                "url": "img/upload_1785427797533.png"
+              },
+              "caption": "",
+              "withBorder": false,
+              "stretched": false,
+              "withBackground": false
+            }
+          },
+          {
+            "id": "-K94WKeWXD",
+            "type": "list",
+            "data": {
+              "style": "ordered",
+              "items": [
+                "По желанию настраиваем экранную заставку: нажимаем <b>«Заставка»</b>."
+              ]
+            }
+          },
+          {
+            "id": "atiZ8XmXg4",
+            "type": "image",
+            "data": {
+              "url": "img/upload_1785427828092.png",
+              "file": {
+                "url": "img/upload_1785427828092.png"
+              },
+              "caption": "",
+              "withBorder": false,
+              "stretched": false,
+              "withBackground": false
+            }
+          },
+          {
+            "id": "qXAiN-6X6R",
+            "type": "list",
+            "data": {
+              "style": "ordered",
+              "items": [
+                "Нажимаем <b>«Запуск»</b> и выбираем желаемый интервал до старта заставки."
+              ]
+            }
+          },
+          {
+            "id": "fmoVGuQh-1",
+            "type": "image",
+            "data": {
+              "url": "img/upload_1785427833971.png",
+              "file": {
+                "url": "img/upload_1785427833971.png"
+              },
+              "caption": "",
+              "withBorder": false,
+              "stretched": false,
+              "withBackground": false
+            }
+          },
+          {
+            "id": "o5oKdiA4J4",
+            "type": "list",
+            "data": {
+              "style": "ordered",
+              "items": [
+                "Возвращаемся в главное меню и проверяем, что параметр «Не выключать экран» выключен. Готово!"
+              ]
+            }
+          },
+          {
+            "id": "Ki_BkEtpvl",
+            "type": "image",
+            "data": {
+              "url": "img/upload_1785427937879.png",
+              "file": {
+                "url": "img/upload_1785427937879.png"
+              },
+              "caption": "",
+              "withBorder": false,
+              "stretched": false,
+              "withBackground": false
+            }
+          }
+        ],
+        "version": "2.29.1"
+      },
+      "contentData": {
+        "time": 1793561955321,
+        "blocks": [
+          {
+            "id": "SkYYZ_Xysf",
+            "type": "paragraph",
+            "data": {
+              "text": "Пошаговая настройка таймера автоотключения и режима энергосбережения для долгой и стабильной службы вашей ТВ-приставки."
+            }
+          },
+          {
+            "id": "UKuFqBXUNX",
+            "type": "list",
+            "data": {
+              "style": "ordered",
+              "meta": {
+                "start": 1,
+                "counterType": "numeric"
+              },
+              "items": [
+                {
+                  "content": "Заходим в настройки приставки и выбираем пункт <b>«Настройки устройства»</b>.",
+                  "meta": {},
+                  "items": []
+                }
+              ]
+            }
+          },
+          {
+            "id": "xZ8b-F0Fj8",
+            "type": "image",
+            "data": {
+              "caption": "",
+              "withBorder": false,
+              "withBackground": false,
+              "stretched": false,
+              "file": {
+                "url": "img/upload_1785427761110.png"
+              }
+            }
+          },
+          {
+            "id": "sk1qNf6wU1",
+            "type": "list",
+            "data": {
+              "style": "ordered",
+              "meta": {
+                "start": 2,
+                "counterType": "numeric"
+              },
+              "items": [
+                {
+                  "content": "В меню настроек устройства нажимаем раздел <b>«Питание»</b>.",
+                  "meta": {},
+                  "items": []
+                }
+              ]
+            }
+          },
+          {
+            "id": "L0GbUoBLpO",
+            "type": "image",
+            "data": {
+              "caption": "",
+              "withBorder": false,
+              "withBackground": false,
+              "stretched": false,
+              "file": {
+                "url": "img/upload_1785427770851.png"
+              }
+            }
+          },
+          {
+            "id": "S7_jBcrzFo",
+            "type": "list",
+            "data": {
+              "style": "ordered",
+              "meta": {
+                "start": 3,
+                "counterType": "numeric"
+              },
+              "items": [
+                {
+                  "content": "Отключаем тумблер <b>«Не выключать экран»</b>.",
+                  "meta": {},
+                  "items": []
+                }
+              ]
+            }
+          },
+          {
+            "id": "BSSuLTFH5O",
+            "type": "image",
+            "data": {
+              "caption": "",
+              "withBorder": false,
+              "withBackground": false,
+              "stretched": false,
+              "file": {
+                "url": "img/upload_1785427786172.png"
+              }
+            }
+          },
+          {
+            "id": "0SzHBBvHnD",
+            "type": "list",
+            "data": {
+              "style": "ordered",
+              "meta": {
+                "start": 4,
+                "counterType": "numeric"
+              },
+              "items": [
+                {
+                  "content": "Спускаемся до пункта <b>«Режим энергосбережения»</b>.",
+                  "meta": {},
+                  "items": []
+                }
+              ]
+            }
+          },
+          {
+            "id": "bM1uD8a0kA",
+            "type": "image",
+            "data": {
+              "caption": "",
+              "withBorder": false,
+              "withBackground": false,
+              "stretched": false,
+              "file": {
+                "url": "img/upload_1785427876031.png"
+              }
+            }
+          },
+          {
+            "id": "Mf2V41z0Jh",
+            "type": "list",
+            "data": {
+              "style": "ordered",
+              "meta": {
+                "start": 5,
+                "counterType": "numeric"
+              },
+              "items": [
+                {
+                  "content": "Устанавливаем оптимальное время отключения (рекомендуется <b>3 часа</b>) и возвращаемся назад.",
+                  "meta": {},
+                  "items": []
+                }
+              ]
+            }
+          },
+          {
+            "id": "CFAP9iPJoj",
+            "type": "image",
+            "data": {
+              "caption": "",
+              "withBorder": false,
+              "withBackground": false,
+              "stretched": false,
+              "file": {
+                "url": "img/upload_1785427797533.png"
+              }
+            }
+          },
+          {
+            "id": "-K94WKeWXD",
+            "type": "list",
+            "data": {
+              "style": "ordered",
+              "meta": {
+                "start": 6,
+                "counterType": "numeric"
+              },
+              "items": [
+                {
+                  "content": "По желанию настраиваем экранную заставку: нажимаем <b>«Заставка»</b>.",
+                  "meta": {},
+                  "items": []
+                }
+              ]
+            }
+          },
+          {
+            "id": "atiZ8XmXg4",
+            "type": "image",
+            "data": {
+              "caption": "",
+              "withBorder": false,
+              "withBackground": false,
+              "stretched": false,
+              "file": {
+                "url": "img/upload_1785427828092.png"
+              }
+            }
+          },
+          {
+            "id": "qXAiN-6X6R",
+            "type": "list",
+            "data": {
+              "style": "ordered",
+              "meta": {
+                "start": 7,
+                "counterType": "numeric"
+              },
+              "items": [
+                {
+                  "content": "Нажимаем <b>«Запуск»</b> и выбираем желаемый интервал до старта заставки.",
+                  "meta": {},
+                  "items": []
+                }
+              ]
+            }
+          },
+          {
+            "id": "fmoVGuQh-1",
+            "type": "image",
+            "data": {
+              "caption": "",
+              "withBorder": false,
+              "withBackground": false,
+              "stretched": false,
+              "file": {
+                "url": "img/upload_1785427833971.png"
+              }
+            }
+          },
+          {
+            "id": "o5oKdiA4J4",
+            "type": "list",
+            "data": {
+              "style": "ordered",
+              "meta": {
+                "start": 8,
+                "counterType": "numeric"
+              },
+              "items": [
+                {
+                  "content": "Возвращаемся в главное меню и проверяем, что параметр «Не выключать экран» выключен. Готово!",
+                  "meta": {},
+                  "items": []
+                }
+              ]
+            }
+          },
+          {
+            "id": "Ki_BkEtpvl",
+            "type": "image",
+            "data": {
+              "caption": "",
+              "withBorder": false,
+              "withBackground": false,
+              "stretched": false,
+              "file": {
+                "url": "img/upload_1785427937879.png"
+              }
+            }
+          }
+        ],
+        "version": "2.30.5"
+      },
       "status": "published",
       "category": "",
-      "videoUrl": "",
-      "contentHtml": "<figure class=\"article-image-figure\"><img src=\"img/1791621910484_image.png\" alt=\"\" loading=\"lazy\" /></figure>\n<p>Настройка четырёх кнопок пульта дистанционного управления приставки MTS ZTE B866 на управление громкостью ТВ, включение-выключение ТВ, выбор входа ТВ.</p>\n<p>✅Процедура настройки пульта ДУ:✅</p>\n<p>ШАГ 1. Переведите телевизор в режим ожидания (выключить кнопкой POWER нa оригинальном пульте ДУ ТВ).</p>\n<p>ШАГ 2. Определите марку Вашего ТВ и соответствующий ему код из таблицы кодов (ссылка снизу статьи)&nbsp;</p>\n<p>3. Переключите универсальный пульт ДУ в режим настройки зажав клавишу (шестерëнка, обозначена цифрой 4 на рисунке) нa 3 секунды.</p>\n<p>Индикатор пульта ДУ загорится зелёным цветом.В режиме настройки универсальный пульт ожидает нажатия кнопок в течение 30 секунд. Если в течение данного времени не будет нажатий на любые кнопки, процесс настройки автоматически завершится.</p>\n<p>ШАГ 4. Используя цифровую клавиатуру пульта ДУ введите код, который соответствует марке вашего телевизора.</p>\n<p>ШАГ 5. Для проверки возможности управления телевизором нажмите кнопку (зелëное питание,справа сверху, цифрой 1 обозначена на рисунке)  управления ТВ. Если телевизор включился, проверьте возможность управления телевизором с помощью других кнопок на универсальном пульте. Если телевизор не включился, повторите процедуру настройки используя другой код.</p>\n<p>Сброс пульта ДУ до заводских настроек:</p>\n<p>В случае выявления проблем в работе универсального пульта рекомендуется выполнить следующие действия:</p>\n<p>👉 Замените элементы питания пульта ДУ на заведомо новые.</p>\n<p>👉 Выполните сброс настроек пульта ДУ. Для этого потребуется  зажать на 3 секунды клавиши OK и 0 на цифровой клавиатуре. Успешный сброс будет подтвержден трехкратным миганием индикатора пульта ДУ.</p>\n<p><a href=\"https://disk.yandex.ru/d/8ZIimx0i2l1QLw\" target=\"_blank\" rel=\"noopener noreferrer\">ИНСТРУКЦИЯ ОТ ПРОИЗВОДИТЕЛЯ И РАСШИРОЕНЫЙ СПИСОК КОДОВ<br></a><br></p>",
-      "contentData": {
-        "time": 1793560256145,
-        "blocks": [
-          {
-            "id": "TzNk1C8du6",
-            "type": "image",
-            "data": {
-              "caption": "",
-              "withBorder": false,
-              "withBackground": false,
-              "stretched": false,
-              "file": {
-                "url": "img/1791621910484_image.png"
-              }
-            }
-          },
-          {
-            "id": "DPnwbMS09H",
-            "type": "paragraph",
-            "data": {
-              "text": "Настройка четырёх кнопок пульта дистанционного управления приставки MTS ZTE B866 на управление громкостью ТВ, включение-выключение ТВ, выбор входа ТВ."
-            }
-          },
-          {
-            "id": "xGQMKqoE7M",
-            "type": "paragraph",
-            "data": {
-              "text": "✅Процедура настройки пульта ДУ:✅"
-            }
-          },
-          {
-            "id": "XxjWntE3Ql",
-            "type": "paragraph",
-            "data": {
-              "text": "ШАГ 1. Переведите телевизор в режим ожидания (выключить кнопкой POWER нa оригинальном пульте ДУ ТВ)."
-            }
-          },
-          {
-            "id": "fif-Q777Dx",
-            "type": "paragraph",
-            "data": {
-              "text": "ШАГ 2. Определите марку Вашего ТВ и соответствующий ему код из таблицы кодов (ссылка снизу статьи)&nbsp;"
-            }
-          },
-          {
-            "id": "baTIxWB-SX",
-            "type": "paragraph",
-            "data": {
-              "text": "3. Переключите универсальный пульт ДУ в режим настройки зажав клавишу (шестерëнка, обозначена цифрой 4 на рисунке) нa 3 секунды."
-            }
-          },
-          {
-            "id": "enreC_KIeE",
-            "type": "paragraph",
-            "data": {
-              "text": "Индикатор пульта ДУ загорится зелёным цветом.В режиме настройки универсальный пульт ожидает нажатия кнопок в течение 30 секунд. Если в течение данного времени не будет нажатий на любые кнопки, процесс настройки автоматически завершится."
-            }
-          },
-          {
-            "id": "LcIoYL2aeg",
-            "type": "paragraph",
-            "data": {
-              "text": "ШАГ 4. Используя цифровую клавиатуру пульта ДУ введите код, который соответствует марке вашего телевизора."
-            }
-          },
-          {
-            "id": "3-M5m5ogsS",
-            "type": "paragraph",
-            "data": {
-              "text": "ШАГ 5. Для проверки возможности управления телевизором нажмите кнопку (зелëное питание,справа сверху, цифрой 1 обозначена на рисунке)  управления ТВ. Если телевизор включился, проверьте возможность управления телевизором с помощью других кнопок на универсальном пульте. Если телевизор не включился, повторите процедуру настройки используя другой код."
-            }
-          },
-          {
-            "id": "7R1NRbeQ05",
-            "type": "paragraph",
-            "data": {
-              "text": "Сброс пульта ДУ до заводских настроек:"
-            }
-          },
-          {
-            "id": "va4Y1BH2iI",
-            "type": "paragraph",
-            "data": {
-              "text": "В случае выявления проблем в работе универсального пульта рекомендуется выполнить следующие действия:"
-            }
-          },
-          {
-            "id": "EEFwUeYVra",
-            "type": "paragraph",
-            "data": {
-              "text": "👉 Замените элементы питания пульта ДУ на заведомо новые."
-            }
-          },
-          {
-            "id": "a6bp5Lcyke",
-            "type": "paragraph",
-            "data": {
-              "text": "👉 Выполните сброс настроек пульта ДУ. Для этого потребуется  зажать на 3 секунды клавиши OK и 0 на цифровой клавиатуре. Успешный сброс будет подтвержден трехкратным миганием индикатора пульта ДУ."
-            }
-          },
-          {
-            "id": "Kp9pURqNwG",
-            "type": "paragraph",
-            "data": {
-              "text": "<a href=\"https://disk.yandex.ru/d/8ZIimx0i2l1QLw\">ИНСТРУКЦИЯ ОТ ПРОИЗВОДИТЕЛЯ И РАСШИРОЕНЫЙ СПИСОК КОДОВ<br></a><br>"
-            }
-          }
-        ],
-        "version": "2.30.5"
-      },
-      "blocks": {
-        "time": 1791622206408,
-        "blocks": [
-          {
-            "id": "TzNk1C8du6",
-            "type": "image",
-            "data": {
-              "caption": "",
-              "withBorder": false,
-              "withBackground": false,
-              "stretched": false,
-              "file": {
-                "url": "img/1791621910484_image.png"
-              }
-            }
-          },
-          {
-            "id": "DPnwbMS09H",
-            "type": "paragraph",
-            "data": {
-              "text": "Настройка четырёх кнопок пульта дистанционного управления приставки MTS ZTE B866 на управление громкостью ТВ, включение-выключение ТВ, выбор входа ТВ."
-            }
-          },
-          {
-            "id": "xGQMKqoE7M",
-            "type": "paragraph",
-            "data": {
-              "text": "✅Процедура настройки пульта ДУ:✅"
-            }
-          },
-          {
-            "id": "XxjWntE3Ql",
-            "type": "paragraph",
-            "data": {
-              "text": "ШАГ 1. Переведите телевизор в режим ожидания (выключить кнопкой POWER нa оригинальном пульте ДУ ТВ)."
-            }
-          },
-          {
-            "id": "fif-Q777Dx",
-            "type": "paragraph",
-            "data": {
-              "text": "ШАГ 2. Определите марку Вашего ТВ и соответствующий ему код из таблицы кодов (ссылка снизу статьи)&nbsp;"
-            }
-          },
-          {
-            "id": "baTIxWB-SX",
-            "type": "paragraph",
-            "data": {
-              "text": "3. Переключите универсальный пульт ДУ в режим настройки зажав клавишу (шестерëнка, обозначена цифрой 4 на рисунке) нa 3 секунды."
-            }
-          },
-          {
-            "id": "enreC_KIeE",
-            "type": "paragraph",
-            "data": {
-              "text": "Индикатор пульта ДУ загорится зелёным цветом.В режиме настройки универсальный пульт ожидает нажатия кнопок в течение 30 секунд. Если в течение данного времени не будет нажатий на любые кнопки, процесс настройки автоматически завершится."
-            }
-          },
-          {
-            "id": "LcIoYL2aeg",
-            "type": "paragraph",
-            "data": {
-              "text": "ШАГ 4. Используя цифровую клавиатуру пульта ДУ введите код, который соответствует марке вашего телевизора."
-            }
-          },
-          {
-            "id": "3-M5m5ogsS",
-            "type": "paragraph",
-            "data": {
-              "text": "ШАГ 5. Для проверки возможности управления телевизором нажмите кнопку (зелëное питание,справа сверху, цифрой 1 обозначена на рисунке)  управления ТВ. Если телевизор включился, проверьте возможность управления телевизором с помощью других кнопок на универсальном пульте. Если телевизор не включился, повторите процедуру настройки используя другой код."
-            }
-          },
-          {
-            "id": "7R1NRbeQ05",
-            "type": "paragraph",
-            "data": {
-              "text": "Сброс пульта ДУ до заводских настроек:"
-            }
-          },
-          {
-            "id": "va4Y1BH2iI",
-            "type": "paragraph",
-            "data": {
-              "text": "В случае выявления проблем в работе универсального пульта рекомендуется выполнить следующие действия:"
-            }
-          },
-          {
-            "id": "EEFwUeYVra",
-            "type": "paragraph",
-            "data": {
-              "text": "👉 Замените элементы питания пульта ДУ на заведомо новые."
-            }
-          },
-          {
-            "id": "a6bp5Lcyke",
-            "type": "paragraph",
-            "data": {
-              "text": "👉 Выполните сброс настроек пульта ДУ. Для этого потребуется  зажать на 3 секунды клавиши OK и 0 на цифровой клавиатуре. Успешный сброс будет подтвержден трехкратным миганием индикатора пульта ДУ."
-            }
-          },
-          {
-            "id": "Kp9pURqNwG",
-            "type": "paragraph",
-            "data": {
-              "text": "<a href=\"https://disk.yandex.ru/d/8ZIimx0i2l1QLw\">ИНСТРУКЦИЯ ОТ ПРОИЗВОДИТЕЛЯ И РАСШИРОЕНЫЙ СПИСОК КОДОВ<br></a><br>"
-            }
-          }
-        ],
-        "version": "2.30.5"
-      },
       "pinned": true
     },
     {
@@ -3532,479 +3778,233 @@
       "pinned": false
     },
     {
-      "id": "inst-power-settings",
-      "title": "Режим сна (электропитание)",
-      "date": "8 октября 2026",
+      "id": "art-1791621760529",
+      "title": "Настройка пульта ZTE B866 ДЛИННЫЙ",
+      "date": "10 октября 2026",
+      "status": "published",
+      "category": "",
       "videoUrl": "",
-      "contentHtml": "<p>Пошаговая настройка таймера автоотключения и режима энергосбережения для долгой и стабильной службы вашей ТВ-приставки.</p>\n<ol start=\"1\"><li>Заходим в настройки приставки и выбираем пункт <b>«Настройки устройства»</b>.</li></ol>\n<figure class=\"article-image-figure\"><img src=\"img/upload_1785427761110.png\" alt=\"\" loading=\"lazy\" /></figure>\n<ol start=\"2\"><li>В меню настроек устройства нажимаем раздел <b>«Питание»</b>.</li></ol>\n<figure class=\"article-image-figure\"><img src=\"img/upload_1785427770851.png\" alt=\"\" loading=\"lazy\" /></figure>\n<ol start=\"3\"><li>Отключаем тумблер <b>«Не выключать экран»</b>.</li></ol>\n<figure class=\"article-image-figure\"><img src=\"img/upload_1785427786172.png\" alt=\"\" loading=\"lazy\" /></figure>\n<ol start=\"4\"><li>Спускаемся до пункта <b>«Режим энергосбережения»</b>.</li></ol>\n<figure class=\"article-image-figure\"><img src=\"img/upload_1785427876031.png\" alt=\"\" loading=\"lazy\" /></figure>\n<ol start=\"5\"><li>Устанавливаем оптимальное время отключения (рекомендуется <b>3 часа</b>) и возвращаемся назад.</li></ol>\n<figure class=\"article-image-figure\"><img src=\"img/upload_1785427797533.png\" alt=\"\" loading=\"lazy\" /></figure>\n<ol start=\"6\"><li>По желанию настраиваем экранную заставку: нажимаем <b>«Заставка»</b>.</li></ol>\n<figure class=\"article-image-figure\"><img src=\"img/upload_1785427828092.png\" alt=\"\" loading=\"lazy\" /></figure>\n<ol start=\"7\"><li>Нажимаем <b>«Запуск»</b> и выбираем желаемый интервал до старта заставки.</li></ol>\n<figure class=\"article-image-figure\"><img src=\"img/upload_1785427833971.png\" alt=\"\" loading=\"lazy\" /></figure>\n<ol start=\"8\"><li>Возвращаемся в главное меню и проверяем, что параметр «Не выключать экран» выключен. Готово!</li></ol>\n<figure class=\"article-image-figure\"><img src=\"img/upload_1785427937879.png\" alt=\"\" loading=\"lazy\" /></figure>",
-      "blocks": {
-        "time": 1791549260916,
-        "blocks": [
-          {
-            "id": "SkYYZ_Xysf",
-            "type": "paragraph",
-            "data": {
-              "text": "Пошаговая настройка таймера автоотключения и режима энергосбережения для долгой и стабильной службы вашей ТВ-приставки."
-            }
-          },
-          {
-            "id": "UKuFqBXUNX",
-            "type": "list",
-            "data": {
-              "style": "ordered",
-              "items": [
-                "Заходим в настройки приставки и выбираем пункт <b>«Настройки устройства»</b>."
-              ]
-            }
-          },
-          {
-            "id": "xZ8b-F0Fj8",
-            "type": "image",
-            "data": {
-              "url": "img/upload_1785427761110.png",
-              "file": {
-                "url": "img/upload_1785427761110.png"
-              },
-              "caption": "",
-              "withBorder": false,
-              "stretched": false,
-              "withBackground": false
-            }
-          },
-          {
-            "id": "sk1qNf6wU1",
-            "type": "list",
-            "data": {
-              "style": "ordered",
-              "items": [
-                "В меню настроек устройства нажимаем раздел <b>«Питание»</b>."
-              ]
-            }
-          },
-          {
-            "id": "L0GbUoBLpO",
-            "type": "image",
-            "data": {
-              "url": "img/upload_1785427770851.png",
-              "file": {
-                "url": "img/upload_1785427770851.png"
-              },
-              "caption": "",
-              "withBorder": false,
-              "stretched": false,
-              "withBackground": false
-            }
-          },
-          {
-            "id": "S7_jBcrzFo",
-            "type": "list",
-            "data": {
-              "style": "ordered",
-              "items": [
-                "Отключаем тумблер <b>«Не выключать экран»</b>."
-              ]
-            }
-          },
-          {
-            "id": "BSSuLTFH5O",
-            "type": "image",
-            "data": {
-              "url": "img/upload_1785427786172.png",
-              "file": {
-                "url": "img/upload_1785427786172.png"
-              },
-              "caption": "",
-              "withBorder": false,
-              "stretched": false,
-              "withBackground": false
-            }
-          },
-          {
-            "id": "0SzHBBvHnD",
-            "type": "list",
-            "data": {
-              "style": "ordered",
-              "items": [
-                "Спускаемся до пункта <b>«Режим энергосбережения»</b>."
-              ]
-            }
-          },
-          {
-            "id": "bM1uD8a0kA",
-            "type": "image",
-            "data": {
-              "url": "img/upload_1785427876031.png",
-              "file": {
-                "url": "img/upload_1785427876031.png"
-              },
-              "caption": "",
-              "withBorder": false,
-              "stretched": false,
-              "withBackground": false
-            }
-          },
-          {
-            "id": "Mf2V41z0Jh",
-            "type": "list",
-            "data": {
-              "style": "ordered",
-              "items": [
-                "Устанавливаем оптимальное время отключения (рекомендуется <b>3 часа</b>) и возвращаемся назад."
-              ]
-            }
-          },
-          {
-            "id": "CFAP9iPJoj",
-            "type": "image",
-            "data": {
-              "url": "img/upload_1785427797533.png",
-              "file": {
-                "url": "img/upload_1785427797533.png"
-              },
-              "caption": "",
-              "withBorder": false,
-              "stretched": false,
-              "withBackground": false
-            }
-          },
-          {
-            "id": "-K94WKeWXD",
-            "type": "list",
-            "data": {
-              "style": "ordered",
-              "items": [
-                "По желанию настраиваем экранную заставку: нажимаем <b>«Заставка»</b>."
-              ]
-            }
-          },
-          {
-            "id": "atiZ8XmXg4",
-            "type": "image",
-            "data": {
-              "url": "img/upload_1785427828092.png",
-              "file": {
-                "url": "img/upload_1785427828092.png"
-              },
-              "caption": "",
-              "withBorder": false,
-              "stretched": false,
-              "withBackground": false
-            }
-          },
-          {
-            "id": "qXAiN-6X6R",
-            "type": "list",
-            "data": {
-              "style": "ordered",
-              "items": [
-                "Нажимаем <b>«Запуск»</b> и выбираем желаемый интервал до старта заставки."
-              ]
-            }
-          },
-          {
-            "id": "fmoVGuQh-1",
-            "type": "image",
-            "data": {
-              "url": "img/upload_1785427833971.png",
-              "file": {
-                "url": "img/upload_1785427833971.png"
-              },
-              "caption": "",
-              "withBorder": false,
-              "stretched": false,
-              "withBackground": false
-            }
-          },
-          {
-            "id": "o5oKdiA4J4",
-            "type": "list",
-            "data": {
-              "style": "ordered",
-              "items": [
-                "Возвращаемся в главное меню и проверяем, что параметр «Не выключать экран» выключен. Готово!"
-              ]
-            }
-          },
-          {
-            "id": "Ki_BkEtpvl",
-            "type": "image",
-            "data": {
-              "url": "img/upload_1785427937879.png",
-              "file": {
-                "url": "img/upload_1785427937879.png"
-              },
-              "caption": "",
-              "withBorder": false,
-              "stretched": false,
-              "withBackground": false
-            }
-          }
-        ],
-        "version": "2.29.1"
-      },
+      "contentHtml": "<figure class=\"article-image-figure\"><img src=\"img/1791621910484_image.png\" alt=\"\" loading=\"lazy\" /></figure>\n<p>Настройка четырёх кнопок пульта дистанционного управления приставки MTS ZTE B866 на управление громкостью ТВ, включение-выключение ТВ, выбор входа ТВ.</p>\n<p>✅Процедура настройки пульта ДУ:✅</p>\n<p>ШАГ 1. Переведите телевизор в режим ожидания (выключить кнопкой POWER нa оригинальном пульте ДУ ТВ).</p>\n<p>ШАГ 2. Определите марку Вашего ТВ и соответствующий ему код из таблицы кодов (ссылка снизу статьи)&nbsp;</p>\n<p>3. Переключите универсальный пульт ДУ в режим настройки зажав клавишу (шестерëнка, обозначена цифрой 4 на рисунке) нa 3 секунды.</p>\n<p>Индикатор пульта ДУ загорится зелёным цветом.В режиме настройки универсальный пульт ожидает нажатия кнопок в течение 30 секунд. Если в течение данного времени не будет нажатий на любые кнопки, процесс настройки автоматически завершится.</p>\n<p>ШАГ 4. Используя цифровую клавиатуру пульта ДУ введите код, который соответствует марке вашего телевизора.</p>\n<p>ШАГ 5. Для проверки возможности управления телевизором нажмите кнопку (зелëное питание,справа сверху, цифрой 1 обозначена на рисунке)  управления ТВ. Если телевизор включился, проверьте возможность управления телевизором с помощью других кнопок на универсальном пульте. Если телевизор не включился, повторите процедуру настройки используя другой код.</p>\n<p>Сброс пульта ДУ до заводских настроек:</p>\n<p>В случае выявления проблем в работе универсального пульта рекомендуется выполнить следующие действия:</p>\n<p>👉 Замените элементы питания пульта ДУ на заведомо новые.</p>\n<p>👉 Выполните сброс настроек пульта ДУ. Для этого потребуется  зажать на 3 секунды клавиши OK и 0 на цифровой клавиатуре. Успешный сброс будет подтвержден трехкратным миганием индикатора пульта ДУ.</p>\n<p><a href=\"https://disk.yandex.ru/d/8ZIimx0i2l1QLw\" target=\"_blank\" rel=\"noopener noreferrer\">ИНСТРУКЦИЯ ОТ ПРОИЗВОДИТЕЛЯ И РАСШИРОЕНЫЙ СПИСОК КОДОВ<br></a><br></p>",
       "contentData": {
-        "time": 1793561918250,
+        "time": 1793560256145,
         "blocks": [
           {
-            "id": "SkYYZ_Xysf",
+            "id": "TzNk1C8du6",
+            "type": "image",
+            "data": {
+              "caption": "",
+              "withBorder": false,
+              "withBackground": false,
+              "stretched": false,
+              "file": {
+                "url": "img/1791621910484_image.png"
+              }
+            }
+          },
+          {
+            "id": "DPnwbMS09H",
             "type": "paragraph",
             "data": {
-              "text": "Пошаговая настройка таймера автоотключения и режима энергосбережения для долгой и стабильной службы вашей ТВ-приставки."
+              "text": "Настройка четырёх кнопок пульта дистанционного управления приставки MTS ZTE B866 на управление громкостью ТВ, включение-выключение ТВ, выбор входа ТВ."
             }
           },
           {
-            "id": "UKuFqBXUNX",
-            "type": "list",
+            "id": "xGQMKqoE7M",
+            "type": "paragraph",
             "data": {
-              "style": "ordered",
-              "meta": {
-                "start": 1,
-                "counterType": "numeric"
-              },
-              "items": [
-                {
-                  "content": "Заходим в настройки приставки и выбираем пункт <b>«Настройки устройства»</b>.",
-                  "meta": {},
-                  "items": []
-                }
-              ]
+              "text": "✅Процедура настройки пульта ДУ:✅"
             }
           },
           {
-            "id": "xZ8b-F0Fj8",
-            "type": "image",
+            "id": "XxjWntE3Ql",
+            "type": "paragraph",
             "data": {
-              "caption": "",
-              "withBorder": false,
-              "withBackground": false,
-              "stretched": false,
-              "file": {
-                "url": "img/upload_1785427761110.png"
-              }
+              "text": "ШАГ 1. Переведите телевизор в режим ожидания (выключить кнопкой POWER нa оригинальном пульте ДУ ТВ)."
             }
           },
           {
-            "id": "sk1qNf6wU1",
-            "type": "list",
+            "id": "fif-Q777Dx",
+            "type": "paragraph",
             "data": {
-              "style": "ordered",
-              "meta": {
-                "start": 2,
-                "counterType": "numeric"
-              },
-              "items": [
-                {
-                  "content": "В меню настроек устройства нажимаем раздел <b>«Питание»</b>.",
-                  "meta": {},
-                  "items": []
-                }
-              ]
+              "text": "ШАГ 2. Определите марку Вашего ТВ и соответствующий ему код из таблицы кодов (ссылка снизу статьи)&nbsp;"
             }
           },
           {
-            "id": "L0GbUoBLpO",
-            "type": "image",
+            "id": "baTIxWB-SX",
+            "type": "paragraph",
             "data": {
-              "caption": "",
-              "withBorder": false,
-              "withBackground": false,
-              "stretched": false,
-              "file": {
-                "url": "img/upload_1785427770851.png"
-              }
+              "text": "3. Переключите универсальный пульт ДУ в режим настройки зажав клавишу (шестерëнка, обозначена цифрой 4 на рисунке) нa 3 секунды."
             }
           },
           {
-            "id": "S7_jBcrzFo",
-            "type": "list",
+            "id": "enreC_KIeE",
+            "type": "paragraph",
             "data": {
-              "style": "ordered",
-              "meta": {
-                "start": 3,
-                "counterType": "numeric"
-              },
-              "items": [
-                {
-                  "content": "Отключаем тумблер <b>«Не выключать экран»</b>.",
-                  "meta": {},
-                  "items": []
-                }
-              ]
+              "text": "Индикатор пульта ДУ загорится зелёным цветом.В режиме настройки универсальный пульт ожидает нажатия кнопок в течение 30 секунд. Если в течение данного времени не будет нажатий на любые кнопки, процесс настройки автоматически завершится."
             }
           },
           {
-            "id": "BSSuLTFH5O",
-            "type": "image",
+            "id": "LcIoYL2aeg",
+            "type": "paragraph",
             "data": {
-              "caption": "",
-              "withBorder": false,
-              "withBackground": false,
-              "stretched": false,
-              "file": {
-                "url": "img/upload_1785427786172.png"
-              }
+              "text": "ШАГ 4. Используя цифровую клавиатуру пульта ДУ введите код, который соответствует марке вашего телевизора."
             }
           },
           {
-            "id": "0SzHBBvHnD",
-            "type": "list",
+            "id": "3-M5m5ogsS",
+            "type": "paragraph",
             "data": {
-              "style": "ordered",
-              "meta": {
-                "start": 4,
-                "counterType": "numeric"
-              },
-              "items": [
-                {
-                  "content": "Спускаемся до пункта <b>«Режим энергосбережения»</b>.",
-                  "meta": {},
-                  "items": []
-                }
-              ]
+              "text": "ШАГ 5. Для проверки возможности управления телевизором нажмите кнопку (зелëное питание,справа сверху, цифрой 1 обозначена на рисунке)  управления ТВ. Если телевизор включился, проверьте возможность управления телевизором с помощью других кнопок на универсальном пульте. Если телевизор не включился, повторите процедуру настройки используя другой код."
             }
           },
           {
-            "id": "bM1uD8a0kA",
-            "type": "image",
+            "id": "7R1NRbeQ05",
+            "type": "paragraph",
             "data": {
-              "caption": "",
-              "withBorder": false,
-              "withBackground": false,
-              "stretched": false,
-              "file": {
-                "url": "img/upload_1785427876031.png"
-              }
+              "text": "Сброс пульта ДУ до заводских настроек:"
             }
           },
           {
-            "id": "Mf2V41z0Jh",
-            "type": "list",
+            "id": "va4Y1BH2iI",
+            "type": "paragraph",
             "data": {
-              "style": "ordered",
-              "meta": {
-                "start": 5,
-                "counterType": "numeric"
-              },
-              "items": [
-                {
-                  "content": "Устанавливаем оптимальное время отключения (рекомендуется <b>3 часа</b>) и возвращаемся назад.",
-                  "meta": {},
-                  "items": []
-                }
-              ]
+              "text": "В случае выявления проблем в работе универсального пульта рекомендуется выполнить следующие действия:"
             }
           },
           {
-            "id": "CFAP9iPJoj",
-            "type": "image",
+            "id": "EEFwUeYVra",
+            "type": "paragraph",
             "data": {
-              "caption": "",
-              "withBorder": false,
-              "withBackground": false,
-              "stretched": false,
-              "file": {
-                "url": "img/upload_1785427797533.png"
-              }
+              "text": "👉 Замените элементы питания пульта ДУ на заведомо новые."
             }
           },
           {
-            "id": "-K94WKeWXD",
-            "type": "list",
+            "id": "a6bp5Lcyke",
+            "type": "paragraph",
             "data": {
-              "style": "ordered",
-              "meta": {
-                "start": 6,
-                "counterType": "numeric"
-              },
-              "items": [
-                {
-                  "content": "По желанию настраиваем экранную заставку: нажимаем <b>«Заставка»</b>.",
-                  "meta": {},
-                  "items": []
-                }
-              ]
+              "text": "👉 Выполните сброс настроек пульта ДУ. Для этого потребуется  зажать на 3 секунды клавиши OK и 0 на цифровой клавиатуре. Успешный сброс будет подтвержден трехкратным миганием индикатора пульта ДУ."
             }
           },
           {
-            "id": "atiZ8XmXg4",
-            "type": "image",
+            "id": "Kp9pURqNwG",
+            "type": "paragraph",
             "data": {
-              "caption": "",
-              "withBorder": false,
-              "withBackground": false,
-              "stretched": false,
-              "file": {
-                "url": "img/upload_1785427828092.png"
-              }
-            }
-          },
-          {
-            "id": "qXAiN-6X6R",
-            "type": "list",
-            "data": {
-              "style": "ordered",
-              "meta": {
-                "start": 7,
-                "counterType": "numeric"
-              },
-              "items": [
-                {
-                  "content": "Нажимаем <b>«Запуск»</b> и выбираем желаемый интервал до старта заставки.",
-                  "meta": {},
-                  "items": []
-                }
-              ]
-            }
-          },
-          {
-            "id": "fmoVGuQh-1",
-            "type": "image",
-            "data": {
-              "caption": "",
-              "withBorder": false,
-              "withBackground": false,
-              "stretched": false,
-              "file": {
-                "url": "img/upload_1785427833971.png"
-              }
-            }
-          },
-          {
-            "id": "o5oKdiA4J4",
-            "type": "list",
-            "data": {
-              "style": "ordered",
-              "meta": {
-                "start": 8,
-                "counterType": "numeric"
-              },
-              "items": [
-                {
-                  "content": "Возвращаемся в главное меню и проверяем, что параметр «Не выключать экран» выключен. Готово!",
-                  "meta": {},
-                  "items": []
-                }
-              ]
-            }
-          },
-          {
-            "id": "Ki_BkEtpvl",
-            "type": "image",
-            "data": {
-              "caption": "",
-              "withBorder": false,
-              "withBackground": false,
-              "stretched": false,
-              "file": {
-                "url": "img/upload_1785427937879.png"
-              }
+              "text": "<a href=\"https://disk.yandex.ru/d/8ZIimx0i2l1QLw\">ИНСТРУКЦИЯ ОТ ПРОИЗВОДИТЕЛЯ И РАСШИРОЕНЫЙ СПИСОК КОДОВ<br></a><br>"
             }
           }
         ],
         "version": "2.30.5"
       },
-      "status": "published",
-      "category": "",
+      "blocks": {
+        "time": 1791622206408,
+        "blocks": [
+          {
+            "id": "TzNk1C8du6",
+            "type": "image",
+            "data": {
+              "caption": "",
+              "withBorder": false,
+              "withBackground": false,
+              "stretched": false,
+              "file": {
+                "url": "img/1791621910484_image.png"
+              }
+            }
+          },
+          {
+            "id": "DPnwbMS09H",
+            "type": "paragraph",
+            "data": {
+              "text": "Настройка четырёх кнопок пульта дистанционного управления приставки MTS ZTE B866 на управление громкостью ТВ, включение-выключение ТВ, выбор входа ТВ."
+            }
+          },
+          {
+            "id": "xGQMKqoE7M",
+            "type": "paragraph",
+            "data": {
+              "text": "✅Процедура настройки пульта ДУ:✅"
+            }
+          },
+          {
+            "id": "XxjWntE3Ql",
+            "type": "paragraph",
+            "data": {
+              "text": "ШАГ 1. Переведите телевизор в режим ожидания (выключить кнопкой POWER нa оригинальном пульте ДУ ТВ)."
+            }
+          },
+          {
+            "id": "fif-Q777Dx",
+            "type": "paragraph",
+            "data": {
+              "text": "ШАГ 2. Определите марку Вашего ТВ и соответствующий ему код из таблицы кодов (ссылка снизу статьи)&nbsp;"
+            }
+          },
+          {
+            "id": "baTIxWB-SX",
+            "type": "paragraph",
+            "data": {
+              "text": "3. Переключите универсальный пульт ДУ в режим настройки зажав клавишу (шестерëнка, обозначена цифрой 4 на рисунке) нa 3 секунды."
+            }
+          },
+          {
+            "id": "enreC_KIeE",
+            "type": "paragraph",
+            "data": {
+              "text": "Индикатор пульта ДУ загорится зелёным цветом.В режиме настройки универсальный пульт ожидает нажатия кнопок в течение 30 секунд. Если в течение данного времени не будет нажатий на любые кнопки, процесс настройки автоматически завершится."
+            }
+          },
+          {
+            "id": "LcIoYL2aeg",
+            "type": "paragraph",
+            "data": {
+              "text": "ШАГ 4. Используя цифровую клавиатуру пульта ДУ введите код, который соответствует марке вашего телевизора."
+            }
+          },
+          {
+            "id": "3-M5m5ogsS",
+            "type": "paragraph",
+            "data": {
+              "text": "ШАГ 5. Для проверки возможности управления телевизором нажмите кнопку (зелëное питание,справа сверху, цифрой 1 обозначена на рисунке)  управления ТВ. Если телевизор включился, проверьте возможность управления телевизором с помощью других кнопок на универсальном пульте. Если телевизор не включился, повторите процедуру настройки используя другой код."
+            }
+          },
+          {
+            "id": "7R1NRbeQ05",
+            "type": "paragraph",
+            "data": {
+              "text": "Сброс пульта ДУ до заводских настроек:"
+            }
+          },
+          {
+            "id": "va4Y1BH2iI",
+            "type": "paragraph",
+            "data": {
+              "text": "В случае выявления проблем в работе универсального пульта рекомендуется выполнить следующие действия:"
+            }
+          },
+          {
+            "id": "EEFwUeYVra",
+            "type": "paragraph",
+            "data": {
+              "text": "👉 Замените элементы питания пульта ДУ на заведомо новые."
+            }
+          },
+          {
+            "id": "a6bp5Lcyke",
+            "type": "paragraph",
+            "data": {
+              "text": "👉 Выполните сброс настроек пульта ДУ. Для этого потребуется  зажать на 3 секунды клавиши OK и 0 на цифровой клавиатуре. Успешный сброс будет подтвержден трехкратным миганием индикатора пульта ДУ."
+            }
+          },
+          {
+            "id": "Kp9pURqNwG",
+            "type": "paragraph",
+            "data": {
+              "text": "<a href=\"https://disk.yandex.ru/d/8ZIimx0i2l1QLw\">ИНСТРУКЦИЯ ОТ ПРОИЗВОДИТЕЛЯ И РАСШИРОЕНЫЙ СПИСОК КОДОВ<br></a><br>"
+            }
+          }
+        ],
+        "version": "2.30.5"
+      },
       "pinned": false
     },
     {
