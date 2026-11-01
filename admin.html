@@ -3,15 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TV SHOP • Online Cloud Studio</title>
+    <title>TV SHOP • Студия управления</title>
     <link rel="icon" type="image/png" href="app_logo.png?v=2">
     
-    <link rel="stylesheet" href="css/admin.css?v=20261010_03">
-    <link rel="stylesheet" href="css/article.css?v=20261010_02">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="js/article-renderer.js"></script>
+    <link rel="stylesheet" href="css/admin.css?v=20261101_03">
+    <link rel="stylesheet" href="css/article.css?v=20261013_01">
     
-    <!-- Editor.js Core & Plugins -->
+    <!-- Editor.js Core & Standard Plugins -->
     <script src="https://cdn.jsdelivr.net/npm/@editorjs/editorjs@2.30.5/dist/editorjs.umd.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@editorjs/header@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/@editorjs/list@latest"></script>
@@ -25,511 +23,370 @@
     <script src="https://cdn.jsdelivr.net/npm/@editorjs/underline@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/@editorjs/delimiter@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/editorjs-undo@latest"></script>
+
+    <!-- Unified Article Renderer for Live Preview & Static Generation -->
+    <script src="js/article-renderer.js"></script>
 </head>
 <body>
-    <div class="manager-layout">
-        <!-- Sidebar Navigation -->
-        <div class="manager-sidebar" id="manager-sidebar">
-            <div class="sidebar-header">
-                <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
-                    <div class="brand-title">
-                        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.75z" fill="currentColor"/></svg>
-                        <span class="brand-text">TV SHOP Cloud</span>
+    <div class="app-layout">
+        <!-- 1. Sleek Compact Sidebar -->
+        <aside class="app-sidebar" id="app-sidebar">
+            <div class="sidebar-brand">
+                <a href="articles.html" target="_blank" class="brand-link" title="Открыть портал инструкций">
+                    <img src="app_logo.png?v=2" alt="TV SHOP" class="brand-logo">
+                    <div class="brand-info">
+                        <span class="brand-name">TV SHOP</span>
+                        <span class="brand-tag">Студия</span>
                     </div>
-                    <button type="button" class="btn-toggle-sidebar" id="btn-toggle-sidebar" title="Свернуть / Развернуть меню">
-                        <svg viewBox="0 0 24 24" style="width:18px;height:18px;"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2.5" fill="none"/></svg>
+                </a>
+                <button type="button" class="btn-sidebar-collapse" id="btn-toggle-sidebar" title="Свернуть панель">
+                    <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+                </button>
+            </div>
+
+            <nav class="sidebar-nav">
+                <button type="button" class="nav-item active" data-pane="pane-articles">
+                    <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                    <span>Статьи и инструкции</span>
+                </button>
+                <button type="button" class="nav-item" data-pane="pane-news">
+                    <svg viewBox="0 0 24 24"><path d="M19 20H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h10l4 4v10a2 2 0 0 1-2 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg>
+                    <span>Новости</span>
+                </button>
+                <button type="button" class="nav-item" data-pane="pane-products">
+                    <svg viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                    <span>Товары</span>
+                </button>
+                <button type="button" class="nav-item" data-pane="pane-promo">
+                    <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                    <span>Премиум ТВ</span>
+                </button>
+                <button type="button" class="nav-item" data-pane="pane-support">
+                    <svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+                    <span>Поддержка</span>
+                </button>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="status-indicator" title="Подключено к GitHub">
+                    <span class="status-dot"></span>
+                    <span class="status-text">GitHub Online</span>
+                </div>
+                <div class="sidebar-footer-actions">
+                    <button type="button" class="btn-theme-switch" id="btn-theme-toggle" title="Переключить тему (светлая/тёмная)">
+                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/></svg>
+                    </button>
+                    <button type="button" class="btn-logout" id="btn-logout" title="Выйти / Сменить ключ доступа">
+                        <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
                     </button>
                 </div>
-                <div class="brand-subtitle">Онлайн-редактор</div>
             </div>
+        </aside>
 
-            <div class="sidebar-menu">
-                <button class="menu-item active" data-pane="pane-articles" title="Инструкции и статьи">
-                    <svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/><path d="M15 5l3 3"/></svg>
-                    <span class="menu-text">Инструкции и статьи</span>
-                </button>
-                <button class="menu-item" data-pane="pane-news" title="Новости и анонсы">
-                    <svg viewBox="0 0 24 24"><path d="M19 20H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h10l4 4v10a2 2 0 0 1-2 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-                    <span class="menu-text">Новости и анонсы</span>
-                </button>
-                <button class="menu-item" data-pane="pane-products" title="Магазин (Товары)">
-                    <svg viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
-                    <span class="menu-text">Магазин (Товары)</span>
-                </button>
-                <button class="menu-item" data-pane="pane-promo" title="Премиум ТВ (Промо)">
-                    <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-                    <span class="menu-text">Премиум ТВ (Промо)</span>
-                </button>
-                <button class="menu-item" data-pane="pane-support" title="Поддержка и Push">
-                    <svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
-                    <span class="menu-text">Поддержка и Push</span>
-                </button>
-            </div>
-
-            <!-- Sidebar Cloud Actions Box -->
-            <div class="sidebar-cloud-box">
-                <div class="cloud-status-indicator">
-                    <div class="status-dot-pulse"></div>
-                    <span class="sidebar-cloud-info">Подключено к GitHub</span>
-                </div>
-                <button type="button" class="btn btn-secondary w-100" id="btn-logout-token" style="justify-content:center; font-size:0.78em; padding:6px 8px; color:var(--text-muted); border-color:var(--border-color);">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                    <span class="sync-btn-text">Выйти из студии</span>
-                </button>
-            </div>
-        </div>
-
-        <!-- Main Content Area -->
-        <div class="manager-content">
-            <div class="content-pane-wrapper">
-                
-                <!-- Pane: Articles (Telegram WYSIWYG) -->
-                <div class="pane active" id="pane-articles" style="max-width:100%; padding: 8px 14px !important;">
-                    <div class="tg-split-layout">
-                        <!-- Left column: Articles list & Search -->
-                        <div class="tg-split-left">
-                            <div style="display:flex; flex-direction:column; gap:6px; margin-bottom:8px;">
-                                <button class="btn btn-add" id="btn-add-article" style="width:100%; justify-content:center; padding:9px 12px; font-weight:700;">+ Новая статья</button>
-                                <button type="button" class="btn btn-secondary" id="btn-paste-clipboard-article" style="width:100%; justify-content:center; display:inline-flex; align-items:center; gap:6px; font-weight:700; padding:8px 12px; font-size:0.88em;">
-                                    📋 Вставить из буфера
-                                </button>
-                            </div>
-
-                            <!-- Search & Filter Tabs -->
-                            <div class="art-search-box" style="margin-bottom:6px;">
-                                <input type="text" id="articles-search-input" class="form-control" placeholder="🔍 Поиск статей..." style="font-size:0.84em; padding:6px 10px;">
-                            </div>
-                            <div class="art-filter-tabs" id="art-filter-tabs" style="display:flex; gap:4px; margin-bottom:8px;">
-                                <button type="button" class="art-filter-btn active" data-filter="all">Все (<span id="count-art-all">0</span>)</button>
-                                <button type="button" class="art-filter-btn" data-filter="published">🟢 Опубл. (<span id="count-art-pub">0</span>)</button>
-                                <button type="button" class="art-filter-btn" data-filter="draft">🟡 Черновики (<span id="count-art-draft">0</span>)</button>
-                            </div>
-
-                            <div class="instructions-list" id="articles-sidebar-list">
-                                <!-- Dynamic Articles Titles -->
-                            </div>
-                        </div>
-
-                        <!-- Center column: Editor.js canvas -->
-                        <div class="tg-split-center" id="article-editor-panel" style="display:none;">
-                            <div class="tg-editor-wrapper">
-                                <!-- Quick Insertion Toolbar -->
-                                <div class="tg-editor-toolbar" id="editorjs-toolbar">
-                                    <div class="tg-tb-group">
-                                        <button type="button" class="tg-tb-btn" id="ed-btn-undo" title="Отменить (Ctrl+Z)">
-                                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 00-9-9 9 9 0 00-6 2.3L3 13"/></svg>
-                                            <span>Назад</span>
-                                        </button>
-                                        <button type="button" class="tg-tb-btn" id="ed-btn-redo" title="Вперёд (Ctrl+Y)">
-                                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 7v6h-6"/><path d="M3 17a9 9 0 019-9 9 9 0 016 2.3l3 2.7"/></svg>
-                                            <span>Вперёд</span>
-                                        </button>
-                                    </div>
-                                    <div class="tg-tb-divider"></div>
-                                    <div class="tg-tb-group">
-                                        <button type="button" class="tg-tb-btn" id="ed-btn-add-header" title="Добавить заголовок (H2 / H3)">
-                                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16"/><path d="M4 6v12"/><path d="M20 6v12"/></svg>
-                                            <span>Заголовок</span>
-                                        </button>
-                                        <button type="button" class="tg-tb-btn" id="ed-btn-add-image" title="Загрузить фото прямо в GitHub">
-                                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-                                            <span>Фото</span>
-                                        </button>
-                                        <button type="button" class="tg-tb-btn" id="ed-btn-add-list" title="Добавить список">
-                                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-                                            <span>Список</span>
-                                        </button>
-                                        <button type="button" class="tg-tb-btn" id="ed-btn-add-quote" title="Цитата / Подсказка">
-                                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/><path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z"/></svg>
-                                            <span>Цитата</span>
-                                        </button>
-                                        <button type="button" class="tg-tb-btn" id="ed-btn-add-alert" title="Важное предупреждение">
-                                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-                                            <span>Важно</span>
-                                        </button>
-                                        <button type="button" class="tg-tb-btn" id="ed-btn-add-link-btn" title="Кнопка-ссылка (CTA действие / Скачать / Telegram)">
-                                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="12" rx="3"/><path d="M9 12h6"/><path d="M12 9l3 3-3 3"/></svg>
-                                            <span>Кнопка</span>
-                                        </button>
-                                        <button type="button" class="tg-tb-btn" id="ed-btn-add-table" title="Таблица">
-                                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M12 3v18"/><path d="M3 9h18"/><path d="M3 15h18"/></svg>
-                                            <span>Таблица</span>
-                                        </button>
-                                        <button type="button" class="tg-tb-btn" id="ed-btn-add-video" title="Видео">
-                                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="15" x="2" y="4.5" rx="2.5"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
-                                            <span>Видео</span>
-                                        </button>
-                                        <button type="button" class="tg-tb-btn" id="ed-btn-add-remote-key" title="Кнопка пульта [OK]">
-                                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="3"/><circle cx="12" cy="8" r="2.5"/><path d="M12 15h.01"/><path d="M12 18h.01"/></svg>
-                                            <span>Пульт [OK]</span>
-                                        </button>
-                                        <button type="button" class="tg-tb-btn" id="ed-btn-add-delimiter" title="Разделитель">
-                                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                                            <span>Разделитель</span>
-                                        </button>
-                                    </div>
-                                    <div class="tg-tb-divider"></div>
-                                    <div class="tg-tb-group">
-                                        <button type="button" class="tg-tb-btn tg-tb-btn-primary" id="tg-btn-live-preview" title="Локальный предпросмотр">
-                                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
-                                            <span>Предпросмотр</span>
-                                        </button>
-                                        <button type="button" class="tg-tb-btn" id="tg-btn-paste-in-editor" title="Импорт из Telegram">
-                                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                                            <span>Импорт TG</span>
-                                        </button>
-                                    </div>
-                                    <div class="tg-tb-group" style="margin-left: auto;">
-                                        <button type="button" class="tg-tb-btn" id="tg-btn-theme-toggle" title="Сменить тему">
-                                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/></svg>
-                                            <span id="tg-theme-name">Светлая</span>
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <!-- Article Canvas -->
-                                <div class="tg-content-canvas-wrapper">
-                                    <div class="tg-article-paper" id="tg-article-paper">
-                                        <div class="tg-paper-header" id="tg-paper-header">
-                                            <div id="tg-paper-draft-badge" style="display:none; margin-bottom:10px;">
-                                                <span class="badge-draft-pill">🟡 Черновик (скрыт на сайте)</span>
-                                            </div>
-                                            <h1 class="tg-paper-title" id="tg-paper-title" contenteditable="true" spellcheck="true" lang="ru" placeholder="Заголовок статьи...">Заголовок статьи</h1>
-                                            <div class="tg-paper-meta-row">
-                                                <span class="tg-paper-author">
-                                                    <svg viewBox="0 0 24 24" style="width:15px;height:15px;fill:currentColor;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.75z"/></svg>
-                                                    TV SHOP
-                                                </span>
-                                                <span class="meta-dot">•</span>
-                                                <span class="tg-paper-date" id="tg-paper-date">Сегодня</span>
-                                                <span class="meta-dot">•</span>
-                                                <span class="tg-paper-readtime" id="tg-paper-readtime">1 мин чтения</span>
-                                                <span class="meta-dot" id="tg-paper-category-dot" style="display:none;">•</span>
-                                                <span class="badge-category-tag" id="tg-paper-category-badge" style="display:none;">Рубрика</span>
-                                            </div>
-                                            <div id="tg-paper-video-badge" style="display:none; margin-top:14px;">
-                                                <a id="tg-paper-video-link" href="#" target="_blank" class="tg-paper-video-btn">
-                                                    ▶ Смотреть видеоинструкцию
-                                                </a>
-                                            </div>
-                                        </div>
-
-                                        <div id="editorjs-holder" class="editorjs-canvas-holder"></div>
-                                        <input type="file" id="editorjs-file-input" accept="image/*" style="display:none;" />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Right column: Metadata & Save -->
-                        <div class="tg-split-right" id="article-meta-sidebar" style="display:none;">
-                            <div class="card" style="padding:14px; margin-bottom:10px; display:flex; flex-direction:column; gap:8px;">
-                                <button class="btn btn-primary w-100 btn-save-deploy" style="justify-content:center; font-weight:800; padding:11px 14px; font-size:0.95em; gap:8px;">
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-                                    <span>Опубликовать на сайт</span>
-                                </button>
-                                <button type="button" class="btn btn-secondary w-100" id="btn-sidebar-preview" style="justify-content:center; font-weight:700; font-size:0.86em; padding:8px 10px; background:#eff6ff; color:#2563eb; border-color:#bfdbfe; gap:6px;">
-                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
-                                    <span>Предпросмотр статьи</span>
-                                </button>
-                                <button class="btn btn-secondary w-100 btn-reset" style="justify-content:center; font-size:0.82em; padding:6px 10px;">
-                                    <span>Сбросить изменения</span>
-                                </button>
-                            </div>
-
-                            <div class="card">
-                                <h3 style="font-size: 1.05em; font-weight: 800; margin-bottom: 14px; color: var(--text-color); display:flex; align-items:center; gap:8px;">
-                                    <span>⚙️</span> Параметры статьи
-                                </h3>
-                                
-                                <div class="form-group">
-                                    <label for="select-art-status" style="font-size:0.84em; font-weight:700;">Статус публикации</label>
-                                    <select id="select-art-status" class="form-control" style="font-weight:700;">
-                                        <option value="published">🟢 Опубликовано (видно читателям)</option>
-                                        <option value="draft">🟡 Черновик (скрыто на сайте)</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label for="input-art-title" style="font-size:0.84em; font-weight:700;">Заголовок статьи</label>
-                                    <input type="text" id="input-art-title" class="form-control" placeholder="Например: Открываем бесплатные источники в Prisma">
-                                </div>
-                                <div class="form-group">
-                                    <label for="input-art-category" style="font-size:0.84em; font-weight:700;">Рубрика / Тематика</label>
-                                    <input type="text" id="input-art-category" class="form-control" placeholder="Например: Настройка ТВ, TorrServe, Приложения">
-                                </div>
-                                <div class="form-group">
-                                    <label for="input-art-date" style="font-size:0.84em; font-weight:700;">Дата публикации</label>
-                                    <input type="text" id="input-art-date" class="form-control">
-                                </div>
-                                <div class="form-group">
-                                    <label for="input-art-video" style="font-size:0.84em; font-weight:700;">Видео (YouTube / Rutube)</label>
-                                    <input type="text" id="input-art-video" class="form-control" placeholder="https://...">
-                                </div>
-
-                                <div style="display:flex; flex-direction:column; gap:6px; margin: 12px 0;">
-                                    <button type="button" class="btn btn-secondary w-100" id="btn-duplicate-article" style="padding:8px 12px; font-size:0.84em; font-weight:700; justify-content:center;">
-                                        📄 Дублировать статью
-                                    </button>
-                                </div>
-
-                                <div class="tg-meta-direct-link-box" style="margin-top:10px; background:var(--bg-color); padding:10px; border-radius:8px; border:1px solid var(--border-color);">
-                                    <label style="font-size:0.82em; font-weight:700; display:block; margin-bottom:6px;">⚡ Автономная ссылка статьи:</label>
-                                    <div id="art-direct-link-text" style="font-size:0.8em; word-break:break-all; color:#2481cc; margin-bottom:8px;">https://...</div>
-                                    <div style="display:flex; flex-direction:column; gap:6px;">
-                                        <button type="button" class="btn btn-secondary btn-sm w-100" id="btn-copy-art-link" style="padding:6px 10px; font-size:0.82em; font-weight:700; justify-content:center;">
-                                            📋 Скопировать ссылку
-                                        </button>
-                                        <a id="btn-open-art-link" href="#" target="_blank" class="btn btn-secondary btn-sm w-100" style="padding:6px 10px; font-size:0.82em; text-decoration:none; justify-content:center;">
-                                            ↗ Открыть статью
-                                        </a>
-                                    </div>
-                                </div>
-
-                                <div style="margin-top: 16px; border-top: 1px solid var(--border-color); padding-top: 14px;">
-                                    <button type="button" class="btn btn-danger w-100" id="btn-delete-article" style="padding: 8px; font-size: 0.85em; justify-content:center;">
-                                        🗑️ Удалить статью
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Pane: News -->
-                <div class="pane" id="pane-news">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-                        <h2 class="pane-title" style="margin:0;">📰 Новости и важные анонсы</h2>
-                        <div style="display:flex; gap:10px;">
-                            <button class="btn btn-add" id="btn-add-news">+ Добавить новость</button>
-                            <button class="btn btn-primary btn-save-deploy" style="gap:6px; font-weight:700;">
-                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-                                <span>Опубликовать на сайт</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div id="news-list-container"></div>
-                </div>
-
-                <!-- Pane: Products -->
-                <div class="pane" id="pane-products">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-                        <h2 class="pane-title" style="margin:0;">🛒 Товары магазина</h2>
-                        <div style="display:flex; gap:10px;">
-                            <button class="btn btn-add" id="btn-add-product">+ Добавить товар</button>
-                            <button class="btn btn-primary btn-save-deploy" style="gap:6px; font-weight:700;">
-                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-                                <span>Опубликовать на сайт</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div id="products-list-container"></div>
-                </div>
-
-                <!-- Pane: Promo -->
-                <div class="pane" id="pane-promo">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; max-width:700px;">
-                        <h2 class="pane-title" style="margin:0;">📺 Премиум ТВ (Промо-карточка)</h2>
-                        <button class="btn btn-primary btn-save-deploy" style="gap:6px; font-weight:700;">
-                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-                            <span>Опубликовать на сайт</span>
+        <!-- 2. Main Workspace -->
+        <main class="app-main">
+            <!-- Pane: Articles (Clean 2-Column Notion/Medium Style) -->
+            <section class="pane active" id="pane-articles">
+                <!-- Left: Articles List Column -->
+                <div class="articles-sidebar">
+                    <div class="articles-sidebar-header">
+                        <button type="button" class="btn-primary-create" id="btn-create-article">
+                            <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                            <span>Новая статья</span>
                         </button>
+
+                        <div class="articles-search-wrapper">
+                            <svg viewBox="0 0 24 24" class="search-icon"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                            <input type="text" id="articles-search" placeholder="Поиск статей..." autocomplete="off">
+                        </div>
+
+                        <div class="articles-filters" id="articles-filters">
+                            <button type="button" class="filter-chip active" data-filter="all">Все (<span id="count-all">0</span>)</button>
+                            <button type="button" class="filter-chip" data-filter="published">🟢 Опубл. (<span id="count-pub">0</span>)</button>
+                            <button type="button" class="filter-chip" data-filter="draft">🟡 Черновики (<span id="count-draft">0</span>)</button>
+                        </div>
                     </div>
-                    <div class="card" style="max-width:700px;">
-                        <div class="form-group">
-                            <label for="input-promo-badge">Бейдж акции</label>
-                            <input type="text" id="input-promo-badge" class="form-control">
-                        </div>
-                        <div class="form-group">
-                            <label for="input-promo-title">Заголовок акции</label>
-                            <input type="text" id="input-promo-title" class="form-control">
-                        </div>
-                        <div class="form-group">
-                            <label for="input-promo-text">Описание услуги</label>
-                            <textarea id="input-promo-text" class="form-control" style="min-height: 110px;"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="input-promo-action">Текст кнопки действия</label>
-                            <input type="text" id="input-promo-action" class="form-control">
-                        </div>
-                        <div class="form-group">
-                            <label for="input-promo-image">Изображение</label>
-                            <input type="text" id="input-promo-image" class="form-control">
-                        </div>
+
+                    <div class="articles-list" id="articles-list">
+                        <!-- Rendered dynamically -->
                     </div>
                 </div>
 
-                <!-- Pane: Support -->
-                <div class="pane" id="pane-support">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; max-width:700px;">
-                        <h2 class="pane-title" style="margin:0;">📞 Контакты поддержки</h2>
-                        <button class="btn btn-primary btn-save-deploy" style="gap:6px; font-weight:700;">
-                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-                            <span>Опубликовать на сайт</span>
-                        </button>
-                    </div>
-                    <div class="card" style="max-width:700px;">
-                        <div class="form-group">
-                            <label for="input-support-text">Приветственный текст поддержки</label>
-                            <input type="text" id="input-support-text" class="form-control">
-                        </div>
-                        <div class="form-group">
-                            <label for="input-support-tg">Телеграм-аккаунт поддержки (с @)</label>
-                            <input type="text" id="input-support-tg" class="form-control">
-                        </div>
-                        <div class="form-group">
-                            <label for="input-support-max">Ссылка на MAX</label>
-                            <input type="text" id="input-support-max" class="form-control">
-                        </div>
-                        <div class="form-group">
-                            <label for="input-support-qr">Ссылка на QR-код</label>
-                            <input type="text" id="input-support-qr" class="form-control">
-                        </div>
-                        <div class="form-group">
-                            <label for="input-onesignal-appid">OneSignal App ID</label>
-                            <input type="text" id="input-onesignal-appid" class="form-control">
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </div>
-
-    <!-- Secure Login / Initial Setup Modal -->
-    <div class="annotator-modal" id="login-overlay" style="z-index:99999;">
-        <!-- Setup View (First Time on this Device) -->
-        <div class="annotator-card" id="login-setup-view" style="max-width: 520px; display:none;">
-            <div style="text-align:center;">
-                <div class="brand-title" style="justify-content:center; font-size:1.5em; margin-bottom:4px; color:#38bdf8;">
-                    🛡️ TV SHOP Cloud Studio
-                </div>
-                <div style="font-size:0.9em; color:var(--text-muted); font-weight:600;">Безопасный онлайн-доступ</div>
-            </div>
-
-            <div style="background:rgba(2, 132, 199, 0.08); border-left:4px solid #0284c7; padding:12px 14px; border-radius:0 8px 8px 0; font-size:0.86em; line-height:1.5;">
-                <strong>100% Защита:</strong> Токен шифруется алгоритмом <strong>AES-256-GCM</strong> прямо в браузере вашим мастер-паролем. Никакие пароли не передаются третьим лицам.
-            </div>
-
-            <div class="form-group" style="margin:0;">
-                <label for="setup-github-token" style="font-size:0.85em;">GitHub Token (Fine-grained / Classic с правами repo)</label>
-                <input type="password" id="setup-github-token" class="form-control" placeholder="ghp_... или github_pat_..." autocomplete="off">
-                <small style="color:var(--text-muted); font-size:0.75em;">GitHub → Settings → Developer Settings → Personal Access Tokens</small>
-            </div>
-
-            <div class="form-group" style="margin:0;">
-                <label for="setup-master-password" style="font-size:0.85em;">Придумайте Мастер-пароль для входа с этого устройства</label>
-                <input type="password" id="setup-master-password" class="form-control" placeholder="Надежный мастер-пароль..." autocomplete="new-password">
-            </div>
-
-            <button type="button" class="btn btn-primary" id="btn-setup-submit" style="justify-content:center; padding:12px; font-weight:800;">
-                🔒 Зашифровать и войти
-            </button>
-            <div id="setup-error-msg" style="color:var(--danger-color); font-size:0.85em; text-align:center; display:none;"></div>
-        </div>
-
-        <!-- Existing Token Login View -->
-        <div class="annotator-card" id="login-existing-view" style="max-width: 440px; display:none;">
-            <div style="text-align:center;">
-                <div class="brand-title" style="justify-content:center; font-size:1.4em; margin-bottom:4px; color:#38bdf8;">
-                    🔒 Вход в TV SHOP Cloud
-                </div>
-                <div style="font-size:0.86em; color:var(--text-muted); font-weight:600;">Введите Мастер-пароль для расшифровки ключа</div>
-            </div>
-
-            <div class="form-group" style="margin:10px 0 0 0;">
-                <input type="password" id="login-password-input" class="form-control" style="text-align:center; font-size:1.2em; padding:12px; letter-spacing:2px;" placeholder="МАСТЕР-ПАРОЛЬ" autofocus>
-            </div>
-
-            <button type="button" class="btn btn-primary" id="btn-login-submit" style="justify-content:center; padding:12px; font-weight:800;">
-                🔓 Разблокировать панель
-            </button>
-
-            <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border-color); padding-top:10px; margin-top:6px;">
-                <button type="button" id="btn-reset-auth" style="background:transparent; border:none; color:var(--text-muted); font-size:0.78em; cursor:pointer;">Сменить ключ доступа / Выйти</button>
-            </div>
-            <div id="login-error-msg" style="color:var(--danger-color); font-size:0.85em; text-align:center; display:none;"></div>
-        </div>
-    </div>
-
-    <!-- Live Article Preview Modal -->
-    <div class="annotator-modal" id="modal-article-preview" style="display:none;">
-        <div class="preview-modal-card">
-            <div class="preview-modal-bar">
-                <div class="preview-bar-left">
-                    <span style="font-size:1.05em; font-weight:800;">👁️ Предпросмотр статьи</span>
-                    <span id="preview-status-pill" class="badge-draft-pill" style="display:none;">🟡 Черновик</span>
-                </div>
-                <div class="preview-device-switcher" style="display:flex; gap:4px; background:rgba(0,0,0,0.06); padding:3px; border-radius:8px;">
-                    <button type="button" class="prev-dev-btn active" data-device="desktop" style="background:transparent; border:none; padding:4px 10px; font-size:0.84em; font-weight:700; cursor:pointer;">💻 ПК</button>
-                    <button type="button" class="prev-dev-btn" data-device="mobile" style="background:transparent; border:none; padding:4px 10px; font-size:0.84em; font-weight:700; cursor:pointer;">📱 Смартфон</button>
-                    <button type="button" class="prev-dev-btn" data-device="tv" style="background:transparent; border:none; padding:4px 10px; font-size:0.84em; font-weight:700; cursor:pointer;">📺 Smart TV</button>
-                </div>
-                <div class="preview-bar-right" style="display:flex; gap:8px; align-items:center;">
-                    <button type="button" class="btn btn-secondary" id="btn-prev-theme-toggle" style="padding:4px 10px; font-size:0.82em;">☀️ Тема</button>
-                    <button type="button" class="btn btn-secondary" id="btn-prev-open-tab" style="padding:4px 10px; font-size:0.82em;">↗ В новой вкладке</button>
-                    <button type="button" class="btn-icon" id="btn-close-preview-modal" style="width:28px; height:28px; font-size:1.2em;">×</button>
-                </div>
-            </div>
-
-            <div class="preview-viewport-wrapper">
-                <div class="preview-device-frame" id="preview-device-frame">
-                    <div class="preview-article-container">
-                        <div style="border-bottom:1px solid #e2e8f0; margin-bottom:24px; padding-bottom:18px;">
-                            <h1 id="prev-art-title" style="font-size:2em; font-weight:800; margin-bottom:12px; line-height:1.25;">Заголовок статьи</h1>
-                            <div style="display:flex; align-items:center; gap:10px; font-size:0.9em; color:#64748b;">
-                                <span style="color:#2481cc; font-weight:700;">TV SHOP</span>
-                                <span>•</span>
-                                <span id="prev-art-date">Сегодня</span>
-                                <span>•</span>
-                                <span id="prev-art-readtime">1 мин чтения</span>
-                                <span id="prev-art-cat-dot" style="display:none;">•</span>
-                                <span class="badge-category-tag" id="prev-art-category" style="display:none;">Рубрика</span>
+                <!-- Right: Spacious Editor Canvas -->
+                <div class="article-editor-area" id="article-editor-area">
+                    <!-- Top Action Bar -->
+                    <header class="editor-action-bar">
+                        <div class="bar-left">
+                            <div class="status-dropdown-wrapper">
+                                <label for="select-article-status" class="visually-hidden">Статус статьи</label>
+                                <select id="select-article-status" class="status-dropdown">
+                                    <option value="published">🟢 Опубликовано</option>
+                                    <option value="draft">🟡 Черновик (скрыт)</option>
+                                </select>
+                            </div>
+                            <div class="article-link-chip" id="article-link-chip" title="Прямая ссылка на готовую страницу статьи">
+                                <span class="chip-url" id="link-preview-text">articles/...</span>
+                                <button type="button" class="btn-chip-copy" id="btn-copy-direct-link" title="Скопировать ссылку">&#128203;</button>
                             </div>
                         </div>
 
-                        <div id="prev-art-video-banner" style="display:none; margin-bottom:20px;">
-                            <a id="prev-art-video-link" href="#" target="_blank" class="tg-paper-video-btn" style="width:100%; justify-content:center;">
-                                ▶ Смотреть видеоинструкцию
+                        <div class="bar-right">
+                            <button type="button" class="btn-bar-action" id="btn-preview-article" title="Предпросмотр статьи">
+                                <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                <span>Предпросмотр</span>
+                            </button>
+                            <a id="btn-open-article-tab" href="#" target="_blank" class="btn-bar-action" title="Открыть в новой вкладке">
+                                <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                                <span>Открыть</span>
                             </a>
-                        </div>
+                            <button type="button" class="btn-bar-action" id="btn-duplicate-article" title="Дублировать эту статью">
+                                <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                                <span>Дублировать</span>
+                            </button>
+                            <button type="button" class="btn-bar-action btn-danger-action" id="btn-delete-article" title="Удалить статью">
+                                <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                            </button>
 
-                        <div class="article-body" id="prev-art-body" style="line-height:1.75; font-size:1.06em;"></div>
+                            <button type="button" class="btn-publish-main" id="btn-publish-main">
+                                <svg viewBox="0 0 24 24" class="btn-publish-icon"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                                <span class="publish-text">Опубликовать на сайт</span>
+                            </button>
+                        </div>
+                    </header>
+
+                    <!-- Document Sheet Canvas -->
+                    <div class="editor-scroll-container">
+                        <article class="editor-paper-sheet">
+                            <!-- Article Meta Header -->
+                            <div class="paper-meta-header">
+                                <input type="text" id="article-title-input" class="paper-title-input" placeholder="Заголовок статьи..." spellcheck="true" autocomplete="off">
+                                
+                                <div class="paper-meta-bar">
+                                    <div class="meta-field">
+                                        <span class="meta-icon">&#128197;</span>
+                                        <input type="text" id="article-date-input" class="meta-input" placeholder="Дата (например: 1 ноября 2026)">
+                                    </div>
+                                    <div class="meta-field">
+                                        <span class="meta-icon">&#127991;</span>
+                                        <input type="text" id="article-category-input" class="meta-input" placeholder="Рубрика (Настройка ТВ, Приложения...)">
+                                    </div>
+                                    <div class="meta-field meta-video-field">
+                                        <span class="meta-icon">&#127916;</span>
+                                        <input type="url" id="article-video-input" class="meta-input" placeholder="Ссылка на видео (YouTube / Rutube)">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Fast Insertion Block Bar -->
+                            <div class="editor-quick-toolbar" id="editor-quick-toolbar">
+                                <button type="button" class="q-btn" data-tool="header" title="Добавить заголовок H2/H3"><b>H</b> Заголовок</button>
+                                <button type="button" class="q-btn" data-tool="image" title="Загрузить изображение на GitHub">&#128444; Фото</button>
+                                <button type="button" class="q-btn" data-tool="list" title="Список">&#8226; Список</button>
+                                <button type="button" class="q-btn" data-tool="warning" title="Важная плашка">&#9888; Важно</button>
+                                <button type="button" class="q-btn" data-tool="linkButton" title="Кнопка действия / Скачать">&#128279; Кнопка</button>
+                                <button type="button" class="q-btn" data-tool="embed" title="Видео плеер">&#9654; Видео</button>
+                                <button type="button" class="q-btn" data-tool="quote" title="Цитата / Подсказка">&#8220; Цитата</button>
+                                <button type="button" class="q-btn" data-tool="table" title="Таблица">&#9638; Таблица</button>
+                                <button type="button" class="q-btn" data-tool="delimiter" title="Разделитель">&#8213; Разделитель</button>
+                            </div>
+
+                            <!-- Editor.js Canvas -->
+                            <div id="editorjs-holder" class="editorjs-canvas"></div>
+                            <input type="file" id="image-upload-file-input" accept="image/*" style="display:none;">
+                        </article>
+                    </div>
+                </div>
+
+                <!-- Empty state when no article is selected -->
+                <div class="article-empty-state" id="article-empty-state" style="display:none;">
+                    <div class="empty-state-card">
+                        <img src="app_logo.png?v=2" alt="TV SHOP" class="empty-logo">
+                        <h3>Выберите статью из списка слева</h3>
+                        <p>Или создайте новую статью в один клик</p>
+                        <button type="button" class="btn-primary-create" id="btn-empty-create">+ Создать статью</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Pane: News -->
+            <section class="pane" id="pane-news">
+                <div class="section-container">
+                    <header class="section-header">
+                        <div>
+                            <h2>📰 Новости и анонсы</h2>
+                            <p class="section-subtitle">Отображаются на главном экране портала TV SHOP</p>
+                        </div>
+                        <div class="section-actions">
+                            <button type="button" class="btn-secondary" id="btn-add-news">+ Добавить новость</button>
+                            <button type="button" class="btn-publish-main btn-save-general">💾 Опубликовать на сайт</button>
+                        </div>
+                    </header>
+                    <div class="cards-grid" id="news-list-container"></div>
+                </div>
+            </section>
+
+            <!-- Pane: Products -->
+            <section class="pane" id="pane-products">
+                <div class="section-container">
+                    <header class="section-header">
+                        <div>
+                            <h2>🛒 Товары магазина</h2>
+                            <p class="section-subtitle">Список приставок и оборудования в каталоге</p>
+                        </div>
+                        <div class="section-actions">
+                            <button type="button" class="btn-secondary" id="btn-add-product">+ Добавить товар</button>
+                            <button type="button" class="btn-publish-main btn-save-general">💾 Опубликовать на сайт</button>
+                        </div>
+                    </header>
+                    <div class="cards-grid" id="products-list-container"></div>
+                </div>
+            </section>
+
+            <!-- Pane: Promo -->
+            <section class="pane" id="pane-promo">
+                <div class="section-container section-container-narrow">
+                    <header class="section-header">
+                        <div>
+                            <h2>📺 Премиум ТВ (Промо-карточка)</h2>
+                            <p class="section-subtitle">Главная промо-карточка партнёрского телевидения</p>
+                        </div>
+                        <button type="button" class="btn-publish-main btn-save-general">💾 Опубликовать на сайт</button>
+                    </header>
+
+                    <div class="panel-card">
+                        <div class="form-row">
+                            <label for="promo-badge">Бейдж акции</label>
+                            <input type="text" id="promo-badge" class="form-input" placeholder="Например: Премиум ТВ">
+                        </div>
+                        <div class="form-row">
+                            <label for="promo-title">Заголовок акции</label>
+                            <input type="text" id="promo-title" class="form-input" placeholder="Например: Телевидение от партнера">
+                        </div>
+                        <div class="form-row">
+                            <label for="promo-text">Описание услуги</label>
+                            <textarea id="promo-text" class="form-textarea" rows="4" placeholder="Текст промо..."></textarea>
+                        </div>
+                        <div class="form-row">
+                            <label for="promo-action">Текст на кнопке</label>
+                            <input type="text" id="promo-action" class="form-input" placeholder="Например: 50 руб. в месяц">
+                        </div>
+                        <div class="form-row">
+                            <label for="promo-image">Изображение (URL или имя файла в img/)</label>
+                            <input type="text" id="promo-image" class="form-input" placeholder="app_logo.png">
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Pane: Support -->
+            <section class="pane" id="pane-support">
+                <div class="section-container section-container-narrow">
+                    <header class="section-header">
+                        <div>
+                            <h2>📞 Контакты и поддержка</h2>
+                            <p class="section-subtitle">Каналы связи, Telegram и MAX</p>
+                        </div>
+                        <button type="button" class="btn-publish-main btn-save-general">💾 Опубликовать на сайт</button>
+                    </header>
+
+                    <div class="panel-card">
+                        <div class="form-row">
+                            <label for="support-text">Приветственный текст поддержки</label>
+                            <textarea id="support-text" class="form-textarea" rows="3"></textarea>
+                        </div>
+                        <div class="form-row">
+                            <label for="support-tg">Telegram канал/аккаунт (с @)</label>
+                            <input type="text" id="support-tg" class="form-input" placeholder="@android_tv_shop">
+                        </div>
+                        <div class="form-row">
+                            <label for="support-max">Ссылка на канал MAX</label>
+                            <input type="url" id="support-max" class="form-input" placeholder="https://max.ru/join/...">
+                        </div>
+                        <div class="form-row">
+                            <label for="support-qr">Ссылка на QR-код (опционально)</label>
+                            <input type="text" id="support-qr" class="form-input" placeholder="URL картинки">
+                        </div>
+                        <div class="form-row">
+                            <label for="onesignal-id">OneSignal App ID (для уведомлений)</label>
+                            <input type="text" id="onesignal-id" class="form-input" placeholder="Ключ OneSignal">
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- 3. Modal: Secure Login & Setup (AES-256 Web Crypto) -->
+    <div class="modal-backdrop" id="login-modal" style="display:none;">
+        <div class="modal-card">
+            <!-- Setup View -->
+            <div id="login-setup-view" style="display:none;">
+                <div class="modal-header-centered">
+                    <img src="app_logo.png?v=2" alt="TV SHOP" class="modal-logo">
+                    <h3>TV SHOP Cloud Studio</h3>
+                    <p>Первоначальная настройка защищённого доступа</p>
+                </div>
+                <div class="security-note">
+                    🔒 Токен шифруется алгоритмом <strong>AES-256-GCM</strong> прямо в вашем браузере. Данные надёжно защищены.
+                </div>
+                <div class="form-row">
+                    <label for="setup-token">GitHub Personal Access Token (с правами repo)</label>
+                    <input type="password" id="setup-token" class="form-input" placeholder="ghp_... или github_pat_..." autocomplete="off">
+                </div>
+                <div class="form-row">
+                    <label for="setup-password">Придумайте мастер-пароль для входа с этого ПК</label>
+                    <input type="password" id="setup-password" class="form-input" placeholder="Ваш мастер-пароль" autocomplete="new-password">
+                </div>
+                <button type="button" class="btn-primary-block" id="btn-setup-save">Войти в студию</button>
+                <div class="error-msg" id="setup-error" style="display:none;"></div>
+            </div>
+
+            <!-- Existing Login View -->
+            <div id="login-existing-view" style="display:none;">
+                <div class="modal-header-centered">
+                    <img src="app_logo.png?v=2" alt="TV SHOP" class="modal-logo">
+                    <h3>TV SHOP Студия</h3>
+                    <p>Введите мастер-пароль для доступа</p>
+                </div>
+                <div class="form-row">
+                    <input type="password" id="login-password" class="form-input password-center" placeholder="МАСТЕР-ПАРОЛЬ" autofocus>
+                </div>
+                <button type="button" class="btn-primary-block" id="btn-login-unlock">Разблокировать</button>
+                <div class="error-msg" id="login-error" style="display:none;"></div>
+                <div class="modal-reset-row">
+                    <button type="button" class="btn-text-muted" id="btn-reset-key">Сменить ключ доступа GitHub</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. Modal: Live Article Preview -->
+    <div class="modal-backdrop" id="preview-modal" style="display:none;">
+        <div class="preview-modal-dialog">
+            <header class="preview-header">
+                <div class="preview-title">
+                    <span>Предпросмотр статьи</span>
+                    <span class="preview-status-badge" id="preview-badge-status">🟢 Опубликовано</span>
+                </div>
+                <div class="device-switcher">
+                    <button type="button" class="dev-btn active" data-device="desktop">💻 ПК</button>
+                    <button type="button" class="dev-btn" data-device="mobile">📱 Телефон</button>
+                </div>
+                <button type="button" class="btn-close-modal" id="btn-close-preview">&times;</button>
+            </header>
+            <div class="preview-body" id="preview-body-container">
+                <div class="preview-frame-device" id="preview-frame-device">
+                    <div class="preview-page-content" id="preview-page-content">
+                        <!-- Rendered by ArticleRenderer -->
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Telegram Import Modal -->
-    <div class="annotator-modal" id="modal-paste-telegram" style="display:none;">
-        <div class="annotator-card" style="max-width: 680px; padding: 24px;">
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-                <h3 style="font-size:1.2em; font-weight:800; margin:0; display:flex; align-items:center; gap:8px;">
-                    📥 Импорт поста из Telegram
-                </h3>
-                <button type="button" class="btn-icon" id="btn-close-paste-modal" style="width:28px; height:28px; font-size:1.1em;">×</button>
-            </div>
-            
-            <p style="font-size:0.9em; color:var(--text-muted); margin:0; line-height:1.5;">
-                Вставьте скопированный текст поста из Telegram в поле ниже. Заголовок, подчёркивания, шаги со списками (точками •), цитаты и блоки фото сформируются автоматически.
-            </p>
-
-            <div class="form-group" style="margin:0;">
-                <textarea id="paste-telegram-textarea" class="form-control" spellcheck="true" lang="ru" style="min-height:240px; font-size:0.95em; line-height:1.6;" placeholder="Вставьте скопированный пост из Telegram (Ctrl+V)..."></textarea>
-            </div>
-
-            <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; border-top:1px solid var(--border-color); padding-top:16px;">
-                <button type="button" class="btn btn-secondary" id="btn-cancel-paste-modal">Отмена</button>
-                <div style="display:flex; gap:10px;">
-                    <button type="button" class="btn btn-secondary" id="btn-insert-current-article">📝 В текущую статью</button>
-                    <button type="button" class="btn btn-primary" id="btn-create-new-article-modal" style="font-weight:700;">✨ Создать новую статью</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
+    <!-- Toast Notifications -->
     <div class="toast-container" id="toast-container"></div>
 
-    <script src="admin.js?v=20261010_01"></script>
+    <script src="admin.js?v=20261101_03"></script>
 </body>
 </html>
