@@ -359,75 +359,120 @@ class LinkButtonBlockTool {
 
     constructor({ data, api, readOnly }) {
         this.data = {
-            text: data.text || data.title || data.label || '',
-            link: data.link || data.url || '',
+            text: (data.text || data.title || data.label || '').trim(),
+            link: (data.link || data.url || '').trim(),
             style: data.style || 'primary'
         };
         this.api = api;
         this.readOnly = readOnly;
         this.wrapper = null;
-        this.styleButtons = [];
+        this.btnEl = null;
+        this.popoverEl = null;
+        this.isOpen = false;
+        this.onDocClick = this.onDocClick.bind(this);
+    }
+
+    getIconSvg(url, style) {
+        url = url || '';
+        style = style || 'primary';
+        if (url.includes('t.me') || url.includes('telegram') || style === 'telegram') {
+            return '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .37z"/></svg>';
+        } else if (url.match(/\.(apk|zip|rar|m3u|m3u8|pdf)$/i) || style === 'success') {
+            return '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';
+        } else if (url.includes('article')) {
+            return '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>';
+        } else {
+            return '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>';
+        }
     }
 
     render() {
         this.wrapper = document.createElement('div');
-        this.wrapper.classList.add('ed-link-btn-block');
+        this.wrapper.classList.add('ed-btn-block-wrapper');
 
+        // The button itself matching 1:1 final site
+        this.btnEl = document.createElement('button');
+        this.btnEl.type = 'button';
+        this.btnEl.className = `article-btn-cta btn-${this.data.style || 'primary'}`;
+        this.btnEl.title = 'Нажмите, чтобы настроить кнопку';
+        this.renderButtonContent();
+
+        if (!this.readOnly) {
+            this.btnEl.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.togglePopover();
+            });
+        }
+
+        this.wrapper.appendChild(this.btnEl);
+
+        if (!this.readOnly) {
+            this.buildPopover();
+            this.wrapper.appendChild(this.popoverEl);
+        }
+
+        return this.wrapper;
+    }
+
+    renderButtonContent() {
+        const text = this.data.text || 'Кнопка действия';
+        const iconSvg = this.getIconSvg(this.data.link, this.data.style);
+        const gearIcon = !this.readOnly ? '<span class="ed-btn-gear" title="Редактировать">⚙️</span>' : '';
+        this.btnEl.className = `article-btn-cta btn-${this.data.style || 'primary'}`;
+        this.btnEl.innerHTML = `${iconSvg}<span>${escapeHtml(text)}</span>${gearIcon}`;
+    }
+
+    buildPopover() {
+        this.popoverEl = document.createElement('div');
+        this.popoverEl.className = 'ed-btn-floating-popover';
+        this.popoverEl.addEventListener('click', (e) => e.stopPropagation());
+
+        // Header
         const header = document.createElement('div');
-        header.style.cssText = 'display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; font-size:12px; font-weight:700; color:#64748b; text-transform:uppercase;';
-        header.innerHTML = '<span>🔘 Кнопка действия (CTA / Ссылка)</span>';
-        this.wrapper.appendChild(header);
+        header.className = 'ed-popover-header';
+        header.innerHTML = `
+            <div class="ed-popover-title">🔘 Настройка кнопки</div>
+            <button type="button" class="ed-popover-close" title="Закрыть">✕</button>
+        `;
+        header.querySelector('.ed-popover-close').addEventListener('click', () => this.closePopover());
+        this.popoverEl.appendChild(header);
 
-        const grid = document.createElement('div');
-        grid.style.cssText = 'display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px;';
-
-        // Button Text
-        const textGroup = document.createElement('div');
-        const textLabel = document.createElement('label');
-        textLabel.style.cssText = 'display:block; font-size:12px; font-weight:700; margin-bottom:4px;';
-        textLabel.textContent = 'Текст на кнопке';
-        const textInput = document.createElement('input');
-        textInput.type = 'text';
-        textInput.placeholder = 'Например: Скачать APK';
-        textInput.value = this.data.text;
-        textInput.style.cssText = 'width:100%; box-sizing:border-box; padding:8px 10px; border:1px solid #cbd5e1; border-radius:6px; font-size:13px; font-weight:600; outline:none; background:#ffffff; color:#0f172a;';
+        // Field: Text
+        const textField = document.createElement('div');
+        textField.className = 'ed-popover-field';
+        textField.innerHTML = `
+            <label class="ed-popover-label">Текст на кнопке</label>
+            <input type="text" class="ed-popover-input ed-btn-input-text" placeholder="Например: Скачать APK" value="${escapeHtml(this.data.text)}">
+        `;
+        const textInput = textField.querySelector('input');
         textInput.addEventListener('input', (e) => {
             this.data.text = e.target.value;
-            this.updatePreview();
+            this.renderButtonContent();
         });
-        textGroup.appendChild(textLabel);
-        textGroup.appendChild(textInput);
-        grid.appendChild(textGroup);
+        this.popoverEl.appendChild(textField);
 
-        // Button Link
-        const linkGroup = document.createElement('div');
-        const linkLabel = document.createElement('label');
-        linkLabel.style.cssText = 'display:block; font-size:12px; font-weight:700; margin-bottom:4px;';
-        linkLabel.textContent = 'Ссылка (URL или статья)';
-        const linkInput = document.createElement('input');
-        linkInput.type = 'text';
-        linkInput.placeholder = 'https://...';
-        linkInput.value = this.data.link;
-        linkInput.style.cssText = 'width:100%; box-sizing:border-box; padding:8px 10px; border:1px solid #cbd5e1; border-radius:6px; font-size:13px; outline:none; background:#ffffff; color:#0f172a;';
+        // Field: Link
+        const linkField = document.createElement('div');
+        linkField.className = 'ed-popover-field';
+        linkField.innerHTML = `
+            <label class="ed-popover-label">Ссылка (URL или статья)</label>
+            <input type="text" class="ed-popover-input ed-btn-input-link" placeholder="https://..." value="${escapeHtml(this.data.link)}">
+        `;
+        const linkInput = linkField.querySelector('input');
         linkInput.addEventListener('input', (e) => {
             this.data.link = e.target.value;
-            this.updatePreview();
+            this.renderButtonContent();
         });
-        linkGroup.appendChild(linkLabel);
-        linkGroup.appendChild(linkInput);
-        grid.appendChild(linkGroup);
-
-        this.wrapper.appendChild(grid);
+        this.popoverEl.appendChild(linkField);
 
         // Quick Presets
         const presetsRow = document.createElement('div');
-        presetsRow.style.cssText = 'display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin-bottom:12px; font-size:11px;';
-
-        const tgBtn = document.createElement('button');
-        tgBtn.type = 'button';
-        tgBtn.style.cssText = 'background:#e0f2fe; color:#0284c7; border:1px solid #bae6fd; border-radius:6px; padding:4px 8px; font-size:11px; font-weight:700; cursor:pointer;';
-        tgBtn.textContent = '✈️ @android_tv_shop';
-        tgBtn.addEventListener('click', () => {
+        presetsRow.className = 'ed-popover-presets';
+        presetsRow.innerHTML = `
+            <button type="button" class="ed-popover-preset-btn" data-preset="tg">✈️ Канал @android_tv_shop</button>
+            <button type="button" class="ed-popover-preset-btn" data-preset="sup">💬 Поддержка @VladOpl</button>
+        `;
+        presetsRow.querySelector('[data-preset="tg"]').addEventListener('click', () => {
             this.data.link = 'https://t.me/android_tv_shop';
             linkInput.value = this.data.link;
             if (!this.data.text) {
@@ -436,13 +481,7 @@ class LinkButtonBlockTool {
             }
             this.setStyle('telegram');
         });
-        presetsRow.appendChild(tgBtn);
-
-        const tgSupBtn = document.createElement('button');
-        tgSupBtn.type = 'button';
-        tgSupBtn.style.cssText = 'background:#f1f5f9; color:#475569; border:1px solid #cbd5e1; border-radius:6px; padding:4px 8px; font-size:11px; font-weight:700; cursor:pointer;';
-        tgSupBtn.textContent = '💬 Поддержка @VladOpl';
-        tgSupBtn.addEventListener('click', () => {
+        presetsRow.querySelector('[data-preset="sup"]').addEventListener('click', () => {
             this.data.link = 'https://t.me/VladOpl';
             linkInput.value = this.data.link;
             if (!this.data.text) {
@@ -451,66 +490,89 @@ class LinkButtonBlockTool {
             }
             this.setStyle('telegram');
         });
-        presetsRow.appendChild(tgSupBtn);
-        this.wrapper.appendChild(presetsRow);
+        this.popoverEl.appendChild(presetsRow);
 
-        // Style selector
-        const styleRow = document.createElement('div');
-        styleRow.style.cssText = 'display:flex; align-items:center; gap:6px; margin-bottom:12px; flex-wrap:wrap;';
-        
+        // Style Selector Pills
+        const styleLabel = document.createElement('div');
+        styleLabel.className = 'ed-popover-label';
+        styleLabel.textContent = 'Стиль кнопки';
+        this.popoverEl.appendChild(styleLabel);
+
+        const stylesRow = document.createElement('div');
+        stylesRow.className = 'ed-popover-styles';
         const styles = [
             { key: 'primary', label: '🔵 Синяя' },
-            { key: 'success', label: '🟢 Зелёная (Скачать)' },
+            { key: 'success', label: '🟢 Скачать' },
             { key: 'telegram', label: '✈️ Telegram' },
-            { key: 'amber', label: '🟠 Янтарная' },
-            { key: 'outline', label: '⚪ Контурная' }
+            { key: 'amber', label: '🟠 Важно' },
+            { key: 'outline', label: '⚪ Контур' }
         ];
-
-        this.styleButtons = [];
         styles.forEach(st => {
             const btn = document.createElement('button');
             btn.type = 'button';
-            btn.dataset.style = st.key;
-            const isSel = this.data.style === st.key;
-            btn.style.cssText = `padding:4px 9px; font-size:11px; font-weight:700; border-radius:14px; border:1px solid ${isSel ? '#0f172a' : '#cbd5e1'}; background:${isSel ? '#0f172a' : '#ffffff'}; color:${isSel ? '#ffffff' : '#475569'}; cursor:pointer;`;
+            btn.className = `ed-popover-style-btn ${this.data.style === st.key ? 'is-active' : ''}`;
             btn.textContent = st.label;
+            btn.dataset.styleKey = st.key;
             btn.addEventListener('click', () => this.setStyle(st.key));
-            this.styleButtons.push(btn);
-            styleRow.appendChild(btn);
+            stylesRow.appendChild(btn);
         });
-        this.wrapper.appendChild(styleRow);
+        this.popoverEl.appendChild(stylesRow);
 
-        // Preview box
-        const previewBox = document.createElement('div');
-        previewBox.style.cssText = 'padding:12px; background:#ffffff; border:1px dashed #cbd5e1; border-radius:8px; text-align:center;';
-        this.previewBox = previewBox;
-        this.wrapper.appendChild(previewBox);
-
-        this.updatePreview();
-        return this.wrapper;
+        // Footer Done button
+        const actionsRow = document.createElement('div');
+        actionsRow.className = 'ed-popover-actions';
+        actionsRow.innerHTML = `<button type="button" class="ed-popover-done-btn">Готово</button>`;
+        actionsRow.querySelector('button').addEventListener('click', () => this.closePopover());
+        this.popoverEl.appendChild(actionsRow);
     }
 
     setStyle(styleKey) {
         this.data.style = styleKey;
-        this.styleButtons.forEach(btn => {
-            const isSel = btn.dataset.style === styleKey;
-            btn.style.border = isSel ? '1px solid #0f172a' : '1px solid #cbd5e1';
-            btn.style.background = isSel ? '#0f172a' : '#ffffff';
-            btn.style.color = isSel ? '#ffffff' : '#475569';
-        });
-        this.updatePreview();
+        if (this.popoverEl) {
+            this.popoverEl.querySelectorAll('.ed-popover-style-btn').forEach(btn => {
+                btn.classList.toggle('is-active', btn.dataset.styleKey === styleKey);
+            });
+        }
+        this.renderButtonContent();
     }
 
-    updatePreview() {
-        if (!this.previewBox) return;
-        const text = this.data.text.trim() || 'Текст кнопки';
-        const style = this.data.style || 'primary';
-        this.previewBox.innerHTML = `
-            <div style="font-size:11px; color:#94a3b8; font-weight:600; margin-bottom:6px;">Предпросмотр:</div>
-            <div class="article-btn-wrapper" style="margin:0;">
-                <span class="article-btn-cta btn-${style}"><span>${escapeHtml(text)}</span></span>
-            </div>
-        `;
+    togglePopover() {
+        if (this.isOpen) {
+            this.closePopover();
+        } else {
+            this.openPopover();
+        }
+    }
+
+    openPopover() {
+        document.querySelectorAll('.ed-btn-floating-popover.is-open').forEach(p => p.classList.remove('is-open'));
+        if (!this.popoverEl) return;
+
+        const rect = this.btnEl.getBoundingClientRect();
+        if (rect.top < 280) {
+            this.popoverEl.classList.add('popover-below');
+        } else {
+            this.popoverEl.classList.remove('popover-below');
+        }
+
+        this.popoverEl.classList.add('is-open');
+        this.isOpen = true;
+        document.addEventListener('click', this.onDocClick);
+        const textInp = this.popoverEl.querySelector('.ed-btn-input-text');
+        if (textInp) setTimeout(() => textInp.focus(), 50);
+    }
+
+    closePopover() {
+        if (!this.popoverEl) return;
+        this.popoverEl.classList.remove('is-open');
+        this.isOpen = false;
+        document.removeEventListener('click', this.onDocClick);
+    }
+
+    onDocClick(e) {
+        if (!this.wrapper.contains(e.target)) {
+            this.closePopover();
+        }
     }
 
     save() {
@@ -1450,32 +1512,45 @@ function initPopoverLocalizationWatcher() {
         'Image': 'Фото',
         'Delimiter': 'Разделитель',
         'Link': 'Ссылка',
-        'Nothing found': 'Ничего не найдено'
+        'Nothing found': 'Ничего не найдено',
+        'Start with': 'Начать с',
+        'Counter type': 'Тип счетчика',
+        'Numeric': 'Числовой (1, 2, 3)',
+        'Lower Roman': 'Римские строчные (i, ii)',
+        'Upper Roman': 'Римские прописные (I, II)',
+        'Lower Alpha': 'Буквы строчные (a, b)',
+        'Upper Alpha': 'Буквы прописные (A, B)'
     };
 
     const translateElement = (el) => {
         if (!el) return;
-        if (el.tagName === 'INPUT' && el.placeholder && translations[el.placeholder.trim()]) {
-            el.placeholder = translations[el.placeholder.trim()];
+        if (el.tagName === 'INPUT' && (el.placeholder === 'Filter' || translations[el.placeholder?.trim()])) {
+            el.placeholder = 'Поиск...';
         }
         if (el.querySelectorAll) {
-            el.querySelectorAll('.ce-popover-item__title, .ce-popover-item__secondary-title, .ce-popover__search input, .tc-popover__item-label, .cdx-settings-button').forEach(target => {
-                if (target.tagName === 'INPUT' && target.placeholder && translations[target.placeholder.trim()]) {
-                    target.placeholder = translations[target.placeholder.trim()];
-                } else if (target.childNodes && target.childNodes.length === 1 && target.childNodes[0].nodeType === Node.TEXT_NODE) {
-                    const trimmed = target.textContent.trim();
-                    if (translations[trimmed]) {
-                        target.textContent = translations[trimmed];
-                    }
-                } else if (target.textContent) {
-                    const trimmed = target.textContent.trim();
-                    if (translations[trimmed]) {
-                        target.textContent = translations[trimmed];
-                    }
+            el.querySelectorAll('input[placeholder="Filter"], input.cdx-search-field__input, .ce-popover__search input').forEach(inp => {
+                inp.placeholder = 'Поиск...';
+            });
+            el.querySelectorAll('.ce-popover-item__title, .ce-popover-item__secondary-title, .ce-popover-item, .tc-popover__item-label, .cdx-settings-button, .ce-popover__item-label').forEach(target => {
+                const trimmed = (target.textContent || '').trim();
+                if (translations[trimmed]) {
+                    target.textContent = translations[trimmed];
                 }
             });
         }
     };
+
+    // Instant event delegation for search inputs and popover hover
+    document.addEventListener('focusin', (e) => {
+        if (e.target && e.target.tagName === 'INPUT' && (e.target.placeholder === 'Filter' || e.target.classList.contains('cdx-search-field__input'))) {
+            e.target.placeholder = 'Поиск...';
+        }
+    }, true);
+
+    document.addEventListener('mouseover', (e) => {
+        const pop = e.target && e.target.closest && e.target.closest('.ce-popover, .tc-popover');
+        if (pop) translateElement(pop);
+    }, { passive: true });
 
     const observer = new MutationObserver((mutations) => {
         for (const mutation of mutations) {

@@ -1135,12 +1135,427 @@ body.dark-theme .badge-status.pinned {
 }
 
 /* Link Button Block Tool in Canvas */
-.ed-link-btn-block {
-    background: var(--bg-app);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-md);
-    padding: 16px;
-    margin: 16px 0;
+/* ==========================================================================
+   WYSIWYG 1:1 Live Canvas Overrides (Telegraph-like rendering)
+   ========================================================================== */
+
+/* 1. List: Double numbering fix & grid layout preservation */
+#editorjs-holder ol.cdx-list,
+#editorjs-holder ul.cdx-list,
+#editorjs-holder .cdx-list,
+#editorjs-holder .cdx-list-ordered,
+#editorjs-holder .cdx-list-unordered,
+#editorjs-holder .cdx-list-checklist {
+    list-style: none !important;
+    list-style-type: none !important;
+    padding-left: 0 !important;
+    margin: 12px 0 !important;
+}
+
+#editorjs-holder ol.cdx-list > li,
+#editorjs-holder ul.cdx-list > li,
+#editorjs-holder .cdx-list__item {
+    list-style: none !important;
+    list-style-type: none !important;
+    display: grid !important;
+    grid-template-columns: auto 1fr !important;
+    padding-left: 0 !important;
+    margin-bottom: 4px !important;
+    line-height: 1.6 !important;
+}
+
+#editorjs-holder ol.cdx-list > li::marker,
+#editorjs-holder ul.cdx-list > li::marker,
+#editorjs-holder .cdx-list__item::marker {
+    display: none !important;
+    content: "" !important;
+    font-size: 0 !important;
+    width: 0 !important;
+    height: 0 !important;
+}
+
+/* 2. Quotes (1:1 with site .article-quote-block) */
+#editorjs-holder .cdx-quote {
+    border-left: 4px solid var(--accent-color, #2481cc) !important;
+    background: rgba(36, 129, 204, 0.08) !important;
+    padding: 14px 20px !important;
+    margin: 18px 0 !important;
+    border-radius: 0 10px 10px 0 !important;
+    box-shadow: none !important;
+}
+
+#editorjs-holder .cdx-quote__text {
+    font-style: normal !important;
+    font-weight: 500 !important;
+    line-height: 1.65 !important;
+    color: var(--text-main, #1e293b) !important;
+    font-size: 1.02em !important;
+    min-height: 24px !important;
+    margin-bottom: 6px !important;
+    padding: 0 !important;
+    outline: none !important;
+}
+
+#editorjs-holder .cdx-quote__caption {
+    font-style: normal !important;
+    font-size: 0.86em !important;
+    color: var(--text-muted, #64748b) !important;
+    min-height: 18px !important;
+    padding: 0 !important;
+    outline: none !important;
+}
+
+body.dark-theme #editorjs-holder .cdx-quote {
+    background: rgba(0, 180, 216, 0.1) !important;
+    border-left-color: var(--accent-color, #00b4d8) !important;
+}
+body.dark-theme #editorjs-holder .cdx-quote__text {
+    color: #f1f5f9 !important;
+}
+body.dark-theme #editorjs-holder .cdx-quote__caption {
+    color: #94a3b8 !important;
+}
+
+/* 3. Warning Alert Cards (1:1 with site .article-alert-card) */
+#editorjs-holder .cdx-warning {
+    background: #fffbeb !important;
+    border: 1px solid #fef3c7 !important;
+    border-left: 4px solid #f59e0b !important;
+    border-radius: 0 10px 10px 0 !important;
+    padding: 14px 18px !important;
+    margin: 18px 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 6px !important;
+    box-shadow: none !important;
+}
+
+#editorjs-holder .cdx-warning::before {
+    display: none !important;
+}
+
+#editorjs-holder .cdx-warning__title {
+    font-weight: 700 !important;
+    font-size: 1.02em !important;
+    color: #b45309 !important;
+    min-height: 22px !important;
+    margin-bottom: 2px !important;
+    padding: 0 !important;
+    outline: none !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+}
+
+#editorjs-holder .cdx-warning__title::before {
+    content: "⚠️" !important;
+    font-size: 1.1em !important;
+    line-height: 1;
+}
+
+#editorjs-holder .cdx-warning__message {
+    font-size: 0.98em !important;
+    color: #92400e !important;
+    line-height: 1.6 !important;
+    min-height: 22px !important;
+    padding: 0 !important;
+    outline: none !important;
+}
+
+body.dark-theme #editorjs-holder .cdx-warning {
+    background: rgba(245, 158, 11, 0.12) !important;
+    border-color: rgba(245, 158, 11, 0.2) !important;
+    border-left-color: #fbbf24 !important;
+}
+body.dark-theme #editorjs-holder .cdx-warning__title {
+    color: #fbbf24 !important;
+}
+body.dark-theme #editorjs-holder .cdx-warning__message {
+    color: #fde68a !important;
+}
+
+/* 4. Action Button (CTA) with Floating Popover */
+.ed-btn-block-wrapper {
+    position: relative;
+    margin: 24px 0;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.ed-btn-block-wrapper .article-btn-cta {
+    position: relative;
+    cursor: pointer;
+    user-select: none;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+    border: none;
+    font-family: inherit;
+}
+
+.ed-btn-block-wrapper .ed-btn-gear {
+    margin-left: 8px;
+    font-size: 13px;
+    opacity: 0.6;
+    transition: opacity 0.15s, transform 0.2s;
+    display: inline-flex;
+    align-items: center;
+}
+
+.ed-btn-block-wrapper .article-btn-cta:hover .ed-btn-gear {
+    opacity: 1;
+    transform: rotate(45deg);
+}
+
+/* Floating Popover */
+.ed-btn-floating-popover {
+    position: absolute;
+    bottom: calc(100% + 14px);
+    left: 50%;
+    transform: translateX(-50%);
+    width: 380px;
+    max-width: 90vw;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 18px;
+    box-shadow: 0 14px 38px rgba(15, 23, 42, 0.18), 0 4px 12px rgba(15, 23, 42, 0.08);
+    z-index: 1000;
+    display: none;
+    text-align: left;
+    color: #0f172a;
+    animation: popoverFadeIn 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.ed-btn-floating-popover.popover-below {
+    bottom: auto;
+    top: calc(100% + 14px);
+}
+
+.ed-btn-floating-popover.is-open {
+    display: block;
+}
+
+.ed-btn-floating-popover::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 7px;
+    border-style: solid;
+    border-color: #ffffff transparent transparent transparent;
+}
+
+.ed-btn-floating-popover.popover-below::after {
+    top: auto;
+    bottom: 100%;
+    border-color: transparent transparent #ffffff transparent;
+}
+
+@keyframes popoverFadeIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, 6px);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+}
+
+.ed-popover-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.ed-popover-title {
+    font-size: 13px;
+    font-weight: 800;
+    color: #0f172a;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.ed-popover-close {
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #94a3b8;
+    background: transparent;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.15s;
+}
+
+.ed-popover-close:hover {
+    background: #f1f5f9;
+    color: #0f172a;
+}
+
+.ed-popover-field {
+    margin-bottom: 12px;
+}
+
+.ed-popover-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    color: #64748b;
+    margin-bottom: 5px;
+}
+
+.ed-popover-input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 8px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #0f172a;
+    background: #ffffff;
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.ed-popover-input:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.ed-popover-presets {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+}
+
+.ed-popover-preset-btn {
+    padding: 4px 8px;
+    font-size: 11px;
+    font-weight: 700;
+    border-radius: 6px;
+    border: 1px solid #cbd5e1;
+    background: #f8fafc;
+    color: #334155;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.ed-popover-preset-btn:hover {
+    background: #e2e8f0;
+    color: #0f172a;
+}
+
+.ed-popover-styles {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+}
+
+.ed-popover-style-btn {
+    padding: 5px 10px;
+    font-size: 11px;
+    font-weight: 700;
+    border-radius: 8px;
+    border: 1.5px solid #e2e8f0;
+    background: #f8fafc;
+    color: #475569;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.ed-popover-style-btn.is-active {
+    border-color: #2563eb;
+    background: #eff6ff;
+    color: #1d4ed8;
+}
+
+.ed-popover-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.ed-popover-done-btn {
+    padding: 6px 14px;
+    background: #2563eb;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 700;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.ed-popover-done-btn:hover {
+    background: #1d4ed8;
+}
+
+/* Dark theme for popover */
+body.dark-theme .ed-btn-floating-popover {
+    background: #1e293b;
+    border-color: #334155;
+    color: #f1f5f9;
+    box-shadow: 0 14px 38px rgba(0, 0, 0, 0.45);
+}
+
+body.dark-theme .ed-btn-floating-popover::after {
+    border-color: #1e293b transparent transparent transparent;
+}
+
+body.dark-theme .ed-btn-floating-popover.popover-below::after {
+    border-color: transparent transparent #1e293b transparent;
+}
+
+body.dark-theme .ed-popover-header {
+    border-bottom-color: #334155;
+}
+
+body.dark-theme .ed-popover-title {
+    color: #f8fafc;
+}
+
+body.dark-theme .ed-popover-label {
+    color: #94a3b8;
+}
+
+body.dark-theme .ed-popover-input {
+    background: #0f172a;
+    border-color: #334155;
+    color: #f8fafc;
+}
+
+body.dark-theme .ed-popover-preset-btn {
+    background: #0f172a;
+    border-color: #334155;
+    color: #94a3b8;
+}
+body.dark-theme .ed-popover-preset-btn:hover {
+    background: #334155;
+    color: #f8fafc;
+}
+
+body.dark-theme .ed-popover-style-btn {
+    background: #0f172a;
+    border-color: #334155;
+    color: #94a3b8;
+}
+
+body.dark-theme .ed-popover-style-btn.is-active {
+    border-color: #38bdf8;
+    background: rgba(56, 189, 248, 0.15);
+    color: #38bdf8;
 }
 
 /* Empty State */
