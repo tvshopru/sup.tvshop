@@ -770,6 +770,9 @@
         }
     };
 
+    // Alias for compatibility
+    ArticleRenderer.parseHtmlToBlocks = ArticleRenderer.htmlToEditorData;
+
     // Export module
     if (typeof module !== 'undefined' && module.exports) {
         module.exports = ArticleRenderer;

@@ -1849,7 +1849,144 @@
         "version": "2.29.1"
       },
       "status": "published",
-      "category": ""
+      "category": "",
+      "contentData": {
+        "time": 1791463602377,
+        "blocks": [
+          {
+            "id": "blk-p1",
+            "type": "image",
+            "data": {
+              "file": {
+                "url": "img/upload_1791463686115.png"
+              },
+              "caption": "",
+              "withBorder": false,
+              "withBackground": false,
+              "stretched": false
+            }
+          },
+          {
+            "id": "blk-p2",
+            "type": "paragraph",
+            "data": {
+              "text": "Чтобы открыть все источники, необходимо пройти регистрацию. Она полностью бесплатная, но откроет вам доступ ко всем бесплатным источникам."
+            }
+          },
+          {
+            "id": "blk-p3",
+            "type": "list",
+            "data": {
+              "style": "ordered",
+              "items": [
+                "Открываем приложение, заходим в настройки.",
+                "Нажимаем кнопку «Выполнить вход».",
+                "Сканируем QR-код."
+              ]
+            }
+          },
+          {
+            "id": "blk-p4",
+            "type": "image",
+            "data": {
+              "file": {
+                "url": "img/upload_1791463715224.png"
+              },
+              "caption": "",
+              "withBorder": false,
+              "withBackground": false,
+              "stretched": false
+            }
+          },
+          {
+            "id": "blk-p5",
+            "type": "list",
+            "data": {
+              "style": "ordered",
+              "items": [
+                "Регистрируемся и добавляем устройство с помощью телефона",
+                "Открываем карточку фильма и меняем источник на любой бесплатный (нажимаем на кнопку как на скрине)"
+              ]
+            }
+          },
+          {
+            "id": "blk-p6",
+            "type": "image",
+            "data": {
+              "file": {
+                "url": "img/upload_1791463727510.png"
+              },
+              "caption": "",
+              "withBorder": false,
+              "withBackground": false,
+              "stretched": false
+            }
+          },
+          {
+            "id": "blk-p7",
+            "type": "paragraph",
+            "data": {
+              "text": "И все после этого вам доступны почти все бесплатные источники для просмотра онлайн"
+            }
+          },
+          {
+            "id": "blk-p8",
+            "type": "image",
+            "data": {
+              "file": {
+                "url": "img/upload_1791463742643.png"
+              },
+              "caption": "",
+              "withBorder": false,
+              "withBackground": false,
+              "stretched": false
+            }
+          },
+          {
+            "id": "blk-p9",
+            "type": "header",
+            "data": {
+              "text": "Так же в 🍿 Prisma доступен просмотр торрентов.",
+              "level": 2
+            }
+          },
+          {
+            "id": "blk-p10",
+            "type": "paragraph",
+            "data": {
+              "text": "Для этого в карточке фильма нужно нажать кнопку «Торрент»"
+            }
+          },
+          {
+            "id": "blk-p11",
+            "type": "image",
+            "data": {
+              "file": {
+                "url": "img/upload_1791463752243.png"
+              },
+              "caption": "",
+              "withBorder": false,
+              "withBackground": false,
+              "stretched": false
+            }
+          },
+          {
+            "id": "blk-p12",
+            "type": "header",
+            "data": {
+              "text": "👉Не забывайте обновить приложение",
+              "level": 2
+            }
+          },
+          {
+            "id": "blk-p13",
+            "type": "paragraph",
+            "data": {
+              "text": "можно это сделать через Rustore или TVSHOP Installer"
+            }
+          }
+        ]
+      }
     },
     {
       "id": "inst-byebyedpi",
@@ -2702,7 +2839,180 @@
         "version": "2.29.1"
       },
       "status": "published",
-      "category": ""
+      "category": "",
+      "contentData": {
+        "time": 1791472919275,
+        "blocks": [
+          {
+            "id": "blk-y1",
+            "type": "paragraph",
+            "data": {
+              "text": "Инструкция по регистрации и настройке более 1500 телеканалов в отличном качестве всего за 50 рублей в месяц."
+            }
+          },
+          {
+            "id": "blk-y2",
+            "type": "list",
+            "data": {
+              "style": "ordered",
+              "items": [
+                "Переходим по ссылке регистрации или по QR-коду на телефоне. Вводим свои данные для создания аккаунта (если письмо подтверждения не приходит — проверьте папку «Спам»). После регистрации вам сразу доступен бесплатный тест на 24 часа."
+              ]
+            }
+          },
+          {
+            "id": "blk-y3",
+            "type": "image",
+            "data": {
+              "file": {
+                "url": "img/yosso_step1.png"
+              },
+              "caption": "",
+              "withBorder": false,
+              "withBackground": false,
+              "stretched": false
+            }
+          },
+          {
+            "id": "blk-y4",
+            "type": "list",
+            "data": {
+              "style": "ordered",
+              "items": [
+                "После входа в личный кабинет переходим в раздел <b>«Дашборд»</b>."
+              ]
+            }
+          },
+          {
+            "id": "blk-y5",
+            "type": "image",
+            "data": {
+              "file": {
+                "url": "img/yosso_step2.png"
+              },
+              "caption": "",
+              "withBorder": false,
+              "withBackground": false,
+              "stretched": false
+            }
+          },
+          {
+            "id": "blk-y6",
+            "type": "list",
+            "data": {
+              "style": "ordered",
+              "items": [
+                "Спускаемся до раздела <b>«Плейлисты»</b> и нажимаем кнопку копирования ссылки на ваш персональный плейлист. Вставляем эту ссылку в плеер на ТВ-приставке (<b>TiviMate</b> или <b>Televizo</b>)."
+              ]
+            }
+          },
+          {
+            "id": "blk-y7",
+            "type": "image",
+            "data": {
+              "file": {
+                "url": "img/yosso_step3.png"
+              },
+              "caption": "",
+              "withBorder": false,
+              "withBackground": false,
+              "stretched": false
+            }
+          },
+          {
+            "id": "blk-y8",
+            "type": "list",
+            "data": {
+              "style": "ordered",
+              "items": [
+                "Для продления подписки переходим в раздел <b>«Пополнение баланса»</b>."
+              ]
+            }
+          },
+          {
+            "id": "blk-y9",
+            "type": "image",
+            "data": {
+              "file": {
+                "url": "img/yosso_step4.png"
+              },
+              "caption": "",
+              "withBorder": false,
+              "withBackground": false,
+              "stretched": false
+            }
+          },
+          {
+            "id": "blk-y10",
+            "type": "list",
+            "data": {
+              "style": "ordered",
+              "items": [
+                "Вводим сумму пополнения, выбираем удобный способ оплаты (карта, СБП и др.) и следуем подсказкам платежной системы."
+              ]
+            }
+          },
+          {
+            "id": "blk-y11",
+            "type": "image",
+            "data": {
+              "file": {
+                "url": "img/yosso_step5.png"
+              },
+              "caption": "",
+              "withBorder": false,
+              "withBackground": false,
+              "stretched": false
+            }
+          },
+          {
+            "id": "blk-y12",
+            "type": "list",
+            "data": {
+              "style": "ordered",
+              "items": [
+                "После зачисления средств переходим в раздел <b>«Подписка»</b> для активации тарифа на нужный срок (можно сразу на год)."
+              ]
+            }
+          },
+          {
+            "id": "blk-y13",
+            "type": "image",
+            "data": {
+              "file": {
+                "url": "img/yosso_step6.png"
+              },
+              "caption": "",
+              "withBorder": false,
+              "withBackground": false,
+              "stretched": false
+            }
+          },
+          {
+            "id": "blk-y14",
+            "type": "list",
+            "data": {
+              "style": "ordered",
+              "items": [
+                "<b>ВАЖНО:</b> Выберите нужное количество подключений (устройств) и нажмите кнопку <b>«Оформить и продлить»</b>."
+              ]
+            }
+          },
+          {
+            "id": "blk-y15",
+            "type": "image",
+            "data": {
+              "file": {
+                "url": "img/yosso_step7.png"
+              },
+              "caption": "",
+              "withBorder": false,
+              "withBackground": false,
+              "stretched": false
+            }
+          }
+        ]
+      }
     },
     {
       "id": "art-televizo-backup",
@@ -3592,7 +3902,61 @@
         "version": "2.29.1"
       },
       "status": "published",
-      "category": ""
+      "category": "",
+      "contentData": {
+        "time": 1791472919275,
+        "blocks": [
+          {
+            "id": "blk-c1",
+            "type": "paragraph",
+            "data": {
+              "text": "Инструкция по освобождению памяти приставки, сбросу настроек зависших программ и полному удалению ненужных приложений."
+            }
+          },
+          {
+            "id": "blk-c2",
+            "type": "list",
+            "data": {
+              "style": "ordered",
+              "items": [
+                "Заходим в <b>Настройки</b> приставки.",
+                "Открываем раздел <b>Приложения</b>.",
+                "Выбираем пункт <b>Все приложения</b>.",
+                "Находим нужное приложение в списке и нажимаем на него."
+              ]
+            }
+          },
+          {
+            "id": "blk-c3",
+            "type": "header",
+            "data": {
+              "text": "Возможные действия:",
+              "level": 2
+            }
+          },
+          {
+            "id": "blk-c4",
+            "type": "paragraph",
+            "data": {
+              "text": "🔹 <b>Очистка кэша</b> — нажмите <b>«Очистить кэш»</b> (освобождает временную память, не удаляя ваши настройки)."
+            }
+          },
+          {
+            "id": "blk-c5",
+            "type": "paragraph",
+            "data": {
+              "text": "🔹 <b>Очистка данных</b> — нажмите <b>«Очистить данные»</b> (полный сброс приложения к начальному состоянию)."
+            }
+          },
+          {
+            "id": "blk-c6",
+            "type": "paragraph",
+            "data": {
+              "text": "🔹 <b>Полное удаление приложения</b> — нажмите <b>«Удалить»</b> (используйте только если приложение больше не требуется)."
+            }
+          }
+        ]
+      }
     }
   ]
 }

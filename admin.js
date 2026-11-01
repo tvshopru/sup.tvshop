@@ -647,9 +647,10 @@ function initEditorJS(initialData) {
     let dataToLoad = {};
     if (initialData && Array.isArray(initialData.blocks) && initialData.blocks.length > 0) {
         dataToLoad = initialData;
-    } else if (initialData && typeof initialData === 'string' && initialData.trim()) {
-        if (window.ArticleRenderer && typeof window.ArticleRenderer.parseHtmlToBlocks === 'function') {
-            dataToLoad = window.ArticleRenderer.parseHtmlToBlocks(initialData);
+    } else if (typeof initialData === 'string' && initialData.trim()) {
+        const converter = window.ArticleRenderer && (window.ArticleRenderer.htmlToEditorData || window.ArticleRenderer.parseHtmlToBlocks);
+        if (typeof converter === 'function') {
+            dataToLoad = converter(initialData);
         }
     }
 
@@ -785,7 +786,13 @@ function selectArticle(idx) {
     if (openTabBtn) openTabBtn.href = artUrl;
 
     // Load blocks in editor
-    initEditorJS(art.contentData || art.contentHtml || null);
+    let editorData = null;
+    if (art.contentData && Array.isArray(art.contentData.blocks) && art.contentData.blocks.length > 0) {
+        editorData = art.contentData;
+    } else if (art.contentHtml && typeof art.contentHtml === 'string' && art.contentHtml.trim()) {
+        editorData = art.contentHtml;
+    }
+    initEditorJS(editorData);
 
     // Update active highlight in list
     document.querySelectorAll('.article-item').forEach((el, i) => {
